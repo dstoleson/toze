@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="TOZE">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="basicTypeDef" type="BasicTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="axiomaticDef" type="AxiomaticDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="genericDef" type="GenericDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="abbreviationDef" type="AbbreviationDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="freeTypeDef" type="FreeTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="schemaDef" type="SchemaDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="classDef" type="ClassDef" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="predicate" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="AbbreviationDef">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="expression" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AxiomaticDef">
+        <xs:sequence>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="BasicTypeDef">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ClassDef">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="visibilityList" type="xs:string"/>
+            <xs:element name="inheritedClass" type="xs:string"/>
+            <xs:element name="basicTypeDef" type="BasicTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="axiomaticDef" type="AxiomaticDef" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="abbreviationDef" type="AbbreviationDef" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="freeTypeDef" type="FreeTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="state" type="State" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="initialState" type="InitialState" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="operation" type="Operation" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="FreeTypeDef">
+        <xs:sequence>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GenericDef">
+        <xs:sequence>
+            <xs:element name="formalParameters" type="xs:string"/>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="InitialState">
+        <xs:sequence>
+            <xs:element name="predicate" type="xs:string"/>
+        </xs:sequence>        
+    </xs:complexType>
+    <xs:complexType name="Operation">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="deltaList" type="xs:string"/>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+            <xs:element name="operationExpression" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SchemaDef">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+            <xs:element name="expression" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="State">
+        <xs:sequence>
+            <xs:element name="declaration" type="xs:string"/>
+            <xs:element name="predicate" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>        
+    </xs:complexType>
+</xs:schema>
