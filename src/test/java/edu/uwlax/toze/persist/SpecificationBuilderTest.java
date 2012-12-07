@@ -6,6 +6,12 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+/**
+ * Read a sample toze file, load it using the SpecificationBuilder, check it for
+ * various attributes.
+ * 
+ * @author dhs
+ */
 public class SpecificationBuilderTest
 {
     @Test
