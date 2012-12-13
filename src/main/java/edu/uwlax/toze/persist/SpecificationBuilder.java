@@ -1,6 +1,5 @@
 package edu.uwlax.toze.persist;
 
-import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
