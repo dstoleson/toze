@@ -1,11 +1,18 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.TOZE;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  * Main UI class for the TOZE Editor. Displays a file/specification tree
@@ -20,6 +27,22 @@ import javax.swing.tree.TreeModel;
  */
 public class TozeEditor extends javax.swing.JFrame
 {
+    // in the future perhaps this should be saved as a preference
+    // to reload specification files that were open when the application
+    // was closed.
+    // Issues:
+    // 1) What if the file no longer exists?
+    //    a) warning dialog and remove from list
+    //    b) warning dialog and find the file
+    //    c) no warning dialog but display in the list as an error
+    private SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("ROOT"));
+
+    /**
+     * Keep track of the last directory the user visited when opening
+     * or saving a specification file.
+     */
+    private String previousDirectoryUsed = null;
+    
     /**
      * Creates new form TozeEditor
      */
@@ -29,63 +52,8 @@ public class TozeEditor extends javax.swing.JFrame
 
     }
 
-    public TreeModel getTreeModel()
+    private TreeModel getTreeModel()
     {
-        SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("FOO"));
-        
-        // temporary, load a sample specification immediately
-        // for testing purposes
-        // in the future perhaps this should be saved as a preference
-        // to reload specification files that were open when the application
-        // was closed.
-        // Issues:
-        // 1) What if the file no longer exists?
-        //    a) warning dialog and remove from list
-        //    b) warning dialog and find the file
-        //    c) no warning dialog but display in the list as an error
-        try
-            {
-            InputStream inputStream = new FileInputStream("src/test/resources/ComputerCompany.toze");
-            SpecificationBuilder specBuilder = new SpecificationBuilder();
-            TOZE toze = specBuilder.buildFromStream(inputStream);
-            inputStream.close();
-            
-            Specification specification = new Specification("ComputerCompany", toze);
-            treeModel.addSpecification(specification);
-
-            inputStream = new FileInputStream("src/test/resources/GasStation");
-            specBuilder = new SpecificationBuilder();
-            toze = specBuilder.buildFromStream(inputStream);
-
-            specification = new Specification("GasStation", toze);
-            treeModel.addSpecification(specification);
-
-            inputStream = new FileInputStream("src/test/resources/ATM");
-            specBuilder = new SpecificationBuilder();
-            toze = specBuilder.buildFromStream(inputStream);
-
-            specification = new Specification("ATM", toze);
-            treeModel.addSpecification(specification);
-
-            inputStream = new FileInputStream("src/test/resources/Queue");
-            specBuilder = new SpecificationBuilder();
-            toze = specBuilder.buildFromStream(inputStream);
-
-            specification = new Specification("Queue", toze);
-            treeModel.addSpecification(specification);
-
-            inputStream = new FileInputStream("src/test/resources/TempSeq");
-            specBuilder = new SpecificationBuilder();
-            toze = specBuilder.buildFromStream(inputStream);
-
-            specification = new Specification("TempSeq", toze);
-            treeModel.addSpecification(specification);
-            }
-        catch (Exception e)
-            {
-            System.out.println("CRAP!");
-            }        
-        
         return treeModel;
     }
     
@@ -105,6 +73,10 @@ public class TozeEditor extends javax.swing.JFrame
         specificationTree = new javax.swing.JTree();
         jScrollPane1 = new javax.swing.JScrollPane();
         editorPane = new javax.swing.JEditorPane();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        openSpecificationMenu = new javax.swing.JMenuItem();
+        closeSpecificationMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -122,6 +94,33 @@ public class TozeEditor extends javax.swing.JFrame
 
         editorSplitPanel.setRightComponent(jScrollPane1);
 
+        fileMenu.setText("File");
+
+        openSpecificationMenu.setMnemonic('O');
+        openSpecificationMenu.setText("Open");
+        openSpecificationMenu.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                openSpecification(evt);
+            }
+        });
+        fileMenu.add(openSpecificationMenu);
+
+        closeSpecificationMenu.setText("Close");
+        closeSpecificationMenu.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                closeSpecification(evt);
+            }
+        });
+        fileMenu.add(closeSpecificationMenu);
+
+        menuBar.add(fileMenu);
+
+        setJMenuBar(menuBar);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,12 +134,63 @@ public class TozeEditor extends javax.swing.JFrame
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(editorSplitPanel)
-                .addContainerGap(147, Short.MAX_VALUE))
+                .add(editorSplitPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addContainerGap(136, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void openSpecification(java.awt.event.ActionEvent evt)//GEN-FIRST:event_openSpecification
+    {//GEN-HEADEREND:event_openSpecification
+        JFileChooser fileChooser = new JFileChooser(previousDirectoryUsed);
+        int state = fileChooser.showOpenDialog(this);
+        if (state == JFileChooser.APPROVE_OPTION)
+            {
+            File specificationFile = fileChooser.getSelectedFile();
+            previousDirectoryUsed = specificationFile.getAbsolutePath();
+
+            try
+                {
+                InputStream inputStream = new FileInputStream(specificationFile);
+                SpecificationBuilder specBuilder = new SpecificationBuilder();
+                TOZE toze = specBuilder.buildFromStream(inputStream);
+                inputStream.close();
+
+                Specification specification = new Specification(specificationFile.getName(), toze);
+                treeModel.addSpecification(specification);
+                }
+            catch (Exception e)
+                {
+                JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+    }//GEN-LAST:event_openSpecification
+
+    private void closeSpecification(java.awt.event.ActionEvent evt)//GEN-FIRST:event_closeSpecification
+    {//GEN-HEADEREND:event_closeSpecification
+        // get selected specifications
+        // remove them from the treemodel
+        // @TODO: check if the specification has been edited and warn
+        // @TODO: did you realy want to . . . ?
+        TreePath[] selectedPaths = specificationTree.getSelectionPaths();
+        List<TreePath> treePathList = Arrays.asList(selectedPaths);
+        
+        // @TODO List the specifications being closed
+        int state = JOptionPane.showConfirmDialog(this, "Close the selected specifications?", "Confirm Close", JOptionPane.YES_NO_OPTION);
+
+        if (state == JOptionPane.YES_OPTION)
+            {
+            for (TreePath treePath : treePathList)
+                {
+                if (treePath.getPathCount() == 2) // the number of path items in selected spec node
+                    {
+                    SpecificationNode specificationNode = (SpecificationNode)treePath.getLastPathComponent();
+                    treeModel.removeSpecification(specificationNode.getSpecification());
+                    }
+                }        
+            }
+    }//GEN-LAST:event_closeSpecification
 
     /**
      * @param args the command line arguments
@@ -198,10 +248,14 @@ public class TozeEditor extends javax.swing.JFrame
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem closeSpecificationMenu;
     private javax.swing.JEditorPane editorPane;
     private javax.swing.JSplitPane editorSplitPanel;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem openSpecificationMenu;
     private javax.swing.JTree specificationTree;
     // End of variables declaration//GEN-END:variables
 }

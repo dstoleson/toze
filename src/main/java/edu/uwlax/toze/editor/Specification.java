@@ -6,11 +6,13 @@ public class Specification
 {
     private String filename;
     private TOZE toze;
+    private boolean edited;
     
     public Specification(String filename, TOZE toze)
     {
         this.filename = filename;
         this.toze = toze;
+        edited = false;
     }
     
     public String getFilename()
@@ -21,5 +23,15 @@ public class Specification
     public TOZE getToze()
     {
         return toze;
+    }
+
+    public boolean isEdited()
+    {
+        return edited;
+    }
+
+    public void setEdited(boolean edited)
+    {
+        this.edited = edited;
     }
 }

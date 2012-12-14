@@ -38,6 +38,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
     public void addSpecification(Specification specification)
     {
         specifications.add(specification);
+        this.reload();
     }
 
     @Override
@@ -116,7 +117,13 @@ public class SpecificationTreeModel extends DefaultTreeModel
         return true;
     }
 
-    class SpecificationNode extends DefaultMutableTreeNode
+    public void removeSpecification(Specification specification)
+    {
+        specifications.remove(specification);
+        reload();
+    }
+
+    public class SpecificationNode extends DefaultMutableTreeNode
     {
         private Specification specification;
 
