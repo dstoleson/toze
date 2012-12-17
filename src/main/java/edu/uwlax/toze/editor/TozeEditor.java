@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
+import edu.uwlax.toze.objectz.TozeTextArea;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.File;
@@ -68,15 +69,18 @@ public class TozeEditor extends javax.swing.JFrame
     private void initComponents()
     {
 
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         editorSplitPanel = new javax.swing.JSplitPane();
         jScrollPane5 = new javax.swing.JScrollPane();
         specificationTree = new javax.swing.JTree();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        editorPane = new javax.swing.JEditorPane();
+        specificationTabPanel = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openSpecificationMenu = new javax.swing.JMenuItem();
         closeSpecificationMenu = new javax.swing.JMenuItem();
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,11 +92,7 @@ public class TozeEditor extends javax.swing.JFrame
         jScrollPane5.setViewportView(specificationTree);
 
         editorSplitPanel.setLeftComponent(jScrollPane5);
-
-        editorPane.setText("Test");
-        jScrollPane1.setViewportView(editorPane);
-
-        editorSplitPanel.setRightComponent(jScrollPane1);
+        editorSplitPanel.setRightComponent(specificationTabPanel);
 
         fileMenu.setText("File");
 
@@ -159,11 +159,13 @@ public class TozeEditor extends javax.swing.JFrame
 
                 Specification specification = new Specification(specificationFile.getName(), toze);
                 treeModel.addSpecification(specification);
+                specificationTabPanel.addTab(specification.getFilename(), new TozeTextArea("Foo"));
                 }
             catch (Exception e)
                 {
                 JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
                 }
+            
             }
     }//GEN-LAST:event_openSpecification
 
@@ -186,7 +188,10 @@ public class TozeEditor extends javax.swing.JFrame
                 if (treePath.getPathCount() == 2) // the number of path items in selected spec node
                     {
                     SpecificationNode specificationNode = (SpecificationNode)treePath.getLastPathComponent();
-                    treeModel.removeSpecification(specificationNode.getSpecification());
+                    Specification specification = specificationNode.getSpecification();
+                    treeModel.removeSpecification(specification);
+                    int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+                    specificationTabPanel.removeTabAt(tabIndex);
                     }
                 }        
             }
@@ -249,13 +254,13 @@ public class TozeEditor extends javax.swing.JFrame
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem closeSpecificationMenu;
-    private javax.swing.JEditorPane editorPane;
     private javax.swing.JSplitPane editorSplitPanel;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openSpecificationMenu;
+    private javax.swing.JTabbedPane specificationTabPanel;
     private javax.swing.JTree specificationTree;
     // End of variables declaration//GEN-END:variables
 }
