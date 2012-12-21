@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
+import edu.uwlax.toze.objectz.Spec;
 import edu.uwlax.toze.objectz.TozeTextArea;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.TOZE;
@@ -37,13 +38,12 @@ public class TozeEditor extends javax.swing.JFrame
     //    b) warning dialog and find the file
     //    c) no warning dialog but display in the list as an error
     private SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("ROOT"));
-
     /**
      * Keep track of the last directory the user visited when opening
      * or saving a specification file.
      */
     private String previousDirectoryUsed = null;
-    
+
     /**
      * Creates new form TozeEditor
      */
@@ -57,7 +57,7 @@ public class TozeEditor extends javax.swing.JFrame
     {
         return treeModel;
     }
-    
+
     /**
      * This method is called from within the constructor to
      * initialize the form.
@@ -159,13 +159,19 @@ public class TozeEditor extends javax.swing.JFrame
 
                 Specification specification = new Specification(specificationFile.getName(), toze);
                 treeModel.addSpecification(specification);
-                specificationTabPanel.addTab(specification.getFilename(), new TozeTextArea("Foo"));
+                SpecificationController controller = new SpecificationController(toze);
+                TozeTextArea textArea = new TozeTextArea(specification.getFilename());
+                SpecificationView view = new SpecificationView(controller, textArea);
+                specificationTabPanel.addTab(specification.getFilename(), view);
+
+                int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+                specificationTabPanel.setSelectedIndex(tabIndex);
                 }
             catch (Exception e)
                 {
                 JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
                 }
-            
+
             }
     }//GEN-LAST:event_openSpecification
 
@@ -177,7 +183,7 @@ public class TozeEditor extends javax.swing.JFrame
         // @TODO: did you realy want to . . . ?
         TreePath[] selectedPaths = specificationTree.getSelectionPaths();
         List<TreePath> treePathList = Arrays.asList(selectedPaths);
-        
+
         // @TODO List the specifications being closed
         int state = JOptionPane.showConfirmDialog(this, "Close the selected specifications?", "Confirm Close", JOptionPane.YES_NO_OPTION);
 
@@ -187,13 +193,13 @@ public class TozeEditor extends javax.swing.JFrame
                 {
                 if (treePath.getPathCount() == 2) // the number of path items in selected spec node
                     {
-                    SpecificationNode specificationNode = (SpecificationNode)treePath.getLastPathComponent();
+                    SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
                     Specification specification = specificationNode.getSpecification();
                     treeModel.removeSpecification(specification);
                     int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
                     specificationTabPanel.removeTabAt(tabIndex);
                     }
-                }        
+                }
             }
     }//GEN-LAST:event_closeSpecification
 

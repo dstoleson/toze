@@ -1,5 +1,6 @@
 package edu.uwlax.toze.objectz;
 
+import edu.uwlax.toze.editor.TozeLayout;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
