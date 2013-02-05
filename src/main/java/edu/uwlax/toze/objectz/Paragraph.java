@@ -15,21 +15,21 @@ import javax.swing.JPanel;
 public class Paragraph extends JPanel
         implements TozeTypeCheckerListenerX
 {
-    int m_width = 400;
-    int m_height = 400;
-    int m_typeWidth = 10;
-    int m_typeMargin = 5;
-    int m_xParagraph = m_typeWidth + m_typeMargin;
-    String m_message = "No Paint";
-    boolean m_failedCheck = false;
-    KeyListener m_keyListener = null;
-    int HMargin = 5;
-    int VMargin = 5;
-    String m_typeName = "Undefined";
-    ComponentListener m_componentListener = null;
-    MouseListener m_mouseListener = null;
-    List m_typeErrorIds = new ArrayList();
-    TozeTypeCheckerListenerX m_ttclOverride = null;
+    protected int m_width = 400;
+    protected int m_height = 400;
+    protected int m_typeWidth = 10;
+    protected int m_typeMargin = 5;
+    protected int m_xParagraph = m_typeWidth + m_typeMargin;
+    protected String m_message = "No Paint";
+    protected boolean m_failedCheck = false;
+    protected KeyListener m_keyListener = null;
+    protected int HMargin = 5;
+    protected int VMargin = 5;
+    protected String m_typeName = "Undefined";
+    protected ComponentListener m_componentListener = null;
+    protected MouseListener m_mouseListener = null;
+    protected List m_typeErrorIds = new ArrayList();
+    protected TozeTypeCheckerListenerX m_ttclOverride = null;
 
     public Paragraph()
     {

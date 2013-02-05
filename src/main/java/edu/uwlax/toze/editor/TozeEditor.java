@@ -1,10 +1,9 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
-import edu.uwlax.toze.objectz.Spec;
-import edu.uwlax.toze.objectz.TozeTextArea;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.TOZE;
+import java.awt.FileDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -143,11 +143,16 @@ public class TozeEditor extends javax.swing.JFrame
 
     private void openSpecification(java.awt.event.ActionEvent evt)//GEN-FIRST:event_openSpecification
     {//GEN-HEADEREND:event_openSpecification
-        JFileChooser fileChooser = new JFileChooser(previousDirectoryUsed);
-        int state = fileChooser.showOpenDialog(this);
-        if (state == JFileChooser.APPROVE_OPTION)
+        FileDialog fileDialog = new FileDialog(this, "Open Specification", FileDialog.LOAD);
+//        JFileChooser fileChooser = new JFileChooser(previousDirectoryUsed);
+//        int state = fileChooser.showOpenDialog(this);
+//        if (state == JFileChooser.APPROVE_OPTION)
+        
+        fileDialog.show();
+        
+        if (fileDialog.getFile() != null)
             {
-            File specificationFile = fileChooser.getSelectedFile();
+            File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
             previousDirectoryUsed = specificationFile.getAbsolutePath();
 
             try
@@ -160,10 +165,13 @@ public class TozeEditor extends javax.swing.JFrame
                 Specification specification = new Specification(specificationFile.getName(), toze);
                 treeModel.addSpecification(specification);
                 SpecificationController controller = new SpecificationController(toze);
-                TozeTextArea textArea = new TozeTextArea(specification.getFilename());
-                SpecificationView view = new SpecificationView(controller, textArea);
-                specificationTabPanel.addTab(specification.getFilename(), view);
+                SpecificationView specView = new SpecificationView(controller);
+                specView.addMouseListener(specView);
 
+                JScrollPane specScroller = new JScrollPane(specView);
+                
+                specificationTabPanel.addTab(specification.getFilename(), specScroller);
+                
                 int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
                 specificationTabPanel.setSelectedIndex(tabIndex);
                 }

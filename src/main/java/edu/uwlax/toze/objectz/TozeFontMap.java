@@ -8,7 +8,7 @@ public class TozeFontMap
 {
     static private Font m_font = null;
 
-    static Font getFont()
+    static public Font getFont()
     {
         if (m_font != null)
             {

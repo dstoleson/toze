@@ -16,9 +16,7 @@ public class SpecParagraph extends JPanel
     Component m_component = null;
     Paragraph m_paragraph = null;
 
-    ;
-   
-   public SpecParagraph(Component c)
+    public SpecParagraph(Component c)
     {
         m_component = c;
         setBackground(Color.white);

@@ -880,4 +880,4 @@ public class TozeTokenizer
 
         return new TozeToken(tokenId, m_current.toString(), pos - m_lineStart, m_lineNum);
     }
-};
+}
