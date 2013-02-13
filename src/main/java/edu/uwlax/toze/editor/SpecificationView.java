@@ -1,238 +1,125 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeChars;
-import edu.uwlax.toze.objectz.TozeFontMap;
 import edu.uwlax.toze.spec.AbbreviationDef;
 import edu.uwlax.toze.spec.AxiomaticDef;
 import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.Operation;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
 public class SpecificationView extends JPanel implements MouseListener
 {
     private SpecificationController controller;
+    List<AxiomaticView> axiomaticDefViews;
+    List<AbbreviationView> abbreviationViews;
+    List<BasicTypeView> basicTypeViews;
+    List<ClassView> classViews;
     
-    public SpecificationView(SpecificationController controller)
+    SpecificationView(SpecificationController controller)
     {
-        System.out.println("ENTER: SpecificationView(SpecificationController, String)");
-        System.out.println("controller = " + controller);
-        
+        super();
+
         this.controller = controller;
-        System.out.println("EXIT: SpecificationView(SpecificationController, String)");
+        TOZE spec = controller.specification;
+
+        axiomaticDefViews = new ArrayList<AxiomaticView>();
+        
+        if (!spec.getAxiomaticDef().isEmpty())
+            {
+            for (AxiomaticDef axiomaticDef : spec.getAxiomaticDef())
+                {
+                AxiomaticView axiomaticDefView = new AxiomaticView(axiomaticDef);
+                add(axiomaticDefView);
+                axiomaticDefViews.add(axiomaticDefView);
+                }
+            }
+
+        abbreviationViews = new ArrayList<AbbreviationView>();
+        
+        if (!spec.getAbbreviationDef().isEmpty())
+            {
+            for (AbbreviationDef abbreviationDef : spec.getAbbreviationDef())
+                {
+                AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef);
+                add(abbreviationView);
+                abbreviationViews.add(abbreviationView);
+                }
+            }
+        
+        basicTypeViews = new ArrayList<BasicTypeView>();
+        
+        if (!spec.getBasicTypeDef().isEmpty())
+            {
+            for (BasicTypeDef basicTypeDef : spec.getBasicTypeDef())
+                {
+                BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
+                add(basicTypeView);
+                basicTypeViews.add(basicTypeView);
+                }
+            }
+        
+        if (!spec.getFreeTypeDef().isEmpty())
+            {
+            
+            }
+        
+        classViews = new ArrayList<ClassView>();
+
+        if (!spec.getClassDef().isEmpty())
+            {
+            for (ClassDef classDef : spec.getClassDef())
+                {
+                ClassView classView = new ClassView(classDef);
+                add(classView);
+                classViews.add(classView);
+                }
+            }
     }
 
     @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
-        setBackground(Color.white);
-        setFont(TozeFontMap.getFont());
-        
+        setBackground(Color.WHITE);
+        setForeground(Color.BLACK);
+
         super.paint(g);
 
-        int x = 10;
-        int y = 10;
-        
-        TOZE spec = controller.specification;
-        
-
-        if (!spec.getAxiomaticDef().isEmpty())
-            {
-            for (AxiomaticDef axiomaticDef : spec.getAxiomaticDef())
-                {
-
-                if (axiomaticDef.getDeclaration() != null)
-                    {
-                    g.drawString(axiomaticDef.getDeclaration(), x, y);
-                    y += 20;
-                    }
-                if (axiomaticDef.getPredicate() != null) 
-                    {
-                    g.drawString(axiomaticDef.getPredicate(), x, y);
-                    y += 20;                        
-                    }
-                }
-            y += 20;
-            }
-
-        if (!spec.getAbbreviationDef().isEmpty())
-            {
-            for (AbbreviationDef abbreviationDef : spec.getAbbreviationDef())
-                {
-                if (abbreviationDef.getName() != null)
-                    {
-                    g.drawString(abbreviationDef.getName(), x, y);
-                    y += 20;
-                    }
-                if (abbreviationDef.getExpression() != null) 
-                    {
-                    g.drawString(abbreviationDef.getExpression(), x, y);
-                    y += 20;                        
-                    }
-                }
-            y += 20;
-            }
-
-        if (!spec.getFreeTypeDef().isEmpty())
-            {
-            for (FreeTypeDef freeTypeDef : spec.getFreeTypeDef())
-                {
-                if (freeTypeDef.getDeclaration() != null)
-                    {
-                    g.drawString(freeTypeDef.getDeclaration() + " ::= " + freeTypeDef.getPredicate(), x, y);
-                    y += 20;
-                    }
-                }
-            y += 20;
-            }
-
-        if (!spec.getBasicTypeDef().isEmpty())
-            {
-            for (BasicTypeDef basicTypeDef : spec.getBasicTypeDef())
-                {
-                g.drawString(basicTypeDef.getName(), x, y);
-                y += 20;
-                }
-            y += 20;
-            }
-
-
-        List<ClassDef> classDefs = controller.specification.getClassDef();
-        
-        for (ClassDef classDef : classDefs)
-            {
-                g.drawString(classDef.getName(), x, y);
-                // need to get the size of the font and do an offset
-                y += 40;
-
-                if (classDef.getState() != null)
-                    {
-                    if (classDef.getState().getPredicate() != null)
-                        {
-                        g.drawString(classDef.getState().getPredicate(), x, y);
-                        y += 20;
-                        }
-                    }
-                
-                if (!classDef.getAxiomaticDef().isEmpty())
-                    {
-                    for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
-                        {
-
-                        if (axiomaticDef.getDeclaration() != null)
-                            {
-                            g.drawString(axiomaticDef.getDeclaration(), x, y);
-                            y += 20;
-                            }
-                        if (axiomaticDef.getPredicate() != null) 
-                            {
-                            g.drawString(axiomaticDef.getPredicate(), x, y);
-                            y += 20;                        
-                            }
-                        }
-                    y += 20;
-                    }
-                
-                if (!classDef.getAbbreviationDef().isEmpty())
-                    {
-                    for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
-                        {
-
-                        if (abbreviationDef.getName() != null)
-                            {
-                            g.drawString(abbreviationDef.getName(), x, y);
-                            y += 20;
-                            }
-                        if (abbreviationDef.getExpression() != null) 
-                            {
-                            g.drawString(abbreviationDef.getExpression(), x, y);
-                            y += 20;                        
-                            }
-                        }
-                    y += 20;
-                    }
-                
-                if (!classDef.getFreeTypeDef().isEmpty())
-                    {
-                    for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
-                        {
-
-                        if (freeTypeDef.getDeclaration() != null)
-                            {
-                            g.drawString(freeTypeDef.getDeclaration(), x, y);
-                            y += 20;
-                            }
-                        if (freeTypeDef.getPredicate() != null) 
-                            {
-                            g.drawString(freeTypeDef.getPredicate(), x, y);
-                            y += 20;                        
-                            }
-                        }
-                    y += 20;
-                    }
-
-                if (!classDef.getBasicTypeDef().isEmpty())
-                    {
-                    for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
-                        {
-                        g.drawString(basicTypeDef.getName(), x, y);
-                        y += 20;
-                        }                
-                    y += 20;
-                    }
-                          
-                y += 20;
-
-                for (Operation operation : classDef.getOperation())
-                    {
-                    if (operation.getName() != null)
-                        {
-                        g.drawString(operation.getName(), x + 20, y);
-                        y += 20;
-                        }
-
-                    if (operation.getDeltaList() != null)
-                        {
-                        g.drawString(TozeFontMap.CHAR_DELTA + "(" + operation.getDeltaList() + ")", x + 40, y);
-                        y += 20;
-                        }
-
-                    if (operation.getDeclaration() != null)
-                        {
-                        g.drawString(operation.getDeclaration(), x + 40, y);
-                        y += 20;                            
-                        }
-
-                    if (operation.getPredicate() != null)
-                        {
-                        g.drawString(operation.getPredicate(), x + 40, y);
-                        y += 20;
-                        }
-
-                    if (operation.getOperationExpression() != null)
-                        {
-                        g.drawString(operation.getOperationExpression(), x + 40, y);
-                        y += 20;                            
-                        }
-                    y += 20;
-                    }
-            y += 20;
-            }
     }
-    
+
+    @Override
+    public Dimension getPreferredSize()
+    {
+        Dimension d = new Dimension();
+
+        for (ClassView classView : classViews)
+            {
+            d.height += classView.getPreferredSize().height;
+
+            if (d.width < classView.getPreferredSize().width)
+                {
+                d.width = classView.getPreferredSize().width;
+                }
+            }
+
+        d.width += 5 * 2;
+        d.height += 5 * (classViews.size() + 10);
+
+        return d;
+    }
+
     private void printMouseEvent(MouseEvent me)
     {
         System.out.println("X: " + me.getX());
         System.out.println("Y: " + me.getY());
     }
-    
+
     public void mouseClicked(MouseEvent me)
     {
         printMouseEvent(me);

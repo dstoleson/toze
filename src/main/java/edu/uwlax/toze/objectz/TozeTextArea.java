@@ -117,15 +117,15 @@ public class TozeTextArea extends JTextArea
          * a border which would look cluttered.
          */
 
-        if (m_bColor == null)
-            {
-            m_bColor = new Color((float) 0.90, (float) 0.90, (float) 0.90);
-            }
-        if (m_errorBColor == null)
-            {
-            m_errorBColor = new Color((float) 0.9, (float) 0.7, (float) 0.7);
-            }
-        setBackground(m_bColor);
+//        if (m_bColor == null)
+//            {
+//            m_bColor = new Color((float) 0.90, (float) 0.90, (float) 0.90);
+//            }
+//        if (m_errorBColor == null)
+//            {
+//            m_errorBColor = new Color((float) 0.9, (float) 0.7, (float) 0.7);
+//            }
+//        setBackground(m_bColor);
     }
 
     @Override
@@ -271,7 +271,7 @@ public class TozeTextArea extends JTextArea
             }
         else
             {
-            setBackground(m_bColor);
+            setBackground(Color.WHITE);
             }
 
         super.paint(g);
