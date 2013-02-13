@@ -7,16 +7,12 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
-import javax.swing.JPanel;
 
-public class StateView extends JPanel implements Placement
+public class StateView extends ParagraphView
 {
     static private final int StateContentOffset = 10;
     static private final int StateLineMargin = 5;
     static private final int StateExtraLine = 10;
-    static private final int InterVMargin = 5;
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     static final String m_pre = "[";
     static final String m_post = "]";
@@ -53,6 +49,7 @@ public class StateView extends JPanel implements Placement
             }
     }
     
+    @Override
     public void layout()
     {
         Insets insets = getInsets();
@@ -95,6 +92,7 @@ public class StateView extends JPanel implements Placement
             }
     }
     
+    @Override
     public Dimension preferredSize()
     {
         Graphics g = getGraphics();
@@ -167,28 +165,26 @@ public class StateView extends JPanel implements Placement
         return new Dimension(width, height);
     }
     
+    @Override
     public Dimension minimumSize()
     {
         //return new Dimension(100, 100);
         return preferredSize();
     }
     
+    @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
         setBackground(Color.WHITE);
 
         super.paint(g);
         
-        int xoffset = 0;
-        int yoffset = 0;
+        int xoffset = HMargin;
+        int yoffset = VMargin;
         Dimension d;
-        int y = 0;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
-        
-        xoffset += HMargin;
-        yoffset += VMargin;
         
         g.setColor(Color.BLACK);
         

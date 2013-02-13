@@ -7,16 +7,12 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
-import javax.swing.JPanel;
 
-public class AxiomaticView extends JPanel implements Placement
+public class AxiomaticView extends ParagraphView
 {
     static private final int AxContentOffset = 10;
     static private final int AxLineMargin = 5;
     static private final int AxExtraLine = 10;
-    static private final int InterVMargin = 5;
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     private AxiomaticDef axiomaticDef;
     //
@@ -77,17 +73,8 @@ public class AxiomaticView extends JPanel implements Placement
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Insets insets = getInsets();
-        int width = 0;
-        int height = 0;
-
-        height = InterVMargin;
-
-        height += VMargin * 2;
-        width += HMargin * 2;
-
-        /*
-         * Declaration
-         */
+        int width = HMargin * 2;
+        int height = InterVMargin + VMargin * 2;
 
         d = declarationText.getPreferredSize();
         if ((d.width + AxContentOffset) > width)
@@ -95,7 +82,6 @@ public class AxiomaticView extends JPanel implements Placement
             width = d.width + AxContentOffset;
             }
         height += d.height + InterVMargin;
-
 
         if (predicateText != null)
             {
@@ -129,19 +115,16 @@ public class AxiomaticView extends JPanel implements Placement
 
         super.paint(g);
 
-        int xoffset = 0;
-        int yoffset = 0;
         Insets insets = getInsets();
         Dimension d;
-        int y = 0;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
 
         g.setColor(Color.BLACK);
 
-        xoffset = insets.left + HMargin;
-        yoffset = insets.top + VMargin;
+        int xoffset = insets.left + HMargin;
+        int yoffset = insets.top + VMargin;
 
         d = declarationText.getPreferredSize();
         declsHeight += d.height + InterVMargin;

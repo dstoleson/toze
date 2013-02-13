@@ -7,13 +7,10 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
-import javax.swing.JPanel;
 
-public class AbbreviationView extends JPanel implements Placement
+public class AbbreviationView extends ParagraphView
 {
     static final String AbbreviationMid = " == ";
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     private AbbreviationDef abbreviationDef;
     //
@@ -93,17 +90,14 @@ public class AbbreviationView extends JPanel implements Placement
 
         super.paint(g);
 
-        int xoffset = 0;
-        int yoffset = 0;
         Dimension d;
-        int y = VMargin;
         FontMetrics fm = g.getFontMetrics();
 
         g.setColor(Color.BLACK);
 
         d = nameText.getPreferredSize();
-        xoffset = d.width + HMargin;
-        yoffset = (fm.getHeight() - fm.getDescent()) + VMargin;
+        int xoffset = d.width + HMargin;
+        int yoffset = (fm.getHeight() - fm.getDescent()) + VMargin;
         g.drawString(AbbreviationMid, xoffset, yoffset);
     }
 }

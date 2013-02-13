@@ -8,9 +8,8 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
-import javax.swing.JPanel;
 
-public class InitialStateView extends JPanel implements Placement
+public class InitialStateView extends ParagraphView
 {
     static private final int InitOffset = 10;
     static private final int InitLineMargin = 5;
@@ -18,9 +17,6 @@ public class InitialStateView extends JPanel implements Placement
     static private final int StateContentOffset = 10;
     static private final int StateLineMargin = 5;
     static private final int StateExtraLine = 10;
-    static private final int InterVMargin = 5;
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     static private final String m_init = "Init";
     static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
@@ -135,16 +131,11 @@ public class InitialStateView extends JPanel implements Placement
 
         super.paint(g);
 
-        int xoffset = 0;
-        int yoffset = 0;
         Dimension d;
         int y = 0;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
-
-        xoffset += HMargin;
-        yoffset += VMargin;
 
         g.setColor(Color.BLACK);
 
@@ -156,22 +147,22 @@ public class InitialStateView extends JPanel implements Placement
 //            }
 //        else
 //            {
-            g.drawLine(xoffset,
-                       yoffset + fm.getHeight() - InitLineMargin,
-                       xoffset + InitOffset,
-                       yoffset + fm.getHeight() - InitLineMargin);
+            g.drawLine(HMargin,
+                       VMargin + fm.getHeight() - InitLineMargin,
+                       HMargin + InitOffset,
+                       VMargin + fm.getHeight() - InitLineMargin);
             g.drawString(m_init,
-                         xoffset + InitOffset + InitSpace,
-                         yoffset + (fm.getHeight() - fm.getDescent()));
-            g.drawLine(xoffset + InitOffset + InitSpace + fm.stringWidth(m_init) + InitSpace,
-                       yoffset + fm.getHeight() - InitLineMargin,
+                         HMargin + InitOffset + InitSpace,
+                         VMargin + (fm.getHeight() - fm.getDescent()));
+            g.drawLine(HMargin + InitOffset + InitSpace + fm.stringWidth(m_init) + InitSpace,
+                       VMargin + fm.getHeight() - InitLineMargin,
                        cd.width - 1 - HMargin,
-                       yoffset + fm.getHeight() - InitLineMargin);
-            g.drawLine(xoffset,
-                       yoffset + fm.getHeight() - InitLineMargin,
-                       xoffset,
+                       VMargin + fm.getHeight() - InitLineMargin);
+            g.drawLine(HMargin,
+                       VMargin + fm.getHeight() - InitLineMargin,
+                       HMargin,
                        cd.height - 1 - VMargin);
-            g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
+            g.drawLine(HMargin, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
 // type == 2           }
     }
 }

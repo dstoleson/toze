@@ -12,23 +12,19 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import javax.swing.JPanel;
 
 /**
  * Display an Object-Z class and all its components.
  *
  * @author dhs
  */
-public class ClassView extends JPanel implements Placement
+public class ClassView extends ParagraphView
 {
     static final private int ClassNameOffset = 10;
     static final private int ClassNameLineMargin = 5;
     static final private int ClassNameSpace = 5;
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
-    static final private int InterVMargin = 5;
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     private ClassDef classDef;
     private TozeTextArea classNameText;
@@ -227,7 +223,6 @@ public class ClassView extends JPanel implements Placement
     public void layout()
     {
         Insets insets = getInsets();
-        Graphics g = getGraphics();
 
 //      FontMetrics fm       = g.getFontMetrics();
 //      Enumeration elements;
@@ -237,10 +232,8 @@ public class ClassView extends JPanel implements Placement
 //      int maxHeight = getHeight()
 //                      - (insets.top + insets.bottom);
 
-        int x = insets.left, y = insets.top;
-
-        x += HMargin;
-        y += VMargin;
+        int x = insets.left + HMargin;
+        int y = insets.top + VMargin;
 
         Dimension d = classNameText.getPreferredSize();
         classNameText.setBounds(x + ClassNameOffset + ClassNameSpace, y, d.width, d.height);

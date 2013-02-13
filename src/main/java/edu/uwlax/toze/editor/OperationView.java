@@ -8,13 +8,12 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
-import javax.swing.JPanel;
 
 /**
  *
  * @author dhs
  */
-public class OperationView extends JPanel implements Placement
+public class OperationView extends ParagraphView
 {
     static final private String OperationMid = " " + TozeFontMap.CHAR_DEFS + " ";
     static final private String DeltaPre = TozeFontMap.CHAR_DELTA + "(";
@@ -26,9 +25,6 @@ public class OperationView extends JPanel implements Placement
     static final private int OperationLineMargin = 5;
     static final private int OperationExtraLine = 10;
     static final private int OperationHeaderLineMargin = 5;
-    static final private int InterVMargin = 5;
-    static final private int HMargin = 5;
-    static final private int VMargin = 5;
     //
     private TozeTextArea operationNameText;
     private TozeTextArea deltaListText;
@@ -241,16 +237,13 @@ public class OperationView extends JPanel implements Placement
 
         super.paint(g);
 
-        int xoffset = 0;
-        int yoffset = 0;
         Dimension d;
-        int y = 0;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
 
-        xoffset += HMargin;
-        yoffset += VMargin;
+        int xoffset = HMargin;
+        int yoffset = VMargin;
 
         g.setColor(Color.BLACK);
 
