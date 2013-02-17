@@ -6,6 +6,7 @@ import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.GenericDef;
+import edu.uwlax.toze.spec.InheritedClass;
 import edu.uwlax.toze.spec.InitialState;
 import edu.uwlax.toze.spec.Operation;
 import edu.uwlax.toze.spec.SchemaDef;
@@ -57,7 +58,6 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             ClassDef classDef = (ClassDef) target;
             classDef.setName(XMLToCharTransformer.transform(classDef.getName()));
             classDef.setVisibilityList(XMLToCharTransformer.transform(classDef.getVisibilityList()));
-            classDef.setInheritedClass(XMLToCharTransformer.transform(classDef.getInheritedClass()));
             }
         else if (target instanceof FreeTypeDef)
             {
@@ -71,6 +71,11 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             genericDef.setFormalParameters(XMLToCharTransformer.transform(genericDef.getFormalParameters()));
             genericDef.setDeclaration(XMLToCharTransformer.transform(genericDef.getDeclaration()));
             genericDef.setPredicate(XMLToCharTransformer.transform(genericDef.getPredicate()));
+            }
+        else if (target instanceof InheritedClass)
+            {
+            InheritedClass inheritedClass = (InheritedClass) target;
+            inheritedClass.setName(XMLToCharTransformer.transform(inheritedClass.getName()));
             }
         else if (target instanceof InitialState)
             {

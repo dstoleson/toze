@@ -175,8 +175,6 @@ public class StateView extends ParagraphView
     @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
         
         int xoffset = HMargin;
@@ -217,7 +215,6 @@ public class StateView extends ParagraphView
                 g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
                 g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
                 }
-            
             }
     }
 }

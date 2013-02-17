@@ -28,8 +28,8 @@ public class ClassView extends ParagraphView
     //
     private ClassDef classDef;
     private TozeTextArea classNameText;
-    private TozeTextArea visibilityListText;
-    private TozeTextArea inheritedClassText;
+    private VisibilityListView visibilityListView;
+    private InheritedClassView inheritedClassView;
     private List locals;
     private StateView stateView;
     private InitialStateView initialStateView;
@@ -40,13 +40,12 @@ public class ClassView extends ParagraphView
         super();
 
         this.classDef = classDef;
-
         this.setLayout(new ParaLayout(this));
 
         if (classDef.getInheritedClass() != null)
             {
-            this.inheritedClassText = new TozeTextArea(classDef.getInheritedClass());
-            add(inheritedClassText);
+            this.inheritedClassView = new InheritedClassView(classDef.getInheritedClass());
+            add(inheritedClassView);
             }
 
 //        this.localVariablesText = new TozeTextArea("");
@@ -56,8 +55,8 @@ public class ClassView extends ParagraphView
 
         if (classDef.getVisibilityList() != null)
             {
-            this.visibilityListText = new TozeTextArea(TozeFontMap.CHAR_PROJECT + "( " + classDef.getVisibilityList() + " )");
-            add(visibilityListText);
+            visibilityListView = new VisibilityListView(classDef.getVisibilityList());
+            add(visibilityListView);
             }
 
         if (classDef.getState() != null)
@@ -85,8 +84,6 @@ public class ClassView extends ParagraphView
     @Override
     public void paint(Graphics g)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
 
         int xoffset = 0;
@@ -139,9 +136,9 @@ public class ClassView extends ParagraphView
             height += d.height + InterVMargin;
             }
 
-        if (visibilityListText != null)
+        if (visibilityListView != null)
             {
-            d = visibilityListText.getPreferredSize();
+            d = visibilityListView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -150,9 +147,9 @@ public class ClassView extends ParagraphView
             height += d.height + InterVMargin;
             }
 
-        if (inheritedClassText != null)
+        if (inheritedClassView != null)
             {
-            d = inheritedClassText.getPreferredSize();
+            d = inheritedClassView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -239,17 +236,17 @@ public class ClassView extends ParagraphView
         classNameText.setBounds(x + ClassNameOffset + ClassNameSpace, y, d.width, d.height);
         y += d.height + InterVMargin;
 
-        if (visibilityListText != null)
+        if (visibilityListView != null)
             {
-            d = visibilityListText.getPreferredSize();
-            visibilityListText.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            d = visibilityListView.getPreferredSize();
+            visibilityListView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
-        if (inheritedClassText != null)
+        if (inheritedClassView != null)
             {
-            d = inheritedClassText.getPreferredSize();
-            inheritedClassText.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            d = inheritedClassView.getPreferredSize();
+            inheritedClassView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 //

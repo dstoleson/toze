@@ -36,7 +36,7 @@
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="visibilityList" type="xs:string"/>
-            <xs:element name="inheritedClass" type="xs:string"/>
+            <xs:element name="inheritedClass" type="InheritedClass" minOccurs="0" maxOccurs="1"/>
             <xs:element name="basicTypeDef" type="BasicTypeDef" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="axiomaticDef" type="AxiomaticDef" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="abbreviationDef" type="AbbreviationDef" minOccurs="0" maxOccurs="unbounded"/>
@@ -58,6 +58,11 @@
             <xs:element name="declaration" type="xs:string"/>
             <xs:element name="predicate" type="xs:string"/>
         </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="InheritedClass">
+      <xs:sequence>
+	<xs:element name="name" type="xs:string"/>
+      </xs:sequence>
     </xs:complexType>
     <xs:complexType name="InitialState">
         <xs:sequence>

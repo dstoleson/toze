@@ -233,8 +233,6 @@ public class OperationView extends ParagraphView
     @Override
     public void paint(Graphics g)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
 
         Dimension d;

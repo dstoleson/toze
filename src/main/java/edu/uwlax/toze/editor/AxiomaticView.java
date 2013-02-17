@@ -111,8 +111,6 @@ public class AxiomaticView extends ParagraphView
     @Override
     public void paint(Graphics g)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
 
         Insets insets = getInsets();
@@ -133,7 +131,6 @@ public class AxiomaticView extends ParagraphView
         yoffset += declsHeight + InterVMargin;
 
 
-        if (predicateText != null)
             {
             g.drawLine(xoffset, yoffset, xoffset + cd.width - 1, yoffset);
             g.drawLine(xoffset, yoffset, xoffset, cd.height - VMargin);

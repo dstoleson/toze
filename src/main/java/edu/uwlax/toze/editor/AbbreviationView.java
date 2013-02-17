@@ -86,8 +86,6 @@ public class AbbreviationView extends ParagraphView
     @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
 
         Dimension d;

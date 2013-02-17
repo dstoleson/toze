@@ -71,8 +71,6 @@ public class BasicTypeView extends ParagraphView
     @Override
     public void paint(Graphics g)
     {
-        setBackground(Color.WHITE);
-
         super.paint(g);
 
         Dimension cnd = nameText.getPreferredSize();
