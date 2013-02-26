@@ -1,41 +1,14 @@
 package edu.uwlax.toze.objectz;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.io.*;
+import java.awt.Font;
+import java.awt.geom.AffineTransform;
+import java.io.InputStream;
+import java.util.HashMap;
+//import java.util.ArrayList;
+//import java.util.List;
 
 public class TozeFontMap
 {
-    static private Font m_font = null;
-
-    static public Font getFont()
-    {
-        if (m_font != null)
-            {
-            return m_font;
-            }
-
-        try
-            {
-            InputStream fontStream = TozeFontMap.class.getResourceAsStream("zfont.ttf");
-            m_font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-
-            AffineTransform at = new AffineTransform();
-            at.setToScale(20.0, 20.0);
-            AffineTransform at2 = new AffineTransform();
-            at2.setToTranslation(0.0, 0.15);
-            at.concatenate(at2);
-
-            m_font = m_font.deriveFont(at);
-            }
-        catch (Exception e)
-            {
-            System.out.println(e.toString());
-            }
-
-        return m_font;
-    }
-    
     public static final char CHAR_SUPER_MINUS_1 = 160;
     public static final char CHAR_POWER = 161;
     public static final char CHAR_FINSET = 162;
@@ -114,4 +87,47 @@ public class TozeFontMap
     public static final char CHAR_BOX = 339;
     public static final char CHAR_RHARPOON = 204;
     public static final char CHAR_SMALLBANG = 8250;
+    static private Font font;
+    static private HashMap<Float, Font> sizeToFont = new HashMap<Float, Font>();
+
+    static public Font getFont(float size)
+    {
+        Font foundFont = null;
+        
+        if (font == null)
+            {
+            try
+                {
+                InputStream fontStream = TozeFontMap.class.getResourceAsStream("zfont.ttf");
+                font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                }
+            catch (Exception e)
+                {
+                System.out.println(e.toString());
+                }
+            }
+        
+        foundFont = sizeToFont.get(size);
+
+        if (foundFont != null)
+            {
+            return foundFont;
+            }
+
+        AffineTransform at = new AffineTransform();
+        at.setToScale(size, size);
+        AffineTransform at2 = new AffineTransform();
+        at2.setToTranslation(0.0, 0.15);
+        at.concatenate(at2);
+
+        foundFont = font.deriveFont(at);
+        sizeToFont.put(size, foundFont);
+    
+        return foundFont;
+    }
+
+    static public Font getFont()
+    {
+        return getFont(20.0f);
+    }
 }

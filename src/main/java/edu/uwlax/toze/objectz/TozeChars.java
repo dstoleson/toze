@@ -4,6 +4,7 @@ import java.util.*;
 
 public class TozeChars
 {
+    public static Set<TozeCharMap> all;
     public static TreeMap m_map = null;
     int m_pos;
 

@@ -15,9 +15,9 @@ import java.awt.Insets;
  */
 public class OperationView extends ParagraphView
 {
+    static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
+    static final String DeltaListPost = ")";
     static final private String OperationMid = " " + TozeFontMap.CHAR_DEFS + " ";
-    static final private String DeltaPre = TozeFontMap.CHAR_DELTA + "(";
-    static final private String DeltaPost = ")";
     //
     static final private int OperationName = 10;
     static final private int OperationHeaderSpace = 5;
@@ -27,7 +27,7 @@ public class OperationView extends ParagraphView
     static final private int OperationHeaderLineMargin = 5;
     //
     private TozeTextArea operationNameText;
-    private TozeTextArea deltaListText;
+    private DeltaListView deltaListView;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
     private TozeTextArea operationExpressionText;
@@ -43,8 +43,8 @@ public class OperationView extends ParagraphView
 
         if (operation.getDeltaList() != null)
             {
-            deltaListText = new TozeTextArea(operation.getDeltaList());
-            add(deltaListText);
+            deltaListView = new DeltaListView(operation.getDeltaList());
+            add(deltaListView);
             }
 
         if (operation.getDeclaration() != null)
@@ -96,10 +96,10 @@ public class OperationView extends ParagraphView
 
         y += d.height + InterVMargin;
 
-        if (deltaListText != null)
+        if (deltaListView != null)
             {
-            d = deltaListText.getPreferredSize();
-            deltaListText.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaPre), y, d.width, d.height);
+            d = deltaListView.getPreferredSize();
+            deltaListView.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaListPre), y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
@@ -169,9 +169,9 @@ public class OperationView extends ParagraphView
         /*
          * Delta List
          */
-        if (deltaListText != null)
+        if (deltaListView != null)
             {
-            d = deltaListText.getPreferredSize();
+            d = deltaListView.getPreferredSize();
             if ((d.width + OperationContentOffset) > width)
                 {
                 width = d.width + OperationContentOffset;
@@ -265,12 +265,12 @@ public class OperationView extends ParagraphView
 
         declsHeight += InterVMargin;
 
-        if (deltaListText != null)
+        if (deltaListView != null)
             {
-            d = deltaListText.getPreferredSize();
+            d = deltaListView.getPreferredSize();
             declsHeight += d.height;
-            g.drawString(DeltaPre, xoffset + OperationContentOffset, yoffset + declsHeight);
-            g.drawString(DeltaPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaPre) + d.width, yoffset + declsHeight);
+//            g.drawString(DeltaListPre, xoffset + OperationContentOffset, yoffset + declsHeight);
+//            g.drawString(DeltaListPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaListPre) + d.width, yoffset + declsHeight);
             declsHeight += InterVMargin;
             }
 
@@ -283,7 +283,7 @@ public class OperationView extends ParagraphView
         g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight + OperationLineMargin);
         yoffset += declsHeight + OperationLineMargin;
 
-        if ((deltaListText != null) || (declarationText != null))
+        if ((deltaListView != null) || (declarationText != null))
             {
             g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
             }

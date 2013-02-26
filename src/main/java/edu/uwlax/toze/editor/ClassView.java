@@ -1,8 +1,9 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeFontMap;
 import edu.uwlax.toze.objectz.TozeTextArea;
+import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
+import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.Operation;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,7 +31,8 @@ public class ClassView extends ParagraphView
     private TozeTextArea classNameText;
     private VisibilityListView visibilityListView;
     private InheritedClassView inheritedClassView;
-    private List locals;
+    private List<BasicTypeView> basicTypeViews;
+    private List<FreeTypeView> freeTypeViews;
     private StateView stateView;
     private InitialStateView initialStateView;
     private List<OperationView> operationViews;
@@ -48,7 +50,23 @@ public class ClassView extends ParagraphView
             add(inheritedClassView);
             }
 
-//        this.localVariablesText = new TozeTextArea("");
+        basicTypeViews = new ArrayList<BasicTypeView>();
+
+        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
+            {
+            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
+            add(basicTypeView);
+            basicTypeViews.add(basicTypeView);
+            }
+
+        freeTypeViews = new ArrayList<FreeTypeView>();
+
+        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
+            {
+            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
+            add(freeTypeView);
+            freeTypeViews.add(freeTypeView);
+            }
 
         this.classNameText = new TozeTextArea(classDef.getName());
         add(classNameText);
@@ -64,7 +82,7 @@ public class ClassView extends ParagraphView
             stateView = new StateView(classDef.getState());
             add(stateView);
             }
-        
+
         if (initialStateView != null)
             {
             initialStateView = new InitialStateView(classDef.getInitialState());
@@ -157,20 +175,30 @@ public class ClassView extends ParagraphView
                 }
             height += d.height + InterVMargin;
             }
-//
-//        elements = m_locals.elements();
-//        while (elements.hasMoreElements())
-//            {
-//            Paragraph p = (Paragraph) elements.nextElement();
-//            d = p.getPreferredSize(this.getGraphics());
-//            int w = ClassContentOffset + d.width + ExtraLine;
-//            if (w > width)
-//                {
-//                width = w;
-//                }
-//            height += d.height + InterVMargin;
-//            }
-//
+
+
+        for (BasicTypeView basicTypeView : basicTypeViews)
+            {
+            d = basicTypeView.getPreferredSize(this.getGraphics());
+            int w = ClassContentOffset + d.width + ExtraLine;
+            if (w > width)
+                {
+                width = w;
+                }
+            height += d.height + InterVMargin;
+            }
+
+        for (FreeTypeView freeTypeView : freeTypeViews)
+            {
+            d = freeTypeView.getPreferredSize(this.getGraphics());
+            int w = ClassContentOffset + d.width + ExtraLine;
+            if (w > width)
+                {
+                width = w;
+                }
+            height += d.height + InterVMargin;
+            }
+
         if (stateView != null)
             {
             d = stateView.getPreferredSize(this.getGraphics());
@@ -221,14 +249,6 @@ public class ClassView extends ParagraphView
     {
         Insets insets = getInsets();
 
-//      FontMetrics fm       = g.getFontMetrics();
-//      Enumeration elements;
-//      
-//      int maxWidth = getWidth()
-//                     - (insets.left + insets.right);
-//      int maxHeight = getHeight()
-//                      - (insets.top + insets.bottom);
-
         int x = insets.left + HMargin;
         int y = insets.top + VMargin;
 
@@ -249,16 +269,21 @@ public class ClassView extends ParagraphView
             inheritedClassView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
-//
-//      elements = m_locals.elements();
-//      while (elements.hasMoreElements())
-//      {
-//         Paragraph c = (Paragraph)elements.nextElement();
-//         d = c.getPreferredSize(this.getGraphics());
-//         c.setBounds(x + ClassContentOffset, y, d.width, d.height);
-//         y += d.height + InterVMargin;
-//      }
-//      
+
+        for (BasicTypeView basicTypeView : basicTypeViews)
+            {
+            d = basicTypeView.getPreferredSize(this.getGraphics());
+            basicTypeView.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            y += d.height + InterVMargin;
+            }
+
+        for (FreeTypeView freeTypeView : freeTypeViews)
+            {
+            d = freeTypeView.getPreferredSize(this.getGraphics());
+            freeTypeView.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            y += d.height + InterVMargin;
+            }
+
         if (stateView != null)
             {
             d = stateView.getPreferredSize(this.getGraphics());
