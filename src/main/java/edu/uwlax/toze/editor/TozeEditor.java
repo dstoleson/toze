@@ -157,9 +157,9 @@ public class TozeEditor extends javax.swing.JFrame
         specificationTree.setRootVisible(false);
         specificationTree.setShowsRootHandles(true);
 
-        Icon classOpenIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
-        Icon classClosedIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
-        Icon classLeafIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_orange.jpeg"));
+//        Icon classOpenIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
+//        Icon classClosedIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
+//        Icon classLeafIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_orange.jpeg"));
         
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
 //        treeCellRenderer.setOpenIcon(classOpenIcon);
