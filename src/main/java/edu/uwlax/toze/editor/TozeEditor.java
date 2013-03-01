@@ -10,15 +10,18 @@ import java.awt.FileDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
@@ -53,7 +56,7 @@ public class TozeEditor extends javax.swing.JFrame
     private javax.swing.JList specialCharsList;
     private javax.swing.JList paragraphsList;
     private javax.swing.JList errorsList;
-    
+
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
     // was closed.
@@ -153,6 +156,19 @@ public class TozeEditor extends javax.swing.JFrame
         specificationTree.setModel(this.getTreeModel());
         specificationTree.setRootVisible(false);
         specificationTree.setShowsRootHandles(true);
+
+        Icon classOpenIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
+        Icon classClosedIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
+        Icon classLeafIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_orange.jpeg"));
+        
+        DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
+//        treeCellRenderer.setOpenIcon(classOpenIcon);
+//        treeCellRenderer.setClosedIcon(classClosedIcon);
+//        treeCellRenderer.setLeafIcon(classLeafIcon);
+//        treeCellRenderer.setIcon(classOpenIcon);
+        
+        specificationTree.setCellRenderer(treeCellRenderer);
+        
         specificationTreeScrollPane.setViewportView(specificationTree);
         specialCharsScrollPane.setViewportView(specialCharsList);
         paragraphsScrollPane.setViewportView(paragraphsList);

@@ -238,53 +238,53 @@ public class Spec extends JPanel implements MouseListener,
         menu.add(item);
     }
 
-    public void addClass(TozeXml xml)
-    {
-        ParaClass p = new ParaClass(this);
-        addParagraph(p, xml);
-    }
-
-    public void addBasicType(TozeXml xml)
-    {
-        ParaBasicType p = new ParaBasicType(this);
-        addParagraph(p, xml);
-    }
-
-    public void addAbbreviation(TozeXml xml)
-    {
-        ParaAbbreviation p = new ParaAbbreviation(this);
-        addParagraph(p, xml);
-    }
-
-    public void addAxiomatic(TozeXml xml, int type)
-    {
-        ParaAxiomatic p = new ParaAxiomatic(this, type);
-        addParagraph(p, xml);
-    }
-
-    public void addGeneric(TozeXml xml, int type)
-    {
-        ParaGeneric p = new ParaGeneric(this, type);
-        addParagraph(p, xml);
-    }
-
-    public void addFreeType(TozeXml xml)
-    {
-        ParaFreeType p = new ParaFreeType(this);
-        addParagraph(p, xml);
-    }
-
+//    public void addClass(TozeXml xml)
+//    {
+//        ParaClass p = new ParaClass(this);
+//        addParagraph(p, xml);
+//    }
+//
+//    public void addBasicType(TozeXml xml)
+//    {
+//        ParaBasicType p = new ParaBasicType(this);
+//        addParagraph(p, xml);
+//    }
+//
+//    public void addAbbreviation(TozeXml xml)
+//    {
+//        ParaAbbreviation p = new ParaAbbreviation(this);
+//        addParagraph(p, xml);
+//    }
+//
+//    public void addAxiomatic(TozeXml xml, int type)
+//    {
+//        ParaAxiomatic p = new ParaAxiomatic(this, type);
+//        addParagraph(p, xml);
+//    }
+//
+//    public void addGeneric(TozeXml xml, int type)
+//    {
+//        ParaGeneric p = new ParaGeneric(this, type);
+//        addParagraph(p, xml);
+//    }
+//
+//    public void addFreeType(TozeXml xml)
+//    {
+//        ParaFreeType p = new ParaFreeType(this);
+//        addParagraph(p, xml);
+//    }
+//
     public void addSchema(TozeXml xml, int type)
     {
         ParaSchema p = new ParaSchema(this, type);
         addParagraph(p, xml);
     }
 
-    public void addPredicate(TozeXml xml)
-    {
-        ParaPredicate p = new ParaPredicate(this);
-        addParagraph(p, xml);
-    }
+//    public void addPredicate(TozeXml xml)
+//    {
+//        ParaPredicate p = new ParaPredicate(this);
+//        addParagraph(p, xml);
+//    }
 
     public void addParagraph(Paragraph p, TozeXml xml)
     {
@@ -344,7 +344,7 @@ public class Spec extends JPanel implements MouseListener,
 
         clearErrors();
 
-        parser.start("Spec");
+//        parser.start("Spec");
 
         for (Paragraph p : m_paras)
             {
@@ -357,7 +357,7 @@ public class Spec extends JPanel implements MouseListener,
                 }
             }
 
-        parser.end();
+//        parser.end();
 
         if (failed)
             {
@@ -426,39 +426,40 @@ public class Spec extends JPanel implements MouseListener,
         JMenuItem item = (JMenuItem) (e.getSource());
         text = item.getText();
 
-        if (text.equals("Add Class"))
-            {
-            addClass(null);
-            }
-        else if (text.equals("Add Basic Type Definition"))
-            {
-            addBasicType(null);
-            }
-        else if (text.equals("Add Abbreviation Definition"))
-            {
-            addAbbreviation(null);
-            }
-        else if (text.equals("Add Axiomatic Definition"))
-            {
-            addAxiomatic(null, 1);
-            }
-        else if (text.equals("Add Axiomatic Definition w/o Predicate"))
-            {
-            addAxiomatic(null, 0);
-            }
-        else if (text.equals("Add Generic Definition"))
-            {
-            addGeneric(null, 1);
-            }
-        else if (text.equals("Add Generic Definition w/o Predicate"))
-            {
-            addGeneric(null, 0);
-            }
-        else if (text.equals("Add Free Type Definition"))
-            {
-            addFreeType(null);
-            }
-        else if (text.equals("Add Schema"))
+//        if (text.equals("Add Class"))
+//            {
+//            addClass(null);
+//            }
+//        else if (text.equals("Add Basic Type Definition"))
+//            {
+//            addBasicType(null);
+//            }
+//        else if (text.equals("Add Abbreviation Definition"))
+//            {
+//            addAbbreviation(null);
+//            }
+//        else if (text.equals("Add Axiomatic Definition"))
+//            {
+//            addAxiomatic(null, 1);
+//            }
+//        else if (text.equals("Add Axiomatic Definition w/o Predicate"))
+//            {
+//            addAxiomatic(null, 0);
+//            }
+//        else if (text.equals("Add Generic Definition"))
+//            {
+//            addGeneric(null, 1);
+//            }
+//        else if (text.equals("Add Generic Definition w/o Predicate"))
+//            {
+//            addGeneric(null, 0);
+//            }
+//        else if (text.equals("Add Free Type Definition"))
+//            {
+//            addFreeType(null);
+//            }
+//        else 
+        if (text.equals("Add Schema"))
             {
             addSchema(null, 1);
             }
@@ -470,10 +471,10 @@ public class Spec extends JPanel implements MouseListener,
             {
             addSchema(null, 2);
             }
-        else if (text.equals("Add Predicate"))
-            {
-            addPredicate(null);
-            }
+//        else if (text.equals("Add Predicate"))
+//            {
+//            addPredicate(null);
+//            }
         else if (text.equals("Export as LaTex.."))
             {
             TozeLatex doc = new TozeLatex();
@@ -643,8 +644,8 @@ public class Spec extends JPanel implements MouseListener,
              * Display the list of symbols and keywords.
              */
 
-            KeywordDisplay kd = new KeywordDisplay(this);
-            kd.show();
+//            KeywordDisplay kd = new KeywordDisplay(this);
+//            kd.show();
             }
         else if (text.equals("About"))
             {
@@ -759,38 +760,39 @@ public class Spec extends JPanel implements MouseListener,
 
         while ((str = handler.nextTag("TOZE")) != null)
             {
-            if (str.equals("basicTypeDef"))
-                {
-                addBasicType(handler);
-                }
-            else if (str.equals("axiomaticDef"))
-                {
-                addAxiomatic(handler, 1);
-                }
-            else if (str.equals("genericDef"))
-                {
-                addGeneric(handler, 1);
-                }
-            else if (str.equals("abbreviationDef"))
-                {
-                addAbbreviation(handler);
-                }
-            else if (str.equals("freeTypeDef"))
-                {
-                addFreeType(handler);
-                }
-            else if (str.equals("schemaDef"))
+//            if (str.equals("basicTypeDef"))
+//                {
+//                addBasicType(handler);
+//                }
+//            else if (str.equals("axiomaticDef"))
+//                {
+//                addAxiomatic(handler, 1);
+//                }
+//            else if (str.equals("genericDef"))
+//                {
+//                addGeneric(handler, 1);
+//                }
+//            else if (str.equals("abbreviationDef"))
+//                {
+//                addAbbreviation(handler);
+//                }
+//            else if (str.equals("freeTypeDef"))
+//                {
+//                addFreeType(handler);
+//                }
+//            else 
+    if (str.equals("schemaDef"))
                 {
                 addSchema(handler, 1);
                 }
-            else if (str.equals("classDef"))
-                {
-                addClass(handler);
-                }
-            else if (str.equals("predicate"))
-                {
-                addPredicate(handler);
-                }
+//            else if (str.equals("classDef"))
+//                {
+//                addClass(handler);
+//                }
+//            else if (str.equals("predicate"))
+//                {
+//                addPredicate(handler);
+//                }
             }
 
         addedParagraph((Paragraph) m_paras.get(0),

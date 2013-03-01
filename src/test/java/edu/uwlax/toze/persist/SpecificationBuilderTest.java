@@ -17,7 +17,7 @@ public class SpecificationBuilderTest
     @Test
     public void testSpecificationBuilder() throws Exception
     {
-        InputStream inputStream = new FileInputStream("src/test/resources/testspec.toze");
+        InputStream inputStream = new FileInputStream("src/test/resources/ComputerCompany");
         SpecificationBuilder specBuilder = new SpecificationBuilder();
         TOZE toze = specBuilder.buildFromStream(inputStream);
         

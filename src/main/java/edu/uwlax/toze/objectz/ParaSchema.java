@@ -121,11 +121,11 @@ public class ParaSchema extends Paragraph implements Placement,
       super.checkSpec(p);
       if (m_schemaExpression != null)
       {
-         p.start("Schema2");
+//         p.start("Schema2");
       }
       else
       {
-         p.start("Schema1");
+//         p.start("Schema1");
       }
       p.parse_guiSchemaHeader(m_schemaHeader);     
       ret = !m_schemaHeader.failedCheck();

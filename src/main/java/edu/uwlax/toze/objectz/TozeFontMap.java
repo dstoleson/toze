@@ -128,6 +128,6 @@ public class TozeFontMap
 
     static public Font getFont()
     {
-        return getFont(20.0f);
+        return getFont(16.0f);
     }
 }

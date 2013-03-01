@@ -71,13 +71,12 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RIMG), "%rimg%", "Right Image"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_FORALL), "%all%", "For All"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_EXISTS), "%exi%", "There Exists"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SPOT), "%dot%", "Such That"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SPOT), "%suchthat%", "Such That"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SPOT), "%dot%, %suchthat%", "Dot / Such That"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NOT), "%lnot%", "Not"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_AND), "%land%", "And"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_OR), "%lor%", "Or"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_IMPLIES), "%imp%", "Implication"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_IFF), "%imp%", "If and Only If"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_IMPLIES), "%imp%", "Implies"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_IFF), "%iff%", "If and Only If"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_LDATA), "%lang%", "Left Angle"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RDATA), "%rang%", "Right Angle"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_UK1), "%skip%", "SKIP1"));
