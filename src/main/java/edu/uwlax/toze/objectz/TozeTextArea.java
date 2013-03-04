@@ -17,7 +17,6 @@ public class TozeTextArea extends JTextArea
     private Font m_defaultFont = null;
     public boolean m_ignoreEnter = true;
     public int m_errorPos = -1;
-    public int m_type = 0;
     public String m_pre = "";
     public String m_post = "";
     private TozeChars m_map = new TozeChars();
@@ -89,13 +88,6 @@ public class TozeTextArea extends JTextArea
     public TozeTextArea(String s)
     {
         super(s);
-        commonConstructor();
-    }
-
-    public TozeTextArea(String s, int type)
-    {
-        super(s);
-        m_type = type;
         commonConstructor();
     }
 

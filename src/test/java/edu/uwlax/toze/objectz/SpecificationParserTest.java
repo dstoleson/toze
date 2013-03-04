@@ -6,22 +6,48 @@ import edu.uwlax.toze.spec.AxiomaticDef;
 import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
+import edu.uwlax.toze.spec.GenericDef;
 import edu.uwlax.toze.spec.Operation;
+import edu.uwlax.toze.spec.SchemaDef;
 import edu.uwlax.toze.spec.State;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Set;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class SpecificationParserTest
 {
     @Test
-    public void testParser() throws Exception
+    public void testParerNoErrors() throws Exception
     {
-        InputStream inputStream = new FileInputStream("src/test/resources/ComputerCompany");
+        Set<TozeToken> errors = parseForErrors("src/test/resources/ComputerCompany");
+        assertEquals(0, errors.size());
+        for (TozeToken error : errors)
+            {
+            System.out.println("Error: " + error);
+            }
+    }
+    
+    @Test
+    public void testParserErrors() throws Exception
+    {
+        Set<TozeToken> errors = parseForErrors("src/test/resources/ComputerCompanyErrors");
+        assertEquals(2, errors.size());
+        for (TozeToken error : errors)
+            {
+            System.out.println("Error: " + error);
+            }
+    }
+    
+    public Set<TozeToken> parseForErrors(String specificationFile) throws Exception
+    {
+        InputStream inputStream = new FileInputStream(specificationFile);
         SpecificationBuilder specBuilder = new SpecificationBuilder();
         TOZE toze = specBuilder.buildFromStream(inputStream);
-
+        inputStream.close();
+        
         // @TODO Need to way to map the errors to the place in the document
         // There needs to be a map of some unique id to an element in the document
         // the same unique id must be used to map to the view(s)
@@ -30,7 +56,7 @@ public class SpecificationParserTest
         // The 'Specification' class is the place for this, it maintains the file, the specification
         // elements (object graph) and the state of the specification (errors, edited, etc.)
         // The 'Specification' is the model.
-        
+
         TozeGuiParser parser = new TozeGuiParser();
 
         parser.start(SpecificationSection.Specification);
@@ -55,6 +81,70 @@ public class SpecificationParserTest
             {
             parser.start(SpecificationSection.BasicTypeDefinition);
             parser.parse_guiBasicTypeDefinition(new TozeTextArea(basicTypeDef.getName()));
+            parser.end();
+            }
+
+        for (FreeTypeDef freeTypeDef : toze.getFreeTypeDef())
+            {
+            parser.start(SpecificationSection.FreeTypeDefinition);
+            parser.parse_guiIdentifier(new TozeTextArea(freeTypeDef.getDeclaration()));
+            parser.parse_guiBranch(new TozeTextArea(freeTypeDef.getPredicate()));
+            parser.end();
+            }
+
+        for (GenericDef genericDef : toze.getGenericDef())
+            {
+            parser.start(SpecificationSection.GenericDefinition);
+
+            if (genericDef.getFormalParameters() != null)
+                {
+                parser.parse_guiFormalParametersWoBrackets(new TozeTextArea(genericDef.getFormalParameters()));
+                }
+
+            parser.parse_guiDeclaration(new TozeTextArea(genericDef.getPredicate()));
+
+            if (genericDef.getPredicate() != null)
+                {
+                parser.parse_guiPredicateList(new TozeTextArea(genericDef.getPredicate()));
+                }
+            parser.end();
+            }
+
+        for (SchemaDef schemaDef : toze.getSchemaDef())
+            {
+            if (schemaDef.getExpression() != null)
+                {
+                parser.start(SpecificationSection.Schema2);
+                }
+            else
+                {
+                parser.start(SpecificationSection.Schema1);
+                }
+
+            parser.parse_guiSchemaHeader(new TozeTextArea(schemaDef.getName()));
+
+            if (schemaDef.getDeclaration() != null)
+                {
+                parser.parse_guiDeclaration(new TozeTextArea(schemaDef.getDeclaration()));
+                }
+
+            if (schemaDef.getPredicate() != null)
+                {
+                parser.parse_guiPredicateList(new TozeTextArea(schemaDef.getPredicate()));
+                }
+
+            if (schemaDef.getExpression() != null)
+                {
+                parser.parse_guiSchemaExpression(new TozeTextArea(schemaDef.getExpression()));
+                }
+
+            parser.end();
+            }
+
+        if (toze.getPredicate() != null)
+            {
+            parser.start(SpecificationSection.Predicate);
+            parser.parse_guiPredicateList(new TozeTextArea(toze.getPredicate()));
             parser.end();
             }
 
@@ -107,11 +197,11 @@ public class SpecificationParserTest
                 parser.parse_guiBranch(new TozeTextArea(freeTypeDef.getPredicate()));
                 parser.end();
                 }
-            
+
             if (classDef.getState() != null)
                 {
                 State state = classDef.getState();
-                
+
                 parser.start(SpecificationSection.State);
                 if (state.getDeclaration() != null)
                     {
@@ -127,34 +217,37 @@ public class SpecificationParserTest
                     }
                 parser.end();
                 }
-            
+
             if (classDef.getInitialState() != null)
                 {
                 parser.start(SpecificationSection.InitState);
-                
-                int type = 1; // @TODO somehow determine what type this should be
-                if (type == 1)
-                    {
-                    parser.parse_guiPredicateList(new TozeTextArea(classDef.getInitialState().getPredicate()));
-                    }
-                else
-                    {
-                    parser.parse_guiPredicate(new TozeTextArea(classDef.getInitialState().getPredicate()));                    
-                    }
+
+                // @TODO - appears to matter in the UI but the saved state doesn't
+                //       - relfect type 1 or 2, it uses 1 by default when reading and writing
+                //       - need to check and see if type 2 is any long necessary
+//                int type = 1;
+//                if (type == 1)
+//                    {
+                parser.parse_guiPredicateList(new TozeTextArea(classDef.getInitialState().getPredicate()));
+//                    }
+//                else
+//                    {
+//                    parser.parse_guiPredicate(new TozeTextArea(classDef.getInitialState().getPredicate()));
+//                    }
                 parser.end();
                 }
-            
+
             for (Operation operation : classDef.getOperation())
-                {
+                {                
                 parser.start(SpecificationSection.Operation);
-                
+
                 parser.parse_guiOperationName(new TozeTextArea(operation.getName()));
-                
+
                 if (operation.getDeltaList() != null)
                     {
                     parser.parse_guiDeclarationNameList(new TozeTextArea(operation.getDeltaList()));
                     }
-                
+
                 if (operation.getDeclaration() != null)
                     {
                     parser.parse_guiDeclaration(new TozeTextArea(operation.getDeclaration()));
@@ -162,28 +255,27 @@ public class SpecificationParserTest
 
                 if (operation.getPredicate() != null)
                     {
-
-                    int type = 3; // @TODO define what this means
-                    
-                    if (type == 3)
+                    if (((edu.uwlax.toze.persist.Operation)operation).getType() == 3)
                         {
                         parser.parse_guiPredicate(new TozeTextArea(operation.getPredicate()));
                         }
                     else
                         {
-                        parser.parse_guiPredicateList(new TozeTextArea(operation.getPredicate()));                        
-                        }                    
+                        parser.parse_guiPredicateList(new TozeTextArea(operation.getPredicate()));
+                        }
                     }
-                
+
                 if (operation.getOperationExpression() != null)
                     {
                     parser.parse_guiOperationExpression(new TozeTextArea(operation.getOperationExpression()));
                     }
-                
+
                 parser.end();
-                }            
+                }
             }
-        
+
         parser.end();
+
+        return parser.getErrors();
     }
 }

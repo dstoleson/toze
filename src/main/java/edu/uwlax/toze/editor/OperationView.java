@@ -24,7 +24,7 @@ public class OperationView extends ParagraphView
     static final private int OperationContentOffset = 10;
     static final private int OperationLineMargin = 5;
     static final private int OperationExtraLine = 10;
-    static final private int OperationHeaderLineMargin = 5;
+//    static final private int OperationHeaderLineMargin = 5;
     //
     private TozeTextArea operationNameText;
     private DeltaListView deltaListView;

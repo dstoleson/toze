@@ -56,6 +56,8 @@ public class InitialStateView extends ParagraphView
         x += HMargin;
         y += VMargin;
 
+        // @TODO - no long necessary?  see SpecificationParserTest for more comments
+        
 //        if (m_type == 2)
 //            {
 //            d = m_predicate.getPreferredSize();

@@ -32,4 +32,10 @@ public class TozeToken
             this.m_pos = 0;
             }
     }
+    
+    @Override
+    public String toString()
+    {
+        return "TozeToken[id = " + m_id + ", value = " + m_value + ", line = " + m_lineNum + ", pos = " + m_pos + "]";
+    }
 }

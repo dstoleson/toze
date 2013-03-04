@@ -1,13 +1,16 @@
 package edu.uwlax.toze.objectz;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 public class TozeGuiParser
 {
-    TozeParserGui m_tparser = new TozeParserGui();
-    Ast.AstBase m_ast = null;
-    Stack m_nodes = new Stack();
-
+    private TozeParserGui m_tparser = new TozeParserGui();
+    private Ast.AstBase m_ast = null;
+    private Stack m_nodes = new Stack();
+    private Set<TozeToken> errors = new HashSet<TozeToken>();
+    
     public TozeGuiParser()
     {
     }
@@ -22,16 +25,8 @@ public class TozeGuiParser
         ta.setTtcl();
         ta.clearTypeErrors();
         ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiAbbreviation(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        TozeToken t = m_tparser.parse_guiAbbreviation(ta.getText());        
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -40,16 +35,8 @@ public class TozeGuiParser
         ta.setTtcl();
         ta.clearTypeErrors();
         ta.clearErrors();
-
         TozeToken t = m_tparser.parse_guiExpression(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -59,14 +46,7 @@ public class TozeGuiParser
         ta.clearTypeErrors();
         ta.clearErrors();
         TozeToken t = m_tparser.parse_guiDeclarationNameList(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -76,14 +56,7 @@ public class TozeGuiParser
         ta.clearTypeErrors();
         ta.clearErrors();
         TozeToken t = m_tparser.parse_guinIdentifier(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -93,14 +66,7 @@ public class TozeGuiParser
         ta.clearTypeErrors();
         ta.clearErrors();
         TozeToken t = m_tparser.parse_guiBranch(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -110,14 +76,7 @@ public class TozeGuiParser
         ta.clearTypeErrors();
         ta.clearErrors();
         TozeToken t = m_tparser.parse_guiClassHeader(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
     
@@ -128,14 +87,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiDeclaration(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -146,14 +98,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiFormalParametersWoBrackets(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -164,14 +109,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiFormalParameters(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -182,14 +120,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiIdentifier(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -200,14 +131,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiInheritedClass(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -218,14 +142,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiOperationExpression(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -236,14 +153,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiPredicate(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -258,14 +168,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiPredicateList(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -276,14 +179,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiSchemaExpression(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -294,14 +190,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiSchemaHeader(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -312,14 +201,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiVisibilityList(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -330,14 +212,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiState(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -348,14 +223,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t = m_tparser.parse_guiOperationName(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -366,14 +234,7 @@ public class TozeGuiParser
         ta.clearErrors();
 
         TozeToken t =m_tparser.parse_guiDeltaList(ta.getText());
-        if (t != null)
-            {
-            ta.addError(t.m_lineNum, t.m_pos);
-            }
-        else
-            {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
-            }
+        handleError(t, ta);
         ta.resetTtcl();
     }
 
@@ -455,5 +316,23 @@ public class TozeGuiParser
             return (Ast.AstSpec) m_nodes.pop();
             }
         return null;
+    }
+    
+    public Set<TozeToken> getErrors()
+    {
+        return new HashSet(errors);
+    }
+
+    private void handleError(TozeToken t, TozeTextArea ta)
+    {
+        if (t != null)
+            {
+            errors.add(t);
+            ta.addError(t.m_lineNum, t.m_pos);
+            }
+        else
+            {
+            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
+            }
     }
 }

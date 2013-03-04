@@ -36,8 +36,16 @@ public class SpecificationBuilder
             {
             JAXBContext context = JAXBContext.newInstance(TOZE.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
+            try
+                {
+                unmarshaller.setProperty("com.sun.xml.bind.ObjectFactory", new TozeObjectFactory());
+                }
+            catch (final javax.xml.bind.PropertyException ex)
+                {
+                unmarshaller.setProperty("com.sun.xml.internal.bind.ObjectFactory", new TozeObjectFactory());
+                }
             unmarshaller.setListener(new SpecificationUnmarshallerListener());
-            toze = (TOZE)unmarshaller.unmarshal(inputStream);
+            toze = (TOZE) unmarshaller.unmarshal(inputStream);
             }
         catch (JAXBException e)
             {

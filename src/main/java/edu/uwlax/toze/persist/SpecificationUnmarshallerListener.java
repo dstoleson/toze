@@ -84,12 +84,12 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             }
         else if (target instanceof Operation)
             {
-            Operation operation = (Operation) target;
+            Operation operation = (Operation) target;            
             operation.setName(XMLToCharTransformer.transform(operation.getName()));
             operation.setDeltaList(XMLToCharTransformer.transform(operation.getDeltaList()));
             operation.setDeclaration(XMLToCharTransformer.transform(operation.getDeclaration()));
             operation.setPredicate(XMLToCharTransformer.transform(operation.getPredicate()));
-            operation.setOperationExpression(XMLToCharTransformer.transform(operation.getOperationExpression()));
+            operation.setOperationExpression(XMLToCharTransformer.transform(operation.getOperationExpression()));            
             }
         else if (target instanceof SchemaDef)
             {
