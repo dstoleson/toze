@@ -18,11 +18,11 @@ public class AstSymbolTable
    AstSymbolTable m_parent                  = null;
    TreeMap        m_symbols                 = new TreeMap();
    TreeMap        m_types                   = new TreeMap();
-   Vector         m_kids                    = new Vector();
+   List         m_kids                    = new ArrayList();
    boolean        m_undefinedSymbolOccurred = false;
    boolean        m_undefinedTypeOccurred   = false;
    boolean        m_newSymbolSet            = false;
-   Vector         m_visible                 = new Vector();
+   List         m_visible                 = new ArrayList();
    TreeMap        m_refs                    = new TreeMap();
    String         m_name                    = "";
    boolean        m_isOperation             = false;
@@ -185,7 +185,10 @@ public class AstSymbolTable
        */
       
       type = (AstType)m_symbols.get(name);
-      if (type != null) return type;
+      if (type != null)
+           {
+           return type;
+           }
       
       /*
        * If this is an operation then check to see if the same operation
@@ -195,7 +198,10 @@ public class AstSymbolTable
       if (m_isOperation)
       {
          type = getTypeFrom(m_name, name);
-         if (type != null) return type;
+         if (type != null)
+              {
+              return type;
+              }
       }
       
       /*
@@ -208,7 +214,10 @@ public class AstSymbolTable
       while (it.hasNext())
       {
          type = ((AstSymbolTable)it.next()).getType(name, 0);
-         if (type != null) return type;
+         if (type != null)
+              {
+              return type;
+              }
       }
 
       /*
@@ -220,7 +229,10 @@ public class AstSymbolTable
       if ((fromParent == 1) && (m_parent != null))
       {
          type = m_parent.getType(name);
-         if (type != null) return type;
+         if (type != null)
+              {
+              return type;
+              }
       }
       
       /*
@@ -239,7 +251,10 @@ public class AstSymbolTable
    public AstType getTypeDef(String name)
    {
       AstType type = (AstType)m_types.get(name);
-      if (type != null) return type;
+      if (type != null)
+           {
+           return type;
+           }
       
       /*
        * Search the parents if it was not found in this
@@ -248,7 +263,10 @@ public class AstSymbolTable
       
       if (type == null)
       {
-         if (m_parent != null) return m_parent.getTypeDef(name);
+         if (m_parent != null)
+              {
+              return m_parent.getTypeDef(name);
+              }
       }
       
       /*
@@ -274,7 +292,10 @@ public class AstSymbolTable
        */
       if (t == null)
       {
-         if (m_parent != null) m_parent.setSymbol(name, type);
+         if (m_parent != null)
+              {
+              m_parent.setSymbol(name, type);
+              }
       }
       else
       {
@@ -312,7 +333,10 @@ public class AstSymbolTable
          if (otype != null)
          {
             AstType type = otype.m_classMembers.getType(name);
-            if (type != null) return type;
+            if (type != null)
+                 {
+                 return type;
+                 }
          }
       }
       return null;
@@ -337,13 +361,19 @@ public class AstSymbolTable
    {
       int i;
       AstType type = getType(name);
-      if (type == null) return new AstType();
+      if (type == null)
+           {
+           return new AstType();
+           }
       
       /*
        * If there is no visibiliy list then all features of
        * a symbol table (class) are visible.
        */
-      if (m_visible.size() == 0) return type;
+      if (m_visible.isEmpty())
+           {
+           return type;
+           }
       
       /*
        * Search for the symbol name in the visibility list.
@@ -372,15 +402,24 @@ public class AstSymbolTable
    
    public boolean isSuperClass(String name)
    {
-      if (name == null) return false;
-      if (name.equals(m_name)) return true;
+      if (name == null)
+           {
+           return false;
+           }
+      if (name.equals(m_name))
+           {
+           return true;
+           }
       if (m_refs != null)
       {
          Collection v = m_refs.values();
          Iterator it = v.iterator();
          while (it.hasNext())
          {
-            if (((AstSymbolTable)it.next()).isSuperClass(name)) return true;
+            if (((AstSymbolTable)it.next()).isSuperClass(name))
+                 {
+                 return true;
+                 }
          }
       }
       return false;

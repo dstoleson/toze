@@ -9,10 +9,12 @@ import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.GenericDef;
 import edu.uwlax.toze.spec.Operation;
 import edu.uwlax.toze.spec.SchemaDef;
+import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.State;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Set;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -20,28 +22,51 @@ import org.junit.Test;
 public class SpecificationParserTest
 {
     @Test
-    public void testParerNoErrors() throws Exception
+    public void testParserNoErrors() throws Exception
     {
-        Set<TozeToken> errors = parseForErrors("src/test/resources/ComputerCompany");
-        assertEquals(0, errors.size());
-        for (TozeToken error : errors)
+        TozeGuiParser parser = new TozeGuiParser();
+        parseForErrors("src/test/resources/ComputerCompany", parser);
+        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
+        Set<String> typeErrors = parser.getTypeErrors();
+        for (TozeToken error : syntaxErrors.keySet())
             {
             System.out.println("Error: " + error);
             }
+        assertEquals(0, syntaxErrors.size());
+        assertEquals(0, typeErrors.size());
     }
     
     @Test
-    public void testParserErrors() throws Exception
+    public void testSyntaxErrors() throws Exception
     {
-        Set<TozeToken> errors = parseForErrors("src/test/resources/ComputerCompanyErrors");
-        assertEquals(2, errors.size());
-        for (TozeToken error : errors)
+        TozeGuiParser parser = new TozeGuiParser();
+        parseForErrors("src/test/resources/ComputerCompanySyntaxErrors", parser);
+        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
+        Set<String> typeErrors = parser.getTypeErrors();
+        for (TozeToken error : syntaxErrors.keySet())
             {
             System.out.println("Error: " + error);
             }
+        assertEquals(2, syntaxErrors.size());
+        assertEquals(0, typeErrors.size());
     }
-    
-    public Set<TozeToken> parseForErrors(String specificationFile) throws Exception
+
+    @Test
+    public void testTypeErrors() throws Exception
+    {
+        TozeGuiParser parser = new TozeGuiParser();
+        parseForErrors("src/test/resources/ComputerCompanyTypeErrors", parser);
+        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
+        Set<String> typeErrors = parser.getTypeErrors();
+        for (String error : typeErrors)
+            {
+            System.out.println("Error: " + error);
+            }
+        assertEquals(0, syntaxErrors.size());
+        assertEquals(2, typeErrors.size());
+    }
+
+    public void parseForErrors(String specificationFile, TozeGuiParser parser) throws Exception
     {
         InputStream inputStream = new FileInputStream(specificationFile);
         SpecificationBuilder specBuilder = new SpecificationBuilder();
@@ -57,39 +82,39 @@ public class SpecificationParserTest
         // elements (object graph) and the state of the specification (errors, edited, etc.)
         // The 'Specification' is the model.
 
-        TozeGuiParser parser = new TozeGuiParser();
+        Ast.clearErrors();
 
         parser.start(SpecificationSection.Specification);
 
         for (AxiomaticDef axiomaticDef : toze.getAxiomaticDef())
             {
             parser.start(SpecificationSection.AxiomaticDefinition);
-            parser.parse_guiDeclaration(new TozeTextArea(axiomaticDef.getDeclaration()));
-            parser.parse_guiPredicateList(new TozeTextArea(axiomaticDef.getPredicate()));
-            parser.end();
+            parser.parse_guiDeclaration(axiomaticDef, axiomaticDef.getDeclaration());
+            parser.parse_guiPredicateList(axiomaticDef, axiomaticDef.getPredicate());
+            parser.end(); // axiomatic
             }
 
         for (AbbreviationDef abbreviationDef : toze.getAbbreviationDef())
             {
             parser.start(SpecificationSection.AbbreviationDefinition);
-            parser.parse_guiAbbreviation(new TozeTextArea(abbreviationDef.getName()));
-            parser.parse_guiExpression(new TozeTextArea(abbreviationDef.getExpression()));
-            parser.end();
+            parser.parse_guiAbbreviation(abbreviationDef, abbreviationDef.getName());
+            parser.parse_guiExpression(abbreviationDef, abbreviationDef.getExpression());
+            parser.end();  // abbreviation
             }
 
         for (BasicTypeDef basicTypeDef : toze.getBasicTypeDef())
             {
             parser.start(SpecificationSection.BasicTypeDefinition);
-            parser.parse_guiBasicTypeDefinition(new TozeTextArea(basicTypeDef.getName()));
-            parser.end();
+            parser.parse_guiBasicTypeDefinition(basicTypeDef, basicTypeDef.getName());
+            parser.end(); // basic
             }
 
         for (FreeTypeDef freeTypeDef : toze.getFreeTypeDef())
             {
             parser.start(SpecificationSection.FreeTypeDefinition);
-            parser.parse_guiIdentifier(new TozeTextArea(freeTypeDef.getDeclaration()));
-            parser.parse_guiBranch(new TozeTextArea(freeTypeDef.getPredicate()));
-            parser.end();
+            parser.parse_guiIdentifier(freeTypeDef, freeTypeDef.getDeclaration());
+            parser.parse_guiBranch(freeTypeDef, freeTypeDef.getPredicate());
+            parser.end();  // free
             }
 
         for (GenericDef genericDef : toze.getGenericDef())
@@ -98,16 +123,16 @@ public class SpecificationParserTest
 
             if (genericDef.getFormalParameters() != null)
                 {
-                parser.parse_guiFormalParametersWoBrackets(new TozeTextArea(genericDef.getFormalParameters()));
+                parser.parse_guiFormalParametersWoBrackets(genericDef, genericDef.getFormalParameters());
                 }
 
-            parser.parse_guiDeclaration(new TozeTextArea(genericDef.getPredicate()));
+            parser.parse_guiDeclaration(genericDef, genericDef.getPredicate());
 
             if (genericDef.getPredicate() != null)
                 {
-                parser.parse_guiPredicateList(new TozeTextArea(genericDef.getPredicate()));
+                parser.parse_guiPredicateList(genericDef, genericDef.getPredicate());
                 }
-            parser.end();
+            parser.end();  // generic
             }
 
         for (SchemaDef schemaDef : toze.getSchemaDef())
@@ -121,81 +146,82 @@ public class SpecificationParserTest
                 parser.start(SpecificationSection.Schema1);
                 }
 
-            parser.parse_guiSchemaHeader(new TozeTextArea(schemaDef.getName()));
+            parser.parse_guiSchemaHeader(schemaDef, schemaDef.getName());
 
             if (schemaDef.getDeclaration() != null)
                 {
-                parser.parse_guiDeclaration(new TozeTextArea(schemaDef.getDeclaration()));
+                parser.parse_guiDeclaration(schemaDef, schemaDef.getDeclaration());
                 }
 
             if (schemaDef.getPredicate() != null)
                 {
-                parser.parse_guiPredicateList(new TozeTextArea(schemaDef.getPredicate()));
+                parser.parse_guiPredicateList(schemaDef, schemaDef.getPredicate());
                 }
 
             if (schemaDef.getExpression() != null)
                 {
-                parser.parse_guiSchemaExpression(new TozeTextArea(schemaDef.getExpression()));
+                parser.parse_guiSchemaExpression(schemaDef, schemaDef.getExpression());
                 }
 
-            parser.end();
+            parser.end();  // schema
             }
 
         if (toze.getPredicate() != null)
             {
             parser.start(SpecificationSection.Predicate);
-            parser.parse_guiPredicateList(new TozeTextArea(toze.getPredicate()));
-            parser.end();
+            parser.parse_guiPredicateList(toze, toze.getPredicate());
+            parser.end();  // predicate
             }
 
         for (ClassDef classDef : toze.getClassDef())
             {
             parser.start(SpecificationSection.Class);
-            parser.parse_guiClassHeader(new TozeTextArea(classDef.getName()));
+            parser.parse_guiClassHeader(classDef, classDef.getName());
 
             if (classDef.getVisibilityList() != null)
                 {
                 parser.start(SpecificationSection.VisibilityList);
-                parser.parse_guiDeclarationNameList(new TozeTextArea(classDef.getVisibilityList()));
-                parser.end();
+                parser.parse_guiDeclarationNameList(classDef, classDef.getVisibilityList());
+                parser.end();  // visibility
                 }
 
             if (classDef.getInheritedClass() != null)
                 {
                 parser.start(SpecificationSection.InheritedClasses);
-                parser.parse_guiInheritedClass(new TozeTextArea(classDef.getInheritedClass().getName()));
-                parser.end();
+                // TODO use classDef or (as stated) classDef.inheritedClass ?
+                parser.parse_guiInheritedClass(classDef.getInheritedClass(), classDef.getInheritedClass().getName());
+                parser.end();  // inherited
                 }
 
             for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
                 {
                 parser.start(SpecificationSection.BasicTypeDefinition);
-                parser.parse_guiBasicTypeDefinition(new TozeTextArea(basicTypeDef.getName()));
-                parser.end();
+                parser.parse_guiBasicTypeDefinition(basicTypeDef, basicTypeDef.getName());
+                parser.end();  // class.basic
                 }
 
             for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
                 {
                 parser.start(SpecificationSection.AbbreviationDefinition);
-                parser.parse_guiAbbreviation(new TozeTextArea(abbreviationDef.getName()));
-                parser.parse_guiAbbreviation(new TozeTextArea(abbreviationDef.getExpression()));
-                parser.end();
+                parser.parse_guiAbbreviation(abbreviationDef, abbreviationDef.getName());
+                parser.parse_guiAbbreviation(abbreviationDef, abbreviationDef.getExpression());
+                parser.end();  // class.abbreviation
                 }
 
             for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
                 {
                 parser.start(SpecificationSection.AxiomaticDefinition);
-                parser.parse_guiDeclaration(new TozeTextArea(axiomaticDef.getDeclaration()));
-                parser.parse_guiPredicateList(new TozeTextArea(axiomaticDef.getPredicate()));
-                parser.end();
+                parser.parse_guiDeclaration(axiomaticDef, axiomaticDef.getDeclaration());
+                parser.parse_guiPredicateList(axiomaticDef, axiomaticDef.getPredicate());
+                parser.end();  // class.axiomatic
                 }
 
             for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
                 {
                 parser.start(SpecificationSection.FreeTypeDefinition);
-                parser.parse_guiIdentifier(new TozeTextArea(freeTypeDef.getDeclaration()));
-                parser.parse_guiBranch(new TozeTextArea(freeTypeDef.getPredicate()));
-                parser.end();
+                parser.parse_guiIdentifier(freeTypeDef, freeTypeDef.getDeclaration());
+                parser.parse_guiBranch(freeTypeDef, freeTypeDef.getPredicate());
+                parser.end();  // class.free
                 }
 
             if (classDef.getState() != null)
@@ -205,17 +231,17 @@ public class SpecificationParserTest
                 parser.start(SpecificationSection.State);
                 if (state.getDeclaration() != null)
                     {
-                    parser.parse_guiDeclaration(new TozeTextArea(state.getDeclaration()));
+                    parser.parse_guiDeclaration(state, state.getDeclaration());
                     }
                 if (state.getPredicate() != null)
                     {
-                    parser.parse_guiPredicateList(new TozeTextArea(state.getPredicate()));
+                    parser.parse_guiPredicateList(state, state.getPredicate());
                     }
                 if (state.getName() != null)
                     {
-                    parser.parse_guiState(new TozeTextArea(state.getName()));
+                    parser.parse_guiState(state, state.getName());
                     }
-                parser.end();
+                parser.end();  // state
                 }
 
             if (classDef.getInitialState() != null)
@@ -228,54 +254,70 @@ public class SpecificationParserTest
 //                int type = 1;
 //                if (type == 1)
 //                    {
-                parser.parse_guiPredicateList(new TozeTextArea(classDef.getInitialState().getPredicate()));
+                // TODO use classDef or (as stated) classDef.initialState ?
+                parser.parse_guiPredicateList(classDef.getInitialState(), classDef.getInitialState().getPredicate());
 //                    }
 //                else
 //                    {
 //                    parser.parse_guiPredicate(new TozeTextArea(classDef.getInitialState().getPredicate()));
 //                    }
-                parser.end();
+                parser.end();  // initstate
                 }
 
             for (Operation operation : classDef.getOperation())
                 {                
                 parser.start(SpecificationSection.Operation);
 
-                parser.parse_guiOperationName(new TozeTextArea(operation.getName()));
+                parser.parse_guiOperationName(operation, operation.getName());
 
                 if (operation.getDeltaList() != null)
                     {
-                    parser.parse_guiDeclarationNameList(new TozeTextArea(operation.getDeltaList()));
+                    parser.parse_guiDeclarationNameList(operation, operation.getDeltaList());
                     }
 
                 if (operation.getDeclaration() != null)
                     {
-                    parser.parse_guiDeclaration(new TozeTextArea(operation.getDeclaration()));
+                    parser.parse_guiDeclaration(operation, operation.getDeclaration());
                     }
 
                 if (operation.getPredicate() != null)
                     {
                     if (((edu.uwlax.toze.persist.Operation)operation).getType() == 3)
                         {
-                        parser.parse_guiPredicate(new TozeTextArea(operation.getPredicate()));
+                        parser.parse_guiPredicate(operation, operation.getPredicate());
                         }
                     else
                         {
-                        parser.parse_guiPredicateList(new TozeTextArea(operation.getPredicate()));
+                        parser.parse_guiPredicateList(operation, operation.getPredicate());
                         }
                     }
 
                 if (operation.getOperationExpression() != null)
                     {
-                    parser.parse_guiOperationExpression(new TozeTextArea(operation.getOperationExpression()));
+                    parser.parse_guiOperationExpression(operation, operation.getOperationExpression());
                     }
 
-                parser.end();
+                parser.end(); // operation
+                }
+            parser.end(); // class
+            }
+        parser.end(); // spec
+
+        if (parser.getSyntaxErrors().isEmpty())
+            {
+            System.out.println("No syntax errors, checking types.");
+            Ast.AstSpec astSpec = parser.getSpec();
+            astSpec.populateTypeTable(null);
+            astSpec.populateSymbolTable(null);
+            
+            if (!Ast.hasErrors())
+                {
+                astSpec.checkType();
+                }
+            if (Ast.hasErrors())
+                {
+                System.out.println("Type Errors: " + Ast.getErrors());
                 }
             }
-
-        parser.end();
-
-        return parser.getErrors();
     }
 }

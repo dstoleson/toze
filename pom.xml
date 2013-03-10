@@ -35,6 +35,7 @@
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
                 <configuration>
+                	<extension>true</extension>
                     <generatePackage>edu.uwlax.toze.spec</generatePackage>
                 </configuration>
                 <executions>

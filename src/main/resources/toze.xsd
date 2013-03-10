@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 <xs:schema version="1.0"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"
+           jaxb:version="2.0">
+
+    <xs:annotation>
+       <xs:appinfo>
+          <jaxb:globalBindings>
+           <xjc:superClass name="edu.uwlax.toze.spec.SpecObject"/>
+          </jaxb:globalBindings>
+       </xs:appinfo>
+    </xs:annotation>
+    
     <xs:element name="TOZE">
         <xs:complexType>
             <xs:sequence>

@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.*;
 
 public class TozeTextArea extends JTextArea
-        implements TozeTypeCheckerListenerX
 {
     static Font m_font = null;
     static Color m_bColor = null;
@@ -24,7 +23,6 @@ public class TozeTextArea extends JTextArea
     static boolean m_anyChanged = false;
     List m_typeErrorIds = new ArrayList();
     List m_tokens = new ArrayList();
-    TozeTypeCheckerListenerX m_ttcl = null;
     String m_orig = null;
     static Component m_actionSpec = null;
 
@@ -413,10 +411,6 @@ public class TozeTextArea extends JTextArea
     {
         m_typeErrorIds.add(id);
         m_tokens.add(token);
-        if (m_ttcl != null)
-            {
-            m_ttcl.typeError(id, msg, token);
-            }
         this.invalidate();
     }
 
@@ -464,16 +458,5 @@ public class TozeTextArea extends JTextArea
                     }
                 }
             }
-    }
-
-    public void setTtcl()
-    {
-        m_ttcl = Ast.m_ttcl;
-        Ast.setTtcl(this);
-    }
-
-    public void resetTtcl()
-    {
-        Ast.m_ttcl = m_ttcl;
     }
 }

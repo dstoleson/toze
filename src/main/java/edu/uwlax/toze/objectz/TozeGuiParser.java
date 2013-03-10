@@ -1,297 +1,259 @@
 package edu.uwlax.toze.objectz;
 
+import edu.uwlax.toze.spec.SpecObject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class TozeGuiParser
+public class TozeGuiParser extends TozeParser
 {
-    private TozeParserGui m_tparser = new TozeParserGui();
-    private Ast.AstBase m_ast = null;
+    Ast.AstBase result;
+    
     private Stack m_nodes = new Stack();
-    private Set<TozeToken> errors = new HashSet<TozeToken>();
+    private HashMap<TozeToken, SpecObject> errors = new HashMap<TozeToken, SpecObject>();
     
-    public TozeGuiParser()
+    void parse_guiAbbreviation(SpecObject o, String text)
     {
+        reset();
+        tokenize(text);
+        result = parse_Abbreviation();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    public Ast getAstObject()
+    void parse_guiExpression(SpecObject o, String text)
     {
-        return m_tparser.m_ast;
+        reset();
+        tokenize(text);
+        result = parse_Expression();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiAbbreviation(TozeTextArea ta)
+    void parse_guiBasicTypeDefinition(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guiAbbreviation(ta.getText());        
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_nIdentifier();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiExpression(TozeTextArea ta)
+    void parse_guiBranch(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guiExpression(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_nBranch();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiDeclarationNameList(TozeTextArea ta)
+    void parse_guiClassHeader(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guiDeclarationNameList(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiBasicTypeDefinition(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guinIdentifier(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiBranch(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guiBranch(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiClassHeader(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-        TozeToken t = m_tparser.parse_guiClassHeader(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_ClassHeader();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
     
-    void parse_guiDeclaration(TozeTextArea ta)
+    void parse_guiDeclaration(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiDeclaration(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_Declaration();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+        
     }
 
-    void parse_guiFormalParametersWoBrackets(TozeTextArea ta)
+    void parse_guiFormalParametersWoBrackets(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiFormalParametersWoBrackets(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_FormalParametersWoBrackets();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiFormalParameters(TozeTextArea ta)
+    void parse_guiFormalParameters(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiFormalParameters(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_FormalParameters();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiIdentifier(TozeTextArea ta)
+    void parse_guiIdentifier(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiIdentifier(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_Identifier();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiInheritedClass(TozeTextArea ta)
+    void parse_guiInheritedClass(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiInheritedClass(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_nInheritedClass();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiOperationExpression(TozeTextArea ta)
+    void parse_guiOperationExpression(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiOperationExpression(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_OperationExpression();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiPredicate(TozeTextArea ta)
+    void parse_guiPredicate(SpecObject o, String text)
     {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiPredicate(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        reset();
+        tokenize(text);
+        result = parse_Predicate();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiPredicateList(TozeTextArea ta)
+    void parse_guiSchemaExpression(SpecObject o, String text)
     {
-        if (ta == null)
+        reset();
+        tokenize(text);
+        result = parse_SchemaExpression();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiSchemaHeader(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_SchemaHeader();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiVisibilityList(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_DeclarationNameList();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiState(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_DeclarationNameList();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiOperationName(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_Identifier();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiDeltaList(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_DeclarationNameList();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiDeclarationNameList(SpecObject o, String text)
+    {
+        reset();
+        tokenize(text);
+        result = parse_DeclarationNameList();
+        TozeToken t = getParseResult();
+        handleError(t, o);
+    }
+
+    void parse_guiPredicateList(SpecObject o, String text)
+    {
+        if (text == null)
             {
             return;
             }
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiPredicateList(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
+        
+        reset();
+        tokenize(text);
+        result = parse_PredicateList();
+        TozeToken t = getParseResult();
+        handleError(t, o);
     }
 
-    void parse_guiSchemaExpression(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiSchemaExpression(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiSchemaHeader(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiSchemaHeader(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiVisibilityList(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiVisibilityList(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiState(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiState(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiOperationName(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t = m_tparser.parse_guiOperationName(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
-
-    void parse_guiDeltaList(TozeTextArea ta)
-    {
-        ta.setTtcl();
-        ta.clearTypeErrors();
-        ta.clearErrors();
-
-        TozeToken t =m_tparser.parse_guiDeltaList(ta.getText());
-        handleError(t, ta);
-        ta.resetTtcl();
-    }
 
     public void start(SpecificationSection specSection)
     {
         switch (specSection)
             {
             case Specification :
-                m_nodes.push(m_tparser.m_ast.new AstSpec());
+                m_nodes.push(this.m_ast.new AstSpec());
                 break;
             case AbbreviationDefinition :
-                m_nodes.push(m_tparser.m_ast.new AstAbbreviationDefinition());
+                m_nodes.push(this.m_ast.new AstAbbreviationDefinition());
                 break;
             case AxiomaticDefinition :
-                m_nodes.push(m_tparser.m_ast.new AstAxiomaticDefinition());
+                m_nodes.push(this.m_ast.new AstAxiomaticDefinition());
                 break;
             case BasicTypeDefinition :
-                m_nodes.push(m_tparser.m_ast.new AstBasicTypeDefinition());
+                m_nodes.push(this.m_ast.new AstBasicTypeDefinition());
                 break;
             case Class :
-                m_nodes.push(m_tparser.m_ast.new AstClass());
+                m_nodes.push(this.m_ast.new AstClass());
                 break;
             case ClassName :
-                m_nodes.push(m_tparser.m_ast.new AstClassHeader());
+                m_nodes.push(m_ast.new AstClassHeader());
                 break;
             case DeltaList :
-                m_nodes.push(m_tparser.m_ast.new AstDeltaList());
+                m_nodes.push(m_ast.new AstDeltaList());
                 break;
             case FreeTypeDefinition :
-                m_nodes.push(m_tparser.m_ast.new AstFreeTypeDefinition());
+                m_nodes.push(m_ast.new AstFreeTypeDefinition());
                 break;
             case GenericDefinition :
-                m_nodes.push(m_tparser.m_ast.new AstGenericDefinition());
+                m_nodes.push(m_ast.new AstGenericDefinition());
                 break;
             case InheritedClasses :
-                m_nodes.push(m_tparser.m_ast.new AstInheritedClass());
+                m_nodes.push(m_ast.new AstInheritedClass());
                 break;
             case InitState :
-                m_nodes.push(m_tparser.m_ast.new AstInitialState());
+                m_nodes.push(m_ast.new AstInitialState());
                 break;
             case Operation :
-                m_nodes.push(m_tparser.m_ast.new AstOperation());
+                m_nodes.push(m_ast.new AstOperation());
                 break;
             case Predicate :
-                m_nodes.push(m_tparser.m_ast.new AstPredicatePara());
+                m_nodes.push(m_ast.new AstPredicatePara());
                 break;
             case Schema1 :
-                m_nodes.push(m_tparser.m_ast.new AstSchema1());
+                m_nodes.push(m_ast.new AstSchema1());
                 break;
             case Schema2 :
-                m_nodes.push(m_tparser.m_ast.new AstSchema2());
+                m_nodes.push(m_ast.new AstSchema2());
                 break;
             case State :
-                m_nodes.push(m_tparser.m_ast.new AstState());
+                m_nodes.push(m_ast.new AstState());
                 break;
             case VisibilityList :
-                m_nodes.push(m_tparser.m_ast.new AstVisibilityList());
+                m_nodes.push(m_ast.new AstVisibilityList());
                 break;
             default:
                 System.out.println("Unhandled object type: " + specSection);
@@ -318,21 +280,25 @@ public class TozeGuiParser
         return null;
     }
     
-    public Set<TozeToken> getErrors()
+    public HashMap<TozeToken, SpecObject> getSyntaxErrors()
     {
-        return new HashSet(errors);
+        return (HashMap<TozeToken, SpecObject>)errors.clone();
     }
 
-    private void handleError(TozeToken t, TozeTextArea ta)
+    public Set<String> getTypeErrors()
+    {
+        return new HashSet<String>(Ast.getErrors());
+    }
+    
+    private void handleError(TozeToken t, SpecObject o)
     {
         if (t != null)
             {
-            errors.add(t);
-            ta.addError(t.m_lineNum, t.m_pos);
+            errors.put(t, o);
             }
         else
             {
-            ((Ast.AstBase) m_nodes.peek()).add(m_tparser.m_result);
+            ((Ast.AstBase) m_nodes.peek()).add(result);
             }
     }
 }

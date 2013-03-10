@@ -1,32 +1,41 @@
 package edu.uwlax.toze.objectz;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class TozeParserBase
 {
-    TozeTokenizer m_tokenizer;
-    int m_lastToken;
-    boolean m_hasLastToken;
-    List m_tokens = new ArrayList();
+    private TozeTokenizer m_tokenizer;
+    private List m_tokens = new ArrayList();
     int m_current;
     public TozeToken m_failed = null;
     boolean error = false;
-    int m_at = 0;
-    boolean m_opted = false;
-    static StringWriter m_fw = null;
-    static PrintWriter m_pw = null;
+    private int m_at = 0;
     boolean m_error = false;
     /*
      * The farthest position within the token stream that
      * any context reached during the match method.
      */
     int m_longest = 0;
+
+    protected TozeToken getParseResult()
+    {
+        if (error)
+            {
+            return tokenAt(m_longest);
+            }
+        error = !eos();
+        if (error)
+            {
+            return tokenAt(m_longest);
+            }
+        
+        return null;
+    }    
+
 
     public int getCurrent()
     {
@@ -107,8 +116,6 @@ public class TozeParserBase
         m_longest = 0;
 
         m_tokenizer = new TozeTokenizer(reader);
-
-        m_hasLastToken = false;
 
         try
             {
