@@ -3,23 +3,33 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.objectz.TozeCharMap;
 import edu.uwlax.toze.objectz.TozeFontMap;
+import edu.uwlax.toze.objectz.TozeGuiParser;
+import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
+import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTree;
+import javax.swing.JViewport;
+import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -38,25 +48,40 @@ import javax.swing.tree.TreePath;
  */
 public class TozeEditor extends javax.swing.JFrame
 {
-    private javax.swing.JMenuItem closeSpecificationMenu;
-    private javax.swing.JSplitPane editorSplitPane;
-    private javax.swing.JSplitPane leftSplitPane;
-    private javax.swing.JSplitPane rightSplitPane;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
-    private javax.swing.JScrollPane specificationTreeScrollPane;
-    private javax.swing.JScrollPane specialCharsScrollPane;
-    private javax.swing.JScrollPane paragraphsScrollPane;
-    private javax.swing.JScrollPane errorScrollPane;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openSpecificationMenu;
-    private javax.swing.JTabbedPane specificationTabPanel;
-    private javax.swing.JTabbedPane paletteTabPanel;
-    private javax.swing.JTree specificationTree;
-    private javax.swing.JList specialCharsList;
-    private javax.swing.JList paragraphsList;
-    private javax.swing.JList errorsList;
+    private JMenuBar menuBar;
+    private JMenu fileMenu;
+    private JMenuItem openSpecificationMenu;
+    private JMenuItem checkSpecificationMenu;
+    private JMenuItem closeSpecificationMenu;
 
+    // Main UI layout
+    private JSplitPane editorSplitPane;
+    private JSplitPane leftSplitPane;
+    private JSplitPane rightSplitPane;
+    
+    // Editor Tabs
+    private JTabbedPane specificationTabPanel;
+    
+    // Tree View of Specification Documents
+    private JScrollPane specificationTreeScrollPane;
+    private JTree specificationTree;
+
+    // Special Chars and Paragraphs Palettes
+    private JTabbedPane paletteTabPanel;    
+    private JScrollPane paragraphsScrollPane;
+    private JList paragraphsList;
+//    private ParagraphPaletteController paragraphPaletteController;
+    private JScrollPane specialCharsScrollPane;
+    private JList specialCharsList;
+//    private SpecialCharPaletteController specialCharPaletteControler;
+    // Error List View
+    private JScrollPane errorScrollPane;
+    private JList errorsList;
+//    private ErrorListController errorListController;
+
+    
+    private HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
+    
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
     // was closed.
@@ -90,44 +115,36 @@ public class TozeEditor extends javax.swing.JFrame
     @SuppressWarnings("unchecked")
     private void initComponents()
     {
-
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        editorSplitPane = new JSplitPane();
+        leftSplitPane = new JSplitPane();
+        rightSplitPane = new JSplitPane();
         
+        specificationTreeScrollPane = new JScrollPane();        
+        specificationTree = new JTree();
         
-        editorSplitPane = new javax.swing.JSplitPane();
-        leftSplitPane = new javax.swing.JSplitPane();
-        rightSplitPane = new javax.swing.JSplitPane();
+        specificationTabPanel = new JTabbedPane();
+        paletteTabPanel = new JTabbedPane();
         
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu();
+        openSpecificationMenu = new JMenuItem();
+        closeSpecificationMenu = new JMenuItem();
+        checkSpecificationMenu = new JMenuItem();
         
-        specificationTreeScrollPane = new javax.swing.JScrollPane();
-        
-        specificationTree = new javax.swing.JTree();
-        specificationTabPanel = new javax.swing.JTabbedPane();
-        paletteTabPanel = new javax.swing.JTabbedPane();
-        
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        openSpecificationMenu = new javax.swing.JMenuItem();
-        closeSpecificationMenu = new javax.swing.JMenuItem();
-        
-        specialCharsScrollPane = new javax.swing.JScrollPane();
+        specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
         specialCharsList.setCellRenderer(new TozeCharListCellRenderer());
         specialCharsList.setFont(TozeFontMap.getFont());
 
-        paragraphsScrollPane = new javax.swing.JScrollPane();
+        paragraphsScrollPane = new JScrollPane();
         String[] paragraphs = {"Basic Type", "Schema", "Class", "Operation"};
         paragraphsList = new JList(paragraphs);
         
-        errorScrollPane = new javax.swing.JScrollPane();
-        String[] errors = {"Error 1", "Error 2", "Error 3", "Error 4", "Error 5"};
-        errorsList = new JList(errors);
+        errorScrollPane = new JScrollPane();
+        errorsList = new JList();
+        errorsList.setFont(TozeFontMap.getFont());
         
-        jCheckBoxMenuItem1.setSelected(true);
-        
-        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplitPane.setDividerLocation(400);
@@ -188,8 +205,20 @@ public class TozeEditor extends javax.swing.JFrame
                 openSpecification(evt);
             }
         });
+        
         fileMenu.add(openSpecificationMenu);
 
+        checkSpecificationMenu.setMnemonic('K');
+        checkSpecificationMenu.setText("Check");
+        checkSpecificationMenu.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                checkSpecification(e);
+            }
+        });
+        fileMenu.add(checkSpecificationMenu);
+        
         closeSpecificationMenu.setText("Close");
         closeSpecificationMenu.addActionListener(new java.awt.event.ActionListener()
         {
@@ -243,17 +272,20 @@ public class TozeEditor extends javax.swing.JFrame
 
                 Specification specification = new Specification(specificationFile.getName(), toze);
                 treeModel.addSpecification(specification);
-                SpecificationController controller = new SpecificationController(toze);
-                SpecificationView specView = new SpecificationView(controller);
+                SpecificationView specView = new SpecificationView(toze);
+                SpecificationController controller = new SpecificationController(toze, specView);
                 specView.setLayout(new TozeLayout());
                 specView.addMouseListener(specView);
                 specView.setPreferredSize(new Dimension(800, 800));
                 JScrollPane specScroller = new JScrollPane(specView);
-
+                
                 specificationTabPanel.addTab(specification.getFilename(), specScroller);
 
                 int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
                 specificationTabPanel.setSelectedIndex(tabIndex);
+                
+                // map the tab to the controller
+                tabControllers.put(Integer.valueOf(tabIndex), controller);
                 }
             catch (Exception e)
                 {
@@ -264,6 +296,29 @@ public class TozeEditor extends javax.swing.JFrame
             }
     }
 
+    private void checkSpecification(ActionEvent evt)
+    {
+        JScrollPane selectedPane = (JScrollPane)specificationTabPanel.getSelectedComponent();
+//        SpecificationView specView = (SpecificationView)((JViewport)selectedPane.getComponent(0)).getComponent(0);
+        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+        TOZE toze = specController.getSpecification();
+        
+        TozeGuiParser parser = new TozeGuiParser();
+        parser.parseForErrors(toze);
+        
+        List<String> errors = new ArrayList<String>();
+        
+        HashMap<TozeToken, SpecObject> errorMap = parser.getSyntaxErrors();
+        for (TozeToken tozeToken : errorMap.keySet())
+            {
+            errors.add(tozeToken.toString());
+            }
+        
+        errors.addAll(parser.getTypeErrors());
+        
+        errorsList.setListData(errors.toArray());
+    }
+    
     private void closeSpecification(java.awt.event.ActionEvent evt)
     {
         // get selected specifications

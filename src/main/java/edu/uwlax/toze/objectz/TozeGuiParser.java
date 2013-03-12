@@ -23,7 +23,7 @@ public class TozeGuiParser extends TozeParser
     private Stack m_nodes = new Stack();
     private HashMap<TozeToken, SpecObject> errors = new HashMap<TozeToken, SpecObject>();
 
-        public void parseForErrors(TOZE toze) throws Exception
+    public void parseForErrors(TOZE toze)
     {        
         // @TODO Need to way to map the errors to the place in the document
         // There needs to be a map of some unique id to an element in the document
@@ -257,7 +257,6 @@ public class TozeGuiParser extends TozeParser
 
         if (getSyntaxErrors().isEmpty())
             {
-            System.out.println("No syntax errors, checking types.");
             Ast.AstSpec astSpec = getSpec();
             astSpec.populateTypeTable(null);
             astSpec.populateSymbolTable(null);
@@ -266,23 +265,39 @@ public class TozeGuiParser extends TozeParser
                 {
                 astSpec.checkType();
                 }
-            if (Ast.hasErrors())
-                {
-                System.out.println("Type Errors: " + Ast.getErrors());
-                }
             }
     }
 
-    void parse_guiAbbreviation(SpecObject o, String text)
+    public HashMap<TozeToken, SpecObject> getSyntaxErrors()
+    {
+        return (HashMap<TozeToken, SpecObject>)errors.clone();
+    }
+
+    public Set<String> getTypeErrors()
+    {
+        return new HashSet<String>(Ast.getErrors());
+    }
+    
+    private void preParse(String text)
     {
         reset();
-        tokenize(text);
-        result = parse_Abbreviation();
+        tokenize(text);        
+    }
+    
+    private void postParse(SpecObject o)
+    {
         TozeToken t = getParseResult();
         handleError(t, o);
     }
+    
+    private void parse_guiAbbreviation(SpecObject o, String text)
+    {
+        preParse(text);
+        result = parse_Abbreviation();
+        postParse(o);
+    }
 
-    void parse_guiExpression(SpecObject o, String text)
+    private void parse_guiExpression(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -291,7 +306,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiBasicTypeDefinition(SpecObject o, String text)
+    private void parse_guiBasicTypeDefinition(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -300,7 +315,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiBranch(SpecObject o, String text)
+    private void parse_guiBranch(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -309,7 +324,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiClassHeader(SpecObject o, String text)
+    private void parse_guiClassHeader(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -318,7 +333,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
     
-    void parse_guiDeclaration(SpecObject o, String text)
+    private void parse_guiDeclaration(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -328,7 +343,7 @@ public class TozeGuiParser extends TozeParser
         
     }
 
-    void parse_guiFormalParametersWoBrackets(SpecObject o, String text)
+    private void parse_guiFormalParametersWoBrackets(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -337,7 +352,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiFormalParameters(SpecObject o, String text)
+    private void parse_guiFormalParameters(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -346,7 +361,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiIdentifier(SpecObject o, String text)
+    private void parse_guiIdentifier(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -355,7 +370,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiInheritedClass(SpecObject o, String text)
+    private void parse_guiInheritedClass(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -364,7 +379,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiOperationExpression(SpecObject o, String text)
+    private void parse_guiOperationExpression(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -373,7 +388,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiPredicate(SpecObject o, String text)
+    private void parse_guiPredicate(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -382,7 +397,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiSchemaExpression(SpecObject o, String text)
+    private void parse_guiSchemaExpression(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -391,7 +406,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiSchemaHeader(SpecObject o, String text)
+    private void parse_guiSchemaHeader(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -400,7 +415,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiVisibilityList(SpecObject o, String text)
+    private void parse_guiVisibilityList(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -409,7 +424,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiState(SpecObject o, String text)
+    private void parse_guiState(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -418,7 +433,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiOperationName(SpecObject o, String text)
+    private void parse_guiOperationName(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -427,7 +442,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiDeltaList(SpecObject o, String text)
+    private void parse_guiDeltaList(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -436,7 +451,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiDeclarationNameList(SpecObject o, String text)
+    private void parse_guiDeclarationNameList(SpecObject o, String text)
     {
         reset();
         tokenize(text);
@@ -445,7 +460,7 @@ public class TozeGuiParser extends TozeParser
         handleError(t, o);
     }
 
-    void parse_guiPredicateList(SpecObject o, String text)
+    private void parse_guiPredicateList(SpecObject o, String text)
     {
         if (text == null)
             {
@@ -460,7 +475,7 @@ public class TozeGuiParser extends TozeParser
     }
 
 
-    public void start(SpecificationSection specSection)
+    private void start(SpecificationSection specSection)
     {
         switch (specSection)
             {
@@ -522,7 +537,7 @@ public class TozeGuiParser extends TozeParser
             }
     }
 
-    public void end()
+    private void end()
     {
         if (m_nodes.size() > 1)
             {
@@ -531,23 +546,13 @@ public class TozeGuiParser extends TozeParser
             }
     }
 
-    public Ast.AstSpec getSpec()
+    private Ast.AstSpec getSpec()
     {
         if (m_nodes.size() == 1)
             {
             return (Ast.AstSpec) m_nodes.pop();
             }
         return null;
-    }
-    
-    public HashMap<TozeToken, SpecObject> getSyntaxErrors()
-    {
-        return (HashMap<TozeToken, SpecObject>)errors.clone();
-    }
-
-    public Set<String> getTypeErrors()
-    {
-        return new HashSet<String>(Ast.getErrors());
     }
     
     private void handleError(TozeToken t, SpecObject o)

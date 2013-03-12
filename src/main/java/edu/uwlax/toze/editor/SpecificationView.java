@@ -1,11 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -16,73 +13,32 @@ import javax.swing.JPanel;
 
 public class SpecificationView extends JPanel implements MouseListener
 {
-    private SpecificationController controller;
-    List<AxiomaticView> axiomaticDefViews;
-    List<AbbreviationView> abbreviationViews;
-    List<BasicTypeView> basicTypeViews;
-    List<ClassView> classViews;
     
-    SpecificationView(SpecificationController controller)
+//    List<AxiomaticView> axiomaticDefViews;
+//    List<AbbreviationView> abbreviationViews;
+//    List<BasicTypeView> basicTypeViews;
+    private List<ClassView> classViews;
+    private TOZE spec;
+    
+    SpecificationView(TOZE spec)
     {
         super();
-
-        this.controller = controller;
-        TOZE spec = controller.specification;
-
-        axiomaticDefViews = new ArrayList<AxiomaticView>();
-        
-        if (!spec.getAxiomaticDef().isEmpty())
-            {
-            for (AxiomaticDef axiomaticDef : spec.getAxiomaticDef())
-                {
-                AxiomaticView axiomaticDefView = new AxiomaticView(axiomaticDef);
-                add(axiomaticDefView);
-                axiomaticDefViews.add(axiomaticDefView);
-                }
-            }
-
-        abbreviationViews = new ArrayList<AbbreviationView>();
-        
-        if (!spec.getAbbreviationDef().isEmpty())
-            {
-            for (AbbreviationDef abbreviationDef : spec.getAbbreviationDef())
-                {
-                AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef);
-                add(abbreviationView);
-                abbreviationViews.add(abbreviationView);
-                }
-            }
-        
-        basicTypeViews = new ArrayList<BasicTypeView>();
-        
-        if (!spec.getBasicTypeDef().isEmpty())
-            {
-            for (BasicTypeDef basicTypeDef : spec.getBasicTypeDef())
-                {
-                BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
-                add(basicTypeView);
-                basicTypeViews.add(basicTypeView);
-                }
-            }
-        
-        if (!spec.getFreeTypeDef().isEmpty())
-            {
-            
-            }
-        
         classViews = new ArrayList<ClassView>();
-
-        if (!spec.getClassDef().isEmpty())
-            {
-            for (ClassDef classDef : spec.getClassDef())
-                {
-                ClassView classView = new ClassView(classDef);
-                add(classView);
-                classViews.add(classView);
-                }
-            }
+        this.spec = spec;
     }
 
+    @Override
+    public Component add(Component component)
+    {
+        Component c = super.add(component);
+        if (component instanceof ClassView)
+            {
+            classViews.add((ClassView)component);
+            }
+        
+        return c;
+    }
+    
     @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
@@ -90,7 +46,6 @@ public class SpecificationView extends JPanel implements MouseListener
         setForeground(Color.BLACK);
 
         super.paint(g);
-
     }
 
     @Override
