@@ -1,7 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeFontMap;
-import edu.uwlax.toze.objectz.TozeTextArea;
 import edu.uwlax.toze.spec.Operation;
 import java.awt.Color;
 import java.awt.Dimension;

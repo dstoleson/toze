@@ -1,7 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeCharMap;
-import edu.uwlax.toze.objectz.TozeFontMap;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;

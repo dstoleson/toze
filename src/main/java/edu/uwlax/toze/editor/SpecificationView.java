@@ -40,7 +40,7 @@ public class SpecificationView extends JPanel implements MouseListener
     }
     
     @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
+    public void paint(Graphics g)
     {
         setBackground(Color.WHITE);
         setForeground(Color.BLACK);

@@ -4,6 +4,7 @@ import edu.uwlax.toze.spec.AbbreviationDef;
 import edu.uwlax.toze.spec.AxiomaticDef;
 import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
+import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.TOZE;
 
 public class SpecificationController
@@ -20,32 +21,24 @@ public class SpecificationController
     }
     
     private void initView()
-    {
-//        axiomaticDefViews = new ArrayList<AxiomaticView>();
-        
+    {        
         if (!specification.getAxiomaticDef().isEmpty())
             {
             for (AxiomaticDef axiomaticDef : specification.getAxiomaticDef())
                 {
                 AxiomaticView axiomaticDefView = new AxiomaticView(axiomaticDef);
                 specificationView.add(axiomaticDefView);
-//                axiomaticDefViews.add(axiomaticDefView);
                 }
             }
 
-//        abbreviationViews = new ArrayList<AbbreviationView>();
-        
         if (!specification.getAbbreviationDef().isEmpty())
             {
             for (AbbreviationDef abbreviationDef : specification.getAbbreviationDef())
                 {
                 AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef);
                 specificationView.add(abbreviationView);
-//                abbreviationViews.add(abbreviationView);
                 }
             }
-        
-//        basicTypeViews = new ArrayList<BasicTypeView>();
         
         if (!specification.getBasicTypeDef().isEmpty())
             {
@@ -53,13 +46,16 @@ public class SpecificationController
                 {
                 BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
                 specificationView.add(basicTypeView);
-//                basicTypeViews.add(basicTypeView);
                 }
             }
         
         if (!specification.getFreeTypeDef().isEmpty())
             {
-            
+            for (FreeTypeDef freeTypeDef : specification.getFreeTypeDef())
+                {
+                FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
+                specificationView.add(freeTypeView);
+                }
             }
         
         if (!specification.getClassDef().isEmpty())

@@ -1,9 +1,6 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
-import edu.uwlax.toze.objectz.TozeCharMap;
-import edu.uwlax.toze.objectz.TozeFontMap;
-import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.SpecObject;

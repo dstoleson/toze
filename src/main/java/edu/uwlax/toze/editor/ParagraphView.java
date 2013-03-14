@@ -1,11 +1,12 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeFontMap;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JPanel;
 
-public abstract class ParagraphView extends JPanel implements Placement
+public abstract class ParagraphView extends JPanel implements Placement, Observer
 {
     static final protected int HMargin = 5;
     static final protected int VMargin = 5;
@@ -18,5 +19,11 @@ public abstract class ParagraphView extends JPanel implements Placement
         setFont(TozeFontMap.getFont());
         
         super.paint(g);
+    }
+
+    public void update(Observable o, Object arg)
+    {
+        System.out.println("o = " + o);
+        System.out.println("arg = " + arg);
     }
 }

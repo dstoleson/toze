@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.objectz.TozeTextArea;
 import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
@@ -13,6 +12,8 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * Display an Object-Z class and all its components.
@@ -68,7 +69,27 @@ public class ClassView extends ParagraphView
             freeTypeViews.add(freeTypeView);
             }
 
-        this.classNameText = new TozeTextArea(classDef.getName());
+        classNameText = new TozeTextArea(classDef.getName());        
+        classNameText.getDocument().addDocumentListener(new DocumentListener()
+        {
+            public void insertUpdate(DocumentEvent e)
+            {
+                System.out.println("text = " + classNameText.getText());
+                ClassView.this.classDef.setName(classNameText.getText());
+            }
+
+            public void removeUpdate(DocumentEvent e)
+            {
+                System.out.println("text = " + classNameText.getText());
+                ClassView.this.classDef.setName(classNameText.getText());
+            }
+
+            public void changedUpdate(DocumentEvent e)
+            {
+                // don't need to handle in plain text components
+            }
+        });
+
         add(classNameText);
 
         if (classDef.getVisibilityList() != null)
