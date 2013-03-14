@@ -8,6 +8,7 @@ package edu.uwlax.toze.objectz;
  * and variables.
  */
 
+import edu.uwlax.toze.editor.TozeFontMap;
 import java.util.*;
 
 public class AstSymbolTable

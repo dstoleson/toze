@@ -6,6 +6,7 @@ package edu.uwlax.toze.objectz;
  *
  * This file contains all of the classes that represent nodes in the AST.
  */
+import edu.uwlax.toze.editor.TozeFontMap;
 import java.util.*;
 
 public class Ast

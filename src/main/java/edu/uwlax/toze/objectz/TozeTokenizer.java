@@ -1,5 +1,6 @@
 package edu.uwlax.toze.objectz;
 
+import edu.uwlax.toze.editor.TozeFontMap;
 import java.io.*;
 import java.util.*;
 
