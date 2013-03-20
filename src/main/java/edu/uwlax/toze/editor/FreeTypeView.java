@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.FreeTypeDef;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -11,28 +10,26 @@ public class FreeTypeView extends ParagraphView implements Placement
 {
     private final String FreeTypeMid = " ::= ";
     //
-    private FreeTypeDef freeTypeDef;
-    //
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public FreeTypeView(FreeTypeDef freeTypeDef)
+    public FreeTypeView(TozeTextArea declarationText, TozeTextArea predicateText)
     {
-        this.freeTypeDef = freeTypeDef;
-
-        if (freeTypeDef.getDeclaration() != null)
+        this.declarationText = declarationText;
+        this.predicateText = predicateText;
+        
+        if (declarationText != null)
             {
-            declarationText = new TozeTextArea(freeTypeDef.getDeclaration());
             add(declarationText);
             }
-
-        if (freeTypeDef.getPredicate() != null)
+        
+        if (predicateText != null)
             {
-            predicateText = new TozeTextArea(freeTypeDef.getPredicate());
             add(predicateText);
             }
     }
 
+    @Override
     public void layout()
     {
         Insets insets = getInsets();

@@ -1,9 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.Operation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -12,8 +8,6 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  * Display an Object-Z class and all its components.
@@ -28,7 +22,6 @@ public class ClassView extends ParagraphView
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
     //
-    private ClassDef classDef;
     private TozeTextArea classNameText;
     private VisibilityListView visibilityListView;
     private InheritedClassView inheritedClassView;
@@ -38,88 +31,69 @@ public class ClassView extends ParagraphView
     private InitialStateView initialStateView;
     private List<OperationView> operationViews;
 
-    public ClassView(ClassDef classDef)
+    public ClassView()
     {
-        super();
-
-        this.classDef = classDef;
-        this.setLayout(new ParaLayout(this));
-
-        if (classDef.getInheritedClass() != null)
-            {
-            this.inheritedClassView = new InheritedClassView(classDef.getInheritedClass());
-            add(inheritedClassView);
-            }
-
         basicTypeViews = new ArrayList<BasicTypeView>();
-
-        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
-            {
-            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
-            add(basicTypeView);
-            basicTypeViews.add(basicTypeView);
-            }
-
         freeTypeViews = new ArrayList<FreeTypeView>();
-
-        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
-            {
-            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
-            add(freeTypeView);
-            freeTypeViews.add(freeTypeView);
-            }
-
-        classNameText = new TozeTextArea(classDef.getName());        
-        classNameText.getDocument().addDocumentListener(new DocumentListener()
-        {
-            public void insertUpdate(DocumentEvent e)
-            {
-                System.out.println("text = " + classNameText.getText());
-                ClassView.this.classDef.setName(classNameText.getText());
-            }
-
-            public void removeUpdate(DocumentEvent e)
-            {
-                System.out.println("text = " + classNameText.getText());
-                ClassView.this.classDef.setName(classNameText.getText());
-            }
-
-            public void changedUpdate(DocumentEvent e)
-            {
-                // don't need to handle in plain text components
-            }
-        });
-
-        add(classNameText);
-
-        if (classDef.getVisibilityList() != null)
-            {
-            visibilityListView = new VisibilityListView(classDef.getVisibilityList());
-            add(visibilityListView);
-            }
-
-        if (classDef.getState() != null)
-            {
-            stateView = new StateView(classDef.getState());
-            add(stateView);
-            }
-
-        if (initialStateView != null)
-            {
-            initialStateView = new InitialStateView(classDef.getInitialState());
-            add(initialStateView);
-            }
-
         operationViews = new ArrayList<OperationView>();
 
-        for (Operation operation : classDef.getOperation())
-            {
-            OperationView operationView = new OperationView(operation);
-            add(operationView);
-            operationViews.add(operationView);
-            }
+        this.setLayout(new ParaLayout(this));
+    }
+    
+    public void setClassNameText(TozeTextArea classNameText)
+    {
+        this.classNameText = classNameText;
+        add(classNameText);
     }
 
+    public void setVisibilityListView(VisibilityListView visibilityListView)
+    {
+        // TODO need to figure out where to add the view
+        this.visibilityListView = visibilityListView;
+        add(visibilityListView);
+    }
+    
+    public void setStateView(StateView stateView)
+    {
+        // TODO need to figure out where to add the view
+        this.stateView = stateView;
+        add(stateView);
+    }
+    
+    public void setInitialStateView(InitialStateView initialStateView)
+    {
+        // TODO need to figure out where to add the view
+        this.initialStateView = initialStateView;
+        add(initialStateView);
+    }
+    
+    public void addBasicTypeView(BasicTypeView basicTypeView)
+    {
+        // TODO need to figure out where to add the view
+        basicTypeViews.add(basicTypeView);
+        add(basicTypeView);
+    }
+    
+    public void addFreeTypeView(FreeTypeView freeTypeView)
+    {
+        // TODO need to figure out where to add the view
+        freeTypeViews.add(freeTypeView);
+        add(freeTypeView);
+    }
+
+    public void addOperationView(OperationView operationView)
+    {
+        // TODO need to figure out where to add the view
+        operationViews.add(operationView);
+        add(operationView);
+    }
+    
+    public void setInheritedClassView(InheritedClassView inheritedClassView)
+    {
+        // need to figure out where to add the view
+        this.inheritedClassView = inheritedClassView;
+    }
+    
     @Override
     public void paint(Graphics g)
     {

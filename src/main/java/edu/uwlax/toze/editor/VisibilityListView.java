@@ -12,11 +12,15 @@ public class VisibilityListView extends ParagraphView implements Placement
     static private final String BasicTypePost = ")";
     //   
     private TozeTextArea visibilityListText;
-
-    public VisibilityListView(String visibilityList)
+    
+    public VisibilityListView(TozeTextArea visibilityListText)
     {
-        this.visibilityListText = new TozeTextArea(visibilityList);
-        add(visibilityListText);
+        this.visibilityListText = visibilityListText;
+        
+        if (visibilityListText != null)
+            {
+            add(visibilityListText);
+            }
     }
 
     @Override

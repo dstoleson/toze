@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.BasicTypeDef;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -12,16 +11,13 @@ public class BasicTypeView extends ParagraphView
     private static final String BasicTypePost = "]";
     //  
     private TozeTextArea nameText;
-    //
-    private BasicTypeDef basicTypeDef;
 
-    public BasicTypeView(BasicTypeDef basicTypeDef)
+    public BasicTypeView(TozeTextArea nameText)
     {
-        this.basicTypeDef = basicTypeDef;
+        this.nameText = nameText;
 
-        if (basicTypeDef.getName() != null)
+        if (nameText != null)
             {
-            nameText = new TozeTextArea(basicTypeDef.getName());
             add(nameText);
             }
     }
@@ -37,7 +33,7 @@ public class BasicTypeView extends ParagraphView
         int x = insets.left + HMargin + fm.stringWidth(BasicTypePre);
         int y = insets.top + VMargin;
         d = nameText.getPreferredSize();
-        
+
         nameText.setBounds(x + fm.stringWidth(BasicTypePre), y, d.width, d.height);
     }
 
@@ -75,7 +71,7 @@ public class BasicTypeView extends ParagraphView
         Dimension d = getPreferredSize();
         FontMetrics fm = g.getFontMetrics();
         int ystring = (fm.getHeight() - fm.getDescent());
-        
+
         Dimension cd = nameText.getPreferredSize();
         g.drawString(BasicTypePre, HMargin, VMargin + ystring);
         g.drawString(BasicTypePost, HMargin + fm.stringWidth(BasicTypePre) + cd.width, VMargin + ystring);

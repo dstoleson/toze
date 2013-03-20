@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -11,25 +10,21 @@ public class AbbreviationView extends ParagraphView
 {
     static final String AbbreviationMid = " == ";
     //
-    private AbbreviationDef abbreviationDef;
-    //
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
-    public AbbreviationView(AbbreviationDef abbreviationDef)
+    public AbbreviationView(TozeTextArea nameText, TozeTextArea expressionText)
     {
-        this.abbreviationDef = abbreviationDef;
+        this.nameText = nameText;
+        this.expressionText = expressionText;
 
-        if (abbreviationDef.getName() != null)
+        if (nameText != null)
             {
-            nameText = new TozeTextArea(abbreviationDef.getName());
-            add(nameText);
+            add(nameText);            
             }
-
-        if (abbreviationDef.getExpression() != null)
+        if (expressionText != null) 
             {
-            expressionText = new TozeTextArea(abbreviationDef.getExpression());
-            add(expressionText);
+            add(expressionText);    
             }
     }
 

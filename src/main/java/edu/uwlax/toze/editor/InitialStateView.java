@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.InitialState;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -21,22 +20,15 @@ public class InitialStateView extends ParagraphView
     static private final String m_post = "]";
     //
     TozeTextArea predicateText;
-    private InitialState initialState;
 
-    public InitialStateView(InitialState initialState)
+    public InitialStateView(TozeTextArea predicateText)
     {
-        this.initialState = initialState;
-
-        String predicate = "";
+        this.predicateText = predicateText;
         
-        if (initialState != null)
+        if (predicateText != null)
             {
-            predicate = initialState.getPredicate();
+            add(predicateText);
             }
-        
-        predicateText = new TozeTextArea(predicate);
-
-        add(predicateText);
     }
 
     @Override

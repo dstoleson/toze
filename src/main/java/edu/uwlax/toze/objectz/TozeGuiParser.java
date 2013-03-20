@@ -1,12 +1,13 @@
 package edu.uwlax.toze.objectz;
 
+import edu.uwlax.toze.editor.SpecificationSection;
 import edu.uwlax.toze.spec.AbbreviationDef;
 import edu.uwlax.toze.spec.AxiomaticDef;
 import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.Operation;
+import edu.uwlax.toze.persist.Operation;
 import edu.uwlax.toze.spec.SchemaDef;
 import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.State;
@@ -87,36 +88,36 @@ public class TozeGuiParser extends TozeParser
             end();  // generic
             }
 
-        for (SchemaDef schemaDef : toze.getSchemaDef())
-            {
-            if (schemaDef.getExpression() != null)
-                {
-                start(SpecificationSection.Schema2);
-                }
-            else
-                {
-                start(SpecificationSection.Schema1);
-                }
-
-            parse_guiSchemaHeader(schemaDef, schemaDef.getName());
-
-            if (schemaDef.getDeclaration() != null)
-                {
-                parse_guiDeclaration(schemaDef, schemaDef.getDeclaration());
-                }
-
-            if (schemaDef.getPredicate() != null)
-                {
-                parse_guiPredicateList(schemaDef, schemaDef.getPredicate());
-                }
-
-            if (schemaDef.getExpression() != null)
-                {
-                parse_guiSchemaExpression(schemaDef, schemaDef.getExpression());
-                }
-
-            end();  // schema
-            }
+//        for (SchemaDef schemaDef : toze.getSchemaDef())
+//            {
+//            if (schemaDef.getExpression() != null)
+//                {
+//                start(SpecificationSection.Schema2);
+//                }
+//            else
+//                {
+//                start(SpecificationSection.Schema1);
+//                }
+//
+//            parse_guiSchemaHeader(schemaDef, schemaDef.getName());
+//
+//            if (schemaDef.getDeclaration() != null)
+//                {
+//                parse_guiDeclaration(schemaDef, schemaDef.getDeclaration());
+//                }
+//
+//            if (schemaDef.getPredicate() != null)
+//                {
+//                parse_guiPredicateList(schemaDef, schemaDef.getPredicate());
+//                }
+//
+//            if (schemaDef.getExpression() != null)
+//                {
+//                parse_guiSchemaExpression(schemaDef, schemaDef.getExpression());
+//                }
+//
+//            end();  // schema
+//            }
 
         if (toze.getPredicate() != null)
             {
@@ -299,165 +300,128 @@ public class TozeGuiParser extends TozeParser
 
     private void parse_guiExpression(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_Expression();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiBasicTypeDefinition(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_nIdentifier();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiBranch(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_nBranch();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiClassHeader(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_ClassHeader();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
     
     private void parse_guiDeclaration(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_Declaration();
-        TozeToken t = getParseResult();
-        handleError(t, o);
-        
+        postParse(o);
     }
 
     private void parse_guiFormalParametersWoBrackets(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_FormalParametersWoBrackets();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiFormalParameters(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_FormalParameters();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiIdentifier(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_Identifier();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiInheritedClass(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_nInheritedClass();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiOperationExpression(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_OperationExpression();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiPredicate(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_Predicate();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
-    private void parse_guiSchemaExpression(SpecObject o, String text)
-    {
-        reset();
-        tokenize(text);
-        result = parse_SchemaExpression();
-        TozeToken t = getParseResult();
-        handleError(t, o);
-    }
-
-    private void parse_guiSchemaHeader(SpecObject o, String text)
-    {
-        reset();
-        tokenize(text);
-        result = parse_SchemaHeader();
-        TozeToken t = getParseResult();
-        handleError(t, o);
-    }
-
-    private void parse_guiVisibilityList(SpecObject o, String text)
-    {
-        reset();
-        tokenize(text);
-        result = parse_DeclarationNameList();
-        TozeToken t = getParseResult();
-        handleError(t, o);
-    }
+//    private void parse_guiSchemaExpression(SpecObject o, String text)
+//    {
+//        preParse(text);
+//        result = parse_SchemaExpression();
+//        postParse(o);
+//    }
+//
+//    private void parse_guiSchemaHeader(SpecObject o, String text)
+//    {
+//        preParse(text);
+//        result = parse_SchemaHeader();
+//        postParse(o);
+//    }
+//
+//    private void parse_guiVisibilityList(SpecObject o, String text)
+//    {
+//        preParse(text);
+//        result = parse_DeclarationNameList();
+//        postParse(o);
+//    }
 
     private void parse_guiState(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_DeclarationNameList();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiOperationName(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_Identifier();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
-    private void parse_guiDeltaList(SpecObject o, String text)
-    {
-        reset();
-        tokenize(text);
-        result = parse_DeclarationNameList();
-        TozeToken t = getParseResult();
-        handleError(t, o);
-    }
+//    private void parse_guiDeltaList(SpecObject o, String text)
+//    {
+//        preParse(text);
+//        result = parse_DeclarationNameList();
+//        postParse(o);
+//    }
 
     private void parse_guiDeclarationNameList(SpecObject o, String text)
     {
-        reset();
-        tokenize(text);
+        preParse(text);
         result = parse_DeclarationNameList();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
     private void parse_guiPredicateList(SpecObject o, String text)
@@ -466,12 +430,10 @@ public class TozeGuiParser extends TozeParser
             {
             return;
             }
-        
-        reset();
-        tokenize(text);
+
+        preParse(text);
         result = parse_PredicateList();
-        TozeToken t = getParseResult();
-        handleError(t, o);
+        postParse(o);
     }
 
 

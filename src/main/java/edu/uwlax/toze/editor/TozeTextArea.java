@@ -10,22 +10,13 @@ import javax.swing.*;
 
 public class TozeTextArea extends JTextArea
 {
-    static Font m_font = null;
-    static Color m_bColor = null;
-    static Color m_errorBColor = null;
-    static FocusListener m_focusListener = null;
-    private Font m_defaultFont = null;
     public boolean m_ignoreEnter = true;
-    public int m_errorPos = -1;
-    public String m_pre = "";
-    public String m_post = "";
     private TozeChars m_map = new TozeChars();
     private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
     static boolean m_anyChanged = false;
     List m_typeErrorIds = new ArrayList();
     List m_tokens = new ArrayList();
     String m_orig = null;
-    static Component m_actionSpec = null;
 
     public class TozeReader extends BufferedReader
     {
@@ -87,36 +78,7 @@ public class TozeTextArea extends JTextArea
     public TozeTextArea(String s)
     {
         super(s);
-        commonConstructor();
-    }
-
-    private void commonConstructor()
-    {
         setFocusable(true);
-        if (m_focusListener != null)
-            {
-            this.addFocusListener(m_focusListener);
-            }
-
-        //Font f = new Font("Arial Unicode MS", Font.PLAIN, 16);
-        m_defaultFont = getFont();
-        setFont(TozeFontMap.getFont());
-
-        /*
-         * The background will be a light gray to let the
-         * user know where the field is. This is instead of
-         * a border which would look cluttered.
-         */
-
-//        if (m_bColor == null)
-//            {
-//            m_bColor = new Color((float) 0.90, (float) 0.90, (float) 0.90);
-//            }
-//        if (m_errorBColor == null)
-//            {
-//            m_errorBColor = new Color((float) 0.9, (float) 0.7, (float) 0.7);
-//            }
-//        setBackground(m_bColor);
     }
 
     @Override
@@ -134,7 +96,6 @@ public class TozeTextArea extends JTextArea
         d.width += 20;
 
         Graphics g = getGraphics();
-        //g.setFont(m_defaultFont);
         FontMetrics fm = g.getFontMetrics();
         if (m_typeErrorIds.size() > 0)
             {
@@ -142,7 +103,6 @@ public class TozeTextArea extends JTextArea
             }
 
         d.height += 5;
-        //g.setFont(m_font);
 
         return d;
     }
@@ -198,7 +158,6 @@ public class TozeTextArea extends JTextArea
 
             if (changed)
                 {
-                m_errorPos = -1;
                 clearErrors();
                 clearTypeErrors();
                 m_orig = getText();
@@ -231,15 +190,10 @@ public class TozeTextArea extends JTextArea
     @Override
     public void paint(Graphics g)
     {
-        if (m_typeErrorIds.size() > 0)
-            {
-            setBackground(m_errorBColor);
-            }
-        else
-            {
-            setBackground(Color.WHITE);
-            }
-
+        setBackground(Color.WHITE);
+        g.setFont(TozeFontMap.getFont());
+        setFont(TozeFontMap.getFont());
+        
         super.paint(g);
         Color c = g.getColor();
         TozeReader r = getReader();
@@ -284,7 +238,6 @@ public class TozeTextArea extends JTextArea
         if (m_typeErrorIds.size() > 0)
             {
             int longest = 0;
-            Font f = g.getFont();
             String tmp;
             TozeToken token;
             int numRows = 0;
@@ -309,8 +262,6 @@ public class TozeTextArea extends JTextArea
                 lineinfo[i] = "";
                 }
 
-            g.setFont(m_defaultFont);
-
             for (i = 0; i < m_typeErrorIds.size(); i++)
                 {
                 token = (TozeToken) m_tokens.get(i);
@@ -333,12 +284,12 @@ public class TozeTextArea extends JTextArea
                     g.drawString(lineinfo[i], longest + 20, ((fm.getHeight() * (i + 1)) - fm.getDescent()));
                     }
                 }
+            
             g.setColor(c);
-            g.setFont(m_font);
             }
     }
 
-    public TozeReader getReader()
+    private TozeReader getReader()
     {
         StringReader reader = new StringReader(getText());
         return new TozeReader(reader);
@@ -346,7 +297,7 @@ public class TozeTextArea extends JTextArea
 
     private void clearErrors()
     {
-        m_errors = new Vector();
+        m_errors.clear();
         setToolTipText(null);
     }
 
@@ -367,8 +318,8 @@ public class TozeTextArea extends JTextArea
 
     private void clearTypeErrors()
     {
-        m_typeErrorIds = new Vector();
-        m_tokens = new Vector();
+        m_typeErrorIds.clear();
+        m_tokens.clear();
         invalidate();
     }
 

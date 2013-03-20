@@ -71,8 +71,8 @@ public class SpecificationView extends JPanel implements MouseListener
 
     private void printMouseEvent(MouseEvent me)
     {
-        System.out.println("X: " + me.getX());
-        System.out.println("Y: " + me.getY());
+//        System.out.println("X: " + me.getX());
+//        System.out.println("Y: " + me.getY());
     }
 
     public void mouseClicked(MouseEvent me)

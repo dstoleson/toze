@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.Operation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -30,38 +29,44 @@ public class OperationView extends ParagraphView
     private TozeTextArea predicateText;
     private TozeTextArea operationExpressionText;
 
-    public OperationView(Operation operation)
-    {
-        super();
-
+    public OperationView()
+    {        
         this.setLayout(new ParaLayout(this));
-
-        operationNameText = new TozeTextArea(operation.getName());
+    }
+    
+    public void setOperationNameText(TozeTextArea operationNameText)
+    {
+        // TODO find out where to put this view
+        this.operationNameText = operationNameText;
         add(operationNameText);
+    }
+    
+    public void setDeltaListView(DeltaListView deltaListView)
+    {
+        // TODO find out where to put this view
+        this.deltaListView = deltaListView;
+        add(deltaListView);
+    }
+    
+    public void setDeclarationText(TozeTextArea declarationText)
+    {
+        // TODO find out where to put this view
+        this.declarationText = declarationText;
+        add(declarationText);
+    }
 
-        if (operation.getDeltaList() != null)
-            {
-            deltaListView = new DeltaListView(operation.getDeltaList());
-            add(deltaListView);
-            }
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        // TODO find out where to put this view
+        this.predicateText = predicateText;
+        add(predicateText);
+    }
 
-        if (operation.getDeclaration() != null)
-            {
-            declarationText = new TozeTextArea(operation.getDeclaration());
-            add(declarationText);
-            }
-
-        if (operation.getPredicate() != null)
-            {
-            predicateText = new TozeTextArea(operation.getPredicate());
-            add(predicateText);
-            }
-
-        if (operation.getOperationExpression() != null)
-            {
-            operationExpressionText = new TozeTextArea(operation.getOperationExpression());
-            add(operationExpressionText);
-            }
+    public void setOperationExpressionText(TozeTextArea operationExpressionText)
+    {
+        // TODO find out where to put this view
+        this.operationExpressionText = operationExpressionText;
+        add(operationExpressionText);
     }
 
     @Override

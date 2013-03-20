@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.AxiomaticDef;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -13,24 +12,20 @@ public class AxiomaticView extends ParagraphView
     static private final int AxLineMargin = 5;
     static private final int AxExtraLine = 10;
     //
-    private AxiomaticDef axiomaticDef;
-    //
     TozeTextArea declarationText;
     TozeTextArea predicateText;
 
-    public AxiomaticView(AxiomaticDef axiomaticDef)
+    public AxiomaticView(TozeTextArea declarationText, TozeTextArea predicateText)
     {
-        this.axiomaticDef = axiomaticDef;
-        
-        if (axiomaticDef.getDeclaration() != null)
+        this.declarationText = declarationText;
+        this.predicateText = predicateText;
+
+        if (declarationText != null)
             {
-            declarationText = new TozeTextArea(axiomaticDef.getDeclaration());
             add(declarationText);
             }
-        
-        if (axiomaticDef.getPredicate() != null)
+        if (predicateText != null)
             {
-            predicateText = new TozeTextArea(axiomaticDef.getPredicate());
             add(predicateText);
             }
     }
@@ -128,8 +123,6 @@ public class AxiomaticView extends ParagraphView
 
         g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight + InterVMargin);
         yoffset += declsHeight + InterVMargin;
-
-
             {
             g.drawLine(xoffset, yoffset, xoffset + cd.width - 1, yoffset);
             g.drawLine(xoffset, yoffset, xoffset, cd.height - VMargin);

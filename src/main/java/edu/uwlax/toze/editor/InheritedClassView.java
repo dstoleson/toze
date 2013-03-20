@@ -1,21 +1,21 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.InheritedClass;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 
 public class InheritedClassView extends ParagraphView implements Placement
 {
-    private InheritedClass inheritedClass;
-    
     private TozeTextArea inheritedClassText;
 
-    public InheritedClassView(InheritedClass inheritedClass)
+    public InheritedClassView(TozeTextArea inheritedClassText)
     {
-        this.inheritedClass = inheritedClass;
-        inheritedClassText = new TozeTextArea(inheritedClass.getName());
-        add(inheritedClassText);
+        this.inheritedClassText = inheritedClassText;
+        
+        if (inheritedClassText != null)
+            {
+            add(inheritedClassText);
+            }
     }
 
     @Override

@@ -2,8 +2,10 @@ package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.spec.TOZE;
 import java.io.InputStream;
+import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 /**
@@ -53,5 +55,31 @@ public class SpecificationBuilder
             }
 
         return toze;
+    }
+
+    /**
+     * Write a TOZE specification to an output stream.
+     *
+     * @param toze         The specification to write
+     *
+     * @param outputStream The stream to write to, probably a FileOutputStream
+     *                     of some kind.
+     *
+     * @throws Exception There was a problem writing the specification to the
+     *                   output stream.
+     */
+    public void writeToStream(TOZE toze, OutputStream outputStream) throws Exception
+    {
+        try
+            {
+            JAXBContext context = JAXBContext.newInstance(TOZE.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setListener(new SpecificationMarshallerListener());
+            marshaller.marshal(toze, outputStream);
+            }
+        catch (JAXBException e)
+            {
+            e.printStackTrace();
+            }
     }
 }

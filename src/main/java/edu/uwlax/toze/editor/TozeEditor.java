@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
+import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.SpecObject;
@@ -8,9 +9,12 @@ import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,7 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
-import javax.swing.JViewport;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -48,7 +51,9 @@ public class TozeEditor extends javax.swing.JFrame
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem openSpecificationMenu;
+    private JMenuItem addClassMenu;
     private JMenuItem checkSpecificationMenu;
+    private JMenuItem saveSpecificationMenu;
     private JMenuItem closeSpecificationMenu;
 
     // Main UI layout
@@ -125,8 +130,10 @@ public class TozeEditor extends javax.swing.JFrame
         menuBar = new JMenuBar();
         fileMenu = new JMenu();
         openSpecificationMenu = new JMenuItem();
+        saveSpecificationMenu = new JMenuItem();
         closeSpecificationMenu = new JMenuItem();
         checkSpecificationMenu = new JMenuItem();
+        addClassMenu = new JMenuItem();
         
         specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
@@ -202,9 +209,29 @@ public class TozeEditor extends javax.swing.JFrame
                 openSpecification(evt);
             }
         });
-        
         fileMenu.add(openSpecificationMenu);
 
+        saveSpecificationMenu.setMnemonic('S');
+        saveSpecificationMenu.setText("Save");
+        saveSpecificationMenu.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                saveSpecification(e);
+            }
+        });
+        fileMenu.add(saveSpecificationMenu);
+
+        addClassMenu.setText("Add Class");
+        addClassMenu.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                addClass();
+            }
+        });
+        fileMenu.add(addClassMenu);
+        
         checkSpecificationMenu.setMnemonic('K');
         checkSpecificationMenu.setText("Check");
         checkSpecificationMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -251,7 +278,7 @@ public class TozeEditor extends javax.swing.JFrame
         pack();
     }
 
-    private void openSpecification(java.awt.event.ActionEvent evt)
+    private void openSpecification(ActionEvent event)
     {
         FileDialog fileDialog = new FileDialog(this, "Open Specification", FileDialog.LOAD);
         fileDialog.show();
@@ -293,10 +320,45 @@ public class TozeEditor extends javax.swing.JFrame
             }
     }
 
+    private void saveSpecification(ActionEvent event)
+    {
+        saveAsSpecification(event);
+    }
+    
+    private void saveAsSpecification(ActionEvent event)
+    {
+        FileDialog fileDialog = new FileDialog(this, "Save Specification", FileDialog.SAVE);
+        fileDialog.show();
+        
+        if (fileDialog.getFile() != null)
+            {
+            File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
+            
+            try
+                {
+                OutputStream outputStream = new FileOutputStream(specificationFile);
+                SpecificationBuilder specBuilder = new SpecificationBuilder();
+                SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+                TOZE toze = specController.getSpecification();
+                specBuilder.writeToStream(toze, outputStream);
+                outputStream.close();
+                }
+            catch (Exception e)
+                {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+    }
+
+    private void addClass()
+    {        
+        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+        specController.addClass();
+    }
+    
     private void checkSpecification(ActionEvent evt)
     {
-        JScrollPane selectedPane = (JScrollPane)specificationTabPanel.getSelectedComponent();
-//        SpecificationView specView = (SpecificationView)((JViewport)selectedPane.getComponent(0)).getComponent(0);
         SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
         TOZE toze = specController.getSpecification();
         

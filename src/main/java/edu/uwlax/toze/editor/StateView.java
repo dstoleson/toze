@@ -1,6 +1,5 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.State;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -16,34 +15,30 @@ public class StateView extends ParagraphView
     static final String m_pre = "[";
     static final String m_post = "]";
     //   
-    private State state;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
     private TozeTextArea stateNameText;
     
-    public StateView(State state)
-    {
-        super();
-        
-        this.state = state;
-        
+    public StateView(TozeTextArea declarationText, TozeTextArea predicateText, TozeTextArea stateNameText)
+    {        
         this.setLayout(new ParaLayout(this));
 
-        if (state.getDeclaration() != null)
+        this.declarationText = declarationText;
+        this.predicateText = predicateText;
+        this.stateNameText = stateNameText;
+
+        if (declarationText != null)
             {
-            declarationText = new TozeTextArea(state.getDeclaration());
-            add(declarationText);            
+            add(declarationText);
             }
-        
-        if (state.getPredicate() != null)
+
+        if (predicateText != null)
             {
-            predicateText = new TozeTextArea(state.getPredicate());
             add(predicateText);
             }
-        
-        if (state.getName() != null)
+
+        if (stateNameText != null)
             {
-            stateNameText = new TozeTextArea(state.getName());
             add(stateNameText);
             }
     }
