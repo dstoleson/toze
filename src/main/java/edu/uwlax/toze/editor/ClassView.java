@@ -33,11 +33,11 @@ public class ClassView extends ParagraphView
 
     public ClassView()
     {
+        this.setLayout(new ParaLayout(this));
+
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
-
-        this.setLayout(new ParaLayout(this));
     }
     
     public void setClassNameText(TozeTextArea classNameText)

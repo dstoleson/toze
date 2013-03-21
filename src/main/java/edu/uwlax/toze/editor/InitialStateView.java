@@ -19,7 +19,7 @@ public class InitialStateView extends ParagraphView
     static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
     static private final String m_post = "]";
     //
-    TozeTextArea predicateText;
+    private TozeTextArea predicateText;
 
     public InitialStateView(TozeTextArea predicateText)
     {

@@ -29,6 +29,8 @@ public class SpecDocumentListener implements DocumentListener
 
     private void update(DocumentEvent event)
     {
+        System.out.println("Enter: update(DocumentEvent)");
+        
         if (binding != null)
             {
             try 
@@ -41,6 +43,7 @@ public class SpecDocumentListener implements DocumentListener
                 // ???
                 }            
             }        
+        System.out.println("Exit: update(DocumentEvent)");
     }
     
     public void insertUpdate(DocumentEvent event)

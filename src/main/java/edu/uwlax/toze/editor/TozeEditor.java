@@ -9,7 +9,6 @@ import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.GroupLayout;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -46,12 +47,11 @@ import javax.swing.tree.TreePath;
  *
  * @author David Stoleson
  */
-public class TozeEditor extends javax.swing.JFrame
+public class TozeEditor extends javax.swing.JFrame implements Observer
 {
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem openSpecificationMenu;
-    private JMenuItem addClassMenu;
     private JMenuItem checkSpecificationMenu;
     private JMenuItem saveSpecificationMenu;
     private JMenuItem closeSpecificationMenu;
@@ -133,7 +133,6 @@ public class TozeEditor extends javax.swing.JFrame
         saveSpecificationMenu = new JMenuItem();
         closeSpecificationMenu = new JMenuItem();
         checkSpecificationMenu = new JMenuItem();
-        addClassMenu = new JMenuItem();
         
         specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
@@ -206,7 +205,7 @@ public class TozeEditor extends javax.swing.JFrame
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                openSpecification(evt);
+                openSpecification();
             }
         });
         fileMenu.add(openSpecificationMenu);
@@ -217,20 +216,10 @@ public class TozeEditor extends javax.swing.JFrame
 
             public void actionPerformed(ActionEvent e)
             {
-                saveSpecification(e);
+                saveSpecification();
             }
         });
         fileMenu.add(saveSpecificationMenu);
-
-        addClassMenu.setText("Add Class");
-        addClassMenu.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e)
-            {
-                addClass();
-            }
-        });
-        fileMenu.add(addClassMenu);
         
         checkSpecificationMenu.setMnemonic('K');
         checkSpecificationMenu.setText("Check");
@@ -238,7 +227,7 @@ public class TozeEditor extends javax.swing.JFrame
 
             public void actionPerformed(ActionEvent e)
             {
-                checkSpecification(e);
+                checkSpecification();
             }
         });
         fileMenu.add(checkSpecificationMenu);
@@ -248,7 +237,7 @@ public class TozeEditor extends javax.swing.JFrame
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                closeSpecification(evt);
+                closeSpecification();
             }
         });
         fileMenu.add(closeSpecificationMenu);
@@ -278,7 +267,7 @@ public class TozeEditor extends javax.swing.JFrame
         pack();
     }
 
-    private void openSpecification(ActionEvent event)
+    private void openSpecification()
     {
         FileDialog fileDialog = new FileDialog(this, "Open Specification", FileDialog.LOAD);
         fileDialog.show();
@@ -310,22 +299,25 @@ public class TozeEditor extends javax.swing.JFrame
                 
                 // map the tab to the controller
                 tabControllers.put(Integer.valueOf(tabIndex), controller);
+                
+                controller.addObserver(this);
+                
+                checkSpecification();
                 }
             catch (Exception e)
                 {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
                 }
-
             }
     }
 
-    private void saveSpecification(ActionEvent event)
+    private void saveSpecification()
     {
-        saveAsSpecification(event);
+        saveAsSpecification();
     }
     
-    private void saveAsSpecification(ActionEvent event)
+    private void saveAsSpecification()
     {
         FileDialog fileDialog = new FileDialog(this, "Save Specification", FileDialog.SAVE);
         fileDialog.show();
@@ -350,15 +342,10 @@ public class TozeEditor extends javax.swing.JFrame
                 }
             }
     }
-
-    private void addClass()
-    {        
-        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
-        specController.addClass();
-    }
     
-    private void checkSpecification(ActionEvent evt)
+    private void checkSpecification()
     {
+        // TODO some duplicate between this and the SpecificationController class
         SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
         TOZE toze = specController.getSpecification();
         
@@ -378,7 +365,7 @@ public class TozeEditor extends javax.swing.JFrame
         errorsList.setListData(errors.toArray());
     }
     
-    private void closeSpecification(java.awt.event.ActionEvent evt)
+    private void closeSpecification()
     {
         // get selected specifications
         // remove them from the treemodel
@@ -404,6 +391,7 @@ public class TozeEditor extends javax.swing.JFrame
                         treeModel.removeSpecification(specification);
                         int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
                         specificationTabPanel.removeTabAt(tabIndex);
+                        tabControllers.remove(tabIndex);
                         }
                     }
                 }
@@ -426,5 +414,14 @@ public class TozeEditor extends javax.swing.JFrame
                 new TozeEditor().setVisible(true);
             }
         });
+    }
+
+    public void update(Observable o, Object arg)
+    {
+        if (o instanceof SpecificationController)
+            {
+            List<String> errors = (List<String>)arg;
+            errorsList.setListData(errors.toArray());
+            }
     }
 }

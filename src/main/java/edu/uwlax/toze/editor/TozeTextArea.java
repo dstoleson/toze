@@ -190,11 +190,22 @@ public class TozeTextArea extends JTextArea
     @Override
     public void paint(Graphics g)
     {
-        setBackground(Color.WHITE);
+        Component parent = this.getParent();
+        
+        if (this.getParent() == null)
+            {
+            setBackground(Color.WHITE);
+            }
+        else
+            {
+            setBackground(parent.getBackground());
+            }
+        
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
         
         super.paint(g);
+        
         Color c = g.getColor();
         TozeReader r = getReader();
         FontMetrics fm = g.getFontMetrics();
