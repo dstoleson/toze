@@ -12,24 +12,44 @@ public class AxiomaticView extends ParagraphView
     static private final int AxLineMargin = 5;
     static private final int AxExtraLine = 10;
     //
-    TozeTextArea declarationText;
-    TozeTextArea predicateText;
+    private TozeTextArea declarationText;
+    private TozeTextArea predicateText;
 
-    public AxiomaticView(TozeTextArea declarationText, TozeTextArea predicateText)
+    public AxiomaticView()
     {
+        setLayout(new ParaLayout(this));
+    }
+
+    public void setDeclarationText(TozeTextArea declarationText)
+    {
+        if (this.declarationText != null)
+            {
+            remove(this.declarationText);
+            }
+
         this.declarationText = declarationText;
-        this.predicateText = predicateText;
 
         if (declarationText != null)
             {
             add(declarationText);
             }
+    }
+
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
+        this.predicateText = predicateText;
+
         if (predicateText != null)
             {
             add(predicateText);
             }
     }
-
+    
     @Override
     public void layout()
     {

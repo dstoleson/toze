@@ -42,29 +42,67 @@ public class ClassView extends ParagraphView
     
     public void setClassNameText(TozeTextArea classNameText)
     {
+        if (this.classNameText != null)
+            {
+            remove(this.classNameText);
+            }
         this.classNameText = classNameText;
-        add(classNameText);
+
+        if (classNameText != null)
+            {
+            add(classNameText);
+            }
     }
 
     public void setVisibilityListView(VisibilityListView visibilityListView)
     {
         // TODO need to figure out where to add the view
+
+        if (this.visibilityListView != null)
+            {
+            remove(this.visibilityListView);
+            }
+
         this.visibilityListView = visibilityListView;
-        add(visibilityListView);
+
+        if (visibilityListView != null)
+            {
+            add(visibilityListView);
+            }
     }
     
     public void setStateView(StateView stateView)
     {
         // TODO need to figure out where to add the view
+
+        if (this.stateView != null)
+            {
+            remove(this.stateView);
+            }
+
         this.stateView = stateView;
-        add(stateView);
+
+        if (stateView != null)
+            {
+            add(stateView);
+            }
     }
     
     public void setInitialStateView(InitialStateView initialStateView)
     {
         // TODO need to figure out where to add the view
+
+        if (this.initialStateView != null)
+            {
+            remove(this.initialStateView);
+            }
+
         this.initialStateView = initialStateView;
-        add(initialStateView);
+
+        if (initialStateView != null)
+            {
+            add(initialStateView);
+            }
     }
     
     public void addBasicTypeView(BasicTypeView basicTypeView)
@@ -72,6 +110,12 @@ public class ClassView extends ParagraphView
         // TODO need to figure out where to add the view
         basicTypeViews.add(basicTypeView);
         add(basicTypeView);
+    }
+
+    public void removeBasicTypeView(BasicTypeView basicTypeView)
+    {
+        basicTypeViews.remove(basicTypeView);
+        remove(basicTypeView);
     }
     
     public void addFreeTypeView(FreeTypeView freeTypeView)
@@ -81,17 +125,39 @@ public class ClassView extends ParagraphView
         add(freeTypeView);
     }
 
+    public void removeFreeTypeView(FreeTypeView freeTypeView)
+    {
+        freeTypeViews.remove(freeTypeView);
+        remove(freeTypeView);
+    }
+
     public void addOperationView(OperationView operationView)
     {
         // TODO need to figure out where to add the view
         operationViews.add(operationView);
         add(operationView);
     }
-    
+
+    public void removeOperationView(OperationView operationView)
+    {
+        operationViews.remove(operationView);
+        remove(operationView);
+    }
+
     public void setInheritedClassView(InheritedClassView inheritedClassView)
     {
         // need to figure out where to add the view
+        if(this.inheritedClassView != null)
+            {
+            remove(this.inheritedClassView);
+            }
+
         this.inheritedClassView = inheritedClassView;
+
+        if (inheritedClassView != null)
+            {
+            add(inheritedClassView);
+            }
     }
     
     @Override
@@ -120,6 +186,7 @@ public class ClassView extends ParagraphView
                    yoffset + cnd.height - ClassNameLineMargin);
         g.drawLine(xoffset, yoffset + cnd.height - ClassNameLineMargin, xoffset, d.height - 1 - VMargin);
         g.drawLine(xoffset, d.height - 1 - VMargin, d.width - 1 - HMargin, d.height - 1 - VMargin);
+        yoffset += cnd.height + InterVMargin;
     }
 
     @Override
@@ -218,7 +285,7 @@ public class ClassView extends ParagraphView
 
         for (OperationView operationView : operationViews)
             {
-            d = operationView.getPreferredSize(g);
+            d = operationView.getPreferredSize(this.getGraphics());
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {

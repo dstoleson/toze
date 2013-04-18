@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
 
+
 public class FreeTypeView extends ParagraphView implements Placement
 {
     private final String FreeTypeMid = " ::= ";
@@ -13,22 +14,41 @@ public class FreeTypeView extends ParagraphView implements Placement
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public FreeTypeView(TozeTextArea declarationText, TozeTextArea predicateText)
+    public FreeTypeView()
     {
+        setLayout(new ParaLayout(this));
+    }
+    
+    public void setDeclarationText(TozeTextArea declarationText)
+    {
+        if (this.declarationText != null)
+            {
+            remove(this.declarationText);
+            }
+
         this.declarationText = declarationText;
-        this.predicateText = predicateText;
-        
+
         if (declarationText != null)
             {
             add(declarationText);
             }
-        
+    }
+
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
+        this.predicateText = predicateText;
+
         if (predicateText != null)
             {
             add(predicateText);
             }
     }
-
+    
     @Override
     public void layout()
     {

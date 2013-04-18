@@ -31,42 +31,85 @@ public class OperationView extends ParagraphView
 
     public OperationView()
     {        
-        this.setLayout(new ParaLayout(this));
+        setLayout(new ParaLayout(this));
     }
     
     public void setOperationNameText(TozeTextArea operationNameText)
     {
-        // TODO find out where to put this view
+        if (this.operationNameText != null)
+            {
+            remove(this.operationNameText);
+            }
+
         this.operationNameText = operationNameText;
-        add(operationNameText);
+
+        if (operationNameText != null)
+            {
+            add(operationNameText);
+            }
     }
     
     public void setDeltaListView(DeltaListView deltaListView)
     {
-        // TODO find out where to put this view
+        // Remove any existing one
+        if (this.deltaListView != null)
+            {
+            remove(this.deltaListView);
+            }
+
         this.deltaListView = deltaListView;
-        add(deltaListView);
+
+        // Add the new one
+        if (deltaListView != null)
+            {
+            add(this.deltaListView);
+            }
+
     }
     
     public void setDeclarationText(TozeTextArea declarationText)
     {
-        // TODO find out where to put this view
+        if (this.declarationText != null)
+            {
+            remove(this.declarationText);
+            }
+
         this.declarationText = declarationText;
-        add(declarationText);
+
+        if (declarationText != null)
+            {
+            add(declarationText);
+            }
     }
 
     public void setPredicateText(TozeTextArea predicateText)
     {
-        // TODO find out where to put this view
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
         this.predicateText = predicateText;
-        add(predicateText);
+
+        if (predicateText != null)
+            {
+            add(predicateText);
+            }
     }
 
     public void setOperationExpressionText(TozeTextArea operationExpressionText)
     {
-        // TODO find out where to put this view
+        if (this.operationExpressionText != null)
+            {
+            remove(this.operationExpressionText);
+            }
+
         this.operationExpressionText = operationExpressionText;
-        add(operationExpressionText);
+
+        if (operationExpressionText != null)
+            {
+            add(operationExpressionText);
+            }
     }
 
     @Override

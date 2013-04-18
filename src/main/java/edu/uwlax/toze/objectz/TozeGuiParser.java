@@ -7,8 +7,7 @@ import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.persist.Operation;
-import edu.uwlax.toze.spec.SchemaDef;
+import edu.uwlax.toze.spec.Operation;
 import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.State;
 import edu.uwlax.toze.spec.TOZE;
@@ -480,12 +479,12 @@ public class TozeGuiParser extends TozeParser
             case Predicate :
                 m_nodes.push(m_ast.new AstPredicatePara());
                 break;
-            case Schema1 :
-                m_nodes.push(m_ast.new AstSchema1());
-                break;
-            case Schema2 :
-                m_nodes.push(m_ast.new AstSchema2());
-                break;
+//            case Schema1 :
+//                m_nodes.push(m_ast.new AstSchema1());
+//                break;
+//            case Schema2 :
+//                m_nodes.push(m_ast.new AstSchema2());
+//                break;
             case State :
                 m_nodes.push(m_ast.new AstState());
                 break;

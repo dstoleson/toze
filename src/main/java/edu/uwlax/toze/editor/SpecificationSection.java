@@ -15,8 +15,6 @@ public enum SpecificationSection
     InitState,
     Operation,
     Predicate,
-    Schema1,
-    Schema2,
     State,
     VisibilityList;
 }

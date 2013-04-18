@@ -13,8 +13,18 @@ public class DeltaListView extends ParagraphView implements Placement
     //
     private TozeTextArea deltaListText;
 
-    public DeltaListView(TozeTextArea deltaListText)
+    public DeltaListView()
     {
+        setLayout(new ParaLayout(this));
+    }
+    
+    public void setDeltaListText(TozeTextArea deltaListText)
+    {
+        if (this.deltaListText != null)
+            {
+            remove(deltaListText);
+            }
+
         this.deltaListText = deltaListText;
 
         if (deltaListText != null)

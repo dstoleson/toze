@@ -13,21 +13,41 @@ public class AbbreviationView extends ParagraphView
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
-    public AbbreviationView(TozeTextArea nameText, TozeTextArea expressionText)
+    public AbbreviationView()
     {
+        setLayout(new ParaLayout(this));
+    }
+    
+    public void setNameText(TozeTextArea nameText)
+    {
+        if (this.nameText != null)
+            {
+            remove(this.nameText);
+            }
+        
         this.nameText = nameText;
-        this.expressionText = expressionText;
 
         if (nameText != null)
             {
             add(nameText);            
             }
-        if (expressionText != null) 
+    }
+
+    public void setExpressionText(TozeTextArea expressionText)
+    {
+        if (this.expressionText != null)
             {
-            add(expressionText);    
+            remove(this.expressionText);
+            }
+        
+        this.expressionText = expressionText;
+        if (expressionText != null)
+            {
+            add(expressionText);            
             }
     }
 
+    
     @Override
     public void layout()
     {

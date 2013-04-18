@@ -21,10 +21,20 @@ public class InitialStateView extends ParagraphView
     //
     private TozeTextArea predicateText;
 
-    public InitialStateView(TozeTextArea predicateText)
+    public InitialStateView()
     {
+        setLayout(new ParaLayout(this));
+    }
+    
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
         this.predicateText = predicateText;
-        
+
         if (predicateText != null)
             {
             add(predicateText);
@@ -46,7 +56,7 @@ public class InitialStateView extends ParagraphView
         x += HMargin;
         y += VMargin;
 
-        // @TODO - no long necessary?  see SpecificationParserTest for more comments
+        // @TODO - no longer necessary?  see SpecificationParserTest for more comments
         
 //        if (m_type == 2)
 //            {

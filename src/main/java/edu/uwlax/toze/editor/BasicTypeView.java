@@ -12,8 +12,18 @@ public class BasicTypeView extends ParagraphView
     //  
     private TozeTextArea nameText;
 
-    public BasicTypeView(TozeTextArea nameText)
+    public BasicTypeView()
     {
+        setLayout(new ParaLayout(this));
+    }
+
+    public void setNameText(TozeTextArea nameText)
+    {
+        if (this.nameText != null)
+            {
+            remove(this.nameText);
+            }
+
         this.nameText = nameText;
 
         if (nameText != null)

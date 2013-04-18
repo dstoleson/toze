@@ -10,13 +10,13 @@ import javax.swing.*;
 
 public class TozeTextArea extends JTextArea
 {
-    public boolean m_ignoreEnter = true;
+    private boolean ignoresEnter = true;
     private TozeChars m_map = new TozeChars();
     private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
-    static boolean m_anyChanged = false;
-    List m_typeErrorIds = new ArrayList();
-    List m_tokens = new ArrayList();
-    String m_orig = null;
+    static private boolean m_anyChanged = false;
+    private List m_typeErrorIds = new ArrayList();
+    private List m_tokens = new ArrayList();
+    private String m_orig = null;
 
     public class TozeReader extends BufferedReader
     {
@@ -81,6 +81,16 @@ public class TozeTextArea extends JTextArea
         setFocusable(true);
     }
 
+    public boolean isIgnoresEnter()
+    {
+        return ignoresEnter;
+    }
+
+    public void setIgnoresEnter(boolean ignoresEnter)
+    {
+        this.ignoresEnter = ignoresEnter;
+    }
+
     @Override
     public Dimension getPreferredSize()
     {
@@ -123,7 +133,7 @@ public class TozeTextArea extends JTextArea
         if (e.getID() == KeyEvent.KEY_PRESSED)
             {
 
-            if (m_ignoreEnter && (c == 10))
+            if (ignoresEnter && (c == 10))
                 {
                 handled = true;
                 }

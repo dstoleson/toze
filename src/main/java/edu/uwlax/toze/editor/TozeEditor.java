@@ -9,6 +9,7 @@ import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -51,25 +52,22 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 {
     private JMenuBar menuBar;
     private JMenu fileMenu;
+    private JMenuItem newSpecificationMenu;
     private JMenuItem openSpecificationMenu;
     private JMenuItem checkSpecificationMenu;
     private JMenuItem saveSpecificationMenu;
     private JMenuItem closeSpecificationMenu;
-
     // Main UI layout
     private JSplitPane editorSplitPane;
     private JSplitPane leftSplitPane;
     private JSplitPane rightSplitPane;
-    
     // Editor Tabs
     private JTabbedPane specificationTabPanel;
-    
     // Tree View of Specification Documents
     private JScrollPane specificationTreeScrollPane;
     private JTree specificationTree;
-
     // Special Chars and Paragraphs Palettes
-    private JTabbedPane paletteTabPanel;    
+    private JTabbedPane paletteTabPanel;
     private JScrollPane paragraphsScrollPane;
     private JList paragraphsList;
 //    private ParagraphPaletteController paragraphPaletteController;
@@ -80,10 +78,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private JScrollPane errorScrollPane;
     private JList errorsList;
 //    private ErrorListController errorListController;
-
-    
     private HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
-    
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
     // was closed.
@@ -120,40 +115,44 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         editorSplitPane = new JSplitPane();
         leftSplitPane = new JSplitPane();
         rightSplitPane = new JSplitPane();
-        
-        specificationTreeScrollPane = new JScrollPane();        
+
+        specificationTreeScrollPane = new JScrollPane();
         specificationTree = new JTree();
-        
+
         specificationTabPanel = new JTabbedPane();
         paletteTabPanel = new JTabbedPane();
-        
+
         menuBar = new JMenuBar();
         fileMenu = new JMenu();
+        newSpecificationMenu = new JMenuItem();
         openSpecificationMenu = new JMenuItem();
         saveSpecificationMenu = new JMenuItem();
         closeSpecificationMenu = new JMenuItem();
         checkSpecificationMenu = new JMenuItem();
-        
+
         specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
         specialCharsList.setCellRenderer(new TozeCharListCellRenderer());
         specialCharsList.setFont(TozeFontMap.getFont());
 
         paragraphsScrollPane = new JScrollPane();
-        String[] paragraphs = {"Basic Type", "Schema", "Class", "Operation"};
+        String[] paragraphs =
+            {
+            "Basic Type", "Class", "Operation"
+            };
         paragraphsList = new JList(paragraphs);
-        
+
         errorScrollPane = new JScrollPane();
         errorsList = new JList();
         errorsList.setFont(TozeFontMap.getFont());
-        
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplitPane.setDividerLocation(400);
         leftSplitPane.setTopComponent(specificationTreeScrollPane);
         leftSplitPane.setBottomComponent(paletteTabPanel);
-        
+
         // give the specification tree priority on resize
         // instead of the palettes
         leftSplitPane.setResizeWeight(1);
@@ -162,17 +161,17 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         rightSplitPane.setDividerLocation(400);
         rightSplitPane.setLeftComponent(specificationTabPanel);
         rightSplitPane.setRightComponent(errorScrollPane);
-        
+
         // give the document priority on resize
         // instead of the error list
         rightSplitPane.setResizeWeight(1);
-        
+
         editorSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         editorSplitPane.setDividerLocation(250);
         editorSplitPane.setLeftComponent(leftSplitPane);
         editorSplitPane.setRightComponent(rightSplitPane);
-        
-        
+
+
         specificationTree.setModel(this.getTreeModel());
         specificationTree.setRootVisible(false);
         specificationTree.setShowsRootHandles(true);
@@ -180,30 +179,41 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 //        Icon classOpenIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
 //        Icon classClosedIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
 //        Icon classLeafIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_orange.jpeg"));
-        
+
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
 //        treeCellRenderer.setOpenIcon(classOpenIcon);
 //        treeCellRenderer.setClosedIcon(classClosedIcon);
 //        treeCellRenderer.setLeafIcon(classLeafIcon);
 //        treeCellRenderer.setIcon(classOpenIcon);
-        
+
         specificationTree.setCellRenderer(treeCellRenderer);
-        
+
         specificationTreeScrollPane.setViewportView(specificationTree);
         specialCharsScrollPane.setViewportView(specialCharsList);
         paragraphsScrollPane.setViewportView(paragraphsList);
         errorScrollPane.setViewportView(errorsList);
-        
+
         paletteTabPanel.addTab("Characters", specialCharsScrollPane);
         paletteTabPanel.addTab("Paragraphs", paragraphsScrollPane);
-        
+
         fileMenu.setText("File");
+
+        newSpecificationMenu.setMnemonic('N');
+        newSpecificationMenu.setText("New");
+        newSpecificationMenu.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                newSpecification();
+            }
+        });
+        fileMenu.add(newSpecificationMenu);
 
         openSpecificationMenu.setMnemonic('O');
         openSpecificationMenu.setText("Open");
-        openSpecificationMenu.addActionListener(new java.awt.event.ActionListener()
+        openSpecificationMenu.addActionListener(new ActionListener()
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
+            public void actionPerformed(ActionEvent event)
             {
                 openSpecification();
             }
@@ -212,30 +222,30 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         saveSpecificationMenu.setMnemonic('S');
         saveSpecificationMenu.setText("Save");
-        saveSpecificationMenu.addActionListener(new java.awt.event.ActionListener() {
-
-            public void actionPerformed(ActionEvent e)
+        saveSpecificationMenu.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
             {
                 saveSpecification();
             }
         });
         fileMenu.add(saveSpecificationMenu);
-        
+
         checkSpecificationMenu.setMnemonic('K');
         checkSpecificationMenu.setText("Check");
-        checkSpecificationMenu.addActionListener(new java.awt.event.ActionListener() {
-
-            public void actionPerformed(ActionEvent e)
+        checkSpecificationMenu.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
             {
                 checkSpecification();
             }
         });
         fileMenu.add(checkSpecificationMenu);
-        
+
         closeSpecificationMenu.setText("Close");
-        closeSpecificationMenu.addActionListener(new java.awt.event.ActionListener()
+        closeSpecificationMenu.addActionListener(new ActionListener()
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
+            public void actionPerformed(ActionEvent event)
             {
                 closeSpecification();
             }
@@ -251,20 +261,25 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
-        
+
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-                ));
+                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)));
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-                ));
-        
+                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)));
+
         pack();
+    }
+
+    private void newSpecification()
+    {
+        TOZE toze = new TOZE();
+        openSpecificationTab(toze, "untitled");
+
     }
 
     private void openSpecification()
@@ -283,26 +298,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 TOZE toze = specBuilder.buildFromStream(inputStream);
                 inputStream.close();
 
-                Specification specification = new Specification(specificationFile.getName(), toze);
-                treeModel.addSpecification(specification);
-                SpecificationView specView = new SpecificationView(toze);
-                SpecificationController controller = new SpecificationController(toze, specView);
-                specView.setLayout(new TozeLayout());
-                specView.addMouseListener(specView);
-                specView.setPreferredSize(new Dimension(800, 800));
-                JScrollPane specScroller = new JScrollPane(specView);
-                
-                specificationTabPanel.addTab(specification.getFilename(), specScroller);
+                openSpecificationTab(toze, specificationFile.getName());
 
-                int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
-                specificationTabPanel.setSelectedIndex(tabIndex);
-                
-                // map the tab to the controller
-                tabControllers.put(Integer.valueOf(tabIndex), controller);
-                
-                controller.addObserver(this);
-                
-                checkSpecification();
                 }
             catch (Exception e)
                 {
@@ -312,20 +309,44 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             }
     }
 
+    private void openSpecificationTab(TOZE toze, String specificationName)
+    {
+        Specification specification = new Specification(specificationName, toze);
+        treeModel.addSpecification(specification);
+        SpecificationView specView = new SpecificationView(toze);
+        SpecificationController controller = new SpecificationController(toze, specView);
+        specView.setLayout(new TozeLayout());
+        specView.addMouseListener(specView);
+        specView.setPreferredSize(new Dimension(800, 800));
+        JScrollPane specScroller = new JScrollPane(specView);
+
+        specificationTabPanel.addTab(specification.getFilename(), specScroller);
+
+        int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+        specificationTabPanel.setSelectedIndex(tabIndex);
+
+        // map the tab to the controller
+        tabControllers.put(Integer.valueOf(tabIndex), controller);
+
+        controller.addObserver(this);
+
+        checkSpecification();
+    }
+
     private void saveSpecification()
     {
         saveAsSpecification();
     }
-    
+
     private void saveAsSpecification()
     {
         FileDialog fileDialog = new FileDialog(this, "Save Specification", FileDialog.SAVE);
         fileDialog.show();
-        
+
         if (fileDialog.getFile() != null)
             {
             File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
-            
+
             try
                 {
                 OutputStream outputStream = new FileOutputStream(specificationFile);
@@ -342,29 +363,29 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 }
             }
     }
-    
+
     private void checkSpecification()
     {
         // TODO some duplicate between this and the SpecificationController class
         SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
         TOZE toze = specController.getSpecification();
-        
+
         TozeGuiParser parser = new TozeGuiParser();
         parser.parseForErrors(toze);
-        
+
         List<String> errors = new ArrayList<String>();
-        
+
         HashMap<TozeToken, SpecObject> errorMap = parser.getSyntaxErrors();
         for (TozeToken tozeToken : errorMap.keySet())
             {
             errors.add(tozeToken.toString());
             }
-        
+
         errors.addAll(parser.getTypeErrors());
-        
+
         errorsList.setListData(errors.toArray());
     }
-    
+
     private void closeSpecification()
     {
         // get selected specifications
@@ -420,7 +441,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         if (o instanceof SpecificationController)
             {
-            List<String> errors = (List<String>)arg;
+            List<String> errors = (List<String>) arg;
             errorsList.setListData(errors.toArray());
             }
     }

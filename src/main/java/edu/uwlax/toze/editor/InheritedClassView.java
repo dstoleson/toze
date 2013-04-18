@@ -8,10 +8,20 @@ public class InheritedClassView extends ParagraphView implements Placement
 {
     private TozeTextArea inheritedClassText;
 
-    public InheritedClassView(TozeTextArea inheritedClassText)
+    public InheritedClassView()
     {
+        setLayout(new ParaLayout(this));
+    }
+
+    public void setInheritedClassText(TozeTextArea inheritedClassText)
+    {
+        if (this.inheritedClassText != null)
+            {
+            remove(this.inheritedClassText);
+            }
+
         this.inheritedClassText = inheritedClassText;
-        
+
         if (inheritedClassText != null)
             {
             add(inheritedClassText);
@@ -28,8 +38,11 @@ public class InheritedClassView extends ParagraphView implements Placement
         int x = insets.left + HMargin;
         int y = insets.top + VMargin;
 
-        d = inheritedClassText.getPreferredSize();
-        inheritedClassText.setBounds(x, y, d.width, d.height);
+        if (inheritedClassText != null)
+            {
+            d = inheritedClassText.getPreferredSize();
+            inheritedClassText.setBounds(x, y, d.width, d.height);
+            }
     }
 
     @Override
@@ -41,23 +54,22 @@ public class InheritedClassView extends ParagraphView implements Placement
 
     public Dimension getPreferredSize(Graphics g)
     {
-        Dimension d = inheritedClassText.getPreferredSize();
-        int width = d.width + HMargin * 2;
-        int height = d.height + VMargin * 2;
-
-        return new Dimension(width, height);
+        Dimension newDim = null;
+        
+        if (inheritedClassText != null)
+            {
+            Dimension d = inheritedClassText.getPreferredSize();
+            int width = d.width + HMargin * 2;
+            int height = d.height + VMargin * 2;
+            newDim = new Dimension(width, height);
+            }
+        
+        return newDim;
     }
 
     @Override
     public Dimension minimumSize()
     {
         return preferredSize();
-    }
-
-    // TODO: Candidate for removal.
-    @Override
-    public void paint(Graphics g)
-    {
-        super.paint(g);
     }
 }

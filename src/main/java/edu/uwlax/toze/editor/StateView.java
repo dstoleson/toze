@@ -18,31 +18,57 @@ public class StateView extends ParagraphView
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
     private TozeTextArea stateNameText;
-    
-    public StateView(TozeTextArea declarationText, TozeTextArea predicateText, TozeTextArea stateNameText)
-    {        
-        this.setLayout(new ParaLayout(this));
+
+    public StateView()
+    {
+        setLayout(new ParaLayout(this));
+    }
+
+    public void setDeclarationText(TozeTextArea declarationText)
+    {
+        if (this.declarationText != null)
+            {
+            remove(this.declarationText);
+            }
 
         this.declarationText = declarationText;
-        this.predicateText = predicateText;
-        this.stateNameText = stateNameText;
 
         if (declarationText != null)
             {
             add(declarationText);
             }
+    }
+
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
+        this.predicateText = predicateText;
 
         if (predicateText != null)
             {
             add(predicateText);
             }
+    }
+
+    public void setStateNameText(TozeTextArea stateNameText)
+    {
+        if (this.stateNameText != null)
+            {
+            remove(this.stateNameText);
+            }
+
+        this.stateNameText = stateNameText;
 
         if (stateNameText != null)
             {
             add(stateNameText);
             }
     }
-    
+
     @Override
     public void layout()
     {
@@ -51,17 +77,17 @@ public class StateView extends ParagraphView
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Dimension d2;
-        
+
         int x = insets.left;
         int y = insets.top;
-        
+
         x += HMargin;
         y += VMargin;
-        
+
         if (stateNameText != null)
             {
             int preWidth;
-            
+
             preWidth = fm.stringWidth(m_pre);
             d = stateNameText.getPreferredSize();
             stateNameText.setBounds(x + preWidth, y, d.width, d.height);
@@ -75,7 +101,7 @@ public class StateView extends ParagraphView
                 declarationText.setBounds(x + StateContentOffset, y, d.width, d.height);
                 y += d.height + InterVMargin;
                 }
-            
+
             y += StateLineMargin;
             if (predicateText != null)
                 {
@@ -85,14 +111,14 @@ public class StateView extends ParagraphView
                 }
             }
     }
-    
+
     @Override
     public Dimension preferredSize()
     {
         Graphics g = getGraphics();
         return getPreferredSize(g);
     }
-    
+
     public Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
@@ -101,7 +127,7 @@ public class StateView extends ParagraphView
         int width = 0;
         int height = 0;
         int w;
-        
+
         if (stateNameText != null)
             {
             d = stateNameText.getPreferredSize();
@@ -117,7 +143,7 @@ public class StateView extends ParagraphView
             /*
              * Declaration
              */
-            
+
             if (declarationText != null)
                 {
                 d = declarationText.getPreferredSize();
@@ -131,7 +157,7 @@ public class StateView extends ParagraphView
             /*
              * Predicates
              */
-            
+
             if (predicateText != null)
                 {
                 if (declarationText != null)
@@ -147,39 +173,39 @@ public class StateView extends ParagraphView
                 height += d.height + InterVMargin;
                 }
             }
-        
+
         width += insets.left + insets.right;
         height += insets.top + insets.bottom;
-        
+
         width += HMargin * 2;
         height += VMargin * 2;
-        
+
         height += StateLineMargin;
-        
+
         return new Dimension(width, height);
     }
-    
+
     @Override
     public Dimension minimumSize()
     {
         //return new Dimension(100, 100);
         return preferredSize();
     }
-    
+
     @Override
     public void paint(Graphics g) // int xoffset, int yoffset)
     {
         super.paint(g);
-        
+
         int xoffset = HMargin;
         int yoffset = VMargin;
         Dimension d;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
-        
+
         g.setColor(Color.BLACK);
-        
+
         if (stateNameText != null)
             {
             d = stateNameText.getPreferredSize();
@@ -189,19 +215,19 @@ public class StateView extends ParagraphView
         else
             {
             g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
-            
+
             if (declarationText != null)
                 {
                 declsHeight += InterVMargin;
                 d = declarationText.getPreferredSize();
                 declsHeight += d.height + InterVMargin;
-                
+
                 g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight);
                 yoffset += declsHeight;
                 }
-            
+
             g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
-            
+
             if (predicateText != null)
                 {
                 g.drawLine(xoffset, yoffset, xoffset, yoffset + StateLineMargin);
