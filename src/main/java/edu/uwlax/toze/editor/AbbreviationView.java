@@ -17,7 +17,12 @@ public class AbbreviationView extends ParagraphView
     {
         setLayout(new ParaLayout(this));
     }
-    
+
+    public TozeTextArea getNameText()
+    {
+        return this.nameText;
+    }
+
     public void setNameText(TozeTextArea nameText)
     {
         if (this.nameText != null)
@@ -77,15 +82,15 @@ public class AbbreviationView extends ParagraphView
     public Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
-        Dimension d;
-        int width = HMargin * 2;
-        int height = VMargin * 2;
+        Dimension d = nameText.getPreferredSize();
 
-        d = nameText.getPreferredSize();
-        width += d.width + fm.stringWidth(AbbreviationMid);
+        int width = d.width + fm.stringWidth(AbbreviationMid);
         d = expressionText.getPreferredSize();
         width += d.width;
-        height += d.height;
+        int height = d.height;
+
+        width += HMargin * 2;
+        height += VMargin * 2;
 
         return new Dimension(width, height);
     }
@@ -93,23 +98,27 @@ public class AbbreviationView extends ParagraphView
     @Override
     public Dimension minimumSize()
     {
-        //return new Dimension(100, 100);
         return preferredSize();
     }
 
     @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
+    public void paint(Graphics g)
     {
         super.paint(g);
 
-        Dimension d;
+        int xoffset = 0;
+        int yoffset = 0;
+        Dimension d = nameText.getPreferredSize();
+
         FontMetrics fm = g.getFontMetrics();
+        int ystring = fm.getHeight() - fm.getDescent();
+
+        xoffset += HMargin;
+        yoffset += VMargin;
 
         g.setColor(Color.BLACK);
 
-        d = nameText.getPreferredSize();
-        int xoffset = d.width + HMargin;
-        int yoffset = (fm.getHeight() - fm.getDescent()) + VMargin;
-        g.drawString(AbbreviationMid, xoffset, yoffset);
+        xoffset += d.width;
+        g.drawString(AbbreviationMid, xoffset, yoffset + ystring);
     }
 }

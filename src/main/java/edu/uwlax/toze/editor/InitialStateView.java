@@ -25,7 +25,12 @@ public class InitialStateView extends ParagraphView
     {
         setLayout(new ParaLayout(this));
     }
-    
+
+    public TozeTextArea getPredicateText()
+    {
+        return this.predicateText;
+    }
+
     public void setPredicateText(TozeTextArea predicateText)
     {
         if (this.predicateText != null)

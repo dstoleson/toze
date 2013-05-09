@@ -33,7 +33,12 @@ public class OperationView extends ParagraphView
     {        
         setLayout(new ParaLayout(this));
     }
-    
+
+    public TozeTextArea getOperationNameText()
+    {
+        return this.operationNameText;
+    }
+
     public void setOperationNameText(TozeTextArea operationNameText)
     {
         if (this.operationNameText != null)
@@ -48,7 +53,12 @@ public class OperationView extends ParagraphView
             add(operationNameText);
             }
     }
-    
+
+    public DeltaListView getDeltaListView()
+    {
+        return this.deltaListView;
+    }
+
     public void setDeltaListView(DeltaListView deltaListView)
     {
         // Remove any existing one
@@ -66,7 +76,12 @@ public class OperationView extends ParagraphView
             }
 
     }
-    
+
+    public TozeTextArea getDeclarationText()
+    {
+        return this.declarationText;
+    }
+
     public void setDeclarationText(TozeTextArea declarationText)
     {
         if (this.declarationText != null)
@@ -82,6 +97,11 @@ public class OperationView extends ParagraphView
             }
     }
 
+    public TozeTextArea getPredicateText()
+    {
+        return this.predicateText;
+    }
+
     public void setPredicateText(TozeTextArea predicateText)
     {
         if (this.predicateText != null)
@@ -95,6 +115,11 @@ public class OperationView extends ParagraphView
             {
             add(predicateText);
             }
+    }
+
+    public TozeTextArea getOperationExpressionText()
+    {
+        return this.operationExpressionText;
     }
 
     public void setOperationExpressionText(TozeTextArea operationExpressionText)

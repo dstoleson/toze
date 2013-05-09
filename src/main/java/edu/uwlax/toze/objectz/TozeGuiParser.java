@@ -1,16 +1,8 @@
 package edu.uwlax.toze.objectz;
 
 import edu.uwlax.toze.editor.SpecificationSection;
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.Operation;
-import edu.uwlax.toze.spec.SpecObject;
-import edu.uwlax.toze.spec.State;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.spec.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,9 +11,10 @@ import java.util.Stack;
 public class TozeGuiParser extends TozeParser
 {
     Ast.AstBase result;
-    
+
+    private Stack<SpecificationSection> sectionsStack = new Stack<SpecificationSection>();
     private Stack m_nodes = new Stack();
-    private HashMap<TozeToken, SpecObject> errors = new HashMap<TozeToken, SpecObject>();
+    private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();
 
     public void parseForErrors(TOZE toze)
     {        
@@ -29,7 +22,7 @@ public class TozeGuiParser extends TozeParser
         // There needs to be a map of some unique id to an element in the document
         // the same unique id must be used to map to the view(s)
         // Errors can be kept in this map so that the view an render the element text
-        // and also any erros.
+        // and also any errors.
         // The 'Specification' class is the place for this, it maintains the file, the specification
         // elements (object graph) and the state of the specification (errors, edited, etc.)
         // The 'Specification' is the model.
@@ -41,31 +34,31 @@ public class TozeGuiParser extends TozeParser
         for (AxiomaticDef axiomaticDef : toze.getAxiomaticDef())
             {
             start(SpecificationSection.AxiomaticDefinition);
-            parse_guiDeclaration(axiomaticDef, axiomaticDef.getDeclaration());
-            parse_guiPredicateList(axiomaticDef, axiomaticDef.getPredicate());
+            parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+            parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
             end(); // axiomatic
             }
 
         for (AbbreviationDef abbreviationDef : toze.getAbbreviationDef())
             {
             start(SpecificationSection.AbbreviationDefinition);
-            parse_guiAbbreviation(abbreviationDef, abbreviationDef.getName());
-            parse_guiExpression(abbreviationDef, abbreviationDef.getExpression());
+            parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+            parse_guiExpression(abbreviationDef, "expression", abbreviationDef.getExpression());
             end();  // abbreviation
             }
 
         for (BasicTypeDef basicTypeDef : toze.getBasicTypeDef())
             {
             start(SpecificationSection.BasicTypeDefinition);
-            parse_guiBasicTypeDefinition(basicTypeDef, basicTypeDef.getName());
+            parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
             end(); // basic
             }
 
         for (FreeTypeDef freeTypeDef : toze.getFreeTypeDef())
             {
             start(SpecificationSection.FreeTypeDefinition);
-            parse_guiIdentifier(freeTypeDef, freeTypeDef.getDeclaration());
-            parse_guiBranch(freeTypeDef, freeTypeDef.getPredicate());
+            parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+            parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
             end();  // free
             }
 
@@ -75,14 +68,14 @@ public class TozeGuiParser extends TozeParser
 
             if (genericDef.getFormalParameters() != null)
                 {
-                parse_guiFormalParametersWoBrackets(genericDef, genericDef.getFormalParameters());
+                parse_guiFormalParametersWoBrackets(genericDef, "formalParameters", genericDef.getFormalParameters());
                 }
 
-            parse_guiDeclaration(genericDef, genericDef.getPredicate());
+            parse_guiDeclaration(genericDef, "predicate", genericDef.getPredicate());
 
             if (genericDef.getPredicate() != null)
                 {
-                parse_guiPredicateList(genericDef, genericDef.getPredicate());
+                parse_guiPredicateList(genericDef, "predicate", genericDef.getPredicate());
                 }
             end();  // generic
             }
@@ -121,19 +114,19 @@ public class TozeGuiParser extends TozeParser
         if (toze.getPredicate() != null)
             {
             start(SpecificationSection.Predicate);
-            parse_guiPredicateList(toze, toze.getPredicate());
+            parse_guiPredicateList(toze, "predicate", toze.getPredicate());
             end();  // predicate
             }
 
         for (ClassDef classDef : toze.getClassDef())
             {
             start(SpecificationSection.Class);
-            parse_guiClassHeader(classDef, classDef.getName());
+            parse_guiClassHeader(classDef, "name", classDef.getName());
 
             if (classDef.getVisibilityList() != null)
                 {
                 start(SpecificationSection.VisibilityList);
-                parse_guiDeclarationNameList(classDef, classDef.getVisibilityList());
+                parse_guiDeclarationNameList(classDef, "visibilityList", classDef.getVisibilityList());
                 end();  // visibility
                 }
 
@@ -141,38 +134,38 @@ public class TozeGuiParser extends TozeParser
                 {
                 start(SpecificationSection.InheritedClasses);
                 // TODO use classDef or (as stated) classDef.inheritedClass ?
-                parse_guiInheritedClass(classDef.getInheritedClass(), classDef.getInheritedClass().getName());
+                parse_guiInheritedClass(classDef.getInheritedClass(), "name", classDef.getInheritedClass().getName());
                 end();  // inherited
                 }
 
             for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
                 {
                 start(SpecificationSection.BasicTypeDefinition);
-                parse_guiBasicTypeDefinition(basicTypeDef, basicTypeDef.getName());
+                parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
                 end();  // class.basic
                 }
 
             for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
                 {
                 start(SpecificationSection.AbbreviationDefinition);
-                parse_guiAbbreviation(abbreviationDef, abbreviationDef.getName());
-                parse_guiAbbreviation(abbreviationDef, abbreviationDef.getExpression());
+                parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+                parse_guiAbbreviation(abbreviationDef, "expression", abbreviationDef.getExpression());
                 end();  // class.abbreviation
                 }
 
             for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
                 {
                 start(SpecificationSection.AxiomaticDefinition);
-                parse_guiDeclaration(axiomaticDef, axiomaticDef.getDeclaration());
-                parse_guiPredicateList(axiomaticDef, axiomaticDef.getPredicate());
+                parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+                parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
                 end();  // class.axiomatic
                 }
 
             for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
                 {
                 start(SpecificationSection.FreeTypeDefinition);
-                parse_guiIdentifier(freeTypeDef, freeTypeDef.getDeclaration());
-                parse_guiBranch(freeTypeDef, freeTypeDef.getPredicate());
+                parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+                parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
                 end();  // class.free
                 }
 
@@ -183,15 +176,15 @@ public class TozeGuiParser extends TozeParser
                 start(SpecificationSection.State);
                 if (state.getDeclaration() != null)
                     {
-                    parse_guiDeclaration(state, state.getDeclaration());
+                    parse_guiDeclaration(state, "declaration", state.getDeclaration());
                     }
                 if (state.getPredicate() != null)
                     {
-                    parse_guiPredicateList(state, state.getPredicate());
+                    parse_guiPredicateList(state, "predicate", state.getPredicate());
                     }
                 if (state.getName() != null)
                     {
-                    parse_guiState(state, state.getName());
+                    parse_guiState(state, "name", state.getName());
                     }
                 end();  // state
                 }
@@ -207,7 +200,7 @@ public class TozeGuiParser extends TozeParser
 //                if (type == 1)
 //                    {
                 // TODO use classDef or (as stated) classDef.initialState ?
-                parse_guiPredicateList(classDef.getInitialState(), classDef.getInitialState().getPredicate());
+                parse_guiPredicateList(classDef.getInitialState(), "predicate", classDef.getInitialState().getPredicate());
 //                    }
 //                else
 //                    {
@@ -220,33 +213,33 @@ public class TozeGuiParser extends TozeParser
                 {                
                 start(SpecificationSection.Operation);
 
-                parse_guiOperationName(operation, operation.getName());
+                parse_guiOperationName(operation, "name", operation.getName());
 
                 if (operation.getDeltaList() != null)
                     {
-                    parse_guiDeclarationNameList(operation, operation.getDeltaList());
+                    parse_guiDeclarationNameList(operation, "deltaList", operation.getDeltaList());
                     }
 
                 if (operation.getDeclaration() != null)
                     {
-                    parse_guiDeclaration(operation, operation.getDeclaration());
+                    parse_guiDeclaration(operation, "declaration", operation.getDeclaration());
                     }
 
                 if (operation.getPredicate() != null)
                     {
                     if (((edu.uwlax.toze.persist.Operation)operation).getType() == 3)
                         {
-                        parse_guiPredicate(operation, operation.getPredicate());
+                        parse_guiPredicate(operation, "predicate", operation.getPredicate());
                         }
                     else
                         {
-                        parse_guiPredicateList(operation, operation.getPredicate());
+                        parse_guiPredicateList(operation, "predicate", operation.getPredicate());
                         }
                     }
 
                 if (operation.getOperationExpression() != null)
                     {
-                    parse_guiOperationExpression(operation, operation.getOperationExpression());
+                    parse_guiOperationExpression(operation, "operationExpression", operation.getOperationExpression());
                     }
 
                 end(); // operation
@@ -268,9 +261,9 @@ public class TozeGuiParser extends TozeParser
             }
     }
 
-    public HashMap<TozeToken, SpecObject> getSyntaxErrors()
+    public HashMap<TozeToken, SpecObjectPropertyPair> getSyntaxErrors()
     {
-        return (HashMap<TozeToken, SpecObject>)errors.clone();
+        return (HashMap<TozeToken, SpecObjectPropertyPair>)errors.clone();
     }
 
     public Set<String> getTypeErrors()
@@ -283,95 +276,100 @@ public class TozeGuiParser extends TozeParser
         reset();
         tokenize(text);        
     }
-    
-    private void postParse(SpecObject o)
+
+    private void postParse(SpecObject o, String property)
     {
         TozeToken t = getParseResult();
-        handleError(t, o);
+        handleError(t, o, property);
     }
+
+//    private void postParse(SpecObject o)
+//    {
+//        postParse(o, null);
+//    }
     
-    private void parse_guiAbbreviation(SpecObject o, String text)
+    private void parse_guiAbbreviation(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Abbreviation();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiExpression(SpecObject o, String text)
+    private void parse_guiExpression(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Expression();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiBasicTypeDefinition(SpecObject o, String text)
+    private void parse_guiBasicTypeDefinition(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nIdentifier();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiBranch(SpecObject o, String text)
+    private void parse_guiBranch(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nBranch();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiClassHeader(SpecObject o, String text)
+    private void parse_guiClassHeader(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_ClassHeader();
-        postParse(o);
+        postParse(o, property);
     }
     
-    private void parse_guiDeclaration(SpecObject o, String text)
+    private void parse_guiDeclaration(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Declaration();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiFormalParametersWoBrackets(SpecObject o, String text)
+    private void parse_guiFormalParametersWoBrackets(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_FormalParametersWoBrackets();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiFormalParameters(SpecObject o, String text)
+    private void parse_guiFormalParameters(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_FormalParameters();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiIdentifier(SpecObject o, String text)
+    private void parse_guiIdentifier(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Identifier();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiInheritedClass(SpecObject o, String text)
+    private void parse_guiInheritedClass(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nInheritedClass();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiOperationExpression(SpecObject o, String text)
+    private void parse_guiOperationExpression(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_OperationExpression();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiPredicate(SpecObject o, String text)
+    private void parse_guiPredicate(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Predicate();
-        postParse(o);
+        postParse(o, property);
     }
 
 //    private void parse_guiSchemaExpression(SpecObject o, String text)
@@ -395,18 +393,18 @@ public class TozeGuiParser extends TozeParser
 //        postParse(o);
 //    }
 
-    private void parse_guiState(SpecObject o, String text)
+    private void parse_guiState(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_DeclarationNameList();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiOperationName(SpecObject o, String text)
+    private void parse_guiOperationName(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Identifier();
-        postParse(o);
+        postParse(o, property);
     }
 
 //    private void parse_guiDeltaList(SpecObject o, String text)
@@ -416,14 +414,14 @@ public class TozeGuiParser extends TozeParser
 //        postParse(o);
 //    }
 
-    private void parse_guiDeclarationNameList(SpecObject o, String text)
+    private void parse_guiDeclarationNameList(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_DeclarationNameList();
-        postParse(o);
+        postParse(o, property);
     }
 
-    private void parse_guiPredicateList(SpecObject o, String text)
+    private void parse_guiPredicateList(SpecObject o, String property, String text)
     {
         if (text == null)
             {
@@ -432,7 +430,7 @@ public class TozeGuiParser extends TozeParser
 
         preParse(text);
         result = parse_PredicateList();
-        postParse(o);
+        postParse(o, property);
     }
 
 
@@ -494,8 +492,8 @@ public class TozeGuiParser extends TozeParser
             default:
                 System.out.println("Unhandled object type: " + specSection);
                 break;
-
             }
+        sectionsStack.push(specSection);
     }
 
     private void end()
@@ -504,6 +502,7 @@ public class TozeGuiParser extends TozeParser
             {
             Ast.AstBase n = (Ast.AstBase) m_nodes.pop();
             ((Ast.AstBase) m_nodes.peek()).add(n);
+            sectionsStack.pop();
             }
     }
 
@@ -511,16 +510,17 @@ public class TozeGuiParser extends TozeParser
     {
         if (m_nodes.size() == 1)
             {
+            sectionsStack.pop();
             return (Ast.AstSpec) m_nodes.pop();
             }
         return null;
     }
     
-    private void handleError(TozeToken t, SpecObject o)
+    private void handleError(TozeToken t, SpecObject o, String property)
     {
         if (t != null)
             {
-            errors.put(t, o);
+            errors.put(t, new SpecObjectPropertyPair(o, property));
             }
         else
             {

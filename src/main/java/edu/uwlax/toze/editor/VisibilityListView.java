@@ -18,6 +18,11 @@ public class VisibilityListView extends ParagraphView implements Placement
         setLayout(new ParaLayout(this));
     }
 
+    public TozeTextArea getVisibilityListText()
+    {
+        return this.visibilityListText;
+    }
+
     public void setVisibilityListText(TozeTextArea visibilityListText)
     {
         if (this.visibilityListText != null)

@@ -10,6 +10,8 @@ import javax.swing.*;
 
 public class TozeTextArea extends JTextArea
 {
+    static private Color ERROR_COLOR = new Color(255, 90, 75);
+
     private boolean ignoresEnter = true;
     private TozeChars m_map = new TozeChars();
     private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
@@ -17,63 +19,6 @@ public class TozeTextArea extends JTextArea
     private List m_typeErrorIds = new ArrayList();
     private List m_tokens = new ArrayList();
     private String m_orig = null;
-
-    public class TozeReader extends BufferedReader
-    {
-        public int m_num = -1;
-        public String m_ret = null;
-
-        public TozeReader(Reader r)
-        {
-            super(r);
-            try
-                {
-                m_ret = readLine();
-                }
-            catch (Exception e)
-                {
-                }
-        }
-
-        public boolean hasMoreLines()
-        {
-            return m_ret != null;
-        }
-
-        public String nextLine()
-        {
-            String str = m_ret;
-            m_num++;
-
-            try
-                {
-                m_ret = readLine();
-                }
-            catch (Exception e)
-                {
-                m_ret = null;
-                }
-
-            return str;
-        }
-
-        public int getLineNumber()
-        {
-            return m_num;
-        }
-    }
-
-    private class ErrorPos
-    {
-        int m_line;
-        int m_pos;
-
-        public ErrorPos(int line, int pos)
-        {
-            m_line = line;
-            m_pos = pos;
-        }
-    }
 
     public TozeTextArea(String s)
     {
@@ -168,8 +113,6 @@ public class TozeTextArea extends JTextArea
 
             if (changed)
                 {
-                clearErrors();
-                clearTypeErrors();
                 m_orig = getText();
                 }
 
@@ -210,12 +153,17 @@ public class TozeTextArea extends JTextArea
             {
             setBackground(parent.getBackground());
             }
-        
+
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
-        
+
+        if (!m_errors.isEmpty() || m_typeErrorIds.size() > 0)
+            {
+            setBackground(ERROR_COLOR);
+            }
+
         super.paint(g);
-        
+
         Color c = g.getColor();
         TozeReader r = getReader();
         FontMetrics fm = g.getFontMetrics();
@@ -224,90 +172,92 @@ public class TozeTextArea extends JTextArea
          * Draw the text after the error in red.
          */
 
-        if (!m_errors.isEmpty())
-            {
-            g.setColor(Color.RED);
-
-            for (ErrorPos err : m_errors)
-                {
-                String tmp = r.nextLine();
-                while (err.m_line != r.getLineNumber() && tmp != null)
-                    {
-                    tmp = r.nextLine();
-                    }
-                if (tmp == null)
-                    {
-                    break;
-                    }
-                int pos = err.m_pos;
-                if (pos >= tmp.length())
-                    {
-                    pos = tmp.length() - 1;
-                    }
-                if (pos < 0)
-                    {
-                    pos = 0;
-                    }
-                g.drawString(tmp.substring(pos),
-                             fm.stringWidth(tmp.substring(0, pos)),
-                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
-                }
-            
-            g.setColor(c);
-            }
-
-        if (m_typeErrorIds.size() > 0)
-            {
-            int longest = 0;
-            String tmp;
-            TozeToken token;
-            int numRows = 0;
-
-            tmp = r.nextLine();
-            r = getReader();
-            while (tmp != null)
-                {
-                numRows++;
-                int sw = fm.stringWidth(tmp);
-                if (sw > longest)
-                    {
-                    longest = sw;
-                    }
-                tmp = r.nextLine();
-                }
-
-            String lineinfo[] = new String[numRows];
-            int i;
-            for (i = 0; i < lineinfo.length; i++)
-                {
-                lineinfo[i] = "";
-                }
-
-            for (i = 0; i < m_typeErrorIds.size(); i++)
-                {
-                token = (TozeToken) m_tokens.get(i);
-                if (token != null)
-                    {
-                    if (lineinfo[token.m_lineNum].length() > 0)
-                        {
-                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + ", " + (String) m_typeErrorIds.get(i);
-                        }
-                    else
-                        {
-                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + (String) m_typeErrorIds.get(i);
-                        }
-                    }
-                }
-            for (i = 0; i < lineinfo.length; i++)
-                {
-                if (lineinfo[i].length() > 0)
-                    {
-                    g.drawString(lineinfo[i], longest + 20, ((fm.getHeight() * (i + 1)) - fm.getDescent()));
-                    }
-                }
-            
-            g.setColor(c);
-            }
+//        if (!m_errors.isEmpty())
+//            {
+//            g.setColor(Color.BLACK);
+//
+//            for (ErrorPos err : m_errors)
+//                {
+//                String tmp = r.nextLine();
+//                while (err.m_line != r.getLineNumber() && tmp != null)
+//                    {
+//                    tmp = r.nextLine();
+//                    }
+//                if (tmp == null)
+//                    {
+//                    break;
+//                    }
+//                int pos = err.m_pos;
+//                if (pos >= tmp.length())
+//                    {
+//                    pos = tmp.length() - 1;
+//                    }
+//                if (pos < 0)
+//                    {
+//                    pos = 0;
+//                    }
+//                g.drawString(tmp.substring(pos),
+//                             fm.stringWidth(tmp.substring(0, pos)),
+//                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
+//                }
+//
+//            g.setColor(c);
+//            }
+//
+//        if (m_typeErrorIds.size() > 0)
+//            {
+//            g.setColor(Color.BLACK);
+//
+//            int longest = 0;
+//            String tmp;
+//            TozeToken token;
+//            int numRows = 0;
+//
+//            tmp = r.nextLine();
+//            r = getReader();
+//            while (tmp != null)
+//                {
+//                numRows++;
+//                int sw = fm.stringWidth(tmp);
+//                if (sw > longest)
+//                    {
+//                    longest = sw;
+//                    }
+//                tmp = r.nextLine();
+//                }
+//
+//            String lineinfo[] = new String[numRows];
+//            int i;
+//            for (i = 0; i < lineinfo.length; i++)
+//                {
+//                lineinfo[i] = "";
+//                }
+//
+//            for (i = 0; i < m_typeErrorIds.size(); i++)
+//                {
+//                token = (TozeToken) m_tokens.get(i);
+//                if (token != null)
+//                    {
+//                    if (lineinfo[token.m_lineNum].length() > 0)
+//                        {
+//                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + ", " + (String) m_typeErrorIds.get(i);
+//                        }
+//                    else
+//                        {
+//                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + (String) m_typeErrorIds.get(i);
+//                        }
+//                    }
+//                }
+//            for (i = 0; i < lineinfo.length; i++)
+//                {
+//                if (lineinfo[i].length() > 0)
+//                    {
+//                    g.drawString(lineinfo[i], longest + 20, ((fm.getHeight() * (i + 1)) - fm.getDescent()));
+//                    }
+//                }
+//
+//            g.setColor(c);
+//            }
     }
 
     private TozeReader getReader()
@@ -316,35 +266,32 @@ public class TozeTextArea extends JTextArea
         return new TozeReader(reader);
     }
 
-    private void clearErrors()
+    public void clearAllErrors()
+    {
+        clearErrors();
+        clearTypeErrors();
+    }
+
+    public void clearErrors()
     {
         m_errors.clear();
         setToolTipText(null);
     }
 
-    private void addError(int line, int pos)
+    public void addError(int line, int pos)
     {
         m_errors.add(new ErrorPos(line, pos));
         setToolTipText("Syntax error");
     }
 
-    private boolean failedCheck()
-    {
-        if (m_errors == null)
-            {
-            return false;
-            }
-        return m_errors.size() > 0;
-    }
-
-    private void clearTypeErrors()
+    public void clearTypeErrors()
     {
         m_typeErrorIds.clear();
         m_tokens.clear();
         invalidate();
     }
 
-    private void typeError(String id, String msg, TozeToken token)
+    public void typeError(String id, String msg, TozeToken token)
     {
         m_typeErrorIds.add(id);
         m_tokens.add(token);
@@ -395,5 +342,66 @@ public class TozeTextArea extends JTextArea
                     }
                 }
             }
+    }
+
+    public String toString()
+    {
+        return "TozeTextArea[" + this.getText() + "]";
+    }
+    public class TozeReader extends BufferedReader
+    {
+        public int m_num = -1;
+        public String m_ret = null;
+
+        public TozeReader(Reader r)
+        {
+            super(r);
+            try
+                {
+                m_ret = readLine();
+                }
+            catch (Exception e)
+                {
+                }
+        }
+
+        public boolean hasMoreLines()
+        {
+            return m_ret != null;
+        }
+
+        public String nextLine()
+        {
+            String str = m_ret;
+            m_num++;
+
+            try
+                {
+                m_ret = readLine();
+                }
+            catch (Exception e)
+                {
+                m_ret = null;
+                }
+
+            return str;
+        }
+
+        public int getLineNumber()
+        {
+            return m_num;
+        }
+    }
+
+    private class ErrorPos
+    {
+        int m_line;
+        int m_pos;
+
+        public ErrorPos(int line, int pos)
+        {
+            m_line = line;
+            m_pos = pos;
+        }
     }
 }

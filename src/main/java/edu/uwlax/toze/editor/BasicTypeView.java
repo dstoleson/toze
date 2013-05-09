@@ -17,6 +17,11 @@ public class BasicTypeView extends ParagraphView
         setLayout(new ParaLayout(this));
     }
 
+    public TozeTextArea getNameText()
+    {
+        return this.nameText;
+    }
+
     public void setNameText(TozeTextArea nameText)
     {
         if (this.nameText != null)
@@ -77,8 +82,6 @@ public class BasicTypeView extends ParagraphView
     {
         super.paint(g);
 
-        Dimension cnd = nameText.getPreferredSize();
-        Dimension d = getPreferredSize();
         FontMetrics fm = g.getFontMetrics();
         int ystring = (fm.getHeight() - fm.getDescent());
 

@@ -21,7 +21,7 @@ public abstract class ParagraphView extends JPanel implements Placement, Observe
     {
         if (mouseInView)
             {
-            setBackground(Color.GRAY);
+            setBackground(Color.LIGHT_GRAY);
             }
         else
             {

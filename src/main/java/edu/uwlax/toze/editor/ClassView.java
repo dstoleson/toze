@@ -25,6 +25,7 @@ public class ClassView extends ParagraphView
     private TozeTextArea classNameText;
     private VisibilityListView visibilityListView;
     private InheritedClassView inheritedClassView;
+    private List<AbbreviationView> abbreviationViews;
     private List<BasicTypeView> basicTypeViews;
     private List<FreeTypeView> freeTypeViews;
     private StateView stateView;
@@ -35,11 +36,12 @@ public class ClassView extends ParagraphView
     {
         this.setLayout(new ParaLayout(this));
 
+        abbreviationViews = new ArrayList<AbbreviationView>();
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
     }
-    
+
     public void setClassNameText(TozeTextArea classNameText)
     {
         if (this.classNameText != null)
@@ -52,6 +54,11 @@ public class ClassView extends ParagraphView
             {
             add(classNameText);
             }
+    }
+
+    public VisibilityListView getVisibilityListView()
+    {
+        return this.visibilityListView;
     }
 
     public void setVisibilityListView(VisibilityListView visibilityListView)
@@ -70,7 +77,12 @@ public class ClassView extends ParagraphView
             add(visibilityListView);
             }
     }
-    
+
+    public StateView getStateView()
+    {
+        return this.stateView;
+    }
+
     public void setStateView(StateView stateView)
     {
         // TODO need to figure out where to add the view
@@ -87,11 +99,14 @@ public class ClassView extends ParagraphView
             add(stateView);
             }
     }
-    
+
+    public InitialStateView getInitialStateView()
+    {
+        return this.initialStateView;
+    }
+
     public void setInitialStateView(InitialStateView initialStateView)
     {
-        // TODO need to figure out where to add the view
-
         if (this.initialStateView != null)
             {
             remove(this.initialStateView);
@@ -104,10 +119,21 @@ public class ClassView extends ParagraphView
             add(initialStateView);
             }
     }
-    
+
+    public void addAbbreviationView(AbbreviationView abbreviationView)
+    {
+        abbreviationViews.add(abbreviationView);
+        add(abbreviationView);
+    }
+
+    public void removeAbbreviationView(AbbreviationView abbreviationView)
+    {
+        abbreviationViews.remove(abbreviationView);
+        remove(abbreviationView);
+    }
+
     public void addBasicTypeView(BasicTypeView basicTypeView)
     {
-        // TODO need to figure out where to add the view
         basicTypeViews.add(basicTypeView);
         add(basicTypeView);
     }
@@ -120,7 +146,6 @@ public class ClassView extends ParagraphView
     
     public void addFreeTypeView(FreeTypeView freeTypeView)
     {
-        // TODO need to figure out where to add the view
         freeTypeViews.add(freeTypeView);
         add(freeTypeView);
     }
@@ -133,7 +158,6 @@ public class ClassView extends ParagraphView
 
     public void addOperationView(OperationView operationView)
     {
-        // TODO need to figure out where to add the view
         operationViews.add(operationView);
         add(operationView);
     }
@@ -253,6 +277,17 @@ public class ClassView extends ParagraphView
         for (FreeTypeView freeTypeView : freeTypeViews)
             {
             d = freeTypeView.getPreferredSize(this.getGraphics());
+            int w = ClassContentOffset + d.width + ExtraLine;
+            if (w > width)
+                {
+                width = w;
+                }
+            height += d.height + InterVMargin;
+            }
+
+        for (AbbreviationView abbreviationView : abbreviationViews)
+            {
+            d = abbreviationView.getPreferredSize(this.getGraphics());
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {

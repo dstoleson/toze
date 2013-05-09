@@ -13,6 +13,11 @@ public class InheritedClassView extends ParagraphView implements Placement
         setLayout(new ParaLayout(this));
     }
 
+    public TozeTextArea getInheritedClassText()
+    {
+        return this.inheritedClassText;
+    }
+
     public void setInheritedClassText(TozeTextArea inheritedClassText)
     {
         if (this.inheritedClassText != null)

@@ -24,6 +24,11 @@ public class StateView extends ParagraphView
         setLayout(new ParaLayout(this));
     }
 
+    public TozeTextArea getDeclarationText()
+    {
+        return this.declarationText;
+    }
+
     public void setDeclarationText(TozeTextArea declarationText)
     {
         if (this.declarationText != null)
@@ -39,6 +44,11 @@ public class StateView extends ParagraphView
             }
     }
 
+    public TozeTextArea getPredicateText()
+    {
+        return this.predicateText;
+    }
+
     public void setPredicateText(TozeTextArea predicateText)
     {
         if (this.predicateText != null)
@@ -52,6 +62,11 @@ public class StateView extends ParagraphView
             {
             add(predicateText);
             }
+    }
+
+    public TozeTextArea getStateNameText()
+    {
+        return this.stateNameText;
     }
 
     public void setStateNameText(TozeTextArea stateNameText)

@@ -20,6 +20,11 @@ public class AxiomaticView extends ParagraphView
         setLayout(new ParaLayout(this));
     }
 
+    public TozeTextArea getDeclarationText()
+    {
+        return declarationText;
+    }
+
     public void setDeclarationText(TozeTextArea declarationText)
     {
         if (this.declarationText != null)
@@ -33,6 +38,11 @@ public class AxiomaticView extends ParagraphView
             {
             add(declarationText);
             }
+    }
+
+    public TozeTextArea getPredicateText()
+    {
+        return predicateText;
     }
 
     public void setPredicateText(TozeTextArea predicateText)

@@ -3,35 +3,28 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.editor.bindings.Binding;
 import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.InheritedClass;
-import edu.uwlax.toze.spec.InitialState;
-import edu.uwlax.toze.spec.Operation;
-import edu.uwlax.toze.spec.SpecObject;
-import edu.uwlax.toze.spec.State;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.spec.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
-public class SpecificationController extends Observable
+/**
+ *
+ */
+public class SpecificationController extends Observable implements FocusListener
 {
     private TOZE specification;
-    private HashMap<Component, Object> viewToObjectMap;
+
+    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
+
+//    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
     private SpecificationView specificationView;
     private ControllerMouseAdapter mouseAdapter;
     private ControllerKeyAdapter keyAdapter;
+    private TozeTextArea currentTextArea = null;
 
     /**
      * Create a controller for the given specification model and view.
@@ -52,8 +45,7 @@ public class SpecificationController extends Observable
 
         // create a map of the UI views to the model objects
         // they represent
-        viewToObjectMap = new HashMap<Component, Object>();
-        viewToObjectMap.put(specificationView, specification);
+        viewToObjectMap = new HashMap<Component, SpecObjectPropertyPair>();
 
         specificationView.addMouseListener(mouseAdapter);
 
@@ -105,7 +97,7 @@ public class SpecificationController extends Observable
             for (GenericDef genericDef : specification.getGenericDef())
                 {
                 boolean hasPredicate = (genericDef.getPredicate() != null);
-                addGenericType(specification, genericDef, hasPredicate);
+                addGenericType(genericDef, hasPredicate);
                 }
             }
 
@@ -117,7 +109,8 @@ public class SpecificationController extends Observable
                 }
             }
 
-        viewToObjectMap.put(specificationView, specification);
+        viewToObjectMap.put(specificationView, new SpecObjectPropertyPair(specification, null));
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -156,10 +149,9 @@ public class SpecificationController extends Observable
 
         DeltaListView deltaListView = new DeltaListView();
         deltaListView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(deltaListView, operation);
+        viewToObjectMap.put(deltaListView, new SpecObjectPropertyPair(operation, "deltaList"));
 
         TozeTextArea deltaListText = buildTextArea(operation, operation.getDeltaList(), "deltaList");
-        viewToObjectMap.put(deltaListText, operation);
         deltaListView.setDeltaListText(deltaListText);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
@@ -169,6 +161,10 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
+    /**
+     *
+     * @param operation
+     */
     public void removeDeltaList(Operation operation)
     {
         if (operation == null)
@@ -176,11 +172,15 @@ public class SpecificationController extends Observable
             throw new IllegalArgumentException("operation is null");
             }
 
-        OperationView operationView = (OperationView)componentForObjectOfType(operation, OperationView.class);
-        operationView.setDeltaListView(null);
         operation.setDeltaList(null);
 
-        System.out.println("Enter: removeDeltaList()");
+        OperationView operationView = (OperationView)componentForObjectOfType(operation, OperationView.class);
+
+        viewToObjectMap.remove(operationView.getDeltaListView().getDeltaListText());
+        viewToObjectMap.remove(operationView.getDeltaListView());
+
+        operationView.setDeltaListView(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -208,7 +208,6 @@ public class SpecificationController extends Observable
             }
 
         TozeTextArea declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration");
-        viewToObjectMap.put(declarationText, operation);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
         operationView.setDeclarationText(declarationText);
@@ -217,8 +216,24 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
+    /**
+     *
+     * @param operation
+     */
     public void removeDeclaration(Operation operation)
     {
+        if (operation == null)
+            {
+            throw new IllegalArgumentException("operation is null");
+            }
+
+        operation.setDeclaration(null);
+
+        OperationView operationView = (OperationView)componentForObjectOfType(operation, OperationView.class);
+        operationView.setDeclarationText(null);
+
+        viewToObjectMap.remove(operationView.getDeclarationText());
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -248,10 +263,9 @@ public class SpecificationController extends Observable
 
         InitialStateView initialStateView = new InitialStateView();
         initialStateView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(initialStateView, initialState);
+        viewToObjectMap.put(initialStateView, new SpecObjectPropertyPair(initialState, null));
 
         TozeTextArea predicateText = buildTextArea(initialState, initialState.getPredicate(), "predicate");
-        viewToObjectMap.put(predicateText, initialState);
         initialStateView.setPredicateText(predicateText);
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
@@ -261,9 +275,25 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
-    public void removeInitialState()
+    /**
+     *
+     * @param classDef
+     */
+    public void removeInitialState(ClassDef classDef)
     {
-        System.out.println("Enter: removeInitialState()");
+        if (classDef == null)
+            {
+            throw new IllegalArgumentException("classDef is null");
+            }
+
+        classDef.setInitialState(null);
+
+        ClassView classView = (ClassView)componentForObjectOfType(classDef, ClassView.class);
+
+        viewToObjectMap.remove(classView.getInitialStateView().getPredicateText());
+        viewToObjectMap.remove(classView.getInitialStateView());
+        classView.setInitialStateView(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -297,7 +327,7 @@ public class SpecificationController extends Observable
 
         StateView stateView = new StateView();
         stateView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(stateView, state);
+        viewToObjectMap.put(stateView, new SpecObjectPropertyPair(state, null));
 
         // (one || two) => declaration
         // (one || three) => predicate
@@ -306,21 +336,18 @@ public class SpecificationController extends Observable
         if (state.getDeclaration() != null)
             {
             TozeTextArea declarationText = buildTextArea(state, state.getDeclaration(), "declaration");
-            viewToObjectMap.put(declarationText, state);
             stateView.setDeclarationText(declarationText);
             }
 
         if (state.getPredicate() != null)
             {
             TozeTextArea predicateText = buildTextArea(state, state.getPredicate(), "predicate");
-            viewToObjectMap.put(predicateText, state);
             stateView.setPredicateText(predicateText);
             }
 
         if (state.getName() != null)
             {
             TozeTextArea stateNameText = buildTextArea(state, state.getName(), "name");
-            viewToObjectMap.put(stateNameText, state);
             stateView.setStateNameText(stateNameText);
             }
 
@@ -331,9 +358,27 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
-    public void removeState()
+    /**
+     * Remove a State from a ClassDef
+     */
+    public void removeState(ClassDef classDef)
     {
-        System.out.println("Enter: removeState()");
+        if (classDef == null)
+            {
+            throw new IllegalArgumentException("classDef is null");
+            }
+
+        classDef.setState(null);
+
+        ClassView classView = (ClassView)componentForObjectOfType(classDef, ClassView.class);
+
+        viewToObjectMap.remove(classView.getStateView().getDeclarationText());
+        viewToObjectMap.remove(classView.getStateView().getPredicateText());
+        viewToObjectMap.remove(classView.getStateView().getStateNameText());
+        viewToObjectMap.remove(classView.getStateView());
+
+        classView.setStateView(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -364,7 +409,6 @@ public class SpecificationController extends Observable
         TozeTextArea expressionText = buildTextArea(operation, operation.getOperationExpression(),
                                                     "operationExpression"
         );
-        viewToObjectMap.put(expressionText, operation);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
         operationView.setOperationExpressionText(expressionText);
@@ -379,9 +423,17 @@ public class SpecificationController extends Observable
      */
     public void removeOperationExpression(Operation operation)
     {
+        if (operation == null)
+            {
+            throw new IllegalArgumentException("operation is null");
+            }
+
         operation.setOperationExpression(null);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
+
+        viewToObjectMap.remove(operationView.getOperationExpressionText());
+
         operationView.setOperationExpressionText(null);
 
         specificationView.revalidate();
@@ -409,7 +461,6 @@ public class SpecificationController extends Observable
             }
 
         TozeTextArea predicateText = buildTextArea(operation, operation.getPredicate(), "predicate", false);
-        viewToObjectMap.put(predicateText, operation);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
         operationView.setPredicateText(predicateText);
@@ -424,9 +475,17 @@ public class SpecificationController extends Observable
      */
     public void removeOperationPredicate(Operation operation)
     {
+        if (operation == null)
+            {
+            throw new IllegalArgumentException("operation is null");
+            }
+
         operation.setPredicate(null);
 
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
+
+        viewToObjectMap.remove(operationView.getPredicateText());
+
         operationView.setPredicateText(null);
 
         specificationView.revalidate();
@@ -452,10 +511,9 @@ public class SpecificationController extends Observable
         ClassView classView = new ClassView();
         classView.addMouseListener(mouseAdapter);
         specificationView.add(classView);
-        viewToObjectMap.put(classView, classDef);
+        viewToObjectMap.put(classView, new SpecObjectPropertyPair(classDef, null));
 
         TozeTextArea classNameText = buildTextArea(classDef, classDef.getName(), "name");
-        viewToObjectMap.put(classNameText, classDef);
         classView.setClassNameText(classNameText);
 
         if (classDef.getInheritedClass() != null)
@@ -505,10 +563,16 @@ public class SpecificationController extends Observable
 
     public void removeClass(ClassDef classDef)
     {
+        // TODO: need to remove each element of the class view from the viewToMapObject
+        if (classDef == null)
+            {
+            throw new IllegalArgumentException("classDef is null");
+            }
+
         specification.getClassDef().remove(classDef);
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        specificationView.remove(classView);
+        specificationView.removeClassView(classView);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -517,7 +581,7 @@ public class SpecificationController extends Observable
     /**
      * @param axiomaticDef
      */
-    public void addAxiomaticType(Object object, AxiomaticDef axiomaticDef, boolean hasPredicate)
+    public void addAxiomaticType(SpecObject object, AxiomaticDef axiomaticDef, boolean hasPredicate)
     {
         if (object == null)
             {
@@ -534,11 +598,10 @@ public class SpecificationController extends Observable
             }
 
         AxiomaticView axiomaticDefView = new AxiomaticView();
-        viewToObjectMap.put(axiomaticDefView, axiomaticDef);
+        viewToObjectMap.put(axiomaticDefView, new SpecObjectPropertyPair(axiomaticDef, null));
         axiomaticDefView.addMouseListener(mouseAdapter);
 
         TozeTextArea declarationText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "declaration");
-        viewToObjectMap.put(declarationText, axiomaticDef);
         axiomaticDefView.setDeclarationText(declarationText);
 
         if (newAxiomaticDef && hasPredicate)
@@ -549,7 +612,6 @@ public class SpecificationController extends Observable
         if (axiomaticDef.getPredicate() != null)
             {
             TozeTextArea predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate");
-            viewToObjectMap.put(predicateText, axiomaticDef);
             axiomaticDefView.setPredicateText(predicateText);
             }
 
@@ -578,19 +640,67 @@ public class SpecificationController extends Observable
 
     public void removeAxiomaticType(AxiomaticDef axiomaticDef)
     {
+        if (axiomaticDef == null)
+            {
+            throw new IllegalArgumentException("axiomaticDef is null");
+            }
+
         specification.getAxiomaticDef().remove(axiomaticDef);
 
         AxiomaticView axiomaticView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
         specificationView.remove(axiomaticView);
 
+        viewToObjectMap.remove(axiomaticView.getDeclarationText());
+        viewToObjectMap.remove(axiomaticView.getPredicateText());
+        viewToObjectMap.remove(axiomaticView);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
 
+
+    public void addAxiomaticPredicate(AxiomaticDef axiomaticDef)
+    {
+        if (axiomaticDef == null)
+            {
+            throw new IllegalArgumentException("axiomaticDef is null");
+            }
+
+        axiomaticDef.setPredicate("New Predicate");
+
+        AxiomaticView axiomaticDefView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
+        TozeTextArea predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate");
+        axiomaticDefView.setPredicateText(predicateText);
+
+        specificationView.revalidate();
+        specificationView.repaint();
+    }
+
+    public void removeAxiomaticPredicate(AxiomaticDef axiomaticDef)
+    {
+        if (axiomaticDef == null)
+            {
+            throw new IllegalArgumentException("axiomaticDef is null");
+            }
+
+        axiomaticDef.setPredicate(null);
+
+        AxiomaticView axiomaticDefView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
+
+        specificationView.remove(axiomaticDefView);
+
+        viewToObjectMap.remove(axiomaticDefView.getPredicateText());
+        viewToObjectMap.remove(axiomaticDefView);
+
+        specificationView.revalidate();
+        specificationView.repaint();
+    }
+
+
     /**
      * @param abbreviationDef
      */
-    public void addAbbreviation(Object object, AbbreviationDef abbreviationDef)
+    public void addAbbreviation(SpecObject object, AbbreviationDef abbreviationDef)
     {
         if (object == null)
             {
@@ -608,19 +718,18 @@ public class SpecificationController extends Observable
 
         AbbreviationView abbreviationView = new AbbreviationView();
         abbreviationView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(abbreviationView, abbreviationDef);
+
+        viewToObjectMap.put(abbreviationView, new SpecObjectPropertyPair(abbreviationDef, null));
 
         if (abbreviationDef.getName() != null)
             {
             TozeTextArea nameText = buildTextArea(abbreviationDef, abbreviationDef.getName(), "name");
-            viewToObjectMap.put(nameText, abbreviationDef);
             abbreviationView.setNameText(nameText);
             }
 
         if (abbreviationDef.getExpression() != null)
             {
             TozeTextArea expressionText = buildTextArea(abbreviationDef, abbreviationDef.getExpression(), "expression");
-            viewToObjectMap.put(expressionText, abbreviationDef);
             abbreviationView.setExpressionText(expressionText);
             }
 
@@ -639,13 +748,17 @@ public class SpecificationController extends Observable
                 ((ClassDef) object).getAbbreviationDef().add(abbreviationDef);
                 }
             ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
-            classView.add(abbreviationView);
+            classView.addAbbreviationView(abbreviationView);
             }
 
         specificationView.revalidate();
         specificationView.repaint();
     }
 
+    /**
+     *
+     * @param abbreviationDef
+     */
     public void removeAbbreviation(AbbreviationDef abbreviationDef)
     {
         specification.getAbbreviationDef().remove(abbreviationDef);
@@ -655,6 +768,9 @@ public class SpecificationController extends Observable
         );
         specificationView.remove(abbreviationView);
 
+        viewToObjectMap.remove(abbreviationView.getNameText());
+        viewToObjectMap.remove(abbreviationView);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -663,7 +779,7 @@ public class SpecificationController extends Observable
      * @param object
      * @param basicTypeDef
      */
-    public void addBasicType(Object object, BasicTypeDef basicTypeDef)
+    public void addBasicType(SpecObject object, BasicTypeDef basicTypeDef)
     {
         if (object == null)
             {
@@ -680,12 +796,11 @@ public class SpecificationController extends Observable
 
         BasicTypeView basicTypeView = new BasicTypeView();
         basicTypeView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(basicTypeView, basicTypeDef);
+        viewToObjectMap.put(basicTypeView, new SpecObjectPropertyPair(basicTypeDef, null));
 
         if (basicTypeDef.getName() != null)
             {
             TozeTextArea nameText = buildTextArea(basicTypeDef, basicTypeDef.getName(), "name");
-            viewToObjectMap.put(nameText, basicTypeDef);
             basicTypeView.setNameText(nameText);
             }
 
@@ -718,6 +833,9 @@ public class SpecificationController extends Observable
         BasicTypeView basicTypeview = (BasicTypeView) componentForObjectOfType(basicTypeDef, BasicTypeView.class);
         specificationView.remove(basicTypeview);
 
+        viewToObjectMap.remove(basicTypeview.getNameText());
+        viewToObjectMap.remove(basicTypeview);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -726,7 +844,7 @@ public class SpecificationController extends Observable
      * @param object
      * @param freeTypeDef
      */
-    public void addFreeType(Object object, FreeTypeDef freeTypeDef)
+    public void addFreeType(SpecObject object, FreeTypeDef freeTypeDef)
     {
         if (object == null)
             {
@@ -744,19 +862,17 @@ public class SpecificationController extends Observable
 
         FreeTypeView freeTypeView = new FreeTypeView();
         freeTypeView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(freeTypeView, freeTypeDef);
+        viewToObjectMap.put(freeTypeView, new SpecObjectPropertyPair(freeTypeDef, null));
 
         if (freeTypeDef.getDeclaration() != null)
             {
             TozeTextArea declarationText = buildTextArea(freeTypeDef, freeTypeDef.getDeclaration(), "declaration");
-            viewToObjectMap.put(declarationText, freeTypeDef);
             freeTypeView.setDeclarationText(declarationText);
             }
 
         if (freeTypeDef.getPredicate() != null)
             {
             TozeTextArea predicateText = buildTextArea(freeTypeDef, freeTypeDef.getPredicate(), "predicate");
-            viewToObjectMap.put(predicateText, freeTypeDef);
             freeTypeView.setPredicateText(predicateText);
             }
 
@@ -789,82 +905,66 @@ public class SpecificationController extends Observable
         FreeTypeView freeTypeView = (FreeTypeView) componentForObjectOfType(freeTypeDef, FreeTypeView.class);
         specificationView.remove(freeTypeView);
 
+        viewToObjectMap.remove(freeTypeView.getDeclarationText());
+        viewToObjectMap.remove(freeTypeView.getPredicateText());
+        viewToObjectMap.remove(freeTypeView);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     /**
-     * @param object
-     * @param genericType
+     *
+     * @param genericDef
      * @param hasPredicate
      */
-    public void addGenericType(Object object, GenericDef genericType, boolean hasPredicate)
+    public void addGenericType(GenericDef genericDef, boolean hasPredicate)
     {
-        if (object == null)
-            {
-            throw new IllegalArgumentException("object is null");
-            }
-
-        System.out.println("object = " + object);
-        System.out.println("genericType = " + genericType);
-        System.out.println("hasPredicate = " + hasPredicate);
-
-        // TODO need to implement GenericDef stuff
-        specificationView.revalidate();
-        specificationView.repaint();
-    }
-
-    public void removeGenericType(GenericDef genericDef)
-    {
+        // TODO - add generic type support
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     /**
-     * Helper method to easily add a document listener / binding to a text
-     * field.
      *
-     * @param textArea The TextArea adding the listener
-     * @param obj      The model object containing the value
-     * @param property The property of the model object containing the value
+     * @param genericDef
      */
-    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    public void removeGenericType(GenericDef genericDef)
     {
-        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-        textArea.addKeyListener(keyAdapter);
-    }
-
-    private void runActiveParser()
-    {
-        TozeGuiParser parser = new TozeGuiParser();
-        parser.parseForErrors(specification);
-
-        List<String> errors = new ArrayList<String>();
-
-        HashMap<TozeToken, SpecObject> errorMap = parser.getSyntaxErrors();
-        for (TozeToken tozeToken : errorMap.keySet())
+        if (genericDef == null)
             {
-            errors.add(tozeToken.toString());
+            throw new IllegalArgumentException("genericDef is null");
             }
 
-        errors.addAll(parser.getTypeErrors());
-
-        setChanged();
-        notifyObservers(errors);
-    }
-
-    public void addPredicate(Object object, String predicate)
-    {
-//        specification.setPredicate("New Predicate");
-        // TODO need to implement Specification-level predicate stuff
-        System.out.println("Enter: addPredicate()");
         specificationView.revalidate();
         specificationView.repaint();
     }
 
-    public void removePredicate(Object object)
+    /**
+     *
+     */
+    public void addSpecificationPredicate()
     {
-        System.out.println("Enter: removePredicate()");
+        specification.setPredicate("New Predicate");
+
+        TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
+        specificationView.setPredicateText(predicateText);
+
+        specificationView.revalidate();
+        specificationView.repaint();
+    }
+
+    /**
+     *
+     */
+    public void removeSpecificationPredicate()
+    {
+        specification.setPredicate(null);
+
+        viewToObjectMap.remove(specificationView.getPredicateText());
+
+        specificationView.setPredicateText(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -889,7 +989,6 @@ public class SpecificationController extends Observable
         if (classDef.getVisibilityList() != null)
             {
             TozeTextArea visibilityListText = buildTextArea(classDef, classDef.getVisibilityList(), "visibilityList");
-            viewToObjectMap.put(visibilityListText, classDef);
             visibilityListView.setVisibilityListText(visibilityListText);
             }
 
@@ -899,15 +998,27 @@ public class SpecificationController extends Observable
         classView.setVisibilityListView(visibilityListView);
 
         visibilityListView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(visibilityListView, classDef);
+        viewToObjectMap.put(visibilityListView, new SpecObjectPropertyPair(classDef, null));
 
         specificationView.revalidate();
         specificationView.repaint();
     }
 
-    public void removeVisiblityList()
+    public void removeVisibilityList(ClassDef classDef)
     {
-        System.out.println("Enter: removeVisibilityList()");
+        if (classDef == null)
+            {
+            throw new IllegalArgumentException("classDef is null");
+            }
+
+        classDef.setVisibilityList(null);
+
+        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
+
+        viewToObjectMap.remove(classView.getVisibilityListView().getVisibilityListText());
+        viewToObjectMap.remove(classView.getVisibilityListView());
+        classView.setVisibilityListView(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -932,11 +1043,9 @@ public class SpecificationController extends Observable
 
         InheritedClassView inheritedClassView = new InheritedClassView();
         inheritedClassView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(inheritedClassView, inheritedClass);
+        viewToObjectMap.put(inheritedClassView, new SpecObjectPropertyPair(inheritedClass, null));
 
         TozeTextArea nameText = buildTextArea(inheritedClass, inheritedClass.getName(), "name");
-        viewToObjectMap.put(nameText, classDef);
-
         inheritedClassView.setInheritedClassText(nameText);
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
@@ -946,23 +1055,36 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
-    public void removeInheritedClass(InheritedClass inheritedClass)
+    /**
+     *
+     * @param classDef
+     */
+    public void removeInheritedClass(ClassDef classDef)
     {
-        InheritedClassView inheritedClassView = (InheritedClassView) componentForObjectOfType(inheritedClass,
-                                                                                              InheritedClassView.class
-        );
-        ClassView classView = (ClassView) inheritedClassView.getParent();
+        if (classDef == null)
+            {
+            throw new IllegalArgumentException("classDef is null");
+            }
 
-        ClassDef classDef = (ClassDef) viewToObjectMap.get(classView);
         classDef.setInheritedClass(null);
 
-        classView.remove(inheritedClassView);
+        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
+        InheritedClassView inheritedClassView = (InheritedClassView) componentForObjectOfType(classDef.getInheritedClass(), InheritedClassView.class);
 
-        System.out.println("Enter: removeInheritedClass()");
+        viewToObjectMap.remove(inheritedClassView.getInheritedClassText());
+        viewToObjectMap.remove(inheritedClassView);
+
+        classView.setInheritedClassView(null);
+
         specificationView.revalidate();
         specificationView.repaint();
     }
 
+    /**
+     *
+     * @param classDef
+     * @param operation
+     */
     public void addOperation(ClassDef classDef, Operation operation)
     {
         boolean newOperation = (operation == null);
@@ -976,10 +1098,9 @@ public class SpecificationController extends Observable
 
         OperationView operationView = new OperationView();
         operationView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(operationView, operation);
+        viewToObjectMap.put(operationView, new SpecObjectPropertyPair(operation, null));
 
         TozeTextArea operationText = buildTextArea(operation, operation.getName(), "name");
-        viewToObjectMap.put(operationText, operation);
         operationView.setOperationNameText(operationText);
 
         if (operation.getDeltaList() != null)
@@ -1014,18 +1135,93 @@ public class SpecificationController extends Observable
         specificationView.repaint();
     }
 
+    /**
+     *
+     * @param operation
+     */
     public void removeOperation(Operation operation)
     {
+        if (operation == null)
+            {
+            throw new IllegalArgumentException("operation is null");
+            }
+
+        // TODO: remove all the sub components
         OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
         ClassView classView = (ClassView) operationView.getParent();
 
-        ClassDef classDef = (ClassDef) viewToObjectMap.get(classView);
+        SpecObjectPropertyPair pair = viewToObjectMap.get(classView);
+        ClassDef classDef = (ClassDef)pair.getObject();
         classDef.getOperation().remove(operation);
 
         classView.removeOperationView(operationView);
+        viewToObjectMap.remove(operationView);
 
         specificationView.revalidate();
         specificationView.repaint();
+    }
+
+
+    /**
+     * Helper method to easily add a document listener / binding to a text
+     * field.
+     *
+     * @param textArea The TextArea adding the listener
+     * @param obj      The model object containing the value
+     * @param property The property of the model object containing the value
+     */
+    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    {
+        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
+        textArea.addKeyListener(keyAdapter);
+    }
+
+    private void resetErrors()
+    {
+        for (Object view : viewToObjectMap.keySet())
+            {
+            if (view instanceof TozeTextArea)
+                {
+                ((TozeTextArea)view).clearAllErrors();
+                }
+            }
+    }
+
+    public void parseSpecification()
+    {
+        resetErrors();
+
+        TozeGuiParser parser = new TozeGuiParser();
+        parser.parseForErrors(specification);
+
+        List errors = new ArrayList<String>();
+
+        HashMap<TozeToken, SpecObjectPropertyPair> errorMap = parser.getSyntaxErrors();
+        for (Map.Entry<TozeToken, SpecObjectPropertyPair> entry : errorMap.entrySet())
+            {
+            // add the error to the list
+            TozeToken tozeToken = entry.getKey();
+            errors.add(tozeToken);
+
+            // update the ui
+            SpecObjectPropertyPair pair = entry.getValue();
+            TozeTextArea specObjectText = (TozeTextArea)componentForObjectOfType(pair.getObject(), pair.getProperty(), TozeTextArea.class);
+            specObjectText.addError(tozeToken.m_lineNum, tozeToken.m_pos);
+            }
+
+
+        errors.addAll(parser.getTypeErrors());
+
+        setChanged();
+        notifyObservers(errors);
+
+        specificationView.revalidate();
+        specificationView.repaint();
+    }
+
+    private void runActiveParser()
+    {
+        parseSpecification();
     }
 
     /**
@@ -1037,39 +1233,73 @@ public class SpecificationController extends Observable
      * @param ignoresEnter Determines if the enter key works on this field, e.g. it can contain CRLF
      * @return The built TozeTextArea
      */
-    private TozeTextArea buildTextArea(Object modelObject, String value, String property, boolean ignoresEnter)
+    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
     {
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
         text.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(text, modelObject);
+        viewToObjectMap.put(text, new SpecObjectPropertyPair(modelObject, property));
+        text.addFocusListener(this);
         return text;
     }
 
-    private TozeTextArea buildTextArea(Object modelObject, String value, String property)
+    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
     {
         return buildTextArea(modelObject, value, property, true);
     }
 
-
-    // Utility to get the UI component for a model object of the given type
-    // Need to specify the class because a view an be the key for multiple
-    // types of model objects.
-    private Component componentForObjectOfType(Object modelObject, Class clazz)
+    /**
+     * Utility to get the UI component for a model object of the given type and property.  If property is null, return
+     * the view for the specification object as a whole
+     *
+     * @param modelObject The specification object used to find the associated view
+     * @param property The specification property to find the associate view, usually a text area
+     * @param clazz The type of view object to find
+     * @return
+     */
+    private Component componentForObjectOfType(SpecObject modelObject, String property, Class clazz)
     {
         for (Map.Entry entry : viewToObjectMap.entrySet())
             {
-            Object value = entry.getValue();
+            SpecObjectPropertyPair pair = (SpecObjectPropertyPair)entry.getValue();
             Object key = entry.getKey();
 
-            if ((modelObject == value) && (key.getClass() == clazz))
+            if ((modelObject == pair.getObject()) &&
+                    ((property == null) || (property.equals(pair.getProperty()))) &&
+                    (key.getClass() == clazz))
                 {
                 return (Component) key;
                 }
             }
 
         return null;
+    }
+
+    private Component componentForObjectOfType(SpecObject modelObject, Class clazz)
+    {
+        return componentForObjectOfType(modelObject, null, clazz);
+    }
+
+    public void insertSymbol(String symbol)
+    {
+        if (currentTextArea != null)
+            {
+            int p = currentTextArea.getCaretPosition();
+            currentTextArea.insert(symbol, p);
+            }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e)
+    {
+        currentTextArea = (TozeTextArea)e.getSource();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e)
+    {
+        currentTextArea = (TozeTextArea)e.getSource();
     }
 
     // Get Keystroke events
@@ -1119,4 +1349,5 @@ public class SpecificationController extends Observable
             super.mouseClicked(e);
         }
     }
+
 }

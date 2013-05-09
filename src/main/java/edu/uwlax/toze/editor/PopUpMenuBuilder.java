@@ -6,7 +6,6 @@ import edu.uwlax.toze.spec.BasicTypeDef;
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.FreeTypeDef;
 import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.InheritedClass;
 import edu.uwlax.toze.spec.Operation;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.event.ActionEvent;
@@ -65,10 +64,10 @@ public class PopUpMenuBuilder
             {
             popupMenu = buildGenericPopup(popupMenu, (GenericDef) object, controller);            
             }
-        else if (object instanceof InheritedClass)
-            {
-            popupMenu = buildInheritedClassPopup(popupMenu, (InheritedClass) object, controller);
-            }
+//        else if (object instanceof InheritedClass)
+//            {
+//            popupMenu = buildInheritedClassPopup(popupMenu, (InheritedClass) object, controller);
+//            }
         else
             {
             popupMenu.setName(object.getClass().getSimpleName());
@@ -111,9 +110,34 @@ public class PopUpMenuBuilder
         JMenuItem menuItem = new JMenuItem("Delete Axiomatic Definition");
         menuItem.addActionListener(new ActionListener()
         {
+            @Override
             public void actionPerformed(ActionEvent e)
             {
                 controller.removeAxiomaticType(axiomaticDef);
+            }
+        });
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Add Predicate");
+        menuItem.setEnabled(axiomaticDef.getPredicate() == null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.addAxiomaticPredicate(axiomaticDef);
+            }
+        });
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Remove Predicate");
+        menuItem.setEnabled(axiomaticDef.getPredicate() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeAxiomaticPredicate(axiomaticDef);
             }
         });
         popupMenu.add(menuItem);
@@ -189,22 +213,22 @@ public class PopUpMenuBuilder
         return popupMenu;
     }
 
-    static private JPopupMenu buildInheritedClassPopup(JPopupMenu popupMenu, final InheritedClass inheritedClass, final SpecificationController controller)
-    {
-        addTitle(popupMenu, "Inherited Class");
-        
-        JMenuItem menuItem = new JMenuItem("Delete Inherited Class");
-        menuItem.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                controller.removeInheritedClass(inheritedClass);
-            }
-        });
-        popupMenu.add(menuItem);
-
-        return popupMenu;
-    }
+//    static private JPopupMenu buildInheritedClassPopup(JPopupMenu popupMenu, final InheritedClass inheritedClass, final SpecificationController controller)
+//    {
+//        addTitle(popupMenu, "Inherited Class");
+//
+//        JMenuItem menuItem = new JMenuItem("Delete Inherited Class");
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                controller.removeInheritedClass(inheritedClass);
+//            }
+//        });
+//        popupMenu.add(menuItem);
+//
+//        return popupMenu;
+//    }
 
     static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final TOZE toze, final SpecificationController controller)
     {
@@ -281,7 +305,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addGenericType(toze, null, true);
+                controller.addGenericType(null, true);
             }
         });
         genericMenu.add(menuItem);
@@ -291,18 +315,30 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addGenericType(toze, null, false);
+                controller.addGenericType(null, false);
             }
         });
         genericMenu.add(menuItem);
         popupMenu.add(genericMenu);
 
         menuItem = new JMenuItem("Add Predicate");
+        menuItem.setEnabled(toze.getPredicate() == null);
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addPredicate(toze, null);
+                controller.addSpecificationPredicate();
+            }
+        });
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Remove Predicate");
+        menuItem.setEnabled(toze.getPredicate() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeSpecificationPredicate();
             }
         });
         popupMenu.add(menuItem);
@@ -325,6 +361,17 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
+        menuItem = new JMenuItem("Delete Visibility List");
+        menuItem.setEnabled(classDef.getVisibilityList() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeVisibilityList(classDef);
+            }
+        });
+        popupMenu.add(menuItem);
+
         menuItem = new JMenuItem("Add Inherited Class");
         menuItem.setEnabled(classDef.getInheritedClass() == null);
         menuItem.addActionListener(new ActionListener()
@@ -332,6 +379,17 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 controller.addInheritedClass(classDef, null);
+            }
+        });
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Delete Inherited Class");
+        menuItem.setEnabled(classDef.getInheritedClass() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeInheritedClass(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -434,10 +492,21 @@ public class PopUpMenuBuilder
         stateMenu.add(menuItem);
         popupMenu.add(stateMenu);
 
+        menuItem = new JMenuItem("Delete State");
+        menuItem.setEnabled(classDef.getState() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeState(classDef);
+            }
+        });
+        popupMenu.add(menuItem);
+
         // INITIAL STATE
         JMenu initStateMenu = new JMenu("Add Initial State");
-        menuItem.setEnabled(classDef.getInitialState() == null);
         menuItem = new JMenuItem("Initial State");
+        menuItem.setEnabled(classDef.getInitialState() == null);
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -459,6 +528,17 @@ public class PopUpMenuBuilder
         });
         initStateMenu.add(menuItem);
         popupMenu.add(initStateMenu);
+
+        menuItem = new JMenuItem("Delete Initial State");
+        menuItem.setEnabled(classDef.getInitialState() != null);
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeInitialState(classDef);
+            }
+        });
+        popupMenu.add(menuItem);
 
         JMenu operationMenu = new JMenu("Add Operation");
 

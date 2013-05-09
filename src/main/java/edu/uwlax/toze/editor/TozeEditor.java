@@ -5,11 +5,11 @@ import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.SpecObject;
+import edu.uwlax.toze.spec.SpecObjectPropertyPair;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,8 +48,10 @@ import javax.swing.tree.TreePath;
  *
  * @author David Stoleson
  */
-public class TozeEditor extends javax.swing.JFrame implements Observer
+public class TozeEditor extends javax.swing.JFrame implements Observer, MouseListener
 {
+    static int untitledCount = 1;
+
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem newSpecificationMenu;
@@ -132,8 +134,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
-        specialCharsList.setCellRenderer(new TozeCharListCellRenderer());
+        specialCharsList.setCellRenderer(new SpecialCharListCellRenderer());
         specialCharsList.setFont(TozeFontMap.getFont());
+        specialCharsList.addMouseListener(this);
 
         paragraphsScrollPane = new JScrollPane();
         String[] paragraphs =
@@ -144,7 +147,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         errorScrollPane = new JScrollPane();
         errorsList = new JList();
+        errorsList.setCellRenderer(new ErrorListCellRenderer());
         errorsList.setFont(TozeFontMap.getFont());
+        errorsList.addMouseListener(this);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -278,7 +283,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private void newSpecification()
     {
         TOZE toze = new TOZE();
-        openSpecificationTab(toze, "untitled");
+        openSpecificationTab(toze, "untitled" + untitledCount++);
 
     }
 
@@ -313,7 +318,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         Specification specification = new Specification(specificationName, toze);
         treeModel.addSpecification(specification);
-        SpecificationView specView = new SpecificationView(toze);
+        SpecificationView specView = new SpecificationView();
+//        SpecificationView specView = new SpecificationView(toze);
         SpecificationController controller = new SpecificationController(toze, specView);
         specView.setLayout(new TozeLayout());
         specView.addMouseListener(specView);
@@ -321,12 +327,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         JScrollPane specScroller = new JScrollPane(specView);
 
         specificationTabPanel.addTab(specification.getFilename(), specScroller);
-
         int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
         specificationTabPanel.setSelectedIndex(tabIndex);
 
         // map the tab to the controller
-        tabControllers.put(Integer.valueOf(tabIndex), controller);
+        tabControllers.put(tabIndex, controller);
 
         controller.addObserver(this);
 
@@ -368,6 +373,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         // TODO some duplicate between this and the SpecificationController class
         SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+
         TOZE toze = specController.getSpecification();
 
         TozeGuiParser parser = new TozeGuiParser();
@@ -375,7 +381,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         List<String> errors = new ArrayList<String>();
 
-        HashMap<TozeToken, SpecObject> errorMap = parser.getSyntaxErrors();
+        HashMap<TozeToken, SpecObjectPropertyPair> errorMap = parser.getSyntaxErrors();
         for (TozeToken tozeToken : errorMap.keySet())
             {
             errors.add(tozeToken.toString());
@@ -419,6 +425,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             }
     }
 
+    public void insertSymbol(String symbol)
+    {
+        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
+        SpecificationController selectedController = tabControllers.get(selectedTabIndex);
+
+        selectedController.insertSymbol(symbol);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -441,8 +455,46 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         if (o instanceof SpecificationController)
             {
-            List<String> errors = (List<String>) arg;
+            List errors = (List) arg;
             errorsList.setListData(errors.toArray());
             }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+        if (e.getSource() == specialCharsList)
+            {
+            if (e.getClickCount() == 2)
+                {
+                int index = specialCharsList.locationToIndex(e.getPoint());
+                TozeCharMap charMap = (TozeCharMap)specialCharsList.getModel().getElementAt(index);
+                this.insertSymbol(charMap.getTozeChar());
+                }
+            }
+        else if (e.getSource() == errorsList)
+            {
+            System.out.println(errorsList.getSelectedValue());
+            }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e)
+    {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e)
+    {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e)
+    {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e)
+    {
     }
 }

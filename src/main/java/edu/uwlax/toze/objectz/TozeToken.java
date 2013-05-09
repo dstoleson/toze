@@ -9,28 +9,21 @@ public class TozeToken
 
     public TozeToken(int id, String value, int pos)
     {
-        this.m_id = id;
-        this.m_value = value;
-        this.m_pos = pos;
-        m_lineNum = 0;
-
-        if (pos < 0)
-            {
-            this.m_pos = 0;
-            }
+        initValues(id, value, pos, 0);
     }
 
     public TozeToken(int id, String value, int pos, int lineNum)
     {
+        initValues(id, value, pos, lineNum);
+    }
+
+    private void initValues(int id, String value, int pos, int lineNum)
+    {
         this.m_id = id;
         this.m_value = value;
-        this.m_pos = pos;
         this.m_lineNum = lineNum;
-        
-        if (pos < 0)
-            {
-            this.m_pos = 0;
-            }
+
+        this.m_pos = (pos < 0) ? 0 : pos;
     }
     
     @Override

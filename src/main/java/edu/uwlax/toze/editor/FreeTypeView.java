@@ -18,7 +18,12 @@ public class FreeTypeView extends ParagraphView implements Placement
     {
         setLayout(new ParaLayout(this));
     }
-    
+
+    public TozeTextArea getDeclarationText()
+    {
+        return this.declarationText;
+    }
+
     public void setDeclarationText(TozeTextArea declarationText)
     {
         if (this.declarationText != null)
@@ -32,6 +37,11 @@ public class FreeTypeView extends ParagraphView implements Placement
             {
             add(declarationText);
             }
+    }
+
+    public TozeTextArea getPredicateText()
+    {
+        return this.predicateText;
     }
 
     public void setPredicateText(TozeTextArea predicateText)
@@ -57,10 +67,8 @@ public class FreeTypeView extends ParagraphView implements Placement
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
 
-        int x = insets.left, y = insets.top;
-
-        x += HMargin;
-        y += VMargin;
+        int x = insets.left + HMargin;
+        int y = insets.top + VMargin;
 
         d = declarationText.getPreferredSize();
         declarationText.setBounds(x, y, d.width, d.height);
@@ -80,10 +88,8 @@ public class FreeTypeView extends ParagraphView implements Placement
     public Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
-        Dimension d;
-        Insets insets = getInsets();
+        Dimension d = declarationText.getPreferredSize();
 
-        d = declarationText.getPreferredSize();
         int width = d.width + fm.stringWidth(FreeTypeMid);
         d = predicateText.getPreferredSize();
         width += d.width;

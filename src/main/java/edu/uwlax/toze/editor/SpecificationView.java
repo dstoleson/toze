@@ -14,19 +14,46 @@ import javax.swing.JPanel;
 public class SpecificationView extends JPanel implements MouseListener
 {
     
-//    List<AxiomaticView> axiomaticDefViews;
-//    List<AbbreviationView> abbreviationViews;
-//    List<BasicTypeView> basicTypeViews;
     private List<ClassView> classViews;
-    private TOZE spec;
-    
-    SpecificationView(TOZE spec)
+    private TozeTextArea predicateText;
+
+    public SpecificationView()
     {
         super();
         classViews = new ArrayList<ClassView>();
-        this.spec = spec;
     }
 
+    public SpecificationView(TOZE spec)
+    {
+        super();
+        classViews = new ArrayList<ClassView>();
+    }
+
+    public TozeTextArea getPredicateText()
+    {
+        return predicateText;
+    }
+
+    public void setPredicateText(TozeTextArea predicateText)
+    {
+        if (this.predicateText != null)
+            {
+            remove(this.predicateText);
+            }
+
+        this.predicateText = predicateText;
+
+        if (predicateText != null)
+            {
+            add(predicateText);
+            }
+    }
+
+    public void removeClassView(ClassView classView)
+    {
+        classViews.remove(classView);
+        remove(classView);
+    }
     @Override
     public Component add(Component component)
     {
