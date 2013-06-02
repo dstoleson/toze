@@ -516,6 +516,11 @@ public class SpecificationController extends Observable implements FocusListener
         TozeTextArea classNameText = buildTextArea(classDef, classDef.getName(), "name");
         classView.setClassNameText(classNameText);
 
+        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
+            {
+            addAxiomaticType(classDef, axiomaticDef, (axiomaticDef.getPredicate() != null));
+            }
+
         if (classDef.getInheritedClass() != null)
             {
             addInheritedClass(classDef, classDef.getInheritedClass());
@@ -631,8 +636,8 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 ((ClassDef) object).getAxiomaticDef().add(axiomaticDef);
                 }
-            JPanel parent = (JPanel) componentForObjectOfType(object, object.getClass());
-            parent.add(axiomaticDefView);
+            ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
+            classView.addAxiomaticView(axiomaticDefView);
             }
         specificationView.revalidate();
         specificationView.repaint();

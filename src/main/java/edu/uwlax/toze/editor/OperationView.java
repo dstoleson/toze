@@ -152,43 +152,43 @@ public class OperationView extends ParagraphView
         x += HMargin;
         y += VMargin;
 
-//        if (m_type == 3)
-//            {
-//            d = operationNameText.getPreferredSize();
-//            operationNameText.setBounds(x, y, d.width, d.height);
-//
-//            d2 = operationExpressionText.getPreferredSize();
-//            operationExpressionText.setBounds(x + d.width + fm.stringWidth(OperationMid), y, d2.width, d2.height);
-//            }
-//        else
-//            {
-        d = operationNameText.getPreferredSize();
-        operationNameText.setBounds(x + OperationName + OperationHeaderSpace, y, d.width, d.height);
-
-        y += d.height + InterVMargin;
-
-        if (deltaListView != null)
+        if (operationExpressionText != null)
             {
-            d = deltaListView.getPreferredSize();
-            deltaListView.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaListPre), y, d.width, d.height);
-            y += d.height + InterVMargin;
-            }
+            d = operationNameText.getPreferredSize();
+            operationNameText.setBounds(x, y, d.width, d.height);
 
-        if (declarationText != null)
-            {
-            d = declarationText.getPreferredSize();
-            declarationText.setBounds(x + OperationContentOffset, y, d.width, d.height);
-            y += d.height + InterVMargin;
+            d2 = operationExpressionText.getPreferredSize();
+            operationExpressionText.setBounds(x + d.width + fm.stringWidth(OperationMid), y, d2.width, d2.height);
             }
+        else
+            {
+            d = operationNameText.getPreferredSize();
+            operationNameText.setBounds(x + OperationName + OperationHeaderSpace, y, d.width, d.height);
 
-        y += OperationLineMargin;
-        if (predicateText != null)
-            {
-            d = predicateText.getPreferredSize();
-            predicateText.setBounds(x + OperationContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
+
+            if (deltaListView != null)
+                {
+                d = deltaListView.getPreferredSize();
+                deltaListView.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaListPre), y, d.width, d.height);
+                y += d.height + InterVMargin;
+                }
+
+            if (declarationText != null)
+                {
+                d = declarationText.getPreferredSize();
+                declarationText.setBounds(x + OperationContentOffset, y, d.width, d.height);
+                y += d.height + InterVMargin;
+                }
+
+            y += OperationLineMargin;
+            if (predicateText != null)
+                {
+                d = predicateText.getPreferredSize();
+                predicateText.setBounds(x + OperationContentOffset, y, d.width, d.height);
+                y += d.height + InterVMargin;
+                }
             }
-// type == 3            }
     }
 
     @Override
@@ -207,79 +207,79 @@ public class OperationView extends ParagraphView
         int height = 0;
         int w;
 
-//        if (m_type == 3)
-//            {
-//            d = operationNameText.getPreferredSize();
-//            w = d.width;
-//            if (w > width)
-//                {
-//                width = w;
-//                }
-//            height += d.height;
-//
-//            width += fm.stringWidth(OperationMid);
-//
-//            d = operationExpressionText.getPreferredSize();
-//            width += d.width;
-//            height += d.height;
-//            }
-//        else
-//            {
+        if (operationExpressionText != null)
+            {
+            d = operationNameText.getPreferredSize();
+            w = d.width;
+            if (w > width)
+                {
+                width = w;
+                }
+            height += d.height;
+
+            width += fm.stringWidth(OperationMid);
+
+            d = operationExpressionText.getPreferredSize();
+            width += d.width;
+            height += d.height;
+            }
+        else
+            {
             /*
-         * Operation Header
-         */
+             * Operation Header
+             */
 
-        d = operationNameText.getPreferredSize();
-        w = OperationName + OperationHeaderSpace + d.width + OperationHeaderSpace + OperationExtraLine;
-        if (w > width)
-            {
-            width = w;
-            }
-        height += d.height + InterVMargin;
-
-        /*
-         * Delta List
-         */
-        if (deltaListView != null)
-            {
-            d = deltaListView.getPreferredSize();
-            if ((d.width + OperationContentOffset) > width)
+            d = operationNameText.getPreferredSize();
+            w = OperationName + OperationHeaderSpace + d.width + OperationHeaderSpace + OperationExtraLine;
+            if (w > width)
                 {
-                width = d.width + OperationContentOffset;
+                width = w;
                 }
             height += d.height + InterVMargin;
-            }
 
-        /*
-         * Declaration
-         */
-
-        if (declarationText != null)
-            {
-            d = declarationText.getPreferredSize();
-            if ((d.width + OperationContentOffset) > width)
+            /*
+             * Delta List
+             */
+            if (deltaListView != null)
                 {
-                width = d.width + OperationContentOffset;
+                d = deltaListView.getPreferredSize();
+                if ((d.width + OperationContentOffset) > width)
+                    {
+                    width = d.width + OperationContentOffset;
+                    }
+                height += d.height + InterVMargin;
                 }
-            height += d.height + InterVMargin;
-            }
 
-        /*
-         * Predicates
-         */
+            /*
+             * Declaration
+             */
 
-        if (predicateText != null)
-            {
-            height += OperationLineMargin;
-
-            d = predicateText.getPreferredSize();
-            if ((d.width + OperationContentOffset) > width)
+            if (declarationText != null)
                 {
-                width = d.width + OperationContentOffset;
+                d = declarationText.getPreferredSize();
+                if ((d.width + OperationContentOffset) > width)
+                    {
+                    width = d.width + OperationContentOffset;
+                    }
+                height += d.height + InterVMargin;
                 }
-            height += d.height + InterVMargin;
+
+            /*
+             * Predicates
+             */
+
+            if (predicateText != null)
+                {
+                height += OperationLineMargin;
+
+                d = predicateText.getPreferredSize();
+                if ((d.width + OperationContentOffset) > width)
+                    {
+                    width = d.width + OperationContentOffset;
+                    }
+                height += d.height + InterVMargin;
+                }
             }
-// type == 3            }
 
         width += insets.left + insets.right;
         height += insets.top + insets.bottom;
@@ -316,54 +316,54 @@ public class OperationView extends ParagraphView
 
         g.setColor(Color.BLACK);
 
-//        if (m_type == 3)
-//            {
-//            d = operationNameText.getPreferredSize();
-//            g.drawString(OperationMid, xoffset + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
-//            }
-//        else
-//            {
-        d = operationNameText.getPreferredSize();
-        yoffset += d.height - OperationLineMargin;
-        g.drawLine(xoffset,
-                   yoffset,
-                   xoffset + OperationName,
-                   yoffset);
-        g.drawLine(xoffset + OperationName + OperationHeaderSpace + d.width + OperationHeaderSpace,
-                   yoffset,
-                   cd.width - 1 - HMargin,
-                   yoffset);
-
-        declsHeight += InterVMargin;
-
-        if (deltaListView != null)
+        if (operationExpressionText != null)
             {
-            d = deltaListView.getPreferredSize();
-            declsHeight += d.height;
-//            g.drawString(DeltaListPre, xoffset + OperationContentOffset, yoffset + declsHeight);
-//            g.drawString(DeltaListPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaListPre) + d.width, yoffset + declsHeight);
+            d = operationNameText.getPreferredSize();
+            g.drawString(OperationMid, xoffset + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
+            }
+        else
+            {
+            d = operationNameText.getPreferredSize();
+            yoffset += d.height - OperationLineMargin;
+            g.drawLine(xoffset,
+                       yoffset,
+                       xoffset + OperationName,
+                       yoffset);
+            g.drawLine(xoffset + OperationName + OperationHeaderSpace + d.width + OperationHeaderSpace,
+                       yoffset,
+                       cd.width - 1 - HMargin,
+                       yoffset);
+
             declsHeight += InterVMargin;
-            }
 
-        if (declarationText != null)
-            {
-            d = declarationText.getPreferredSize();
-            declsHeight += d.height + InterVMargin;
-            }
+            if (deltaListView != null)
+                {
+                d = deltaListView.getPreferredSize();
+                declsHeight += d.height;
+    //            g.drawString(DeltaListPre, xoffset + OperationContentOffset, yoffset + declsHeight);
+    //            g.drawString(DeltaListPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaListPre) + d.width, yoffset + declsHeight);
+                declsHeight += InterVMargin;
+                }
 
-        g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight + OperationLineMargin);
-        yoffset += declsHeight + OperationLineMargin;
+            if (declarationText != null)
+                {
+                d = declarationText.getPreferredSize();
+                declsHeight += d.height + InterVMargin;
+                }
 
-        if ((deltaListView != null) || (declarationText != null))
-            {
-            g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
-            }
+            g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight + OperationLineMargin);
+            yoffset += declsHeight + OperationLineMargin;
 
-        if (predicateText != null)
-            {
-            g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
-            g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
+            if ((deltaListView != null) || (declarationText != null))
+                {
+                g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
+                }
+
+            if (predicateText != null)
+                {
+                g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
+                g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
+                }
             }
-// type == 3            }
     }
 }

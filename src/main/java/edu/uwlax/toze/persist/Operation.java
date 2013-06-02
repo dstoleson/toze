@@ -35,6 +35,8 @@ public class Operation extends edu.uwlax.toze.spec.Operation
     @Override
     public void setOperationExpression(String operationExpression)
     {
+        super.setOperationExpression(operationExpression);
+
         if (operationExpression != null)
             {
             setType(3);

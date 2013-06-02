@@ -23,6 +23,7 @@ public class ClassView extends ParagraphView
     static final private int ExtraLine = 10;
     //
     private TozeTextArea classNameText;
+    private List<AxiomaticView> axiomaticViews;
     private VisibilityListView visibilityListView;
     private InheritedClassView inheritedClassView;
     private List<AbbreviationView> abbreviationViews;
@@ -36,6 +37,7 @@ public class ClassView extends ParagraphView
     {
         this.setLayout(new ParaLayout(this));
 
+        axiomaticViews = new ArrayList<AxiomaticView>();
         abbreviationViews = new ArrayList<AbbreviationView>();
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
@@ -118,6 +120,18 @@ public class ClassView extends ParagraphView
             {
             add(initialStateView);
             }
+    }
+
+    public void addAxiomaticView(AxiomaticView axiomaticView)
+    {
+        axiomaticViews.add(axiomaticView);
+        add(axiomaticView);
+    }
+
+    public void removeAxiomaticView(AxiomaticView axiomaticView)
+    {
+        axiomaticViews.remove(axiomaticView);
+        remove(axiomaticView);
     }
 
     public void addAbbreviationView(AbbreviationView abbreviationView)
@@ -262,6 +276,16 @@ public class ClassView extends ParagraphView
             height += d.height + InterVMargin;
             }
 
+        for (AxiomaticView axiomaticView : axiomaticViews)
+            {
+            d = axiomaticView.getPreferredSize(this.getGraphics());
+            int w = ClassContentOffset + d.width + ExtraLine;
+            if (w > width)
+                {
+                width = w;
+                }
+            height += d.height + InterVMargin;
+            }
 
         for (BasicTypeView basicTypeView : basicTypeViews)
             {
@@ -367,6 +391,12 @@ public class ClassView extends ParagraphView
             y += d.height + InterVMargin;
             }
 
+        for (AxiomaticView axiomaticView : axiomaticViews)
+            {
+            d = axiomaticView.getPreferredSize(this.getGraphics());
+            axiomaticView.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            y += d.height + InterVMargin;
+            }
         for (BasicTypeView basicTypeView : basicTypeViews)
             {
             d = basicTypeView.getPreferredSize(this.getGraphics());
