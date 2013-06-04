@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class SpecificationController extends Observable implements FocusListener
 {
+    private Specification specificationDoc;
     private TOZE specification;
 
     private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
@@ -35,10 +36,11 @@ public class SpecificationController extends Observable implements FocusListener
      * @throws IllegalArgumentException specification and specificationView must
      *                                  not be null
      */
-    public SpecificationController(TOZE specification, SpecificationView specificationView)
+    public SpecificationController(Specification specificationDoc, SpecificationView specificationView)
             throws IllegalArgumentException
     {
-        this.specification = specification;
+        this.specificationDoc = specificationDoc;
+        this.specification = specificationDoc.getToze();
         this.specificationView = specificationView;
         this.mouseAdapter = new ControllerMouseAdapter();
         this.keyAdapter = new ControllerKeyAdapter();
@@ -113,6 +115,11 @@ public class SpecificationController extends Observable implements FocusListener
 
         specificationView.revalidate();
         specificationView.repaint();
+    }
+
+    public Specification getSpecificationDoc()
+    {
+        return specificationDoc;
     }
 
     /**
@@ -1333,7 +1340,7 @@ public class SpecificationController extends Observable implements FocusListener
                 System.out.println("clicked = " + clickedComponent.getClass().getSimpleName());
 
 
-                Object modelObject = viewToObjectMap.get(clickedComponent);
+                Object modelObject = viewToObjectMap.get(clickedComponent).getObject();
 
                 System.out.println("model = " + modelObject.getClass().getSimpleName());
 
@@ -1343,7 +1350,7 @@ public class SpecificationController extends Observable implements FocusListener
                     {
                     Component parentComponent = clickedComponent.getParent();
                     System.out.println("clickedParent = " + parentComponent.getClass().getName());
-                    parentObject = viewToObjectMap.get(parentComponent);
+                    parentObject = viewToObjectMap.get(parentComponent).getObject();
 
                     System.out.println("parent = " + parentObject.getClass().getSimpleName());
                     }

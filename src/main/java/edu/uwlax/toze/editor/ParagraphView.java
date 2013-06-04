@@ -6,7 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public abstract class ParagraphView extends JPanel implements Placement, Observer
 {
@@ -21,12 +21,14 @@ public abstract class ParagraphView extends JPanel implements Placement, Observe
     {
         if (mouseInView)
             {
-            setBackground(Color.LIGHT_GRAY);
+            this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
             }
         else
             {
-            setBackground(Color.WHITE);
+            this.setBorder(null);
             }
+
+        setBackground(Color.WHITE);
         setFont(TozeFontMap.getFont());
         addMouseListener(new ParagraphViewMouseAdapter());
         super.paint(g);

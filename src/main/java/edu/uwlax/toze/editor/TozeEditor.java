@@ -32,6 +32,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -48,7 +50,7 @@ import javax.swing.tree.TreePath;
  *
  * @author David Stoleson
  */
-public class TozeEditor extends javax.swing.JFrame implements Observer, MouseListener
+public class TozeEditor extends javax.swing.JFrame implements Observer, MouseListener, ChangeListener
 {
     static int untitledCount = 1;
 
@@ -79,6 +81,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     // Error List View
     private JScrollPane errorScrollPane;
     private JList errorsList;
+    private HashMap<Specification, List>specificationErrors;
+
 //    private ErrorListController errorListController;
     private HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
     // in the future perhaps this should be saved as a preference
@@ -122,6 +126,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         specificationTree = new JTree();
 
         specificationTabPanel = new JTabbedPane();
+        specificationTabPanel.addChangeListener(this);
         paletteTabPanel = new JTabbedPane();
 
         menuBar = new JMenuBar();
@@ -150,6 +155,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         errorsList.setCellRenderer(new ErrorListCellRenderer());
         errorsList.setFont(TozeFontMap.getFont());
         errorsList.addMouseListener(this);
+
+        specificationErrors = new HashMap<Specification, List>();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -319,15 +326,16 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         Specification specification = new Specification(specificationName, toze);
         treeModel.addSpecification(specification);
         SpecificationView specView = new SpecificationView();
-//        SpecificationView specView = new SpecificationView(toze);
-        SpecificationController controller = new SpecificationController(toze, specView);
+        SpecificationController controller = new SpecificationController(specification, specView);
         specView.setLayout(new TozeLayout());
         specView.addMouseListener(specView);
         specView.setPreferredSize(new Dimension(800, 800));
         JScrollPane specScroller = new JScrollPane(specView);
 
+        specificationTabPanel.getTabCount();
         specificationTabPanel.addTab(specification.getFilename(), specScroller);
         int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+
         specificationTabPanel.setSelectedIndex(tabIndex);
 
         // map the tab to the controller
@@ -369,29 +377,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
             }
     }
 
-    private void checkSpecification()
-    {
-        // TODO some duplicate between this and the SpecificationController class
-        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
-
-        TOZE toze = specController.getSpecification();
-
-        TozeGuiParser parser = new TozeGuiParser();
-        parser.parseForErrors(toze);
-
-        List<String> errors = new ArrayList<String>();
-
-        HashMap<TozeToken, SpecObjectPropertyPair> errorMap = parser.getSyntaxErrors();
-        for (TozeToken tozeToken : errorMap.keySet())
-            {
-            errors.add(tozeToken.toString());
-            }
-
-        errors.addAll(parser.getTypeErrors());
-
-        errorsList.setListData(errors.toArray());
-    }
-
     private void closeSpecification()
     {
         // get selected specifications
@@ -425,6 +410,12 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
             }
     }
 
+    private void checkSpecification()
+    {
+        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+        specController.parseSpecification();
+    }
+
     public void insertSymbol(String symbol)
     {
         int selectedTabIndex = specificationTabPanel.getSelectedIndex();
@@ -455,10 +446,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     {
         if (o instanceof SpecificationController)
             {
+            SpecificationController specificationController = (SpecificationController)o;
             List errors = (List) arg;
+            specificationErrors.put(specificationController.getSpecificationDoc(), errors);
             errorsList.setListData(errors.toArray());
             }
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e)
@@ -496,5 +490,28 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     @Override
     public void mouseExited(MouseEvent e)
     {
+    }
+
+    /**
+     * Implement JTabbedPane ChangeListener interface
+     */
+    @Override
+    public void stateChanged(ChangeEvent e)
+    {
+        SpecificationController selectedController = tabControllers.get(specificationTabPanel.getSelectedIndex());
+
+        if (selectedController != null)
+            {
+            List errors = specificationErrors.get(selectedController.getSpecificationDoc());
+
+            if (errors != null)
+                {
+                errorsList.setListData(errors.toArray());
+                }
+            else
+                {
+                errorsList.setListData((Object[])null);
+                }
+            }
     }
 }
