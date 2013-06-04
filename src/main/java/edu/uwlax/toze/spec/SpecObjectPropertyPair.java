@@ -23,4 +23,9 @@ public class SpecObjectPropertyPair
     {
         return property;
     }
+
+    public String toString()
+    {
+        return "SpecObjectPropertyPair [" + object + ", " + property + "]";
+    }
 }

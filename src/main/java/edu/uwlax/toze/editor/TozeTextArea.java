@@ -11,7 +11,9 @@ import javax.swing.*;
 public class TozeTextArea extends JTextArea
 {
     static private Color ERROR_COLOR = new Color(255, 121, 118);
+    static private Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
 
+    private boolean highlighted = false;
     private boolean ignoresEnter = true;
     private TozeChars m_map = new TozeChars();
     private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
@@ -46,6 +48,11 @@ public class TozeTextArea extends JTextArea
     public void setIgnoresEnter(boolean ignoresEnter)
     {
         this.ignoresEnter = ignoresEnter;
+    }
+
+    public void setHighlighted(boolean highlighted)
+    {
+        this.highlighted = highlighted;
     }
 
     /**
@@ -172,16 +179,22 @@ public class TozeTextArea extends JTextArea
     public void paint(Graphics g)
     {
         Component parent = this.getParent();
-        
-        if (this.getParent() == null)
+
+        if (highlighted)
             {
-            setBackground(Color.WHITE);
+            setBackground(HIGHLIGHT_COLOR);
             }
         else
             {
-            setBackground(parent.getBackground());
+            if (this.getParent() == null)
+                {
+                setBackground(Color.WHITE);
+                }
+            else
+                {
+                setBackground(parent.getBackground());
+                }
             }
-
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
 

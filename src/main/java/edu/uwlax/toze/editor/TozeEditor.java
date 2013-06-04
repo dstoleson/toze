@@ -5,6 +5,7 @@ import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.spec.SpecObject;
+import edu.uwlax.toze.spec.SpecObjectPropertyError;
 import edu.uwlax.toze.spec.SpecObjectPropertyPair;
 import edu.uwlax.toze.spec.TOZE;
 import java.awt.Dimension;
@@ -468,6 +469,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
             }
         else if (e.getSource() == errorsList)
             {
+            int tabIndex = specificationTabPanel.getSelectedIndex();
+            SpecificationController specificationController = tabControllers.get(tabIndex);
+            specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
+
             System.out.println(errorsList.getSelectedValue());
             }
     }

@@ -1188,6 +1188,18 @@ public class SpecificationController extends Observable implements FocusListener
         textArea.addKeyListener(keyAdapter);
     }
 
+    // should create a loop and pass a block to each object
+    private void unhightlightErrors()
+    {
+        for (Object view : viewToObjectMap.keySet())
+            {
+            if (view instanceof TozeTextArea)
+                {
+                ((TozeTextArea)view).setHighlighted(false);
+                }
+            }
+    }
+
     private void resetErrors()
     {
         for (Object view : viewToObjectMap.keySet())
@@ -1195,6 +1207,7 @@ public class SpecificationController extends Observable implements FocusListener
             if (view instanceof TozeTextArea)
                 {
                 ((TozeTextArea)view).clearAllErrors();
+                ((TozeTextArea)view).setHighlighted(false);
                 }
             }
     }
@@ -1213,16 +1226,18 @@ public class SpecificationController extends Observable implements FocusListener
             {
             // add the error to the list
             TozeToken tozeToken = entry.getKey();
-            errors.add(tozeToken);
+            SpecObjectPropertyPair pair = entry.getValue();
+            errors.add(new SpecObjectPropertyError(pair.getObject(), pair.getProperty(), tozeToken));
 
             // update the ui
-            SpecObjectPropertyPair pair = entry.getValue();
             TozeTextArea specObjectText = (TozeTextArea)componentForObjectOfType(pair.getObject(), pair.getProperty(), TozeTextArea.class);
             specObjectText.addError(tozeToken.m_lineNum, tozeToken.m_pos);
+
             }
 
 
-        errors.addAll(parser.getTypeErrors());
+// TODO:  need to figure out how to make a type error similar to a syntax error for the list / highlighting, etc.
+//        errors.addAll(parser.getTypeErrors());
 
         setChanged();
         notifyObservers(errors);
@@ -1312,6 +1327,19 @@ public class SpecificationController extends Observable implements FocusListener
     public void focusLost(FocusEvent e)
     {
         currentTextArea = (TozeTextArea)e.getSource();
+    }
+
+    public void highlightError(SpecObjectPropertyError error)
+    {
+        unhightlightErrors();
+        System.out.println("error = " + error);
+        TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
+
+        System.out.println("textArea = " + textArea);
+        textArea.setHighlighted(true);
+
+        specificationView.revalidate();
+        specificationView.repaint();
     }
 
     // Get Keystroke events

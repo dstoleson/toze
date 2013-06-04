@@ -1,20 +1,21 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.objectz.TozeToken;
+import edu.uwlax.toze.spec.SpecObjectPropertyError;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
 {
-    private JLabel error;
+    private JLabel errorLabel;
 
     public ErrorListCellRenderer()
     {
         setLayout(new GridLayout(1, 1));
-        error = new JLabel();
-        error.setOpaque(true);
-        add(error);
+        errorLabel = new JLabel();
+        errorLabel.setOpaque(true);
+        add(errorLabel);
     }
 
     @Override
@@ -23,24 +24,25 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
     {
         if (isSelected)
             {
-            error.setBackground(Color.GRAY);
-            error.setForeground(Color.BLACK);
+            errorLabel.setBackground(Color.GRAY);
+            errorLabel.setForeground(Color.BLACK);
             }
         else
             {
-            error.setBackground(Color.WHITE);
-            error.setForeground(Color.BLACK);
+            errorLabel.setBackground(Color.WHITE);
+            errorLabel.setForeground(Color.BLACK);
             }
 
         if (value instanceof String)
             {
-            error.setFont(TozeFontMap.getFont());
-            error.setText((String)value);
+            errorLabel.setFont(TozeFontMap.getFont());
+            errorLabel.setText((String) value);
             }
-        else if (value instanceof TozeToken)
+        else if (value instanceof SpecObjectPropertyError)
             {
-            error.setFont(TozeFontMap.getFont());
-            error.setText("Syntax Error: @ Line: " + ((TozeToken)value).m_lineNum + ", Pos: " + ((TozeToken)value).m_pos);
+            TozeToken error = ((SpecObjectPropertyError)value).getError();
+            errorLabel.setFont(TozeFontMap.getFont());
+            errorLabel.setText("Syntax Error: @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos);
             }
 
         return this;
