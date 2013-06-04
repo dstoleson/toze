@@ -8,8 +8,8 @@ import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.SpecObjectPropertyError;
 import edu.uwlax.toze.spec.SpecObjectPropertyPair;
 import edu.uwlax.toze.spec.TOZE;
-import java.awt.Dimension;
-import java.awt.FileDialog;
+
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,17 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.GroupLayout;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTree;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -343,7 +333,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         tabControllers.put(tabIndex, controller);
 
         controller.addObserver(this);
-
         checkSpecification();
     }
 
@@ -471,8 +460,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
             {
             int tabIndex = specificationTabPanel.getSelectedIndex();
             SpecificationController specificationController = tabControllers.get(tabIndex);
-            specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
-
+            TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
+            textArea.scrollRectToVisible(textArea.getBounds());
             System.out.println(errorsList.getSelectedValue());
             }
     }

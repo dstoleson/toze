@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class SpecificationController extends Observable implements FocusListener
 {
+
     private Specification specificationDoc;
     private TOZE specification;
 
@@ -1329,7 +1330,7 @@ public class SpecificationController extends Observable implements FocusListener
         currentTextArea = (TozeTextArea)e.getSource();
     }
 
-    public void highlightError(SpecObjectPropertyError error)
+    public TozeTextArea highlightError(SpecObjectPropertyError error)
     {
         unhightlightErrors();
         System.out.println("error = " + error);
@@ -1340,6 +1341,8 @@ public class SpecificationController extends Observable implements FocusListener
 
         specificationView.revalidate();
         specificationView.repaint();
+
+        return textArea;
     }
 
     // Get Keystroke events
