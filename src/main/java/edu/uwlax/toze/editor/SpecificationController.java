@@ -11,6 +11,8 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
+import static edu.uwlax.toze.editor.StateType.All;
+
 /**
  *
  */
@@ -31,7 +33,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Create a controller for the given specification model and view.
      *
-     * @param specification     The specification to display.
+     * @param specificationDoc     The specification to display.
      * @param specificationView The view in which to display the specification.
      *
      * @throws IllegalArgumentException specification and specificationView must
@@ -312,12 +314,9 @@ public class SpecificationController extends Observable implements FocusListener
      * @param classDef The ClassDef to add the State
      * @param state    The State to add to the ClassDef, if it is null a new
      *                 State is added to the ClassDef
-     * @param one
-     * @param two
-     * @param three
-     * @param four
+     * @param stateType Which state type is to be presented, All, No Predicate, No Declaration or Bracketed
      */
-    public void addState(ClassDef classDef, State state, boolean one, boolean two, boolean three, boolean four)
+    public void addState(ClassDef classDef, State state, StateType stateType)
     {
         if (classDef == null)
             {
@@ -329,7 +328,22 @@ public class SpecificationController extends Observable implements FocusListener
         if (newState)
             {
             state = new State();
-            state.setName("New State");
+
+            switch (stateType)
+                {
+                case All :
+                    state.setDeclaration("New Declaration");
+                    state.setPredicate("New Predicate");
+                    break;
+                case NoPredicate :
+                    state.setDeclaration("New Declaration");
+                    break;
+                case NoDeclaration :
+                    state.setPredicate("New Predicate");
+                    break;
+                case Bracket:
+                    state.setName("New State");
+                }
             classDef.setState(state);
             }
 
@@ -343,13 +357,13 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (state.getDeclaration() != null)
             {
-            TozeTextArea declarationText = buildTextArea(state, state.getDeclaration(), "declaration");
+            TozeTextArea declarationText = buildTextArea(state, state.getDeclaration(), "declaration", false);
             stateView.setDeclarationText(declarationText);
             }
 
         if (state.getPredicate() != null)
             {
-            TozeTextArea predicateText = buildTextArea(state, state.getPredicate(), "predicate");
+            TozeTextArea predicateText = buildTextArea(state, state.getPredicate(), "predicate", false);
             stateView.setPredicateText(predicateText);
             }
 
@@ -552,7 +566,7 @@ public class SpecificationController extends Observable implements FocusListener
         if (classDef.getState() != null)
             {
             // TODO, figure this out
-            addState(classDef, classDef.getState(), true, true, true, true);
+            addState(classDef, classDef.getState(), All);
             }
 
         if (classDef.getInitialState() != null)
@@ -562,7 +576,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         for (Operation operation : classDef.getOperation())
             {
-            addOperation(classDef, operation);
+            addOperation(classDef, operation, null);
             }
 
         if (newClassDef)
@@ -658,10 +672,18 @@ public class SpecificationController extends Observable implements FocusListener
             throw new IllegalArgumentException("axiomaticDef is null");
             }
 
-        specification.getAxiomaticDef().remove(axiomaticDef);
-
         AxiomaticView axiomaticView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-        specificationView.remove(axiomaticView);
+        Component parent = axiomaticView.getParent();
+
+        if (parent instanceof ClassView)
+            {
+            ((ClassView)parent).removeAxiomaticView(axiomaticView);
+            }
+        else
+            {
+            specification.getAxiomaticDef().remove(axiomaticDef);
+            specificationView.remove(axiomaticView);
+            }
 
         viewToObjectMap.remove(axiomaticView.getDeclarationText());
         viewToObjectMap.remove(axiomaticView.getPredicateText());
@@ -841,13 +863,28 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeBasicType(BasicTypeDef basicTypeDef)
     {
-        specification.getBasicTypeDef().remove(basicTypeDef);
 
-        BasicTypeView basicTypeview = (BasicTypeView) componentForObjectOfType(basicTypeDef, BasicTypeView.class);
-        specificationView.remove(basicTypeview);
+        if (basicTypeDef == null)
+            {
+            throw new IllegalArgumentException(("basicTypeDef is null"));
+            }
 
-        viewToObjectMap.remove(basicTypeview.getNameText());
-        viewToObjectMap.remove(basicTypeview);
+        BasicTypeView basicTypeView = (BasicTypeView) componentForObjectOfType(basicTypeDef, BasicTypeView.class);
+
+        Component parent = basicTypeView.getParent();
+
+        if (parent instanceof ClassView)
+            {
+            ((ClassView)parent).removeBasicTypeView(basicTypeView);
+            }
+        else
+            {
+            specification.getBasicTypeDef().remove(basicTypeDef);
+            specificationView.remove(basicTypeView);
+            }
+
+        viewToObjectMap.remove(basicTypeView.getNameText());
+        viewToObjectMap.remove(basicTypeView);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -913,10 +950,23 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeFreeType(FreeTypeDef freeTypeDef)
     {
-        specification.getFreeTypeDef().remove(freeTypeDef);
+        if (freeTypeDef == null)
+            {
+            throw new IllegalArgumentException(("freeTypeDef is null"));
+            }
 
         FreeTypeView freeTypeView = (FreeTypeView) componentForObjectOfType(freeTypeDef, FreeTypeView.class);
-        specificationView.remove(freeTypeView);
+        Component parent = freeTypeView.getParent();
+
+        if (parent instanceof ClassView)
+            {
+            ((ClassView)parent).removeFreeTypeView(freeTypeView);
+            }
+        else
+            {
+            specification.getFreeTypeDef().remove(freeTypeDef);
+            specificationView.remove(freeTypeView);
+            }
 
         viewToObjectMap.remove(freeTypeView.getDeclarationText());
         viewToObjectMap.remove(freeTypeView.getPredicateText());
@@ -1094,18 +1144,44 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
+     * An Operation is added to the given ClassDef.  If the Operation is null a new Operation is created given
+     * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
      *
-     * @param classDef
-     * @param operation
+     * @param classDef A ClassDef to add the Operation to
+     * @param operation An Operation to be added to ClassDef
+     * @param operationType used when operation is null to determine the default type of operation to create, use null
+     *                      when passing a non-null value for operation
      */
-    public void addOperation(ClassDef classDef, Operation operation)
+    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType)
     {
         boolean newOperation = (operation == null);
 
         if (newOperation)
             {
-            operation = new Operation();
-            operation.setName("New Operation");
+            operation = new edu.uwlax.toze.persist.Operation();
+            switch (operationType)
+                {
+                case All:
+                    operation.setName("New Operation");
+                    operation.setDeltaList("New Delta");
+                    operation.setPredicate("New Predicate");
+                    operation.setDeclaration("New Declaration");
+                    operation.setName("New Operation");
+                    break;
+                case NoDeclaration:
+                    operation.setName("New Operation");
+                    operation.setPredicate("New Predicate");
+                    break;
+                case NoPredicate:
+                    operation.setName("New Operation");
+                    operation.setDeltaList("New Delta");
+                    operation.setDeclaration("New Declaration");
+                    break;
+                case Expression:
+                    operation.setName("New Operation");
+                    operation.setOperationExpression("New Expression");
+                }
+
             classDef.getOperation().add(operation);
             }
 
@@ -1353,7 +1429,15 @@ public class SpecificationController extends Observable implements FocusListener
         {
             // TODO need to figure out timing of keyTyped and when the document updates happen
             super.keyTyped(e);
-            runActiveParser();
+            try
+                {
+//                runActiveParser();
+                }
+            catch (Throwable t)
+                {
+                System.out.println("Caught exception while parsing: " + t);
+                t.printStackTrace();
+                }
         }
     }
 

@@ -256,7 +256,8 @@ public class TozeGuiParser extends TozeParser
             
             if (!Ast.hasErrors())
                 {
-                astSpec.checkType();
+// TODO:  temporarily suspend type checking
+//                astSpec.checkType();
                 }
             }
     }

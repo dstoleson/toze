@@ -1,12 +1,16 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.objectz.TozeToken;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.util.List;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TozeTextArea extends JTextArea
 {
@@ -195,6 +199,7 @@ public class TozeTextArea extends JTextArea
                 setBackground(parent.getBackground());
                 }
             }
+
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
 

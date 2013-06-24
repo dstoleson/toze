@@ -1,27 +1,10 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
-import edu.uwlax.toze.objectz.TozeGuiParser;
-import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationBuilder;
-import edu.uwlax.toze.spec.SpecObject;
 import edu.uwlax.toze.spec.SpecObjectPropertyError;
-import edu.uwlax.toze.spec.SpecObjectPropertyPair;
 import edu.uwlax.toze.spec.TOZE;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,6 +12,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * Main UI class for the TOZE Editor. Displays a file/specification tree
@@ -320,7 +311,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         SpecificationController controller = new SpecificationController(specification, specView);
         specView.setLayout(new TozeLayout());
         specView.addMouseListener(specView);
-        specView.setPreferredSize(new Dimension(800, 800));
+//        specView.setPreferredSize(new Dimension(800, 800));
         JScrollPane specScroller = new JScrollPane(specView);
 
         specificationTabPanel.getTabCount();

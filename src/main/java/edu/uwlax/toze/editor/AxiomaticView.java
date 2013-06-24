@@ -153,6 +153,8 @@ public class AxiomaticView extends ParagraphView
 
         g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight + InterVMargin);
         yoffset += declsHeight + InterVMargin;
+
+        if (predicateText != null)
             {
             g.drawLine(xoffset, yoffset, xoffset + cd.width - 1, yoffset);
             g.drawLine(xoffset, yoffset, xoffset, cd.height - VMargin);

@@ -1,15 +1,13 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.spec.TOZE;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JPanel;
 
 public class SpecificationView extends JPanel implements MouseListener
 {
@@ -73,6 +71,12 @@ public class SpecificationView extends JPanel implements MouseListener
         setForeground(Color.BLACK);
 
         super.paint(g);
+    }
+
+    @Override
+    public Dimension preferredSize()
+    {
+        return super.preferredSize();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

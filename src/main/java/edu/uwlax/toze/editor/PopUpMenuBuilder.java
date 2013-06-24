@@ -1,19 +1,12 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.Operation;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.spec.*;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
+
+import static edu.uwlax.toze.editor.StateType.*;
 
 public class PopUpMenuBuilder
 {
@@ -456,7 +449,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, true, true, true, false);
+                controller.addState(classDef, null, All);
             }
         });
         stateMenu.add(menuItem);
@@ -466,7 +459,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, true, true, false, false);
+                controller.addState(classDef, null, Bracket);
             }
         });
         stateMenu.add(menuItem);
@@ -476,7 +469,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, false, false, true, false);
+                controller.addState(classDef, null, NoPredicate);
             }
         });
         stateMenu.add(menuItem);
@@ -486,7 +479,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, false, false, false, true);
+                controller.addState(classDef, null, NoDeclaration);
             }
         });
         stateMenu.add(menuItem);
@@ -548,7 +541,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO add parameters to cover various options
-                controller.addOperation(classDef, null);
+                controller.addOperation(classDef, null, OperationType.All);
             }
         });
         operationMenu.add(menuItem);
@@ -559,7 +552,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO add parameters to cover various options
-                controller.addOperation(classDef, null);
+                controller.addOperation(classDef, null, OperationType.NoPredicate);
             }
         });
         operationMenu.add(menuItem);
@@ -570,7 +563,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO add parameters to cover various options
-                controller.addOperation(classDef, null);
+                controller.addOperation(classDef, null, OperationType.NoDeclaration);
             }
         });
         operationMenu.add(menuItem);
@@ -581,7 +574,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO add parameters to cover various options
-                controller.addOperation(classDef, null);
+                controller.addOperation(classDef, null, OperationType.Expression);
             }
         });
         operationMenu.add(menuItem);
