@@ -227,11 +227,12 @@ public class TozeGuiParser extends TozeParser
 
                 if (operation.getPredicate() != null)
                     {
-                    if (((edu.uwlax.toze.persist.Operation)operation).getType() == 3)
-                        {
-                        parse_guiPredicate(operation, "predicate", operation.getPredicate());
-                        }
-                    else
+                    // TODO: double check that this type code is needed
+//                    if (((edu.uwlax.toze.persist.Operation)operation).getType() == 3)
+//                        {
+//                        parse_guiPredicate(operation, "predicate", operation.getPredicate());
+//                        }
+//                    else
                         {
                         parse_guiPredicateList(operation, "predicate", operation.getPredicate());
                         }

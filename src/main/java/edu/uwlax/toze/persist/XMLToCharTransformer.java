@@ -35,7 +35,7 @@ public class XMLToCharTransformer
         
         StringBuilder string = new StringBuilder();
         String[] stringsAsInts = source.trim().split("&#");
-        
+
         // skip the first element because it is ""
         for (int i = 1; i < stringsAsInts.length; i++)
             {

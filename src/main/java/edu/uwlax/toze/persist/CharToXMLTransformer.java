@@ -27,13 +27,11 @@ public class CharToXMLTransformer
         // and integer values and that they are in pairs.
         
         StringBuilder string = new StringBuilder();
-        string.append("<!CDATA[");
         for (int i = 0; i < source.length(); i++)
             {
             string.append("&#");
-            string.append(Character.getNumericValue(source.charAt(i)));
+            string.append((int)source.charAt(i));
             }
-        string.append("]]>");
         return string.toString();
     }
 }

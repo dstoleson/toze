@@ -1,15 +1,22 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.spec.TOZE;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.w3c.dom.Document;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
- *
  * @author dhs
  */
 public class SpecificationBuilder
@@ -24,11 +31,12 @@ public class SpecificationBuilder
      * @param inputStream The stream that will provide the input for the
      *                    SpecificationBuild
      *
+     * @return A Specification object containing the specification built from
+     *         the input stream data.
+     *
      * @throws Exception When there is a problem creating a TOZE specification
      *                   from the
      *                   data provided by the input stream.
-     * @return A Specification object containing the specification built from
-     *         the input stream data.
      */
     public TOZE buildFromStream(InputStream inputStream) throws Exception
     {
@@ -38,14 +46,6 @@ public class SpecificationBuilder
             {
             JAXBContext context = JAXBContext.newInstance(TOZE.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            try
-                {
-                unmarshaller.setProperty("com.sun.xml.bind.ObjectFactory", new TozeObjectFactory());
-                }
-            catch (final javax.xml.bind.PropertyException ex)
-                {
-                unmarshaller.setProperty("com.sun.xml.internal.bind.ObjectFactory", new TozeObjectFactory());
-                }
             unmarshaller.setListener(new SpecificationUnmarshallerListener());
             toze = (TOZE) unmarshaller.unmarshal(inputStream);
             }
@@ -61,7 +61,6 @@ public class SpecificationBuilder
      * Write a TOZE specification to an output stream.
      *
      * @param toze         The specification to write
-     *
      * @param outputStream The stream to write to, probably a FileOutputStream
      *                     of some kind.
      *
@@ -70,16 +69,48 @@ public class SpecificationBuilder
      */
     public void writeToStream(TOZE toze, OutputStream outputStream) throws Exception
     {
+        // because the specification needs to be altered to write proper XML with CDATA tags
+        // to be backwards compatible with existing TOZE files, the first things to do is to create a
+        // deep copy / clone of the specification which can be altered while writing
+
+        TOZE tozeToWrite = TOZECloner.clone(toze);
+
+        // Create an empty DOM document
+        // DocumentBuilderFactory is not thread-safe
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        Document document = docBuilderFactory.newDocumentBuilder().newDocument();
+
         try
             {
-            JAXBContext context = JAXBContext.newInstance(TOZE.class);
+            JAXBContext context = TozeJaxbContext.getTozeJaxbContext();
             Marshaller marshaller = context.createMarshaller();
             marshaller.setListener(new SpecificationMarshallerListener());
-            marshaller.marshal(toze, outputStream);
+            marshaller.marshal(tozeToWrite, document);
             }
         catch (JAXBException e)
             {
             e.printStackTrace();
             }
+
+        // Transform the DOM to the output stream
+        // TransformerFactory is not thread-safe
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer nullTransformer = transformerFactory.newTransformer();
+        nullTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        nullTransformer.setOutputProperty(
+                OutputKeys.CDATA_SECTION_ELEMENTS,
+                "name"
+                        + " inheritedClass"
+                        + " formalParameters"
+                        + " operationExpression"
+                        + " expression"
+                        + " visibilityList"
+                        + " declaration"
+                        + " deltaList"
+                        + " predicate"
+
+        );
+        nullTransformer.transform(new DOMSource(document), new StreamResult(outputStream));
+
     }
 }

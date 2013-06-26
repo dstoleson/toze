@@ -1158,7 +1158,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (newOperation)
             {
-            operation = new edu.uwlax.toze.persist.Operation();
+            operation = new Operation();
             switch (operationType)
                 {
                 case All:

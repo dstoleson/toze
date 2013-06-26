@@ -2,6 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.persist.SpecificationBuilder;
+import edu.uwlax.toze.persist.TozeJaxbContext;
 import edu.uwlax.toze.spec.SpecObjectPropertyError;
 import edu.uwlax.toze.spec.TOZE;
 
@@ -84,6 +85,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     {
         initComponents();
 
+        // init and cache the JAXB context on startup do it doesn't delay opening / closing documents
+        TozeJaxbContext.getTozeJaxbContext();
     }
 
     private TreeModel getTreeModel()
