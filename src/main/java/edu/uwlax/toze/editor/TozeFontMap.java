@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 public class TozeFontMap
 {
+    public static final char CHAR_EXTRACT         = 141;
     public static final char CHAR_SUPER_MINUS_1 = 160;
     public static final char CHAR_POWER = 161;
     public static final char CHAR_FINSET = 162;

@@ -3726,6 +3726,36 @@ public class Ast
                 return typeL;
                 }
 
+            if ((tid == TozeTokenizer.TOKEN_EXTRACT))
+                {
+                if (!typeL.isSet())
+                    {
+                    reportTypeError("Left-hand expression must be a set",
+                                    m_infixFunctionName.m_token);
+                    bad = true;
+                    }
+                else
+                    {
+                    }
+                if (!typeR.isSequence())
+                    {
+                    reportTypeError("Right-hand expression for a projection must be a sequence",
+                                    m_infixFunctionName.m_token);
+                    bad = true;
+                    }
+                if (bad) return new AstType();
+                AstType tl = typeL.getSetType();
+            /*
+             * Check that the set contains natural numbers.
+             */
+                if (!tl.isANumber())
+                    {
+                    reportTypeError("The set must contain numbers",
+                                    m_infixFunctionName.m_token);
+                    }
+                return typeR;
+                }
+
             if (tid == TozeTokenizer.TOKEN_HASH)
                 {
                 if (!typeL.isBag())

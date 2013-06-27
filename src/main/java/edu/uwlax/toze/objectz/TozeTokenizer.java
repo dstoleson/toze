@@ -191,6 +191,8 @@ public class TozeTokenizer
     public static final int TOKEN_FIRST = 180;
     public static final int TOKEN_SECOND = 181;
     public static final int TOKEN_DPIPEBANG = 182;
+    public static final int TOKEN_EXTRACT = 183;
+
     public StringBuffer m_current = new StringBuffer(102);
     private Reader m_reader;
     private TreeMap m_singles = new TreeMap();
@@ -323,7 +325,7 @@ public class TozeTokenizer
         m_keywords.put("%lambda", new Integer(TOKEN_LAMBDA));
         m_keywords.put("%mu", new Integer(TOKEN_MU));
         m_keywords.put("%theta", new Integer(TOKEN_THETA));
-
+        m_keywords.put("%extract", new Integer(TOKEN_EXTRACT));
         /*
          * m_singles.put(new Integer(0x27EA), new Integer(TOKEN_LDANGLE)); //
          * left double angle
@@ -461,6 +463,7 @@ public class TozeTokenizer
         m_singles.put(new Integer(TozeFontMap.CHAR_DARROW), new Integer(TOKEN_DARROW));
         m_singles.put(new Integer(TozeFontMap.CHAR_BOOL), new Integer(TOKEN_BOOL));
         m_singles.put(new Integer(TozeFontMap.CHAR_BOX), new Integer(TOKEN_BOX));
+        m_singles.put(new Integer(TozeFontMap.CHAR_EXTRACT), new Integer(TOKEN_EXTRACT));
 
         m_singles.put(new Integer('\\'), new Integer(TOKEN_BSLASH));    // backward slash
         m_singles.put(new Integer('/'), new Integer(TOKEN_FSLASH));    // forward slash

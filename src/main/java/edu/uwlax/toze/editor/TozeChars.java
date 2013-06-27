@@ -95,6 +95,7 @@ public class TozeChars
             m_map.put("%bool%", Character.toString(TozeFontMap.CHAR_BOOL));
             m_map.put("%box%", Character.toString(TozeFontMap.CHAR_BOX));
             m_map.put("%rharpoon%", Character.toString(TozeFontMap.CHAR_RHARPOON));
+            m_map.put("%extract%",      Character.toString(TozeFontMap.CHAR_EXTRACT));
             }
     }
 

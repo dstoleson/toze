@@ -2999,6 +2999,7 @@ public class TozeParser extends TozeParserBase
             || peek(TozeTokenizer.TOKEN_FCMP)
             || peek(TozeTokenizer.TOKEN_CIRC)
             || peek(TozeTokenizer.TOKEN_PROJECT)
+            || peek(TozeTokenizer.TOKEN_EXTRACT)
             || peek(TozeTokenizer.TOKEN_FOVR)
             || //peek(TozeTokenizer.TOKEN_OTIMES) ||
                 peek(TozeTokenizer.TOKEN_DRES)
