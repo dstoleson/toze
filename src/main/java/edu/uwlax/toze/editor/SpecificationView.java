@@ -4,14 +4,13 @@ import edu.uwlax.toze.spec.TOZE;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class SpecificationView extends JPanel implements MouseListener
+public class SpecificationView extends JPanel
 {
-    
+
     private List<ClassView> classViews;
     private TozeTextArea predicateText;
 
@@ -82,52 +81,28 @@ public class SpecificationView extends JPanel implements MouseListener
     @Override
     public Dimension getPreferredSize()
     {
-        Dimension d = new Dimension();
+        Dimension prefSize = new Dimension(0, 0);
 
-        for (ClassView classView : classViews)
+        Component[] children = getComponents();
+        List<Component> childList = Arrays.asList(children);
+
+        for (Component component : childList)
             {
-            d.height += classView.getPreferredSize().height;
 
-            if (d.width < classView.getPreferredSize().width)
+            if (component.isVisible())
                 {
-                d.width = classView.getPreferredSize().width;
+                Dimension d = component.getPreferredSize();
+                prefSize.height += d.height + TozeLayout.ParagraphVMargin;
+
+                if (d.width > prefSize.width)
+                    {
+                    prefSize.width = d.width;
+                    }
                 }
             }
+        prefSize.width += TozeLayout.ParagraphHMargin;
+        prefSize.height += TozeLayout.ParagraphVMargin;
 
-        d.width += 5 * 2;
-        d.height += 5 * (classViews.size() + 10);
-
-        return d;
-    }
-
-    private void printMouseEvent(MouseEvent me)
-    {
-//        System.out.println("X: " + me.getX());
-//        System.out.println("Y: " + me.getY());
-    }
-
-    public void mouseClicked(MouseEvent me)
-    {
-        printMouseEvent(me);
-    }
-
-    public void mousePressed(MouseEvent me)
-    {
-        printMouseEvent(me);
-    }
-
-    public void mouseReleased(MouseEvent me)
-    {
-        printMouseEvent(me);
-    }
-
-    public void mouseEntered(MouseEvent me)
-    {
-        printMouseEvent(me);
-    }
-
-    public void mouseExited(MouseEvent me)
-    {
-        printMouseEvent(me);
+        return prefSize;
     }
 }

@@ -310,17 +310,21 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     {
         Specification specification = new Specification(specificationName, toze);
         treeModel.addSpecification(specification);
+
+
         SpecificationView specView = new SpecificationView();
         SpecificationController controller = new SpecificationController(specification, specView);
         specView.setLayout(new TozeLayout());
-        specView.addMouseListener(specView);
-//        specView.setPreferredSize(new Dimension(800, 800));
-        JScrollPane specScroller = new JScrollPane(specView);
 
-        specificationTabPanel.getTabCount();
+        JPanel panel = new JPanel(false);
+        JScrollPane specScroller = new JScrollPane();
+        specScroller.getViewport().add(specView, null);
+        panel.add(specScroller, null);
+        panel.setLayout(new GridLayout(1,1));
+        panel.add(specScroller);
+
         specificationTabPanel.addTab(specification.getFilename(), specScroller);
         int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
-
         specificationTabPanel.setSelectedIndex(tabIndex);
 
         // map the tab to the controller

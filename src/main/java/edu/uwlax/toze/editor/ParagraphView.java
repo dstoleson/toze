@@ -1,14 +1,11 @@
 package edu.uwlax.toze.editor;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Observable;
-import java.util.Observer;
-import javax.swing.*;
 
-public abstract class ParagraphView extends JPanel implements Placement, Observer
+public abstract class ParagraphView extends JPanel implements Placement
 {
     static final protected int HMargin = 5;
     static final protected int VMargin = 5;
@@ -32,12 +29,6 @@ public abstract class ParagraphView extends JPanel implements Placement, Observe
         setFont(TozeFontMap.getFont());
         addMouseListener(new ParagraphViewMouseAdapter());
         super.paint(g);
-    }
-
-    public void update(Observable o, Object arg)
-    {
-        System.out.println("o = " + o);
-        System.out.println("arg = " + arg);
     }
 
     private class ParagraphViewMouseAdapter extends MouseAdapter
