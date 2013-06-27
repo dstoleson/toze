@@ -2,11 +2,12 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.spec.ClassDef;
 import edu.uwlax.toze.spec.TOZE;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SpecificationTreeModel implements a model for a JTree that
@@ -57,7 +58,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
         if (userObject == specifications)
             {
-            node = new SpecificationNode(specifications.get(index).getFilename(), specifications.get(index));
+            node = new SpecificationNode(specifications.get(index).getFile().getName(), specifications.get(index));
             }
         else if (parent instanceof SpecificationNode)
             {

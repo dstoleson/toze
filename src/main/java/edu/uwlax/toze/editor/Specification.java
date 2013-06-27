@@ -2,24 +2,31 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.spec.TOZE;
 
+import java.io.File;
+
 public class Specification
 {
-    private String filename;
+    private File file;
     private TOZE toze;
     private boolean edited;
     
-    public Specification(String filename, TOZE toze)
+    public Specification(File file, TOZE toze)
     {
-        this.filename = filename;
+        this.file = file;
         this.toze = toze;
         edited = false;
     }
     
-    public String getFilename()
+    public File getFile()
     {
-        return filename;
+        return file;
     }
-    
+
+    public void setFile(File file)
+    {
+        this.file = file;
+    }
+
     public TOZE getToze()
     {
         return toze;

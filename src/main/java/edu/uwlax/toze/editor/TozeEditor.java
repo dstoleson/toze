@@ -43,6 +43,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     private JMenuItem openSpecificationMenu;
     private JMenuItem checkSpecificationMenu;
     private JMenuItem saveSpecificationMenu;
+    private JMenuItem saveAsSpecificationMenu;
     private JMenuItem closeSpecificationMenu;
     // Main UI layout
     private JSplitPane editorSplitPane;
@@ -119,6 +120,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         newSpecificationMenu = new JMenuItem();
         openSpecificationMenu = new JMenuItem();
         saveSpecificationMenu = new JMenuItem();
+        saveAsSpecificationMenu = new JMenuItem();
         closeSpecificationMenu = new JMenuItem();
         checkSpecificationMenu = new JMenuItem();
 
@@ -228,6 +230,17 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         });
         fileMenu.add(saveSpecificationMenu);
 
+        saveAsSpecificationMenu.setMnemonic('S');
+        saveAsSpecificationMenu.setText("Save As...");
+        saveAsSpecificationMenu.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                saveAsSpecification();
+            }
+        });
+        fileMenu.add(saveAsSpecificationMenu);
+
         checkSpecificationMenu.setMnemonic('K');
         checkSpecificationMenu.setText("Check");
         checkSpecificationMenu.addActionListener(new ActionListener()
@@ -275,7 +288,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     private void newSpecification()
     {
         TOZE toze = new TOZE();
-        openSpecificationTab(toze, "untitled" + untitledCount++);
+        openSpecificationTab(toze, new File("untitled" + untitledCount++));
 
     }
 
@@ -295,7 +308,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
                 TOZE toze = specBuilder.buildFromStream(inputStream);
                 inputStream.close();
 
-                openSpecificationTab(toze, specificationFile.getName());
+                openSpecificationTab(toze, specificationFile);
 
                 }
             catch (Exception e)
@@ -306,9 +319,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
             }
     }
 
-    private void openSpecificationTab(TOZE toze, String specificationName)
+    private void openSpecificationTab(TOZE toze, File specificationFile)
     {
-        Specification specification = new Specification(specificationName, toze);
+        Specification specification = new Specification(specificationFile, toze);
         treeModel.addSpecification(specification);
 
 
@@ -323,8 +336,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         panel.setLayout(new GridLayout(1,1));
         panel.add(specScroller);
 
-        specificationTabPanel.addTab(specification.getFilename(), specScroller);
-        int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+        specificationTabPanel.addTab(specification.getFile().getName(), specScroller);
+        int tabIndex = specificationTabPanel.indexOfTab(specification.getFile().getName());
         specificationTabPanel.setSelectedIndex(tabIndex);
 
         // map the tab to the controller
@@ -336,7 +349,19 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
 
     private void saveSpecification()
     {
-        saveAsSpecification();
+        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
+        SpecificationController specController = tabControllers.get(selectedTabIndex);
+        TOZE specification = specController.getSpecificationDoc().getToze();
+        File specificationFile = specController.getSpecificationDoc().getFile();
+
+        if (specificationFile.getName().startsWith("untitled"))
+            {
+            saveAsSpecification();
+            }
+        else
+            {
+            writeSpecificationToFile(specification, specificationFile);
+            }
     }
 
     private void saveAsSpecification()
@@ -347,22 +372,36 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         if (fileDialog.getFile() != null)
             {
             File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
+            int selectedTabIndex = specificationTabPanel.getSelectedIndex();
+            SpecificationController specController = tabControllers.get(selectedTabIndex);
+            specController.getSpecificationDoc().setFile(specificationFile);
+            TOZE specification = specController.getSpecificationDoc().getToze();
 
-            try
-                {
-                OutputStream outputStream = new FileOutputStream(specificationFile);
-                SpecificationBuilder specBuilder = new SpecificationBuilder();
-                SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
-                TOZE toze = specController.getSpecification();
-                specBuilder.writeToStream(toze, outputStream);
-                outputStream.close();
-                }
-            catch (Exception e)
-                {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
-                }
+            writeSpecificationToFile(specification, specificationFile);
+
+            // make the tab title the new file name
+            specificationTabPanel.setTitleAt(selectedTabIndex, specificationFile.getName());
             }
+    }
+
+    private void writeSpecificationToFile(TOZE toze, File specificationFile)
+    {
+        try
+            {
+            System.out.println("Writing to file: " + specificationFile.getAbsolutePath());
+            OutputStream outputStream = new FileOutputStream(specificationFile);
+            SpecificationBuilder specBuilder = new SpecificationBuilder();
+            specBuilder.writeToStream(toze, outputStream);
+            outputStream.close();
+            System.out.println("Wrote to file: " + specificationFile.getAbsolutePath());
+            }
+        catch (Exception e)
+            {
+            e.printStackTrace();
+            System.out.println("Problem writing to file: " + specificationFile.getAbsolutePath());
+            JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
+            }
+
     }
 
     private void closeSpecification()
@@ -389,7 +428,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
                         SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
                         Specification specification = specificationNode.getSpecification();
                         treeModel.removeSpecification(specification);
-                        int tabIndex = specificationTabPanel.indexOfTab(specification.getFilename());
+                        int tabIndex = specificationTabPanel.indexOfTab(specification.getFile().getName());
                         specificationTabPanel.removeTabAt(tabIndex);
                         tabControllers.remove(tabIndex);
                         }
