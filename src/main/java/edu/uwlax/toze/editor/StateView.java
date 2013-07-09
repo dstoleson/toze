@@ -31,17 +31,8 @@ public class StateView extends ParagraphView
 
     public void setDeclarationText(TozeTextArea declarationText)
     {
-        if (this.declarationText != null)
-            {
-            remove(this.declarationText);
-            }
-
         this.declarationText = declarationText;
-
-        if (declarationText != null)
-            {
-            add(declarationText);
-            }
+        requestRebuild();
     }
 
     public TozeTextArea getPredicateText()
@@ -51,17 +42,8 @@ public class StateView extends ParagraphView
 
     public void setPredicateText(TozeTextArea predicateText)
     {
-        if (this.predicateText != null)
-            {
-            remove(this.predicateText);
-            }
-
         this.predicateText = predicateText;
-
-        if (predicateText != null)
-            {
-            add(predicateText);
-            }
+        requestRebuild();
     }
 
     public TozeTextArea getStateNameText()
@@ -71,17 +53,19 @@ public class StateView extends ParagraphView
 
     public void setStateNameText(TozeTextArea stateNameText)
     {
-        if (this.stateNameText != null)
-            {
-            remove(this.stateNameText);
-            }
-
         this.stateNameText = stateNameText;
+        requestRebuild();
+    }
 
-        if (stateNameText != null)
-            {
-            add(stateNameText);
-            }
+
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(declarationText);
+        addNotNull(predicateText);
+        addNotNull(stateNameText);
     }
 
     @Override

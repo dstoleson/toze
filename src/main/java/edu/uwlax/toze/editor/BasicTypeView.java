@@ -24,17 +24,16 @@ public class BasicTypeView extends ParagraphView
 
     public void setNameText(TozeTextArea nameText)
     {
-        if (this.nameText != null)
-            {
-            remove(this.nameText);
-            }
-
         this.nameText = nameText;
+        requestRebuild();
+    }
 
-        if (nameText != null)
-            {
-            add(nameText);
-            }
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(nameText);
     }
 
     @Override

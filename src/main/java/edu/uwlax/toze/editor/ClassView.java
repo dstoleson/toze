@@ -1,10 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
+import edu.uwlax.toze.spec.ClassDef;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -21,7 +19,9 @@ public class ClassView extends ParagraphView
     static final private int ClassNameSpace = 5;
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
-    //
+
+    private ClassDef classDef;
+
     private TozeTextArea classNameText;
     private List<AxiomaticView> axiomaticViews;
     private VisibilityListView visibilityListView;
@@ -46,16 +46,8 @@ public class ClassView extends ParagraphView
 
     public void setClassNameText(TozeTextArea classNameText)
     {
-        if (this.classNameText != null)
-            {
-            remove(this.classNameText);
-            }
         this.classNameText = classNameText;
-
-        if (classNameText != null)
-            {
-            add(classNameText);
-            }
+        requestRebuild();
     }
 
     public VisibilityListView getVisibilityListView()
@@ -65,19 +57,8 @@ public class ClassView extends ParagraphView
 
     public void setVisibilityListView(VisibilityListView visibilityListView)
     {
-        // TODO need to figure out where to add the view
-
-        if (this.visibilityListView != null)
-            {
-            remove(this.visibilityListView);
-            }
-
         this.visibilityListView = visibilityListView;
-
-        if (visibilityListView != null)
-            {
-            add(visibilityListView);
-            }
+        requestRebuild();
     }
 
     public StateView getStateView()
@@ -87,19 +68,8 @@ public class ClassView extends ParagraphView
 
     public void setStateView(StateView stateView)
     {
-        // TODO need to figure out where to add the view
-
-        if (this.stateView != null)
-            {
-            remove(this.stateView);
-            }
-
         this.stateView = stateView;
-
-        if (stateView != null)
-            {
-            add(stateView);
-            }
+        requestRebuild();
     }
 
     public InitialStateView getInitialStateView()
@@ -109,95 +79,112 @@ public class ClassView extends ParagraphView
 
     public void setInitialStateView(InitialStateView initialStateView)
     {
-        if (this.initialStateView != null)
-            {
-            remove(this.initialStateView);
-            }
-
         this.initialStateView = initialStateView;
-
-        if (initialStateView != null)
-            {
-            add(initialStateView);
-            }
+        requestRebuild();
     }
 
     public void addAxiomaticView(AxiomaticView axiomaticView)
     {
+        // TODO: need to be able to add at an index
         axiomaticViews.add(axiomaticView);
-        add(axiomaticView);
+        requestRebuild();
     }
 
     public void removeAxiomaticView(AxiomaticView axiomaticView)
     {
         axiomaticViews.remove(axiomaticView);
-        remove(axiomaticView);
+        requestRebuild();
     }
 
     public void addAbbreviationView(AbbreviationView abbreviationView)
     {
+        // TODO: need to be able to add at an index
         abbreviationViews.add(abbreviationView);
-        add(abbreviationView);
+        requestRebuild();
     }
 
     public void removeAbbreviationView(AbbreviationView abbreviationView)
     {
         abbreviationViews.remove(abbreviationView);
-        remove(abbreviationView);
+        requestRebuild();
     }
 
     public void addBasicTypeView(BasicTypeView basicTypeView)
     {
+        // TODO: need to be able to add at an index
         basicTypeViews.add(basicTypeView);
-        add(basicTypeView);
+        requestRebuild();
     }
 
     public void removeBasicTypeView(BasicTypeView basicTypeView)
     {
         basicTypeViews.remove(basicTypeView);
-        remove(basicTypeView);
+        requestRebuild();
     }
     
     public void addFreeTypeView(FreeTypeView freeTypeView)
     {
+        // TODO: need to be able to add at an index
         freeTypeViews.add(freeTypeView);
-        add(freeTypeView);
+        requestRebuild();
     }
 
     public void removeFreeTypeView(FreeTypeView freeTypeView)
     {
         freeTypeViews.remove(freeTypeView);
-        remove(freeTypeView);
+        requestRebuild();
     }
 
-    public void addOperationView(OperationView operationView)
+    public void addOperationView(int index, OperationView operationView)
     {
-        operationViews.add(operationView);
-        add(operationView);
+        operationViews.add(index, operationView);
+        requestRebuild();
     }
 
     public void removeOperationView(OperationView operationView)
     {
         operationViews.remove(operationView);
-        remove(operationView);
+        requestRebuild();
     }
 
     public void setInheritedClassView(InheritedClassView inheritedClassView)
     {
-        // need to figure out where to add the view
-        if(this.inheritedClassView != null)
-            {
-            remove(this.inheritedClassView);
-            }
-
         this.inheritedClassView = inheritedClassView;
+        requestRebuild();
+    }
 
-        if (inheritedClassView != null)
+    public void rebuild()
+    {
+        removeAll();
+
+        addNotNull(classNameText);
+        addNotNull(visibilityListView);
+        addNotNull(stateView);
+        addNotNull(inheritedClassView);
+        addNotNull(initialStateView);
+
+        for (AxiomaticView axiomaticView : axiomaticViews)
             {
-            add(inheritedClassView);
+            addNotNull(axiomaticView);
+            }
+        for (AbbreviationView abbreviationView : abbreviationViews)
+            {
+            addNotNull(abbreviationView);
+            }
+        for (BasicTypeView basicTypeView : basicTypeViews)
+            {
+            addNotNull(basicTypeView);
+            }
+        for (FreeTypeView freeTypeView : freeTypeViews)
+            {
+            addNotNull(freeTypeView);
+            }
+        for (OperationView operationView : operationViews)
+            {
+            addNotNull(operationView);
             }
     }
-    
+
     @Override
     public void paint(Graphics g)
     {

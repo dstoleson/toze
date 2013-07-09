@@ -18,17 +18,29 @@ import static edu.uwlax.toze.editor.StateType.All;
  */
 public class SpecificationController extends Observable implements FocusListener
 {
+    /**
+     * Map SpecObject types to their associated ParagraphView type
+     */
+    static private HashMap<Class, Class> objectToViewMap;
+
+    static
+        {
+        objectToViewMap = new HashMap<Class, Class>();
+        objectToViewMap.put(ClassDef.class, ClassView.class);
+        objectToViewMap.put(Operation.class, OperationView.class);
+        }
 
     private Specification specificationDoc;
     private TOZE specification;
 
-    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
+    private HashMap<JComponent, SpecObjectPropertyPair> viewToObjectMap;
 
-//    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
+    //    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
     private SpecificationView specificationView;
     private ControllerMouseAdapter mouseAdapter;
     private ControllerKeyAdapter keyAdapter;
     private TozeTextArea currentTextArea = null;
+    private ParagraphView selectedView = null;
 
     /**
      * Create a controller for the given specification model and view.
@@ -50,7 +62,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         // create a map of the UI views to the model objects
         // they represent
-        viewToObjectMap = new HashMap<Component, SpecObjectPropertyPair>();
+        viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
 
         specificationView.addMouseListener(mouseAdapter);
 
@@ -673,7 +685,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         AxiomaticView axiomaticView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-        Component parent = axiomaticView.getParent();
+        JComponent parent = (JComponent)axiomaticView.getParent();
 
         if (parent instanceof ClassView)
             {
@@ -871,7 +883,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         BasicTypeView basicTypeView = (BasicTypeView) componentForObjectOfType(basicTypeDef, BasicTypeView.class);
 
-        Component parent = basicTypeView.getParent();
+        JComponent parent = (JComponent) basicTypeView.getParent();
 
         if (parent instanceof ClassView)
             {
@@ -956,7 +968,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         FreeTypeView freeTypeView = (FreeTypeView) componentForObjectOfType(freeTypeDef, FreeTypeView.class);
-        Component parent = freeTypeView.getParent();
+        JComponent parent = (JComponent) freeTypeView.getParent();
 
         if (parent instanceof ClassView)
             {
@@ -1129,14 +1141,13 @@ public class SpecificationController extends Observable implements FocusListener
             throw new IllegalArgumentException("classDef is null");
             }
 
-        classDef.setInheritedClass(null);
-
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
         InheritedClassView inheritedClassView = (InheritedClassView) componentForObjectOfType(classDef.getInheritedClass(), InheritedClassView.class);
 
         viewToObjectMap.remove(inheritedClassView.getInheritedClassText());
         viewToObjectMap.remove(inheritedClassView);
 
+        classDef.setInheritedClass(null);
         classView.setInheritedClassView(null);
 
         specificationView.revalidate();
@@ -1144,15 +1155,16 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     * An Operation is added to the given ClassDef.  If the Operation is null a new Operation is created given
+     * An Operation is added to the given ClassDef at the given index.  If the Operation is null a new Operation is created given
      * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
      *
      * @param classDef A ClassDef to add the Operation to
      * @param operation An Operation to be added to ClassDef
      * @param operationType used when operation is null to determine the default type of operation to create, use null
      *                      when passing a non-null value for operation
+     * @param index The position in the document / specification to add the ClassDef
      */
-    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType)
+    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType, int index)
     {
         boolean newOperation = (operation == null);
 
@@ -1214,14 +1226,43 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (newOperation)
             {
-            classDef.getOperation().add(operation);
+            classDef.getOperation().add(index, operation);
             }
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.addOperationView(operationView);
+        classView.addOperationView(index, operationView);
 
         specificationView.revalidate();
         specificationView.repaint();
+    }
+
+    /**
+     * An Operation is added to the given ClassDef.  If the Operation is null a new Operation is created given
+     * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
+     * The operation is added to the end, it calls addOperation(classDef, operation, operationType, n) where
+     * n is the index of the last operation + 1, if any, or 0 if there are no operations
+     *
+     * @param classDef A ClassDef to add the Operation to
+     * @param operation An Operation to be added to ClassDef
+     * @param operationType used when operation is null to determine the default type of operation to create, use null
+     *                      when passing a non-null value for operation
+     */
+    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType)
+    {
+        // add at the index at which it exists in the class already (existing operation)
+        // or at it at the end (new operation)
+        int index = 0;
+
+        if (classDef.getOperation().contains(operation))
+            {
+            index = classDef.getOperation().indexOf(operation);
+            }
+        else
+            {
+            index = classDef.getOperation().size();
+            }
+
+        addOperation(classDef, operation, operationType, index);
     }
 
     /**
@@ -1266,7 +1307,7 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     // should create a loop and pass a block to each object
-    private void unhightlightErrors()
+    private void unhighlightErrors()
     {
         for (Object view : viewToObjectMap.keySet())
             {
@@ -1362,7 +1403,7 @@ public class SpecificationController extends Observable implements FocusListener
      * @param clazz The type of view object to find
      * @return
      */
-    private Component componentForObjectOfType(SpecObject modelObject, String property, Class clazz)
+    private JComponent componentForObjectOfType(SpecObject modelObject, String property, Class clazz)
     {
         for (Map.Entry entry : viewToObjectMap.entrySet())
             {
@@ -1373,14 +1414,14 @@ public class SpecificationController extends Observable implements FocusListener
                     ((property == null) || (property.equals(pair.getProperty()))) &&
                     (key.getClass() == clazz))
                 {
-                return (Component) key;
+                return (JComponent) key;
                 }
             }
 
         return null;
     }
 
-    private Component componentForObjectOfType(SpecObject modelObject, Class clazz)
+    private JComponent componentForObjectOfType(SpecObject modelObject, Class clazz)
     {
         return componentForObjectOfType(modelObject, null, clazz);
     }
@@ -1408,7 +1449,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     public TozeTextArea highlightError(SpecObjectPropertyError error)
     {
-        unhightlightErrors();
+        unhighlightErrors();
         System.out.println("error = " + error);
         TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
 
@@ -1421,6 +1462,47 @@ public class SpecificationController extends Observable implements FocusListener
         return textArea;
     }
 
+    public void moveUp(SpecObject object)
+    {
+        Class viewClass = objectToViewMap.get(object.getClass());
+        JComponent movee = componentForObjectOfType(object, viewClass);
+        Object parentObject = viewToObjectMap.get(movee.getParent()).getObject();
+
+        if (object instanceof Operation)
+            {
+            int index = ((ClassDef)parentObject).getOperation().indexOf(object);
+
+            if (index > 0)
+                {
+                removeOperation((Operation)object);
+                ((ClassDef)parentObject).getOperation().add(index - 1, (Operation)object);
+                addOperation((ClassDef)parentObject, (Operation)object, null, index - 1);
+                }
+            }
+    }
+
+    public void moveDown(SpecObject object)
+    {
+        Class viewClass = objectToViewMap.get(object.getClass());
+        JComponent movee = componentForObjectOfType(object, viewClass);
+        Object parentObject = viewToObjectMap.get(movee.getParent()).getObject();
+
+        if (object instanceof Operation)
+            {
+            int size = ((ClassDef)parentObject).getOperation().size();
+            int index = ((ClassDef)parentObject).getOperation().indexOf(object);
+            int last = size - 1;
+
+            // only move down if not already at bottom
+            if (index < last)
+                {
+                removeOperation((Operation)object);
+                ((ClassDef)parentObject).getOperation().add(index + 1, (Operation)object);
+                addOperation((ClassDef) parentObject, (Operation) object, null, index + 1);
+                }
+            }
+    }
+
     // Get Keystroke events
     private class ControllerKeyAdapter extends KeyAdapter
     {
@@ -1431,7 +1513,7 @@ public class SpecificationController extends Observable implements FocusListener
             super.keyTyped(e);
             try
                 {
-//                runActiveParser();
+                runActiveParser();
                 }
             catch (Throwable t)
                 {
@@ -1472,9 +1554,37 @@ public class SpecificationController extends Observable implements FocusListener
                 JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(modelObject, null, SpecificationController.this);
                 popupMenu.show(clickedComponent, e.getX(), e.getY());
                 }
+            else if (MouseEvent.BUTTON1 == e.getButton())
+                {
+                Component clickedComponent = e.getComponent();
+
+                System.out.println("clicked = " + clickedComponent.getClass().getSimpleName());
+
+                Object modelObject = viewToObjectMap.get(clickedComponent).getObject();
+
+                System.out.println("model = " + modelObject.getClass().getSimpleName());
+                }
 
             super.mouseClicked(e);
         }
     }
 
+    // TODO: move to a utility class
+
+    public static final int getComponentIndex(Component component)
+    {
+        if (component != null && component.getParent() != null)
+            {
+            Container c = component.getParent();
+            for (int i = 0; i < c.getComponentCount(); i++)
+                {
+                if (c.getComponent(i) == component)
+                    {
+                    return i;
+                    }
+                }
+            }
+
+        return -1;
+    }
 }

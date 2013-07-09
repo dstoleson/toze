@@ -95,7 +95,7 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_BOOL), "%bool%", "Boolean"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_BOX), "%box%", "Box"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RHARPOON), "%rharpoon%", "Right Harpoon"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RHARPOON), "%extract%", "Extract"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_EXTRACT), "%extract%", "Extract"));
         }
     
     public TozeCharMap(String tozeChar, String mnemonic, String description)

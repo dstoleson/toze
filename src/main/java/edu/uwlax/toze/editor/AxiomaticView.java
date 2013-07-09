@@ -27,17 +27,8 @@ public class AxiomaticView extends ParagraphView
 
     public void setDeclarationText(TozeTextArea declarationText)
     {
-        if (this.declarationText != null)
-            {
-            remove(this.declarationText);
-            }
-
         this.declarationText = declarationText;
-
-        if (declarationText != null)
-            {
-            add(declarationText);
-            }
+        requestRebuild();
     }
 
     public TozeTextArea getPredicateText()
@@ -47,19 +38,19 @@ public class AxiomaticView extends ParagraphView
 
     public void setPredicateText(TozeTextArea predicateText)
     {
-        if (this.predicateText != null)
-            {
-            remove(this.predicateText);
-            }
-
         this.predicateText = predicateText;
-
-        if (predicateText != null)
-            {
-            add(predicateText);
-            }
+        requestRebuild();
     }
-    
+
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(declarationText);
+        addNotNull(predicateText);
+    }
+
     @Override
     public void layout()
     {

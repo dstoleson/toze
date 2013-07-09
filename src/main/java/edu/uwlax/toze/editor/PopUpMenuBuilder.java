@@ -10,9 +10,38 @@ import static edu.uwlax.toze.editor.StateType.*;
 
 public class PopUpMenuBuilder
 {
-    static public JPopupMenu buildPopup(Object object, String property, SpecificationController controller)
+    static public JPopupMenu buildPopup(final Object object, String property, final SpecificationController controller)
     {
         JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem moveUp = new JMenuItem("Move Up");
+        JMenuItem moveDown = new JMenuItem("Move Down");
+
+        if (object instanceof SpecObject)
+            {
+            final SpecObject specObject = (SpecObject)object;
+
+            moveUp.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    controller.moveUp(specObject);
+                }
+            });
+
+            moveDown.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    controller.moveDown(specObject);
+                }
+            });
+
+            popupMenu.add(moveUp);
+            popupMenu.add(moveDown);
+            popupMenu.addSeparator();
+            }
 
         if (object instanceof TOZE)
             {
@@ -26,7 +55,7 @@ public class PopUpMenuBuilder
             {
             if ("deltaList".equals(property))
                 {
-                
+                // do nothing
                 }
             else
                 {
@@ -61,7 +90,7 @@ public class PopUpMenuBuilder
 //            {
 //            popupMenu = buildInheritedClassPopup(popupMenu, (InheritedClass) object, controller);
 //            }
-        else
+        else  // TODO: remove this else clause
             {
             popupMenu.setName(object.getClass().getSimpleName());
             JMenuItem menuItem = new TitleMenuItem(object.getClass().getSimpleName());

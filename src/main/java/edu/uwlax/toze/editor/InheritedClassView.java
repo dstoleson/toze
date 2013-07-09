@@ -20,17 +20,16 @@ public class InheritedClassView extends ParagraphView implements Placement
 
     public void setInheritedClassText(TozeTextArea inheritedClassText)
     {
-        if (this.inheritedClassText != null)
-            {
-            remove(this.inheritedClassText);
-            }
-
         this.inheritedClassText = inheritedClassText;
+        requestRebuild();
+    }
 
-        if (inheritedClassText != null)
-            {
-            add(inheritedClassText);
-            }
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(inheritedClassText);
     }
 
     @Override

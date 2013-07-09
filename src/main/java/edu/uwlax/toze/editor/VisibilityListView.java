@@ -25,17 +25,16 @@ public class VisibilityListView extends ParagraphView implements Placement
 
     public void setVisibilityListText(TozeTextArea visibilityListText)
     {
-        if (this.visibilityListText != null)
-            {
-            remove(this.visibilityListText);
-            }
-
         this.visibilityListText = visibilityListText;
+        requestRebuild();
+    }
 
-        if (visibilityListText != null)
-            {
-            add(visibilityListText);
-            }
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(visibilityListText);
     }
 
     @Override

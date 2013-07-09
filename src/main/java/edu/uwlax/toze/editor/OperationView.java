@@ -41,17 +41,8 @@ public class OperationView extends ParagraphView
 
     public void setOperationNameText(TozeTextArea operationNameText)
     {
-        if (this.operationNameText != null)
-            {
-            remove(this.operationNameText);
-            }
-
         this.operationNameText = operationNameText;
-
-        if (operationNameText != null)
-            {
-            add(operationNameText);
-            }
+        requestRebuild();
     }
 
     public DeltaListView getDeltaListView()
@@ -61,20 +52,8 @@ public class OperationView extends ParagraphView
 
     public void setDeltaListView(DeltaListView deltaListView)
     {
-        // Remove any existing one
-        if (this.deltaListView != null)
-            {
-            remove(this.deltaListView);
-            }
-
         this.deltaListView = deltaListView;
-
-        // Add the new one
-        if (deltaListView != null)
-            {
-            add(this.deltaListView);
-            }
-
+        requestRebuild();
     }
 
     public TozeTextArea getDeclarationText()
@@ -84,17 +63,8 @@ public class OperationView extends ParagraphView
 
     public void setDeclarationText(TozeTextArea declarationText)
     {
-        if (this.declarationText != null)
-            {
-            remove(this.declarationText);
-            }
-
         this.declarationText = declarationText;
-
-        if (declarationText != null)
-            {
-            add(declarationText);
-            }
+        requestRebuild();
     }
 
     public TozeTextArea getPredicateText()
@@ -104,17 +74,8 @@ public class OperationView extends ParagraphView
 
     public void setPredicateText(TozeTextArea predicateText)
     {
-        if (this.predicateText != null)
-            {
-            remove(this.predicateText);
-            }
-
         this.predicateText = predicateText;
-
-        if (predicateText != null)
-            {
-            add(predicateText);
-            }
+        requestRebuild();
     }
 
     public TozeTextArea getOperationExpressionText()
@@ -124,17 +85,21 @@ public class OperationView extends ParagraphView
 
     public void setOperationExpressionText(TozeTextArea operationExpressionText)
     {
-        if (this.operationExpressionText != null)
-            {
-            remove(this.operationExpressionText);
-            }
-
         this.operationExpressionText = operationExpressionText;
+        requestRebuild();
+    }
 
-        if (operationExpressionText != null)
-            {
-            add(operationExpressionText);
-            }
+
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(operationNameText);
+        addNotNull(deltaListView);
+        addNotNull(declarationText);
+        addNotNull(predicateText);
+        addNotNull(operationExpressionText);
     }
 
     @Override

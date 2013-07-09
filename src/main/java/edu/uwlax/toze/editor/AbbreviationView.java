@@ -1,5 +1,8 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.spec.AbbreviationDef;
+import edu.uwlax.toze.spec.SpecObject;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -13,11 +16,6 @@ public class AbbreviationView extends ParagraphView
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
-    public AbbreviationView()
-    {
-        setLayout(new ParaLayout(this));
-    }
-
     public TozeTextArea getNameText()
     {
         return this.nameText;
@@ -25,34 +23,26 @@ public class AbbreviationView extends ParagraphView
 
     public void setNameText(TozeTextArea nameText)
     {
-        if (this.nameText != null)
-            {
-            remove(this.nameText);
-            }
-        
         this.nameText = nameText;
-
-        if (nameText != null)
-            {
-            add(nameText);            
-            }
+        requestRebuild();
     }
 
     public void setExpressionText(TozeTextArea expressionText)
     {
-        if (this.expressionText != null)
-            {
-            remove(this.expressionText);
-            }
-        
         this.expressionText = expressionText;
-        if (expressionText != null)
-            {
-            add(expressionText);            
-            }
+        requestRebuild();
     }
 
-    
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(nameText);
+        addNotNull(expressionText);
+    }
+
+
     @Override
     public void layout()
     {

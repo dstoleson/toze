@@ -33,17 +33,16 @@ public class InitialStateView extends ParagraphView
 
     public void setPredicateText(TozeTextArea predicateText)
     {
-        if (this.predicateText != null)
-            {
-            remove(this.predicateText);
-            }
-
         this.predicateText = predicateText;
+        requestRebuild();
+    }
 
-        if (predicateText != null)
-            {
-            add(predicateText);
-            }
+    @Override
+    protected void rebuild()
+    {
+        removeAll();
+
+        addNotNull(predicateText);
     }
 
     @Override

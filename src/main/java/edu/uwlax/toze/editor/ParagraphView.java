@@ -1,5 +1,7 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.spec.SpecObject;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,8 +13,10 @@ public abstract class ParagraphView extends JPanel implements Placement
     static final protected int VMargin = 5;
     static final protected int InterVMargin = 5;
 
+
     private boolean mouseInView = false;
-    
+    private boolean ignoreRebuild = false;
+
     @Override
     public void paint(Graphics g)
     {
@@ -49,6 +53,63 @@ public abstract class ParagraphView extends JPanel implements Placement
             ParagraphView.this.repaint();
         }
     }
-    
-    
+
+    /**
+     * Allow for optimization of rebuilding of a ParagraphView
+     * subclass based on the needs of an instance of the class / client
+     * of the instance.  For example when a client know that it
+     * is going to add / remove a lot of view from a ParagraphView
+     * it can first disable, perform the add / removes, enable rebuilds
+     * and then call requestRebuild() manually.
+     *
+     * @param ignoreRebuild false = ignore requestRebuild() calls, true = perform
+     */
+    public void setIgnoreRebuild(boolean ignoreRebuild)
+    {
+        this.ignoreRebuild = ignoreRebuild;
+    }
+
+    /**
+     * Call requestRebuild() after adding / removing components
+     * from a ParagraphView.  It will call rebuild() in the subclass
+     * if needed and ignoreRebuild is false.
+     *
+     * Each subclass that implements adding / removing views should call
+     * requestRebuild() every time a view is added or removed to update
+     * the UI accordingly.
+     *
+     * See setIgnoreRebuild() for optimization when adding / removing a lot
+     * of views.
+     */
+    public void requestRebuild()
+    {
+        if (!ignoreRebuild)
+            {
+            rebuild();
+            }
+    }
+
+    /**
+     * Subclasses implement to rebuild the ParagraphView
+     * when a requestRebuild has been called, it should rebuild
+     * the complete view hierarchy based on the model object that
+     * it represents.
+     */
+    abstract protected void rebuild();
+
+    /**
+     * Utitlity method to handle null components so a if-check isn't required
+     * every time to prevent NullPointerExceptions.
+     *
+     * @param component The component to add, can be null.
+     * @return The component that was added, or null.
+     */
+    public Component addNotNull(Component component)
+    {
+        if (component != null)
+            {
+            add(component);
+            }
+        return component;
+    }
 }
