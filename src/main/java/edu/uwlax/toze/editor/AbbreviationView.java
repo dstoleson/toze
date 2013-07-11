@@ -16,6 +16,11 @@ public class AbbreviationView extends ParagraphView
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
+    public AbbreviationView()
+    {
+        this.setLayout(new ParaLayout(this));
+    }
+
     public TozeTextArea getNameText()
     {
         return this.nameText;
@@ -25,6 +30,11 @@ public class AbbreviationView extends ParagraphView
     {
         this.nameText = nameText;
         requestRebuild();
+    }
+
+    public TozeTextArea getExpressionText()
+    {
+        return this.expressionText;
     }
 
     public void setExpressionText(TozeTextArea expressionText)
