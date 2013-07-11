@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.*;
+import java.util.List;
 
 public abstract class ParagraphView extends JPanel implements Placement
 {
@@ -16,6 +18,7 @@ public abstract class ParagraphView extends JPanel implements Placement
 
     private boolean mouseInView = false;
     private boolean ignoreRebuild = false;
+    private boolean selected = false;
 
     @Override
     public void paint(Graphics g)
@@ -29,7 +32,23 @@ public abstract class ParagraphView extends JPanel implements Placement
             this.setBorder(null);
             }
 
-        setBackground(Color.WHITE);
+        // keep everything in a view and subviews
+        // the same color
+        if (selected)
+            {
+            setBackground(Color.LIGHT_GRAY);
+            }
+        else
+            {
+            if (getParent() != null)
+                {
+                setBackground(getParent().getBackground());
+                }
+            else
+                {
+                setBackground(Color.WHITE);
+                }
+            }
         setFont(TozeFontMap.getFont());
         addMouseListener(new ParagraphViewMouseAdapter());
         super.paint(g);
@@ -40,7 +59,7 @@ public abstract class ParagraphView extends JPanel implements Placement
         @Override
         public void mouseEntered(MouseEvent e)
         {
-            super.mouseEntered(e);
+//            super.mouseEntered(e);
             mouseInView = true;
             ParagraphView.this.repaint();
         }
@@ -48,7 +67,7 @@ public abstract class ParagraphView extends JPanel implements Placement
         @Override
         public void mouseExited(MouseEvent e)
         {
-            super.mouseExited(e);
+//            super.mouseExited(e);
             mouseInView = false;
             ParagraphView.this.repaint();
         }
@@ -86,6 +105,17 @@ public abstract class ParagraphView extends JPanel implements Placement
         if (!ignoreRebuild)
             {
             rebuild();
+
+//            Component[] components = getComponents();
+//            List<Component> componentList = Arrays.asList(components);
+//
+//            for(Component component : componentList)
+//                {
+//                if (componentList instanceof ParagraphView)
+//                    {
+//                    requestRebuild();
+//                    }
+//                }
             }
     }
 
@@ -98,7 +128,7 @@ public abstract class ParagraphView extends JPanel implements Placement
     abstract protected void rebuild();
 
     /**
-     * Utitlity method to handle null components so a if-check isn't required
+     * Utility method to handle null components so a if-check isn't required
      * every time to prevent NullPointerExceptions.
      *
      * @param component The component to add, can be null.
@@ -111,5 +141,15 @@ public abstract class ParagraphView extends JPanel implements Placement
             add(component);
             }
         return component;
+    }
+
+    public void setSelected(boolean selected)
+    {
+        this.selected = selected;
+    }
+
+    public boolean isSelected()
+    {
+        return selected;
     }
 }

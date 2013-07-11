@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author dhs
  */
-public class ClassView extends ParagraphView
+public class ClassView extends ParagraphView implements MoveableParagraphView
 {
     static final private int ClassNameOffset = 10;
     static final private int ClassNameLineMargin = 5;
@@ -42,6 +42,11 @@ public class ClassView extends ParagraphView
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
+    }
+
+    public TozeTextArea getClassNameText()
+    {
+        return this.classNameText;
     }
 
     public void setClassNameText(TozeTextArea classNameText)
@@ -85,8 +90,12 @@ public class ClassView extends ParagraphView
 
     public void addAxiomaticView(AxiomaticView axiomaticView)
     {
-        // TODO: need to be able to add at an index
-        axiomaticViews.add(axiomaticView);
+        addAxiomaticView(axiomaticViews.size(), axiomaticView);
+    }
+
+    public void addAxiomaticView(int index, AxiomaticView axiomaticView)
+    {
+        axiomaticViews.add(index, axiomaticView);
         requestRebuild();
     }
 
@@ -98,8 +107,12 @@ public class ClassView extends ParagraphView
 
     public void addAbbreviationView(AbbreviationView abbreviationView)
     {
-        // TODO: need to be able to add at an index
-        abbreviationViews.add(abbreviationView);
+        addAbbreviationView(abbreviationViews.size(), abbreviationView);
+    }
+
+    public void addAbbreviationView(int index, AbbreviationView abbreviationView)
+    {
+        abbreviationViews.add(index, abbreviationView);
         requestRebuild();
     }
 
@@ -111,8 +124,12 @@ public class ClassView extends ParagraphView
 
     public void addBasicTypeView(BasicTypeView basicTypeView)
     {
-        // TODO: need to be able to add at an index
-        basicTypeViews.add(basicTypeView);
+        addBasicTypeView(basicTypeViews.size(), basicTypeView);
+    }
+
+    public void addBasicTypeView(int index, BasicTypeView basicTypeView)
+    {
+        basicTypeViews.add(index, basicTypeView);
         requestRebuild();
     }
 
@@ -121,11 +138,15 @@ public class ClassView extends ParagraphView
         basicTypeViews.remove(basicTypeView);
         requestRebuild();
     }
-    
+
     public void addFreeTypeView(FreeTypeView freeTypeView)
     {
-        // TODO: need to be able to add at an index
-        freeTypeViews.add(freeTypeView);
+        addFreeTypeView(freeTypeViews.size(), freeTypeView);
+    }
+
+    public void addFreeTypeView(int index, FreeTypeView freeTypeView)
+    {
+        freeTypeViews.add(index, freeTypeView);
         requestRebuild();
     }
 
@@ -133,6 +154,11 @@ public class ClassView extends ParagraphView
     {
         freeTypeViews.remove(freeTypeView);
         requestRebuild();
+    }
+
+    public void addOperationView(OperationView operationView)
+    {
+        addOperationView(operationViews.size(), operationView);
     }
 
     public void addOperationView(int index, OperationView operationView)
@@ -145,6 +171,11 @@ public class ClassView extends ParagraphView
     {
         operationViews.remove(operationView);
         requestRebuild();
+    }
+
+    public InheritedClassView getInheritedClassView()
+    {
+        return this.inheritedClassView;
     }
 
     public void setInheritedClassView(InheritedClassView inheritedClassView)
@@ -395,6 +426,13 @@ public class ClassView extends ParagraphView
             {
             d = freeTypeView.getPreferredSize(this.getGraphics());
             freeTypeView.setBounds(x + ClassContentOffset, y, d.width, d.height);
+            y += d.height + InterVMargin;
+            }
+
+        for (AbbreviationView abbreviationView : abbreviationViews)
+            {
+            d = abbreviationView.getPreferredSize(this.getGraphics());
+            abbreviationView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
