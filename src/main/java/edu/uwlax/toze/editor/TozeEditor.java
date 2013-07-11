@@ -14,10 +14,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -33,7 +30,7 @@ import java.util.List;
  *
  * @author David Stoleson
  */
-public class TozeEditor extends javax.swing.JFrame implements Observer, MouseListener, ChangeListener
+public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeListener
 {
     static int untitledCount = 1;
 
@@ -104,6 +101,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     @SuppressWarnings("unchecked")
     private void initComponents()
     {
+        EditorMouseAdaptor mouseAdaptor = new EditorMouseAdaptor();
+
         editorSplitPane = new JSplitPane();
         leftSplitPane = new JSplitPane();
         rightSplitPane = new JSplitPane();
@@ -128,7 +127,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
         specialCharsList.setCellRenderer(new SpecialCharListCellRenderer());
         specialCharsList.setFont(TozeFontMap.getFont());
-        specialCharsList.addMouseListener(this);
+        specialCharsList.addMouseListener(mouseAdaptor);
 
         paragraphsScrollPane = new JScrollPane();
         String[] paragraphs =
@@ -141,7 +140,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
         errorsList = new JList();
         errorsList.setCellRenderer(new ErrorListCellRenderer());
         errorsList.setFont(TozeFontMap.getFont());
-        errorsList.addMouseListener(this);
+        errorsList.addMouseListener(mouseAdaptor);
 
         specificationErrors = new HashMap<Specification, List>();
 
@@ -481,46 +480,29 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, MouseLis
     }
 
 
-    @Override
-    public void mouseClicked(MouseEvent e)
+    public class EditorMouseAdaptor extends MouseAdapter
     {
-        if (e.getSource() == specialCharsList)
-            {
-            if (e.getClickCount() == 2)
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+            if (e.getSource() == specialCharsList)
                 {
-                int index = specialCharsList.locationToIndex(e.getPoint());
-                TozeCharMap charMap = (TozeCharMap)specialCharsList.getModel().getElementAt(index);
-                this.insertSymbol(charMap.getTozeChar());
+                if (e.getClickCount() == 2)
+                    {
+                    int index = specialCharsList.locationToIndex(e.getPoint());
+                    TozeCharMap charMap = (TozeCharMap)specialCharsList.getModel().getElementAt(index);
+                    TozeEditor.this.insertSymbol(charMap.getTozeChar());
+                    }
                 }
-            }
-        else if (e.getSource() == errorsList)
-            {
-            int tabIndex = specificationTabPanel.getSelectedIndex();
-            SpecificationController specificationController = tabControllers.get(tabIndex);
-            TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
-            textArea.scrollRectToVisible(textArea.getBounds());
-            System.out.println(errorsList.getSelectedValue());
-            }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e)
-    {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e)
-    {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e)
-    {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e)
-    {
+            else if (e.getSource() == errorsList)
+                {
+                int tabIndex = specificationTabPanel.getSelectedIndex();
+                SpecificationController specificationController = tabControllers.get(tabIndex);
+                TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
+                textArea.scrollRectToVisible(textArea.getBounds());
+                System.out.println(errorsList.getSelectedValue());
+                }
+        }
     }
 
     /**
