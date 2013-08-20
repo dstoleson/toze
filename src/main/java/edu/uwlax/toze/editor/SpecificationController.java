@@ -153,6 +153,17 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
+     * Get a list of the selected paragraphs.
+     *
+     * @return
+     */
+    public List getSelectedParagraphs()
+    {
+        return new ArrayList<ParagraphView>(selectedParagraphs);
+    }
+
+
+    /**
      * Add a DeltaList to an Operation
      *
      * @param operation The Operation to add the DeltaList
@@ -1847,6 +1858,58 @@ public class SpecificationController extends Observable implements FocusListener
 
         specificationView.revalidate();
         specificationView.repaint();
+    }
+
+    public void cut()
+    {
+        System.out.println("cut");
+
+        // put selected objects into the global cache
+        // remove the selected object from the view
+        for (ParagraphView selectedParagraph : selectedParagraphs)
+        {
+            SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
+            SpecObject object = specObjectPropertyPair.getObject();
+
+            if (object instanceof AbbreviationDef)
+            {
+                removeAbbreviation((AbbreviationDef)object);
+            }
+            else if (object instanceof AxiomaticDef)
+            {
+                removeAxiomaticType((AxiomaticDef)object);
+            }
+            else if (object instanceof BasicTypeDef)
+            {
+                removeBasicType((BasicTypeDef)object);
+            }
+            else if (object instanceof ClassDef)
+            {
+                removeClass((ClassDef)object);
+            }
+            else if (object instanceof FreeTypeDef)
+            {
+                removeFreeType((FreeTypeDef)object);
+            }
+            else if (object instanceof GenericDef)
+            {
+                removeGenericType((GenericDef)object);
+            }
+            else if (object instanceof Operation)
+            {
+                removeOperation((Operation)object);
+            }
+        }
+    }
+
+    public void copy()
+    {
+        System.out.println("paste");
+    }
+
+    public void paste()
+    {
+        System.out.println("paste");
     }
 
     // Get Keystroke events

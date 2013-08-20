@@ -174,16 +174,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         specificationTree.setRootVisible(false);
         specificationTree.setShowsRootHandles(true);
 
-//        Icon classOpenIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
-//        Icon classClosedIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_green.jpeg"));
-//        Icon classLeafIcon = new ImageIcon(TozeEditor.class.getResource("/images/cube_orange.jpeg"));
-
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
-//        treeCellRenderer.setOpenIcon(classOpenIcon);
-//        treeCellRenderer.setClosedIcon(classClosedIcon);
-//        treeCellRenderer.setLeafIcon(classLeafIcon);
-//        treeCellRenderer.setIcon(classOpenIcon);
-
         specificationTree.setCellRenderer(treeCellRenderer);
 
         specificationTreeScrollPane.setViewportView(specificationTree);
@@ -195,9 +186,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         paletteTabPanel.addTab("Paragraphs", paragraphsScrollPane);
 
         fileMenu.setText("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        newSpecificationMenu.setMnemonic('N');
         newSpecificationMenu.setText("New");
+        newSpecificationMenu.setMnemonic(KeyEvent.VK_N);
+        newSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         newSpecificationMenu.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
@@ -207,8 +200,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         });
         fileMenu.add(newSpecificationMenu);
 
-        openSpecificationMenu.setMnemonic('O');
         openSpecificationMenu.setText("Open");
+        openSpecificationMenu.setMnemonic(KeyEvent.VK_O);
+        openSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         openSpecificationMenu.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
@@ -218,8 +212,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         });
         fileMenu.add(openSpecificationMenu);
 
-        saveSpecificationMenu.setMnemonic('S');
         saveSpecificationMenu.setText("Save");
+        saveSpecificationMenu.setMnemonic(KeyEvent.VK_S);
+        saveSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         saveSpecificationMenu.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
@@ -229,19 +224,19 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         });
         fileMenu.add(saveSpecificationMenu);
 
-        saveAsSpecificationMenu.setMnemonic('S');
         saveAsSpecificationMenu.setText("Save As...");
-        saveAsSpecificationMenu.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        saveAsSpecificationMenu.setMnemonic(KeyEvent.VK_A);
+        saveAsSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        saveAsSpecificationMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 saveAsSpecification();
             }
         });
         fileMenu.add(saveAsSpecificationMenu);
 
-        checkSpecificationMenu.setMnemonic('K');
         checkSpecificationMenu.setText("Check");
+        checkSpecificationMenu.setMnemonic(KeyEvent.VK_K);
+        checkSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
         checkSpecificationMenu.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
@@ -263,6 +258,52 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         menuBar.add(fileMenu);
 
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);
+
+        JMenuItem menuItem;
+
+        menuItem = new JMenuItem("Cut");
+        menuItem.setMnemonic(KeyEvent.VK_T);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                cut();
+            }
+        });
+        editMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Copy");
+        menuItem.setMnemonic(KeyEvent.VK_C);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                copy();
+            }
+        });
+        editMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Paste");
+        menuItem.setMnemonic(KeyEvent.VK_P);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                paste();
+            }
+        });
+        editMenu.add(menuItem);
+
+        menuBar.add(editMenu);
+
         setJMenuBar(menuBar);
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -282,6 +323,28 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)));
 
         pack();
+    }
+
+    private void cut()
+    {
+        currentSpecificationController().cut();
+    }
+
+    private void copy()
+    {
+        currentSpecificationController().copy();
+    }
+
+    private void paste()
+    {
+        currentSpecificationController().paste();
+    }
+
+    private SpecificationController currentSpecificationController()
+    {
+        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
+        SpecificationController specController = tabControllers.get(selectedTabIndex);
+        return specController;
     }
 
     private void newSpecification()
@@ -478,7 +541,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             errorsList.setListData(errors.toArray());
             }
     }
-
 
     public class EditorMouseAdaptor extends MouseAdapter
     {
