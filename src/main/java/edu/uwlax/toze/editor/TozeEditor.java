@@ -538,7 +538,17 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             SpecificationController specificationController = (SpecificationController)o;
             List errors = (List) arg;
             specificationErrors.put(specificationController.getSpecificationDoc(), errors);
-            errorsList.setListData(errors.toArray());
+
+            // TODO:  add back type checking
+            if (!errors.isEmpty())
+                {
+                errorsList.setListData(errors.toArray());
+                }
+            else
+                {
+                String[] noErrors = {"No Errors."};
+                errorsList.setListData(noErrors);
+                }
             }
     }
 

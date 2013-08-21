@@ -18,6 +18,7 @@ import static edu.uwlax.toze.editor.StateType.All;
  */
 public class SpecificationController extends Observable implements FocusListener
 {
+    static private SpecObject cachedObject = null;
     /**
      * Map SpecObject types to their associated ParagraphView type
      */
@@ -44,7 +45,7 @@ public class SpecificationController extends Observable implements FocusListener
     private ControllerMouseAdapter mouseAdapter;
     private ControllerKeyAdapter keyAdapter;
     private TozeTextArea currentTextArea = null;
-    private List<ParagraphView> selectedParagraphs;
+    private ParagraphView selectedParagraph;
 
     /**
      * Create a controller for the given specification model and view.
@@ -67,7 +68,6 @@ public class SpecificationController extends Observable implements FocusListener
         // create a map of the UI views to the model objects
         // they represent
         viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
-        selectedParagraphs = new ArrayList<ParagraphView>();
 
         specificationView.addMouseListener(mouseAdapter);
 
@@ -151,17 +151,6 @@ public class SpecificationController extends Observable implements FocusListener
     {
         return specification;
     }
-
-    /**
-     * Get a list of the selected paragraphs.
-     *
-     * @return
-     */
-    public List getSelectedParagraphs()
-    {
-        return new ArrayList<ParagraphView>(selectedParagraphs);
-    }
-
 
     /**
      * Add a DeltaList to an Operation
@@ -643,49 +632,56 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeClass(ClassDef classDef)
     {
+        removeClass(classDef, true);
+    }
+
+    public void removeClass(ClassDef classDef, boolean deep)
+    {
         if (classDef == null)
             {
             throw new IllegalArgumentException("classDef is null");
             }
 
-        if (classDef.getVisibilityList() != null)
+        if (deep)
             {
-            removeVisibilityList(classDef);
-            }
-        if (classDef.getInheritedClass() != null)
-            {
-            removeInheritedClass(classDef);
-            }
-        if (classDef.getState() != null)
-            {
-            removeState(classDef);
-            }
-        if (classDef.getInitialState() != null)
-            {
-            removeInitialState(classDef);
-            }
+                if (classDef.getVisibilityList() != null)
+                {
+                    removeVisibilityList(classDef);
+                }
+                if (classDef.getInheritedClass() != null)
+                {
+                    removeInheritedClass(classDef);
+                }
+                if (classDef.getState() != null)
+                {
+                    removeState(classDef);
+                }
+                if (classDef.getInitialState() != null)
+                {
+                    removeInitialState(classDef);
+                }
 
-        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
-            {
-            removeAxiomaticType(axiomaticDef);
+                for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
+                {
+                    removeAxiomaticType(axiomaticDef);
+                }
+                for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
+                {
+                    removeAbbreviation(abbreviationDef);
+                }
+                for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
+                {
+                    removeBasicType(basicTypeDef);
+                }
+                for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
+                {
+                    removeFreeType(freeTypeDef);
+                }
+                for (Operation operation : classDef.getOperation())
+                {
+                    removeOperation(operation);
+                }
             }
-        for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
-            {
-            removeAbbreviation(abbreviationDef);
-            }
-        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
-            {
-            removeBasicType(basicTypeDef);
-            }
-        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
-            {
-            removeFreeType(freeTypeDef);
-            }
-        for (Operation operation : classDef.getOperation())
-            {
-            removeOperation(operation);
-            }
-
         specification.getClassDef().remove(classDef);
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
@@ -817,9 +813,7 @@ public class SpecificationController extends Observable implements FocusListener
         axiomaticDef.setPredicate(null);
 
         AxiomaticView axiomaticDefView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-
         Utils.mapRemoveNotNull(viewToObjectMap, axiomaticDefView.getPredicateText());
-
         axiomaticDefView.setPredicateText(null);
 
         specificationView.revalidate();
@@ -1349,6 +1343,11 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeOperation(Operation operation)
     {
+        removeOperation(operation, true);
+    }
+
+    public void removeOperation(Operation operation, boolean deep)
+    {
         if (operation == null)
             {
             throw new IllegalArgumentException("operation is null");
@@ -1361,10 +1360,13 @@ public class SpecificationController extends Observable implements FocusListener
         ClassDef classDef = (ClassDef)pair.getObject();
         classDef.getOperation().remove(operation);
 
-        removeOperationExpression(operation);
-        removeOperationPredicate(operation);
-        removeDeltaList(operation);
-        removeOperationExpression(operation);
+        if (deep)
+            {
+            removeOperationExpression(operation);
+            removeOperationPredicate(operation);
+            removeDeltaList(operation);
+            removeOperationExpression(operation);
+            }
 
         Utils.mapRemoveNotNull(viewToObjectMap, operationView.getOperationNameText());
         Utils.mapRemoveNotNull(viewToObjectMap, operationView);
@@ -1864,86 +1866,140 @@ public class SpecificationController extends Observable implements FocusListener
     {
         // put selected objects into the global cache
         // remove the selected object from the view
-        for (ParagraphView selectedParagraph : selectedParagraphs)
+        cachedObject = null;
+        SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
+        SpecObject object = specObjectPropertyPair.getObject();
+        cachedObject = object;
+        String property = specObjectPropertyPair.getProperty();
+
+        if (object instanceof AbbreviationDef)
         {
-            SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
-            SpecObject object = specObjectPropertyPair.getObject();
-            String property = specObjectPropertyPair.getProperty();
+            removeAbbreviation((AbbreviationDef)object);
+        }
+        else if (object instanceof AxiomaticDef)
+        {
+            removeAxiomaticType((AxiomaticDef)object);
+        }
+        else if (object instanceof BasicTypeDef)
+        {
+            removeBasicType((BasicTypeDef)object);
+        }
+        else if (object instanceof ClassDef)
+        {
+            ClassDef classDef = (ClassDef)object;
 
-            if (object instanceof AbbreviationDef)
+            if (property == null)
             {
-                removeAbbreviation((AbbreviationDef)object);
+                removeClass(classDef, false);
             }
-            else if (object instanceof AxiomaticDef)
+            else if ("visibilityList".equals(property))
             {
-                removeAxiomaticType((AxiomaticDef)object);
-            }
-            else if (object instanceof BasicTypeDef)
-            {
-                removeBasicType((BasicTypeDef)object);
-            }
-            else if (object instanceof ClassDef)
-            {
-                ClassDef classDef = (ClassDef)object;
-
-                if (property == null)
-                {
-                    removeClass(classDef);
-                }
-                else if ("visibilityList".equals(property))
-                {
-                    removeVisibilityList(classDef);
-                }
-            }
-            else if (object instanceof FreeTypeDef)
-            {
-                removeFreeType((FreeTypeDef)object);
-            }
-            else if (object instanceof GenericDef)
-            {
-                removeGenericType((GenericDef)object);
-            }
-            else if (object instanceof InheritedClass)
-            {
-                Component component = componentForObjectOfType(object, ClassView.class);
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(component).getObject();
-                removeInheritedClass(classDef);
-            }
-            else if (object instanceof InitialState)
-            {
-                ClassView classView = (ClassView)selectedParagraph.getParent();
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
-                removeInitialState(classDef);
-            }
-            else if (object instanceof Operation)
-            {
-                Operation operation = (Operation)object;
-                if (property == null)
-                {
-                    removeOperation(operation);
-                }
-                else if ("deltaList".equals(property))
-                {
-                    removeDeltaList(operation);
-                }
-            }
-            else if (object instanceof State)
-            {
-                ClassView classView = (ClassView)selectedParagraph.getParent();
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
-                removeState(classDef);
+                removeVisibilityList(classDef);
             }
         }
+        else if (object instanceof FreeTypeDef)
+        {
+            removeFreeType((FreeTypeDef)object);
+        }
+        else if (object instanceof GenericDef)
+        {
+            removeGenericType((GenericDef)object);
+        }
+        else if (object instanceof InheritedClass)
+        {
+            Component component = componentForObjectOfType(object, ClassView.class);
+            ClassDef classDef = (ClassDef)viewToObjectMap.get(component).getObject();
+            removeInheritedClass(classDef);
+        }
+        else if (object instanceof InitialState)
+        {
+            ClassView classView = (ClassView)selectedParagraph.getParent();
+            ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+            removeInitialState(classDef);
+        }
+        else if (object instanceof Operation)
+        {
+            Operation operation = (Operation)object;
+            if (property == null)
+            {
+                removeOperation(operation, false);
+            }
+            else if ("deltaList".equals(property))
+            {
+                removeDeltaList(operation);
+            }
+        }
+        else if (object instanceof State)
+        {
+            ClassView classView = (ClassView)selectedParagraph.getParent();
+            ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+            removeState(classDef);
+        }
+
+        selectedParagraph = null;
     }
 
     public void copy()
     {
-        System.out.println("paste");
+        // put selected objects into the global cache
+        cachedObject = null;
+        SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
+        SpecObject object = specObjectPropertyPair.getObject();
+        cachedObject = object;
     }
 
     public void paste()
     {
-        System.out.println("paste");
+        SpecObject selectedObject = specification;
+
+        if (selectedParagraph != null)
+        {
+            selectedObject = (SpecObject)viewToObjectMap.get(selectedParagraph).getObject();
+        }
+
+        if (cachedObject instanceof AbbreviationDef)
+        {
+            addAbbreviation(selectedObject, (AbbreviationDef)cachedObject);
+        }
+        else if (cachedObject instanceof AxiomaticDef)
+        {
+            AxiomaticDef axiomaticDef = (AxiomaticDef)cachedObject;
+            addAxiomaticType(selectedObject, axiomaticDef, axiomaticDef.getPredicate() != null);
+        }
+        else if (cachedObject instanceof BasicTypeDef)
+        {
+            addBasicType(selectedObject, (BasicTypeDef)cachedObject);
+        }
+        else if (cachedObject instanceof ClassDef)
+        {
+            addClass((ClassDef)cachedObject);
+        }
+        else if (cachedObject instanceof FreeTypeDef)
+        {
+            addFreeType(selectedObject, (FreeTypeDef)cachedObject);
+        }
+        else if (cachedObject instanceof GenericDef)
+        {
+            addGenericType((GenericDef)cachedObject, ((GenericDef)cachedObject).getPredicate() != null);
+        }
+        else if (cachedObject instanceof InheritedClass)
+        {
+            addInheritedClass((ClassDef)selectedObject, (InheritedClass)cachedObject);
+        }
+        else if (cachedObject instanceof InitialState)
+        {
+            addInitialState((ClassDef)selectedObject, (InitialState)cachedObject);
+        }
+        else if (cachedObject instanceof Operation)
+        {
+            // TODO: need to determine the OperationType
+            addOperation((ClassDef)selectedObject, (Operation)cachedObject, OperationType.All);
+        }
+        else if (cachedObject instanceof State)
+        {
+            // TODO: need to dertemine the StateType
+            addState((ClassDef)selectedObject, (State)cachedObject, StateType.All);
+        }
     }
 
     // Get Keystroke events
@@ -1985,13 +2041,12 @@ public class SpecificationController extends Observable implements FocusListener
             else if (MouseEvent.BUTTON1 == e.getButton())
                 {
                 // left click
-
-                // clear current selection
-                for (ParagraphView paragraphView : selectedParagraphs)
+                if (selectedParagraph != null)
                     {
-                    paragraphView.setSelected(false);
+                    selectedParagraph.setSelected(false);
                     }
-                selectedParagraphs.clear();
+
+                selectedParagraph = null;
 
                 Component clickedComponent = e.getComponent();
 
@@ -1999,7 +2054,7 @@ public class SpecificationController extends Observable implements FocusListener
                     {
                     ParagraphView paragraphView = (ParagraphView)clickedComponent;
                     paragraphView.setSelected(true);
-                    selectedParagraphs.add(paragraphView);
+                    selectedParagraph = paragraphView;
                     }
                 }
             super.mouseClicked(e);

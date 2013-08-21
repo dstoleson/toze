@@ -569,7 +569,6 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                // TODO add parameters to cover various options
                 controller.addOperation(classDef, null, OperationType.All);
             }
         });
@@ -580,7 +579,6 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                // TODO add parameters to cover various options
                 controller.addOperation(classDef, null, OperationType.NoPredicate);
             }
         });
@@ -591,7 +589,6 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                // TODO add parameters to cover various options
                 controller.addOperation(classDef, null, OperationType.NoDeclaration);
             }
         });
@@ -602,7 +599,6 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                // TODO add parameters to cover various options
                 controller.addOperation(classDef, null, OperationType.Expression);
             }
         });
