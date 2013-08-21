@@ -1158,7 +1158,7 @@ public class SpecificationController extends Observable implements FocusListener
         classView.setVisibilityListView(visibilityListView);
 
         visibilityListView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(visibilityListView, new SpecObjectPropertyPair(classDef, null));
+        viewToObjectMap.put(visibilityListView, new SpecObjectPropertyPair(classDef, "visibilityList"));
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1862,14 +1862,13 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void cut()
     {
-        System.out.println("cut");
-
         // put selected objects into the global cache
         // remove the selected object from the view
         for (ParagraphView selectedParagraph : selectedParagraphs)
         {
             SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
             SpecObject object = specObjectPropertyPair.getObject();
+            String property = specObjectPropertyPair.getProperty();
 
             if (object instanceof AbbreviationDef)
             {
@@ -1885,7 +1884,16 @@ public class SpecificationController extends Observable implements FocusListener
             }
             else if (object instanceof ClassDef)
             {
-                removeClass((ClassDef)object);
+                ClassDef classDef = (ClassDef)object;
+
+                if (property == null)
+                {
+                    removeClass(classDef);
+                }
+                else if ("visibilityList".equals(property))
+                {
+                    removeVisibilityList(classDef);
+                }
             }
             else if (object instanceof FreeTypeDef)
             {
@@ -1895,9 +1903,35 @@ public class SpecificationController extends Observable implements FocusListener
             {
                 removeGenericType((GenericDef)object);
             }
+            else if (object instanceof InheritedClass)
+            {
+                Component component = componentForObjectOfType(object, ClassView.class);
+                ClassDef classDef = (ClassDef)viewToObjectMap.get(component).getObject();
+                removeInheritedClass(classDef);
+            }
+            else if (object instanceof InitialState)
+            {
+                ClassView classView = (ClassView)selectedParagraph.getParent();
+                ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+                removeInitialState(classDef);
+            }
             else if (object instanceof Operation)
             {
-                removeOperation((Operation)object);
+                Operation operation = (Operation)object;
+                if (property == null)
+                {
+                    removeOperation(operation);
+                }
+                else if ("deltaList".equals(property))
+                {
+                    removeDeltaList(operation);
+                }
+            }
+            else if (object instanceof State)
+            {
+                ClassView classView = (ClassView)selectedParagraph.getParent();
+                ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+                removeState(classDef);
             }
         }
     }
@@ -1943,24 +1977,8 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 // right click
                 Component clickedComponent = e.getComponent();
-
-                System.out.println("clicked = " + clickedComponent.getClass().getSimpleName());
-
-
                 Object modelObject = viewToObjectMap.get(clickedComponent).getObject();
 
-                System.out.println("model = " + modelObject.getClass().getSimpleName());
-
-                Object parentObject = null;
-
-                if (modelObject != specification)
-                    {
-                    Component parentComponent = clickedComponent.getParent();
-                    System.out.println("clickedParent = " + parentComponent.getClass().getName());
-                    parentObject = viewToObjectMap.get(parentComponent).getObject();
-
-                    System.out.println("parent = " + parentObject.getClass().getSimpleName());
-                    }
                 JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(modelObject, null, SpecificationController.this);
                 popupMenu.show(clickedComponent, e.getX(), e.getY());
                 }
