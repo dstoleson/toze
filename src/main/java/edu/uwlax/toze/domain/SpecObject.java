@@ -1,4 +1,4 @@
-package edu.uwlax.toze.spec;
+package edu.uwlax.toze.domain;
 
 import java.util.UUID;
 

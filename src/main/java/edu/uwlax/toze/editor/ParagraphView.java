@@ -1,6 +1,6 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.SpecObject;
+import edu.uwlax.toze.domain.SpecObject;
 
 import javax.swing.*;
 import java.awt.*;

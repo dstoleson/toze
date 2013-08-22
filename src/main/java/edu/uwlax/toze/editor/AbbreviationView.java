@@ -1,7 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.SpecObject;
+import edu.uwlax.toze.domain.SpecObject;
 
 import java.awt.Color;
 import java.awt.Dimension;

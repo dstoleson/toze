@@ -1,5 +1,7 @@
 package edu.uwlax.toze.objectz;
 
+import edu.uwlax.toze.domain.SpecObject;
+import edu.uwlax.toze.domain.SpecObjectPropertyPair;
 import edu.uwlax.toze.editor.SpecificationSection;
 import edu.uwlax.toze.spec.*;
 
@@ -247,7 +249,7 @@ public class TozeGuiParser extends TozeParser
                 }
             end(); // class
             }
-        end(); // spec
+        end(); // domain
 
         if (getSyntaxErrors().isEmpty())
             {

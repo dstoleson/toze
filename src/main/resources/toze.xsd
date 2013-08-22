@@ -6,14 +6,6 @@
            jaxb:extensionBindingPrefixes="xjc"
            jaxb:version="2.0">
 
-    <xs:annotation>
-       <xs:appinfo>
-          <jaxb:globalBindings>
-           <xjc:superClass name="edu.uwlax.toze.spec.SpecObject"/>
-          </jaxb:globalBindings>
-       </xs:appinfo>
-    </xs:annotation>
-    
     <xs:element name="TOZE">
         <xs:complexType>
             <xs:sequence>

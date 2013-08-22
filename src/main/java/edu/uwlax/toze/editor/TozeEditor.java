@@ -1,9 +1,9 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.SpecObjectPropertyError;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.persist.TozeJaxbContext;
-import edu.uwlax.toze.spec.SpecObjectPropertyError;
 import edu.uwlax.toze.spec.TOZE;
 
 import javax.swing.*;
@@ -485,7 +485,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 {
                 for (TreePath treePath : treePathList)
                     {
-                    if (treePath.getPathCount() == 2) // the number of path items in selected spec node
+                    if (treePath.getPathCount() == 2) // the number of path items in selected domain node
                         {
                         SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
                         Specification specification = specificationNode.getSpecification();
