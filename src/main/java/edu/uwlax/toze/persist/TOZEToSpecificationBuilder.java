@@ -149,21 +149,21 @@ public class TOZEToSpecificationBuilder
             operation.setClassDef(classDef);
             }
 
-        if (classDef.getInheritedClass() != null)
+        if (tozeClassDef.getInheritedClass() != null)
             {
             InheritedClass inheritedClass = build(tozeClassDef.getInheritedClass());
             classDef.setInheritedClass(inheritedClass);
             inheritedClass.setClassDef(classDef);
             }
 
-        if (classDef.getInitialState() != null)
+        if (tozeClassDef.getInitialState() != null)
             {
             InitialState initialState = build(tozeClassDef.getInitialState());
             classDef.setInitialState(initialState);
             initialState.setClassDef(classDef);
             }
 
-        if (classDef.getState() != null)
+        if (tozeClassDef.getState() != null)
             {
             State state = build(tozeClassDef.getState());
             classDef.setState(state);

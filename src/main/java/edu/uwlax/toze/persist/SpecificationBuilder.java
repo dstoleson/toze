@@ -51,8 +51,6 @@ public class SpecificationBuilder
             e.printStackTrace();
             }
 
-
-        // TODO: write translation from TOZE to Specification
         Specification specification = TOZEToSpecificationBuilder.buildSpecification(toze);
         return specification;
     }
@@ -73,9 +71,7 @@ public class SpecificationBuilder
         // to be backwards compatible with existing TOZE files, the first things to do is to create a
         // deep copy / clone of the specification which can be altered while writing
 
-        // TODO: write translation from Specification to TOZE
-
-        TOZE tozeToWrite = null; // buildTOZE(specification);
+        TOZE tozeToWrite = SpecificationToTOZEBuilder.buildTOZE(specification);
 
         // Create an empty DOM document
         // DocumentBuilderFactory is not thread-safe
