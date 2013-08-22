@@ -1,9 +1,7 @@
 package edu.uwlax.toze.objectz;
 
-import edu.uwlax.toze.domain.SpecObject;
-import edu.uwlax.toze.domain.SpecObjectPropertyPair;
+import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.editor.SpecificationSection;
-import edu.uwlax.toze.spec.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +16,7 @@ public class TozeGuiParser extends TozeParser
     private Stack m_nodes = new Stack();
     private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();
 
-    public void parseForErrors(TOZE toze)
+    public void parseForErrors(Specification toze)
     {        
         // @TODO Need to way to map the errors to the place in the document
         // There needs to be a map of some unique id to an element in the document
@@ -33,7 +31,7 @@ public class TozeGuiParser extends TozeParser
 
         start(SpecificationSection.Specification);
 
-        for (AxiomaticDef axiomaticDef : toze.getAxiomaticDef())
+        for (AxiomaticDef axiomaticDef : toze.getAxiomaticDefList())
             {
             start(SpecificationSection.AxiomaticDefinition);
             parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
@@ -41,7 +39,7 @@ public class TozeGuiParser extends TozeParser
             end(); // axiomatic
             }
 
-        for (AbbreviationDef abbreviationDef : toze.getAbbreviationDef())
+        for (AbbreviationDef abbreviationDef : toze.getAbbreviationDefList())
             {
             start(SpecificationSection.AbbreviationDefinition);
             parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
@@ -49,14 +47,14 @@ public class TozeGuiParser extends TozeParser
             end();  // abbreviation
             }
 
-        for (BasicTypeDef basicTypeDef : toze.getBasicTypeDef())
+        for (BasicTypeDef basicTypeDef : toze.getBasicTypeDefList())
             {
             start(SpecificationSection.BasicTypeDefinition);
             parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
             end(); // basic
             }
 
-        for (FreeTypeDef freeTypeDef : toze.getFreeTypeDef())
+        for (FreeTypeDef freeTypeDef : toze.getFreeTypeDefList())
             {
             start(SpecificationSection.FreeTypeDefinition);
             parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
@@ -64,7 +62,7 @@ public class TozeGuiParser extends TozeParser
             end();  // free
             }
 
-        for (GenericDef genericDef : toze.getGenericDef())
+        for (GenericDef genericDef : toze.getGenericDefList())
             {
             start(SpecificationSection.GenericDefinition);
 
@@ -120,7 +118,7 @@ public class TozeGuiParser extends TozeParser
             end();  // predicate
             }
 
-        for (ClassDef classDef : toze.getClassDef())
+        for (ClassDef classDef : toze.getClassDefList())
             {
             start(SpecificationSection.Class);
             parse_guiClassHeader(classDef, "name", classDef.getName());
@@ -140,14 +138,14 @@ public class TozeGuiParser extends TozeParser
                 end();  // inherited
                 }
 
-            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
+            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
                 {
                 start(SpecificationSection.BasicTypeDefinition);
                 parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
                 end();  // class.basic
                 }
 
-            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
+            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
                 {
                 start(SpecificationSection.AbbreviationDefinition);
                 parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
@@ -155,7 +153,7 @@ public class TozeGuiParser extends TozeParser
                 end();  // class.abbreviation
                 }
 
-            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
+            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
                 {
                 start(SpecificationSection.AxiomaticDefinition);
                 parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
@@ -163,7 +161,7 @@ public class TozeGuiParser extends TozeParser
                 end();  // class.axiomatic
                 }
 
-            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
+            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
                 {
                 start(SpecificationSection.FreeTypeDefinition);
                 parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
@@ -211,7 +209,7 @@ public class TozeGuiParser extends TozeParser
                 end();  // initstate
                 }
 
-            for (Operation operation : classDef.getOperation())
+            for (Operation operation : classDef.getOperationList())
                 {                
                 start(SpecificationSection.Operation);
 

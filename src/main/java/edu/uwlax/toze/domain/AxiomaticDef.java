@@ -1,9 +1,12 @@
 package edu.uwlax.toze.domain;
 
-public class AxiomaticDef
+public class AxiomaticDef extends SpecObject
 {
     private String declaration;
     private String predicate;
+
+    private Specification specification;
+    private ClassDef classDef;
 
     public String getDeclaration() {
         return declaration;
@@ -19,5 +22,21 @@ public class AxiomaticDef
 
     public void setPredicate(String predicate) {
         this.predicate = predicate;
+    }
+
+    public Specification getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(Specification specification) {
+        this.specification = specification;
+    }
+
+    public ClassDef getClassDef() {
+        return classDef;
+    }
+
+    public void setClassDef(ClassDef classDef) {
+        this.classDef = classDef;
     }
 }

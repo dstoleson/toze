@@ -1,5 +1,6 @@
 package edu.uwlax.toze.persist;
 
+import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.spec.TOZE;
 import org.w3c.dom.Document;
 
@@ -21,10 +22,6 @@ import java.io.OutputStream;
  */
 public class SpecificationBuilder
 {
-    public SpecificationBuilder()
-    {
-    }
-
     /**
      * Build a TOZE specification from an input stream.
      *
@@ -38,7 +35,7 @@ public class SpecificationBuilder
      *                   from the
      *                   data provided by the input stream.
      */
-    public TOZE buildFromStream(InputStream inputStream) throws Exception
+    public Specification buildFromStream(InputStream inputStream) throws Exception
     {
         TOZE toze = null;
 
@@ -54,26 +51,31 @@ public class SpecificationBuilder
             e.printStackTrace();
             }
 
-        return toze;
+
+        // TODO: write translation from TOZE to Specification
+        Specification specification = TOZEToSpecificationBuilder.buildSpecification(toze);
+        return specification;
     }
 
     /**
      * Write a TOZE specification to an output stream.
      *
-     * @param toze         The specification to write
+     * @param specification         The specification to write
      * @param outputStream The stream to write to, probably a FileOutputStream
      *                     of some kind.
      *
      * @throws Exception There was a problem writing the specification to the
      *                   output stream.
      */
-    public void writeToStream(TOZE toze, OutputStream outputStream) throws Exception
+    public void writeToStream(Specification specification, OutputStream outputStream) throws Exception
     {
         // because the specification needs to be altered to write proper XML with CDATA tags
         // to be backwards compatible with existing TOZE files, the first things to do is to create a
         // deep copy / clone of the specification which can be altered while writing
 
-        TOZE tozeToWrite = TOZECloner.clone(toze);
+        // TODO: write translation from Specification to TOZE
+
+        TOZE tozeToWrite = null; // buildTOZE(specification);
 
         // Create an empty DOM document
         // DocumentBuilderFactory is not thread-safe

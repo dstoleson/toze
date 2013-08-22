@@ -1,17 +1,16 @@
 package edu.uwlax.toze.domain;
 
-import edu.uwlax.toze.spec.FreeTypeDef;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class Specification
+public class Specification extends SpecObject
 {
-    private List<BasicTypeDef> basicTypeDefList;
-    private List<AxiomaticDef> axiomaticDefList;
-    private List<GenericDef> genericDefList;
-    private List<AbbreviationDef> abbreviationDefList;
-    private List<FreeTypeDef> freeTypeDefList;
-    private List<ClassDef> classDefList;
+    private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
+    private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
+    private List<GenericDef> genericDefList = new ArrayList<GenericDef>();
+    private List<AbbreviationDef> abbreviationDefList = new ArrayList<AbbreviationDef>();
+    private List<FreeTypeDef> freeTypeDefList = new ArrayList<FreeTypeDef>();
+    private List<ClassDef> classDefList = new ArrayList<ClassDef>();
     private String predicate;
 
     public List<BasicTypeDef> getBasicTypeDefList() {

@@ -1,10 +1,9 @@
 package edu.uwlax.toze.domain;
 
-public class BasicTypeDef extends SpecObject
+public class InheritedClass extends SpecObject
 {
     private String name;
 
-    private Specification specification;
     private ClassDef classDef;
 
     public String getName() {
@@ -13,14 +12,6 @@ public class BasicTypeDef extends SpecObject
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Specification getSpecification() {
-        return specification;
-    }
-
-    public void setSpecification(Specification specification) {
-        this.specification = specification;
     }
 
     public ClassDef getClassDef() {

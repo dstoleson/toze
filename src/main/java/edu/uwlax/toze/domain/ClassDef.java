@@ -1,19 +1,22 @@
 package edu.uwlax.toze.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ClassDef
+public class ClassDef extends SpecObject
 {
     private String name;
     private String visibilityList;
     private InheritedClass inheritedClass;
-    private List<BasicTypeDef> basicTypeDefList;
-    private List<AxiomaticDef> axiomaticDefList;
-    private List<AbbreviationDef> abbreviationDefList;
-    private List<FreeTypeDef> freeTypeDefList;
+    private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
+    private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
+    private List<AbbreviationDef> abbreviationDefList = new ArrayList<AbbreviationDef>();
+    private List<FreeTypeDef> freeTypeDefList = new ArrayList<FreeTypeDef>();
     private State state;
     private InitialState initialState;
-    private List<Operation> operationList;
+    private List<Operation> operationList = new ArrayList<Operation>();
+
+    private Specification specification;
 
     public String getName() {
         return name;
@@ -93,5 +96,13 @@ public class ClassDef
 
     public void setOperationList(List<Operation> operationList) {
         this.operationList = operationList;
+    }
+
+    public Specification getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(Specification specification) {
+        this.specification = specification;
     }
 }

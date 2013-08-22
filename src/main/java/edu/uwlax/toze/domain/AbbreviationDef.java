@@ -1,9 +1,12 @@
 package edu.uwlax.toze.domain;
 
-public class AbbreviationDef
+public class AbbreviationDef extends SpecObject
 {
     private String name;
     private String expression;
+
+    private Specification specification;
+    private ClassDef classDef;
 
     public String getName() {
         return name;
@@ -19,5 +22,21 @@ public class AbbreviationDef
 
     public void setExpression(String expression) {
         this.expression = expression;
+    }
+
+    public Specification getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(Specification specification) {
+        this.specification = specification;
+    }
+
+    public ClassDef getClassDef() {
+        return classDef;
+    }
+
+    public void setClassDef(ClassDef classDef) {
+        this.classDef = classDef;
     }
 }

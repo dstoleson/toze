@@ -1,12 +1,30 @@
 package edu.uwlax.toze.domain;
 
-public class FreeTypeDef extends SpecObject
+public class Operation extends SpecObject
 {
+    private String name;
+    private String deltaList;
     private String declaration;
     private String predicate;
+    private String operationExpression;
 
-    private Specification specification;
     private ClassDef classDef;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDeltaList() {
+        return deltaList;
+    }
+
+    public void setDeltaList(String deltaList) {
+        this.deltaList = deltaList;
+    }
 
     public String getDeclaration() {
         return declaration;
@@ -24,12 +42,12 @@ public class FreeTypeDef extends SpecObject
         this.predicate = predicate;
     }
 
-    public Specification getSpecification() {
-        return specification;
+    public String getOperationExpression() {
+        return operationExpression;
     }
 
-    public void setSpecification(Specification specification) {
-        this.specification = specification;
+    public void setOperationExpression(String operationExpression) {
+        this.operationExpression = operationExpression;
     }
 
     public ClassDef getClassDef() {

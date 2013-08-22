@@ -1,6 +1,6 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.*;
+import edu.uwlax.toze.domain.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -43,9 +43,9 @@ public class PopUpMenuBuilder
             popupMenu.addSeparator();
             }
 
-        if (object instanceof TOZE)
+        if (object instanceof Specification)
             {
-            popupMenu = buildSpecificationPopup(popupMenu, (TOZE) object, controller);
+            popupMenu = buildSpecificationPopup(popupMenu, (Specification) object, controller);
             }
         else if (object instanceof ClassDef)
             {
@@ -252,7 +252,7 @@ public class PopUpMenuBuilder
 //        return popupMenu;
 //    }
 
-    static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final TOZE toze, final SpecificationController controller)
+    static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final Specification toze, final SpecificationController controller)
     {
         addTitle(popupMenu, "Specification");
         JMenuItem menuItem = new JMenuItem("Add Abbreviation Definition");

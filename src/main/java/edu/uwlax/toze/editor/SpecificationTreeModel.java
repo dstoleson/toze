@@ -1,7 +1,6 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.domain.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public class SpecificationTreeModel extends DefaultTreeModel
 {
-    private List<Specification> specifications;
+    private List<SpecificationDocument> specificationDocuments;
 
     public SpecificationTreeModel(TreeNode tn)
     {
@@ -33,12 +32,12 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
     private void initSpecifications()
     {
-        specifications = new ArrayList<Specification>();
+        specificationDocuments = new ArrayList<SpecificationDocument>();
     }
 
-    public void addSpecification(Specification specification)
+    public void addSpecificationDocument(SpecificationDocument specificationDocument)
     {
-        specifications.add(specification);
+        specificationDocuments.add(specificationDocument);
         this.reload();
     }
 
@@ -46,7 +45,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
     public Object getRoot()
     {
         DefaultMutableTreeNode specRoot = new DefaultMutableTreeNode("ROOT");
-        specRoot.setUserObject(specifications);
+        specRoot.setUserObject(specificationDocuments);
         return specRoot;
     }
 
@@ -56,20 +55,20 @@ public class SpecificationTreeModel extends DefaultTreeModel
         Object userObject = ((DefaultMutableTreeNode) parent).getUserObject();
         DefaultMutableTreeNode node = null;
 
-        if (userObject == specifications)
+        if (userObject == specificationDocuments)
             {
-            node = new SpecificationNode(specifications.get(index).getFile().getName(), specifications.get(index));
+            node = new SpecificationNode(specificationDocuments.get(index).getFile().getName(), specificationDocuments.get(index));
             }
         else if (parent instanceof SpecificationNode)
             {
-            TOZE toze = ((SpecificationNode) parent).getSpecification().getToze();
-            ClassDef classDef = toze.getClassDef().get(index);
+            Specification specification = ((SpecificationNode) parent).getSpecificationDocument().getSpecification();
+            ClassDef classDef = specification.getClassDefList().get(index);
             node = new ClassNode(classDef.getName(), classDef);
             }
         else if (parent instanceof ClassNode)
             {
             ClassDef classDef = ((ClassNode) parent).getClassDef();
-            node = new DefaultMutableTreeNode(classDef.getOperation().get(index).getName());
+            node = new DefaultMutableTreeNode(classDef.getOperationList().get(index).getName());
             }
 
         return node;
@@ -80,13 +79,13 @@ public class SpecificationTreeModel extends DefaultTreeModel
     {
         Object userObject = ((DefaultMutableTreeNode) parent).getUserObject();
 
-        if (userObject == specifications)
+        if (userObject == specificationDocuments)
             {
-            return specifications.size();
+            return specificationDocuments.size();
             }
         else if (parent instanceof SpecificationNode)
             {
-            return ((SpecificationNode) parent).getSpecification().getToze().getClassDef().size();
+            return ((SpecificationNode) parent).getSpecificationDocument().getSpecification().getClassDefList().size();
             }
         else if (parent instanceof ClassNode)
             {
@@ -101,42 +100,42 @@ public class SpecificationTreeModel extends DefaultTreeModel
     {
         if (object instanceof SpecificationNode)
             {
-            return ((SpecificationNode) object).getSpecification().getToze().getClassDef().isEmpty();
+            return ((SpecificationNode) object).getSpecificationDocument().getSpecification().getClassDefList().isEmpty();
             }
         if (object instanceof ClassNode)
             {
-            return ((ClassNode) object).getClassDef().getOperation().isEmpty();
+            return ((ClassNode) object).getClassDef().getOperationList().isEmpty();
             }
         
         // Do this last because all the nodes are DefaultMutableTreNode
         // but more specific
         if (object instanceof DefaultMutableTreeNode)
             {
-            return !(((DefaultMutableTreeNode)object).getUserObject() == specifications);
+            return !(((DefaultMutableTreeNode)object).getUserObject() == specificationDocuments);
             }
         
         return true;
     }
 
-    public void removeSpecification(Specification specification)
+    public void removeSpecification(SpecificationDocument specificationDocument)
     {
-        specifications.remove(specification);
+        specificationDocuments.remove(specificationDocument);
         reload();
     }
 
     public class SpecificationNode extends DefaultMutableTreeNode
     {
-        private Specification specification;
+        private SpecificationDocument specificationDocument;
 
-        public SpecificationNode(Object userObject, Specification specification)
+        public SpecificationNode(Object userObject, SpecificationDocument specificationDocument)
         {
             super(userObject);
-            this.specification = specification;
+            this.specificationDocument = specificationDocument;
         }
 
-        public Specification getSpecification()
+        public SpecificationDocument getSpecificationDocument()
         {
-            return specification;
+            return specificationDocument;
         }
     }
 
@@ -181,9 +180,9 @@ public class SpecificationTreeModel extends DefaultTreeModel
 //                {
 //                classChildCount++;
 //                }
-            if (classDef.getOperation() != null && !classDef.getOperation().isEmpty())
+            if (classDef.getOperationList() != null && !classDef.getOperationList().isEmpty())
                 {
-                classChildCount += classDef.getOperation().size();
+                classChildCount += classDef.getOperationList().size();
                 }
 //            if (classDef.getState() != null)
 //                {

@@ -1,19 +1,20 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.spec.TOZE;
 
 import java.io.File;
 
-public class Specification
+public class SpecificationDocument
 {
     private File file;
-    private TOZE toze;
+    private Specification specification;
     private boolean edited;
     
-    public Specification(File file, TOZE toze)
+    public SpecificationDocument(File file, Specification specification)
     {
         this.file = file;
-        this.toze = toze;
+        this.specification = specification;
         edited = false;
     }
     
@@ -27,9 +28,9 @@ public class Specification
         this.file = file;
     }
 
-    public TOZE getToze()
+    public Specification getSpecification()
     {
-        return toze;
+        return specification;
     }
 
     public boolean isEdited()
@@ -41,4 +42,5 @@ public class Specification
     {
         this.edited = edited;
     }
+
 }

@@ -1,7 +1,7 @@
 package edu.uwlax.toze.objectz;
 
 import edu.uwlax.toze.persist.SpecificationBuilder;
-import edu.uwlax.toze.spec.SpecObject;
+import edu.uwlax.toze.domain.SpecObject;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.FileInputStream;
 import java.io.InputStream;

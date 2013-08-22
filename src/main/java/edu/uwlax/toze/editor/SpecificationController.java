@@ -1,13 +1,12 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.SpecObject;
+import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.domain.SpecObjectPropertyError;
 import edu.uwlax.toze.domain.SpecObjectPropertyPair;
 
 import edu.uwlax.toze.editor.bindings.Binding;
 import edu.uwlax.toze.objectz.TozeGuiParser;
 import edu.uwlax.toze.objectz.TozeToken;
-import edu.uwlax.toze.spec.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,8 +38,8 @@ public class SpecificationController extends Observable implements FocusListener
         objectToViewMap.put(FreeTypeDef.class, FreeTypeView.class);
         }
 
-    private Specification specificationDoc;
-    private TOZE specification;
+    private SpecificationDocument specificationDocument;
+    private Specification specification;
 
     private HashMap<JComponent, SpecObjectPropertyPair> viewToObjectMap;
 
@@ -54,17 +53,17 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Create a controller for the given specification model and view.
      *
-     * @param specificationDoc     The specification to display.
+     * @param specificationDocument     The specification to display.
      * @param specificationView The view in which to display the specification.
      *
      * @throws IllegalArgumentException specification and specificationView must
      *                                  not be null
      */
-    public SpecificationController(Specification specificationDoc, SpecificationView specificationView)
+    public SpecificationController(SpecificationDocument specificationDocument, SpecificationView specificationView)
             throws IllegalArgumentException
     {
-        this.specificationDoc = specificationDoc;
-        this.specification = specificationDoc.getToze();
+        this.specificationDocument = specificationDocument;
+        this.specification = specificationDocument.getSpecification();
         this.specificationView = specificationView;
         this.mouseAdapter = new ControllerMouseAdapter();
         this.keyAdapter = new ControllerKeyAdapter();
@@ -85,51 +84,51 @@ public class SpecificationController extends Observable implements FocusListener
      */
     private void initView()
     {
-        if (!specification.getAxiomaticDef().isEmpty())
+        if (!specification.getAxiomaticDefList().isEmpty())
             {
-            for (AxiomaticDef axiomaticDef : specification.getAxiomaticDef())
+            for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
                 {
                 boolean hasPredicate = (axiomaticDef.getPredicate() != null);
                 addAxiomaticType(specification, axiomaticDef, hasPredicate);
                 }
             }
 
-        if (!specification.getAbbreviationDef().isEmpty())
+        if (!specification.getAbbreviationDefList().isEmpty())
             {
-            for (AbbreviationDef abbreviationDef : specification.getAbbreviationDef())
+            for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
                 {
                 addAbbreviation(specification, abbreviationDef);
                 }
             }
 
-        if (!specification.getBasicTypeDef().isEmpty())
+        if (!specification.getBasicTypeDefList().isEmpty())
             {
-            for (BasicTypeDef basicTypeDef : specification.getBasicTypeDef())
+            for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
                 {
                 addBasicType(specification, basicTypeDef);
                 }
             }
 
-        if (!specification.getFreeTypeDef().isEmpty())
+        if (!specification.getFreeTypeDefList().isEmpty())
             {
-            for (FreeTypeDef freeTypeDef : specification.getFreeTypeDef())
+            for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
                 {
                 addFreeType(specification, freeTypeDef);
                 }
             }
 
-        if (!specification.getGenericDef().isEmpty())
+        if (!specification.getGenericDefList().isEmpty())
             {
-            for (GenericDef genericDef : specification.getGenericDef())
+            for (GenericDef genericDef : specification.getGenericDefList())
                 {
                 boolean hasPredicate = (genericDef.getPredicate() != null);
                 addGenericType(genericDef, hasPredicate);
                 }
             }
 
-        if (!specification.getClassDef().isEmpty())
+        if (!specification.getClassDefList().isEmpty())
             {
-            for (ClassDef classDef : specification.getClassDef())
+            for (ClassDef classDef : specification.getClassDefList())
                 {
                 addClass(classDef);
                 }
@@ -141,9 +140,9 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.repaint();
     }
 
-    public Specification getSpecificationDoc()
+    public SpecificationDocument getSpecificationDocument()
     {
-        return specificationDoc;
+        return specificationDocument;
     }
 
     /**
@@ -151,7 +150,7 @@ public class SpecificationController extends Observable implements FocusListener
      *
      * @return A TOZE specification.
      */
-    public TOZE getSpecification()
+    public Specification getSpecification()
     {
         return specification;
     }
@@ -560,7 +559,7 @@ public class SpecificationController extends Observable implements FocusListener
         TozeTextArea classNameText = buildTextArea(classDef, classDef.getName(), "name");
         classView.setClassNameText(classNameText);
 
-        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
+        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
             {
             addAxiomaticType(classDef, axiomaticDef, (axiomaticDef.getPredicate() != null));
             }
@@ -570,12 +569,12 @@ public class SpecificationController extends Observable implements FocusListener
             addInheritedClass(classDef, classDef.getInheritedClass());
             }
 
-        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
+        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
             {
             addBasicType(classDef, basicTypeDef);
             }
 
-        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
+        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
             {
             addFreeType(classDef, freeTypeDef);
             }
@@ -596,14 +595,14 @@ public class SpecificationController extends Observable implements FocusListener
             addInitialState(classDef, classDef.getInitialState());
             }
 
-        for (Operation operation : classDef.getOperation())
+        for (Operation operation : classDef.getOperationList())
             {
             addOperation(classDef, operation, null);
             }
 
         if (newClassDef)
             {
-            specification.getClassDef().add(classDef);
+            specification.getClassDefList().add(classDef);
             }
 
         specificationView.addClassView(index, classView);
@@ -624,11 +623,11 @@ public class SpecificationController extends Observable implements FocusListener
     {
         // add at the index at which it exists in the specification already (existing class)
         // or add it at the end (new class)
-        int index = specification.getClassDef().indexOf(classDef);
+        int index = specification.getClassDefList().indexOf(classDef);
 
         if (index == -1)
             {
-            index = specification.getClassDef().size();
+            index = specification.getClassDefList().size();
             }
 
         addClass(classDef, index);
@@ -665,28 +664,28 @@ public class SpecificationController extends Observable implements FocusListener
                     removeInitialState(classDef);
                 }
 
-                for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDef())
+                for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
                 {
                     removeAxiomaticType(axiomaticDef);
                 }
-                for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDef())
+                for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
                 {
                     removeAbbreviation(abbreviationDef);
                 }
-                for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDef())
+                for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
                 {
                     removeBasicType(basicTypeDef);
                 }
-                for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDef())
+                for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
                 {
                     removeFreeType(freeTypeDef);
                 }
-                for (Operation operation : classDef.getOperation())
+                for (Operation operation : classDef.getOperationList())
                 {
                     removeOperation(operation);
                 }
             }
-        specification.getClassDef().remove(classDef);
+        specification.getClassDefList().remove(classDef);
 
         ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
         Utils.mapRemoveNotNull(viewToObjectMap, classView.getClassNameText());
@@ -740,7 +739,7 @@ public class SpecificationController extends Observable implements FocusListener
             // add to the root specification
             if (newAxiomaticDef)
                 {
-                specification.getAxiomaticDef().add(axiomaticDef);
+                specification.getAxiomaticDefList().add(axiomaticDef);
                 }
             specificationView.addAxiomaticView(axiomaticDefView);
             }
@@ -749,7 +748,7 @@ public class SpecificationController extends Observable implements FocusListener
             // otherwise it must be a class
             if (newAxiomaticDef)
                 {
-                ((ClassDef) object).getAxiomaticDef().add(axiomaticDef);
+                ((ClassDef) object).getAxiomaticDefList().add(axiomaticDef);
                 }
             ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
             classView.addAxiomaticView(axiomaticDefView);
@@ -771,12 +770,12 @@ public class SpecificationController extends Observable implements FocusListener
         if (parent instanceof ClassView)
             {
             ClassDef classDef = (ClassDef)viewToObjectMap.get(parent).getObject();
-            classDef.getAxiomaticDef().remove(axiomaticDef);
+            classDef.getAxiomaticDefList().remove(axiomaticDef);
             ((ClassView)parent).removeAxiomaticView(axiomaticView);
             }
         else
             {
-            specification.getAxiomaticDef().remove(axiomaticDef);
+            specification.getAxiomaticDefList().remove(axiomaticDef);
             specificationView.removeAxiomaticView(axiomaticView);
             }
 
@@ -865,7 +864,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newAbbreviationDef)
                 {
-                specification.getAbbreviationDef().add(abbreviationDef);
+                specification.getAbbreviationDefList().add(abbreviationDef);
                 }
             specificationView.addAbbreviationView(abbreviationView);
             }
@@ -873,7 +872,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newAbbreviationDef)
                 {
-                ((ClassDef) object).getAbbreviationDef().add(abbreviationDef);
+                ((ClassDef) object).getAbbreviationDefList().add(abbreviationDef);
                 }
             ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
             classView.addAbbreviationView(abbreviationView);
@@ -889,7 +888,7 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeAbbreviation(AbbreviationDef abbreviationDef)
     {
-        specification.getAbbreviationDef().remove(abbreviationDef);
+        specification.getAbbreviationDefList().remove(abbreviationDef);
 
         AbbreviationView abbreviationView = (AbbreviationView) componentForObjectOfType(abbreviationDef,
                                                                                         AbbreviationView.class
@@ -937,7 +936,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newBasicTypeDef)
                 {
-                specification.getBasicTypeDef().add(basicTypeDef);
+                specification.getBasicTypeDefList().add(basicTypeDef);
                 }
             specificationView.addBasicTypeView(basicTypeView);
             }
@@ -945,7 +944,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newBasicTypeDef)
                 {
-                ((ClassDef) object).getBasicTypeDef().add(basicTypeDef);
+                ((ClassDef) object).getBasicTypeDefList().add(basicTypeDef);
                 }
             ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
             classView.addBasicTypeView(basicTypeView);
@@ -969,12 +968,12 @@ public class SpecificationController extends Observable implements FocusListener
         if (parent instanceof ClassView)
             {
             ClassDef classDef = (ClassDef)viewToObjectMap.get(parent).getObject();
-            classDef.getBasicTypeDef().remove(basicTypeDef);
+            classDef.getBasicTypeDefList().remove(basicTypeDef);
             ((ClassView)parent).removeBasicTypeView(basicTypeView);
             }
         else
             {
-            specification.getBasicTypeDef().remove(basicTypeDef);
+            specification.getBasicTypeDefList().remove(basicTypeDef);
             specificationView.removeBasicTypeView(basicTypeView);
             }
 
@@ -1025,7 +1024,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newFreeTypeDef)
                 {
-                specification.getFreeTypeDef().add(freeTypeDef);
+                specification.getFreeTypeDefList().add(freeTypeDef);
                 }
             specificationView.addFreeTypeView(freeTypeView);
             }
@@ -1033,7 +1032,7 @@ public class SpecificationController extends Observable implements FocusListener
             {
             if (newFreeTypeDef)
                 {
-                ((ClassDef) object).getFreeTypeDef().add(freeTypeDef);
+                ((ClassDef) object).getFreeTypeDefList().add(freeTypeDef);
                 }
             ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
             classView.addFreeTypeView(freeTypeView);
@@ -1059,7 +1058,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            specification.getFreeTypeDef().remove(freeTypeDef);
+            specification.getFreeTypeDefList().remove(freeTypeDef);
             specificationView.removeFreeTypeView(freeTypeView);
             }
 
@@ -1278,7 +1277,7 @@ public class SpecificationController extends Observable implements FocusListener
                     operation.setOperationExpression("New Expression");
                 }
 
-            classDef.getOperation().add(index, operation);
+            classDef.getOperationList().add(index, operation);
             }
 
         // need to add view to object map right away
@@ -1331,11 +1330,11 @@ public class SpecificationController extends Observable implements FocusListener
     {
         // add at the index at which it exists in the class already (existing operation)
         // or add it at the end (new operation)
-        int index = classDef.getOperation().indexOf(operation);
+        int index = classDef.getOperationList().indexOf(operation);
 
         if (index == -1)
             {
-            index = classDef.getOperation().size();
+            index = classDef.getOperationList().size();
             }
 
         addOperation(classDef, operation, operationType, index);
@@ -1362,7 +1361,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         SpecObjectPropertyPair pair = viewToObjectMap.get(classView);
         ClassDef classDef = (ClassDef)pair.getObject();
-        classDef.getOperation().remove(operation);
+        classDef.getOperationList().remove(operation);
 
         if (deep)
             {
@@ -1568,11 +1567,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                axiomaticDefList = classDef.getAxiomaticDef();
+                axiomaticDefList = classDef.getAxiomaticDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                axiomaticDefList = specification.getAxiomaticDef();
+                axiomaticDefList = specification.getAxiomaticDefList();
                 }
 
             int index = axiomaticDefList.indexOf(axiomaticDef);
@@ -1595,11 +1594,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                abbreviationDefList = classDef.getAbbreviationDef();
+                abbreviationDefList = classDef.getAbbreviationDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                abbreviationDefList = specification.getAbbreviationDef();
+                abbreviationDefList = specification.getAbbreviationDefList();
                 }
 
             int index = abbreviationDefList.indexOf(abbreviationDef);
@@ -1622,11 +1621,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                basicTypeDefList = classDef.getBasicTypeDef();
+                basicTypeDefList = classDef.getBasicTypeDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                basicTypeDefList = specification.getBasicTypeDef();
+                basicTypeDefList = specification.getBasicTypeDefList();
                 }
 
             int index = basicTypeDefList.indexOf(basicTypeDef);
@@ -1649,11 +1648,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                freeTypeDefList = classDef.getFreeTypeDef();
+                freeTypeDefList = classDef.getFreeTypeDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                freeTypeDefList = specification.getFreeTypeDef();
+                freeTypeDefList = specification.getFreeTypeDefList();
                 }
 
             int index = freeTypeDefList.indexOf(freeTypeDef);
@@ -1670,7 +1669,7 @@ public class SpecificationController extends Observable implements FocusListener
             ClassDef classDef = (ClassDef)object;
             ClassView classView = (ClassView)viewToMove;
 
-            List<ClassDef> classDefList = specification.getClassDef();
+            List<ClassDef> classDefList = specification.getClassDefList();
 
             int index = classDefList.indexOf(object);
 
@@ -1686,7 +1685,7 @@ public class SpecificationController extends Observable implements FocusListener
             Operation operation = (Operation)object;
             ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
 
-            List<Operation> operationList = classDef.getOperation();
+            List<Operation> operationList = classDef.getOperationList();
 
             int index = operationList.indexOf(operation);
 
@@ -1720,11 +1719,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                axiomaticDefList = classDef.getAxiomaticDef();
+                axiomaticDefList = classDef.getAxiomaticDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                axiomaticDefList = specification.getAxiomaticDef();
+                axiomaticDefList = specification.getAxiomaticDefList();
                 }
 
             int size = axiomaticDefList.size();
@@ -1749,11 +1748,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                abbreviationDefList = classDef.getAbbreviationDef();
+                abbreviationDefList = classDef.getAbbreviationDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                abbreviationDefList = specification.getAbbreviationDef();
+                abbreviationDefList = specification.getAbbreviationDefList();
                 }
 
             int size = abbreviationDefList.size();
@@ -1778,11 +1777,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                basicTypeDefList = classDef.getBasicTypeDef();
+                basicTypeDefList = classDef.getBasicTypeDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                basicTypeDefList = specification.getBasicTypeDef();
+                basicTypeDefList = specification.getBasicTypeDefList();
                 }
 
             int size = basicTypeDefList.size();
@@ -1807,11 +1806,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (parentView instanceof ClassView)
                 {
                 ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                freeTypeDefList = classDef.getFreeTypeDef();
+                freeTypeDefList = classDef.getFreeTypeDefList();
                 }
             else if (parentView instanceof SpecificationView)
                 {
-                freeTypeDefList = specification.getFreeTypeDef();
+                freeTypeDefList = specification.getFreeTypeDefList();
                 }
 
             int size = freeTypeDefList.size();
@@ -1830,14 +1829,14 @@ public class SpecificationController extends Observable implements FocusListener
             ClassDef classDef = (ClassDef)object;
             ClassView classView = (ClassView)viewToMove;
 
-            int size = specification.getClassDef().size();
-            int index = specification.getClassDef().indexOf(object);
+            int size = specification.getClassDefList().size();
+            int index = specification.getClassDefList().indexOf(object);
             int last = size - 1;
 
             // only move down if not already at bottom
             if (index < last)
                 {
-                Utils.listMove(specification.getClassDef(), classDef, index + 1);
+                Utils.listMove(specification.getClassDefList(), classDef, index + 1);
                 specificationView.removeClassView(classView);
                 specificationView.addClassView(index + 1, classView);
                 }
@@ -1847,8 +1846,8 @@ public class SpecificationController extends Observable implements FocusListener
             Operation operation = (Operation)object;
             ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
 
-            int size = classDef.getOperation().size();
-            int index = classDef.getOperation().indexOf(operation);
+            int size = classDef.getOperationList().size();
+            int index = classDef.getOperationList().indexOf(operation);
             int last = size - 1;
 
             // only move down if not already at bottom
@@ -1856,7 +1855,7 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 ClassView classView = (ClassView)viewToMove.getParent();
                 OperationView operationView = (OperationView)viewToMove;
-                Utils.listMove(classDef.getOperation(), operation, index + 1);
+                Utils.listMove(classDef.getOperationList(), operation, index + 1);
                 classView.removeOperationView(operationView);
                 classView.addOperationView(index + 1, operationView);
                 }

@@ -1,11 +1,11 @@
 package edu.uwlax.toze.domain;
 
-public class FreeTypeDef extends SpecObject
+public class State extends SpecObject
 {
     private String declaration;
     private String predicate;
+    private String name;
 
-    private Specification specification;
     private ClassDef classDef;
 
     public String getDeclaration() {
@@ -24,12 +24,12 @@ public class FreeTypeDef extends SpecObject
         this.predicate = predicate;
     }
 
-    public Specification getSpecification() {
-        return specification;
+    public String getName() {
+        return name;
     }
 
-    public void setSpecification(Specification specification) {
-        this.specification = specification;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ClassDef getClassDef() {

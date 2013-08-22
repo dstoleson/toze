@@ -1,12 +1,20 @@
 package edu.uwlax.toze.domain;
 
-public class FreeTypeDef extends SpecObject
+public class GenericDef extends SpecObject
 {
+    private String formalParameters;
     private String declaration;
     private String predicate;
 
     private Specification specification;
-    private ClassDef classDef;
+
+    public String getFormalParameters() {
+        return formalParameters;
+    }
+
+    public void setFormalParameters(String formalParameters) {
+        this.formalParameters = formalParameters;
+    }
 
     public String getDeclaration() {
         return declaration;
@@ -30,13 +38,5 @@ public class FreeTypeDef extends SpecObject
 
     public void setSpecification(Specification specification) {
         this.specification = specification;
-    }
-
-    public ClassDef getClassDef() {
-        return classDef;
-    }
-
-    public void setClassDef(ClassDef classDef) {
-        this.classDef = classDef;
     }
 }

@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.SpecObjectPropertyError;
+import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.persist.TozeJaxbContext;
@@ -349,8 +350,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
     private void newSpecification()
     {
-        TOZE toze = new TOZE();
-        openSpecificationTab(toze, new File("untitled" + untitledCount++));
+        Specification specification = new Specification();
+        openSpecificationTab(specification, new File("untitled" + untitledCount++));
 
     }
 
@@ -367,10 +368,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 {
                 InputStream inputStream = new FileInputStream(specificationFile);
                 SpecificationBuilder specBuilder = new SpecificationBuilder();
-                TOZE toze = specBuilder.buildFromStream(inputStream);
+                Specification specification = specBuilder.buildFromStream(inputStream);
                 inputStream.close();
 
-                openSpecificationTab(toze, specificationFile);
+                openSpecificationTab(specification, specificationFile);
 
                 }
             catch (Exception e)
@@ -381,14 +382,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             }
     }
 
-    private void openSpecificationTab(TOZE toze, File specificationFile)
+    private void openSpecificationTab(Specification specification, File specificationFile)
     {
-        Specification specification = new Specification(specificationFile, toze);
-        treeModel.addSpecification(specification);
+        SpecificationDocument specificationDocument = new SpecificationDocument(specificationFile, specification);
+        treeModel.addSpecificationDocument(specificationDocument);
 
 
         SpecificationView specView = new SpecificationView();
-        SpecificationController controller = new SpecificationController(specification, specView);
+        SpecificationController controller = new SpecificationController(specificationDocument, specView);
         specView.setLayout(new TozeLayout());
 
         JPanel panel = new JPanel(false);
@@ -398,8 +399,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         panel.setLayout(new GridLayout(1,1));
         panel.add(specScroller);
 
-        specificationTabPanel.addTab(specification.getFile().getName(), specScroller);
-        int tabIndex = specificationTabPanel.indexOfTab(specification.getFile().getName());
+        specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
+        int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
         specificationTabPanel.setSelectedIndex(tabIndex);
 
         // map the tab to the controller
@@ -413,8 +414,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     {
         int selectedTabIndex = specificationTabPanel.getSelectedIndex();
         SpecificationController specController = tabControllers.get(selectedTabIndex);
-        TOZE specification = specController.getSpecificationDoc().getToze();
-        File specificationFile = specController.getSpecificationDoc().getFile();
+        Specification specification = specController.getSpecificationDocument().getSpecification();
+        File specificationFile = specController.getSpecificationDocument().getFile();
 
         if (specificationFile.getName().startsWith("untitled"))
             {
@@ -436,8 +437,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
             int selectedTabIndex = specificationTabPanel.getSelectedIndex();
             SpecificationController specController = tabControllers.get(selectedTabIndex);
-            specController.getSpecificationDoc().setFile(specificationFile);
-            TOZE specification = specController.getSpecificationDoc().getToze();
+            specController.getSpecificationDocument().setFile(specificationFile);
+            Specification specification = specController.getSpecificationDocument().getSpecification();
 
             writeSpecificationToFile(specification, specificationFile);
 
@@ -446,14 +447,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             }
     }
 
-    private void writeSpecificationToFile(TOZE toze, File specificationFile)
+    private void writeSpecificationToFile(Specification specification, File specificationFile)
     {
         try
             {
             System.out.println("Writing to file: " + specificationFile.getAbsolutePath());
             OutputStream outputStream = new FileOutputStream(specificationFile);
             SpecificationBuilder specBuilder = new SpecificationBuilder();
-            specBuilder.writeToStream(toze, outputStream);
+            specBuilder.writeToStream(specification, outputStream);
             outputStream.close();
             System.out.println("Wrote to file: " + specificationFile.getAbsolutePath());
             }
@@ -488,9 +489,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                     if (treePath.getPathCount() == 2) // the number of path items in selected domain node
                         {
                         SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
-                        Specification specification = specificationNode.getSpecification();
-                        treeModel.removeSpecification(specification);
-                        int tabIndex = specificationTabPanel.indexOfTab(specification.getFile().getName());
+                        SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
+                        treeModel.removeSpecification(specificationDocument);
+                        int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
                         specificationTabPanel.removeTabAt(tabIndex);
                         tabControllers.remove(tabIndex);
                         }
@@ -537,7 +538,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
             SpecificationController specificationController = (SpecificationController)o;
             List errors = (List) arg;
-            specificationErrors.put(specificationController.getSpecificationDoc(), errors);
+            specificationErrors.put(specificationController.getSpecification(), errors);
 
             // TODO:  add back type checking
             if (!errors.isEmpty())
@@ -587,7 +588,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         if (selectedController != null)
             {
-            List errors = specificationErrors.get(selectedController.getSpecificationDoc());
+            List errors = specificationErrors.get(selectedController.getSpecificationDocument());
 
             if (errors != null)
                 {
