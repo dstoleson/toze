@@ -1,16 +1,24 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.InheritedClass;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class InheritedClassView extends ParagraphView implements Placement
+public class InheritedClassView extends ParagraphView implements Placement, Observer
 {
+    private InheritedClass inheritedClass;
+    //
     private TozeTextArea inheritedClassText;
 
-    public InheritedClassView()
+    public InheritedClassView(InheritedClass inheritedClass)
     {
         setLayout(new ParaLayout(this));
+        this.inheritedClass = inheritedClass;
+        inheritedClass.addObserver(this);
     }
 
     public TozeTextArea getInheritedClassText()
@@ -29,7 +37,11 @@ public class InheritedClassView extends ParagraphView implements Placement
     {
         removeAll();
 
-        addNotNull(inheritedClassText);
+        if (inheritedClass != null && inheritedClass.getName() != null)
+            {
+            inheritedClassText = buildTextArea(inheritedClass, inheritedClass.getName(), "name");
+            add(inheritedClassText);
+            }
     }
 
     @Override
@@ -75,5 +87,13 @@ public class InheritedClassView extends ParagraphView implements Placement
     public Dimension minimumSize()
     {
         return preferredSize();
+    }
+
+    public void update(Observable o, Object arg)
+    {
+        if (o == inheritedClass)
+            {
+            requestRebuild();
+            }
     }
 }

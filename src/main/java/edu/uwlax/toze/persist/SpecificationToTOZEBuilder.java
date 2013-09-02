@@ -11,7 +11,8 @@ public class SpecificationToTOZEBuilder
 
         for (edu.uwlax.toze.domain.AbbreviationDef specAbbreviationDef : specification.getAbbreviationDefList())
             {
-                AbbreviationDef abbreviationDef = build(specAbbreviationDef);
+            AbbreviationDef abbreviationDef = build(specAbbreviationDef);
+            toze.getAbbreviationDef().add(abbreviationDef);
             }
 
         for (edu.uwlax.toze.domain.AxiomaticDef specAxiomaticDef : specification.getAxiomaticDefList())

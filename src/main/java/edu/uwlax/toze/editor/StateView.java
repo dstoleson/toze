@@ -1,12 +1,16 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.State;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class StateView extends ParagraphView
+public class StateView extends ParagraphView implements Observer
 {
     static private final int StateContentOffset = 10;
     static private final int StateLineMargin = 5;
@@ -14,14 +18,18 @@ public class StateView extends ParagraphView
     //
     static final String m_pre = "[";
     static final String m_post = "]";
+    //
+    private State state;
     //   
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
     private TozeTextArea stateNameText;
 
-    public StateView()
+    public StateView(State state)
     {
         setLayout(new ParaLayout(this));
+        this.state = state;
+        state.addObserver(this);
     }
 
     public TozeTextArea getDeclarationText()
@@ -63,9 +71,18 @@ public class StateView extends ParagraphView
     {
         removeAll();
 
-        addNotNull(declarationText);
-        addNotNull(predicateText);
-        addNotNull(stateNameText);
+        if (state.getDeclaration() != null)
+            {
+            declarationText = buildTextArea(state, state.getDeclaration(), "declaration");
+            }
+        if (state.getPredicate() != null)
+            {
+            predicateText = buildTextArea(state, state.getPredicate(), "predicate");
+            }
+        if (state.getName() != null)
+            {
+            stateNameText = buildTextArea(state, state.getName(), "name");
+            }
     }
 
     @Override
@@ -234,6 +251,15 @@ public class StateView extends ParagraphView
                 g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
                 g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
                 }
+            }
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        if (o == state)
+            {
+            requestRebuild();
             }
     }
 }

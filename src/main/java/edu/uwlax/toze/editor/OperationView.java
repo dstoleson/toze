@@ -1,16 +1,20 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.Operation;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author dhs
  */
-public class OperationView extends ParagraphView
+public class OperationView extends ParagraphView implements Observer
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
     static final String DeltaListPost = ")";
@@ -23,83 +27,52 @@ public class OperationView extends ParagraphView
     static final private int OperationExtraLine = 10;
 //    static final private int OperationHeaderLineMargin = 5;
     //
+    private Operation operation;
+    //
     private TozeTextArea operationNameText;
     private DeltaListView deltaListView;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
     private TozeTextArea operationExpressionText;
 
-    public OperationView()
+    public OperationView(Operation operation)
     {        
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getOperationNameText()
-    {
-        return this.operationNameText;
-    }
-
-    public void setOperationNameText(TozeTextArea operationNameText)
-    {
-        this.operationNameText = operationNameText;
+        this.operation = operation;
+        operation.addObserver(this);
         requestRebuild();
     }
-
-    public DeltaListView getDeltaListView()
-    {
-        return this.deltaListView;
-    }
-
-    public void setDeltaListView(DeltaListView deltaListView)
-    {
-        this.deltaListView = deltaListView;
-        requestRebuild();
-    }
-
-    public TozeTextArea getDeclarationText()
-    {
-        return this.declarationText;
-    }
-
-    public void setDeclarationText(TozeTextArea declarationText)
-    {
-        this.declarationText = declarationText;
-        requestRebuild();
-    }
-
-    public TozeTextArea getPredicateText()
-    {
-        return this.predicateText;
-    }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
-        requestRebuild();
-    }
-
-    public TozeTextArea getOperationExpressionText()
-    {
-        return this.operationExpressionText;
-    }
-
-    public void setOperationExpressionText(TozeTextArea operationExpressionText)
-    {
-        this.operationExpressionText = operationExpressionText;
-        requestRebuild();
-    }
-
 
     @Override
     protected void rebuild()
     {
         removeAll();
 
-        addNotNull(operationNameText);
-        addNotNull(deltaListView);
-        addNotNull(declarationText);
-        addNotNull(predicateText);
-        addNotNull(operationExpressionText);
+        if (operation.getName() != null)
+            {
+            operationNameText = buildTextArea(operation, operation.getName(), "name");
+            add(operationNameText);
+            }
+
+        if (operation.getDeltaList() != null)
+            {
+            deltaListView = new DeltaListView(operation);
+            }
+
+        if (operation.getDeclaration() != null)
+            {
+            declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration");
+            }
+
+        if (operation.getPredicate() != null)
+            {
+            predicateText = buildTextArea(operation, operation.getPredicate(), "predicate");
+            }
+
+        if (operation.getOperationExpression() != null)
+            {
+            operationExpressionText = buildTextArea(operation, operation.getOperationExpression(), "operationExpression");
+            }
     }
 
     @Override
@@ -330,5 +303,11 @@ public class OperationView extends ParagraphView
                 g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
                 }
             }
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        requestRebuild();
     }
 }

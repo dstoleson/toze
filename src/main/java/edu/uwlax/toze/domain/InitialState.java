@@ -6,19 +6,32 @@ public class InitialState extends SpecObject
 
     private ClassDef classDef;
 
-    public String getPredicate() {
+    public String getPredicate()
+    {
         return predicate;
     }
 
-    public void setPredicate(String predicate) {
+    public void setPredicate(String predicate)
+    {
         this.predicate = predicate;
+        this.update("predicate");
     }
 
     public ClassDef getClassDef() {
         return classDef;
     }
 
-    public void setClassDef(ClassDef classDef) {
+    public void setClassDef(ClassDef classDef)
+    {
         this.classDef = classDef;
+    }
+
+    @Override
+    public InitialState clone()
+    {
+        InitialState clone = new InitialState();
+        clone.setPredicate(this.getPredicate());
+
+        return clone;
     }
 }

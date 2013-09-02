@@ -1,52 +1,37 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.*;
+import edu.uwlax.toze.editor.bindings.Binding;
 import edu.uwlax.toze.spec.TOZE;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
+import java.util.*;
 import java.util.List;
 
-public class SpecificationView extends JPanel implements MoveableParagraphView
+public class SpecificationView extends JPanel implements Observer
 {
+    private Specification specification;
+
     private TozeTextArea predicateText;
-    private List<AxiomaticView> axiomaticViews;
-    private List<AbbreviationView> abbreviationViews;
-    private List<BasicTypeView> basicTypeViews;
-    private List<FreeTypeView> freeTypeViews;
-    private List<ClassView> classViews;
 
-    public SpecificationView()
+    private SpecificationController specController;
+    private MouseAdapter mouseAdapter;
+    private KeyAdapter keyAdapter;
+
+    public SpecificationView(Specification specification)
     {
         super();
-        initViews();
+        this.specification = specification;
     }
 
-    public SpecificationView(TOZE spec)
+    public void setController(SpecificationController specController)
     {
-        super();
-        initViews();
-    }
-
-    private void initViews()
-    {
-        axiomaticViews = new ArrayList<AxiomaticView>();
-        abbreviationViews = new ArrayList<AbbreviationView>();
-        basicTypeViews = new ArrayList<BasicTypeView>();
-        freeTypeViews = new ArrayList<FreeTypeView>();
-        classViews = new ArrayList<ClassView>();
-    }
-
-    public TozeTextArea getPredicateText()
-    {
-        return predicateText;
-    }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
-        requestRebuild();
+        this.addMouseListener(specController.getMouseAdapter());
+        this.addKeyListener(specController.getKeyAdapter());
+        this.specController = specController;
     }
 
     public void requestRebuild()
@@ -60,25 +45,25 @@ public class SpecificationView extends JPanel implements MoveableParagraphView
 
         addNotNull(predicateText);
 
-        for (AxiomaticView axiomaticView : axiomaticViews)
+        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
             {
-            addNotNull(axiomaticView);
+            addAxiomaticView(axiomaticDef);
             }
-        for (AbbreviationView abbreviationView : abbreviationViews)
+        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
             {
-            addNotNull(abbreviationView);
+            addAbbreviationView(abbreviationDef);
             }
-        for (BasicTypeView basicTypeView : basicTypeViews)
+        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
             {
-            addNotNull(basicTypeView);
+            addBasicTypeView(basicTypeDef);
             }
-        for (FreeTypeView freeTypeView : freeTypeViews)
+        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
             {
-            addNotNull(freeTypeView);
+            addFreeTypeView(freeTypeDef);
             }
-        for (ClassView classView : classViews)
+        for (ClassDef classDef : specification.getClassDefList())
             {
-            addNotNull(classView);
+            addClassView(classDef);
             }
     }
 
@@ -141,88 +126,49 @@ public class SpecificationView extends JPanel implements MoveableParagraphView
         return prefSize;
     }
 
-    public void addClassView(ClassView classView)
+    private void addView(ParagraphView view)
     {
-        addClassView(classViews.size(), classView);
+        view.addMouseListener(mouseAdapter);
+        view.addKeyListener(keyAdapter);
+        add(view);
     }
 
-    public void addClassView(int index, ClassView classView)
+    private void addClassView(ClassDef classDef)
     {
-        classViews.add(index, classView);
-        requestRebuild();
+        ClassView classView = new ClassView(classDef);
+        addView(classView);
     }
 
-    public void removeClassView(ClassView classView)
+    private void addAxiomaticView(AxiomaticDef axiomaticDef)
     {
-        classViews.remove(classView);
-        requestRebuild();
+        AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef);
+        addView(axiomaticView);
     }
 
-    public void addAxiomaticView(AxiomaticView axiomaticView)
+    private void addAbbreviationView(AbbreviationDef abbreviationDef)
     {
-        addAxiomaticView(axiomaticViews.size(), axiomaticView);
+        AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef);
+        addView(abbreviationView);
     }
 
-    public void addAxiomaticView(int index, AxiomaticView axiomaticView)
+    private void addBasicTypeView(BasicTypeDef basicTypeDef)
     {
-        axiomaticViews.add(index, axiomaticView);
-        requestRebuild();
+        BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
+        addView(basicTypeView);
     }
 
-    public void removeAxiomaticView(AxiomaticView axiomaticView)
+    private void addFreeTypeView(FreeTypeDef freeTypeDef)
     {
-        axiomaticViews.remove(axiomaticView);
-        requestRebuild();
+        FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
+        addView(freeTypeView);
     }
 
-    public void addAbbreviationView(AbbreviationView abbreviationView)
+    @Override
+    public void update(Observable o, Object arg)
     {
-        addAbbreviationView(abbreviationViews.size(), abbreviationView);
-    }
-
-    public void addAbbreviationView(int index, AbbreviationView abbreviationView)
-    {
-        abbreviationViews.add(index, abbreviationView);
-        requestRebuild();
-    }
-
-    public void removeAbbreviationView(AbbreviationView abbreviationView)
-    {
-        abbreviationViews.remove(abbreviationView);
-        requestRebuild();
-    }
-
-    public void addBasicTypeView(BasicTypeView basicTypeView)
-    {
-        addBasicTypeView(basicTypeViews.size(), basicTypeView);
-    }
-
-    public void addBasicTypeView(int index, BasicTypeView basicTypeView)
-    {
-        basicTypeViews.add(index, basicTypeView);
-        requestRebuild();
-    }
-
-    public void removeBasicTypeView(BasicTypeView basicTypeView)
-    {
-        basicTypeViews.remove(basicTypeView);
-        requestRebuild();
-    }
-
-    public void addFreeTypeView(FreeTypeView freeTypeView)
-    {
-        addFreeTypeView(freeTypeViews.size(), freeTypeView);
-    }
-
-    public void addFreeTypeView(int index, FreeTypeView freeTypeView)
-    {
-        freeTypeViews.add(index, freeTypeView);
-        requestRebuild();
-    }
-
-    public void removeFreeTypeView(FreeTypeView freeTypeView)
-    {
-        freeTypeViews.remove(freeTypeView);
-        requestRebuild();
+        if (o instanceof Specification)
+            {
+            requestRebuild();
+            }
     }
 }

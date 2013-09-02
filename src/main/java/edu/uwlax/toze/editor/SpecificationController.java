@@ -25,18 +25,18 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Map SpecObject types to their associated ParagraphView type
      */
-    static private HashMap<Class, Class> objectToViewMap;
+//    static private HashMap<Class, Class> objectToViewMap;
 
-    static
-        {
-        objectToViewMap = new HashMap<Class, Class>();
-        objectToViewMap.put(ClassDef.class, ClassView.class);
-        objectToViewMap.put(Operation.class, OperationView.class);
-        objectToViewMap.put(AxiomaticDef.class, AxiomaticView.class);
-        objectToViewMap.put(AbbreviationDef.class, AbbreviationView.class);
-        objectToViewMap.put(BasicTypeDef.class, BasicTypeView.class);
-        objectToViewMap.put(FreeTypeDef.class, FreeTypeView.class);
-        }
+//    static
+//        {
+//        objectToViewMap = new HashMap<Class, Class>();
+//        objectToViewMap.put(ClassDef.class, ClassView.class);
+//        objectToViewMap.put(Operation.class, OperationView.class);
+//        objectToViewMap.put(AxiomaticDef.class, AxiomaticView.class);
+//        objectToViewMap.put(AbbreviationDef.class, AbbreviationView.class);
+//        objectToViewMap.put(BasicTypeDef.class, BasicTypeView.class);
+//        objectToViewMap.put(FreeTypeDef.class, FreeTypeView.class);
+//        }
 
     private SpecificationDocument specificationDocument;
     private Specification specification;
@@ -72,9 +72,17 @@ public class SpecificationController extends Observable implements FocusListener
         // they represent
         viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
 
-        specificationView.addMouseListener(mouseAdapter);
-
         initView();
+    }
+
+    public MouseAdapter getMouseAdapter()
+    {
+        return mouseAdapter;
+    }
+
+    public KeyAdapter getKeyAdapter()
+    {
+        return keyAdapter;
     }
 
     /**
@@ -84,58 +92,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     private void initView()
     {
-        if (!specification.getAxiomaticDefList().isEmpty())
-            {
-            for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
-                {
-                boolean hasPredicate = (axiomaticDef.getPredicate() != null);
-                addAxiomaticType(specification, axiomaticDef, hasPredicate);
-                }
-            }
-
-        if (!specification.getAbbreviationDefList().isEmpty())
-            {
-            for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
-                {
-                addAbbreviation(specification, abbreviationDef);
-                }
-            }
-
-        if (!specification.getBasicTypeDefList().isEmpty())
-            {
-            for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
-                {
-                addBasicType(specification, basicTypeDef);
-                }
-            }
-
-        if (!specification.getFreeTypeDefList().isEmpty())
-            {
-            for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
-                {
-                addFreeType(specification, freeTypeDef);
-                }
-            }
-
-        if (!specification.getGenericDefList().isEmpty())
-            {
-            for (GenericDef genericDef : specification.getGenericDefList())
-                {
-                boolean hasPredicate = (genericDef.getPredicate() != null);
-                addGenericType(genericDef, hasPredicate);
-                }
-            }
-
-        if (!specification.getClassDefList().isEmpty())
-            {
-            for (ClassDef classDef : specification.getClassDefList())
-                {
-                addClass(classDef);
-                }
-            }
-
         viewToObjectMap.put(specificationView, new SpecObjectPropertyPair(specification, null));
 
+        specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -159,33 +118,12 @@ public class SpecificationController extends Observable implements FocusListener
      * Add a DeltaList to an Operation
      *
      * @param operation The Operation to add the DeltaList
-     * @param deltaList The DeltaList to add to the Operation, if it is null a
-     *                  new DeltaList is added to the Operation
      */
-    public void addDeltaList(Operation operation, String deltaList)
+    public void addDeltaList(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
-        boolean newDeltaList = (deltaList == null);
-
-        if (newDeltaList)
-            {
-            deltaList = "New Delta List";
-            operation.setDeltaList(deltaList);
-            }
-
-        DeltaListView deltaListView = new DeltaListView();
-        deltaListView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(deltaListView, new SpecObjectPropertyPair(operation, "deltaList"));
-
-        TozeTextArea deltaListText = buildTextArea(operation, operation.getDeltaList(), "deltaList");
-        deltaListView.setDeltaListText(deltaListText);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-        operationView.setDeltaListView(deltaListView);
+        operation.setDeltaList("New Delta List");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -197,19 +135,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeDeltaList(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
         operation.setDeltaList(null);
-
-        OperationView operationView = (OperationView)componentForObjectOfType(operation, OperationView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getDeltaListView().getDeltaListText());
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getDeltaListView());
-
-        operationView.setDeltaListView(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -219,28 +147,12 @@ public class SpecificationController extends Observable implements FocusListener
      * Add a Declaration to an Operation
      *
      * @param operation   The Operation to add the Declaration
-     * @param declaration The Declaration to add to the Operation, if it is null
-     *                    a new Declaration is added to the Operation
      */
-    public void addDeclaration(Operation operation, String declaration)
+    public void addDeclaration(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
-        boolean newDeclaration = (declaration == null);
-
-        if (newDeclaration)
-            {
-            declaration = "New Declaration";
-            operation.setDeclaration(declaration);
-            }
-
-        TozeTextArea declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration", false);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-        operationView.setDeclarationText(declarationText);
+        operation.setDeclaration("New Declaration");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -252,17 +164,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeDeclaration(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
         operation.setDeclaration(null);
-
-        OperationView operationView = (OperationView)componentForObjectOfType(operation, OperationView.class);
-        operationView.setDeclarationText(null);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getDeclarationText());
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -272,34 +176,14 @@ public class SpecificationController extends Observable implements FocusListener
      * Add an InitialState to a ClassDef
      *
      * @param classDef     The ClassDef to add the InitialState
-     * @param initialState The InitialState to add to the ClassDef, if it is
-     *                     null a new InitialState is added to the ClassDef
      */
-    public void addInitialState(ClassDef classDef, InitialState initialState)
+    public void addInitialState(ClassDef classDef)
     {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
+        checkIllegalArgument(classDef, "classDef");
 
-        boolean newInitialState = (initialState == null);
-
-        if (newInitialState)
-            {
-            initialState = new InitialState();
-            initialState.setPredicate("New Initial State");
-            classDef.setInitialState(initialState);
-            }
-
-        InitialStateView initialStateView = new InitialStateView();
-        initialStateView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(initialStateView, new SpecObjectPropertyPair(initialState, null));
-
-        TozeTextArea predicateText = buildTextArea(initialState, initialState.getPredicate(), "predicate");
-        initialStateView.setPredicateText(predicateText);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.setInitialStateView(initialStateView);
+        InitialState initialState = new InitialState();
+        initialState.setPredicate("New Initial State");
+        classDef.setInitialState(initialState);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -311,18 +195,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeInitialState(ClassDef classDef)
     {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
+        checkIllegalArgument(classDef, "classDef");
 
         classDef.setInitialState(null);
-
-        ClassView classView = (ClassView)componentForObjectOfType(classDef, ClassView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getInitialStateView().getPredicateText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getInitialStateView());
-        classView.setInitialStateView(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -332,69 +207,30 @@ public class SpecificationController extends Observable implements FocusListener
      * Add a State to a ClassDef
      *
      * @param classDef The ClassDef to add the State
-     * @param state    The State to add to the ClassDef, if it is null a new
-     *                 State is added to the ClassDef
      * @param stateType Which state type is to be presented, All, No Predicate, No Declaration or Bracketed
      */
-    public void addState(ClassDef classDef, State state, StateType stateType)
+    public void addState(ClassDef classDef, StateType stateType)
     {
-        if (classDef == null)
+        checkIllegalArgument(classDef, "classDef");
+
+        State state = new State();
+
+        switch (stateType)
             {
-            throw new IllegalArgumentException("classDef is null");
+            case All :
+                state.setDeclaration("New Declaration");
+                state.setPredicate("New Predicate");
+                break;
+            case NoPredicate :
+                state.setDeclaration("New Declaration");
+                break;
+            case NoDeclaration :
+                state.setPredicate("New Predicate");
+                break;
+            case Bracket:
+                state.setName("New State");
             }
-
-        boolean newState = (state == null);
-
-        if (newState)
-            {
-            state = new State();
-
-            switch (stateType)
-                {
-                case All :
-                    state.setDeclaration("New Declaration");
-                    state.setPredicate("New Predicate");
-                    break;
-                case NoPredicate :
-                    state.setDeclaration("New Declaration");
-                    break;
-                case NoDeclaration :
-                    state.setPredicate("New Predicate");
-                    break;
-                case Bracket:
-                    state.setName("New State");
-                }
-            classDef.setState(state);
-            }
-
-        StateView stateView = new StateView();
-        stateView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(stateView, new SpecObjectPropertyPair(state, null));
-
-        // (one || two) => declaration
-        // (one || three) => predicate
-        // (four) => state
-
-        if (state.getDeclaration() != null)
-            {
-            TozeTextArea declarationText = buildTextArea(state, state.getDeclaration(), "declaration", false);
-            stateView.setDeclarationText(declarationText);
-            }
-
-        if (state.getPredicate() != null)
-            {
-            TozeTextArea predicateText = buildTextArea(state, state.getPredicate(), "predicate", false);
-            stateView.setPredicateText(predicateText);
-            }
-
-        if (state.getName() != null)
-            {
-            TozeTextArea stateNameText = buildTextArea(state, state.getName(), "name");
-            stateView.setStateNameText(stateNameText);
-            }
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.setStateView(stateView);
+        classDef.setState(state);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -405,21 +241,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeState(ClassDef classDef)
     {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
+        checkIllegalArgument(classDef, "classDef");
 
         classDef.setState(null);
-
-        ClassView classView = (ClassView)componentForObjectOfType(classDef, ClassView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getStateView().getDeclarationText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getStateView().getPredicateText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getStateView().getStateNameText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getStateView());
-
-        classView.setStateView(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -429,30 +253,12 @@ public class SpecificationController extends Observable implements FocusListener
      * Add an OperationExpression to an Operation
      *
      * @param operation           The Operation to add the OperationExpression
-     * @param expression The OperationExpression to add to the
-     *                            Operation, if it is null a new
-     *                            OperationExpression is added to the Operation
      */
-    public void addOperationExpression(Operation operation, String expression)
+    public void addOperationExpression(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
-        boolean newOperationExpression = (expression == null);
-
-        if (newOperationExpression)
-            {
-            expression = "New Expression";
-            operation.setOperationExpression(expression);
-            }
-
-        TozeTextArea expressionText = buildTextArea(operation, operation.getOperationExpression(),
-                                                    "operationExpression", false);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-        operationView.setOperationExpressionText(expressionText);
+        operation.setOperationExpression("New Expression");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -464,18 +270,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeOperationExpression(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
         operation.setOperationExpression(null);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getOperationExpressionText());
-
-        operationView.setOperationExpressionText(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -484,27 +281,12 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      *
      * @param operation
-     * @param predicate
      */
-    public void addOperationPredicate(Operation operation, String predicate)
+    public void addOperationPredicate(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
-        boolean newOperationPredicate = (predicate == null);
-
-        if (newOperationPredicate)
-            {
-            predicate = "New Predicate";
-            operation.setPredicate(predicate);
-            }
-
-        TozeTextArea predicateText = buildTextArea(operation, operation.getPredicate(), "predicate", false);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-        operationView.setPredicateText(predicateText);
+        operation.setPredicate("New Predicate");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -516,18 +298,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeOperationPredicate(Operation operation)
     {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
+        checkIllegalArgument(operation, "operation");
 
         operation.setPredicate(null);
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getPredicateText());
-
-        operationView.setPredicateText(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -535,254 +308,77 @@ public class SpecificationController extends Observable implements FocusListener
 
     /**
      * Add a ClassDef to the specification (TOZE)
-     *
-     * @param classDef The ClassDef to add to the specification (TOZE)
-     * @param index The position in the specification (TOZE) to add the classDef
-     *
      */
-    public void addClass(ClassDef classDef, int index)
+    public void addClass()
     {
-        boolean newClassDef = (classDef == null);
+        ClassDef classDef = new ClassDef();
+        classDef.setName("New Class");
 
-        if (newClassDef)
-            {
-            classDef = new ClassDef();
-            classDef.setName("New Class");
-            }
+        specification.getClassDefList().add(classDef);
+        specification.setClassDefList(specification.getClassDefList());
 
-        // need to add view to object map right away
-        // as subsequent code assumes it is there
-        ClassView classView = new ClassView();
-        classView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(classView, new SpecObjectPropertyPair(classDef, null));
-
-        TozeTextArea classNameText = buildTextArea(classDef, classDef.getName(), "name");
-        classView.setClassNameText(classNameText);
-
-        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
-            {
-            addAxiomaticType(classDef, axiomaticDef, (axiomaticDef.getPredicate() != null));
-            }
-
-        if (classDef.getInheritedClass() != null)
-            {
-            addInheritedClass(classDef, classDef.getInheritedClass());
-            }
-
-        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-            {
-            addBasicType(classDef, basicTypeDef);
-            }
-
-        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-            {
-            addFreeType(classDef, freeTypeDef);
-            }
-
-        if (classDef.getVisibilityList() != null)
-            {
-            addVisibilityList(classDef, classDef.getVisibilityList());
-            }
-
-        if (classDef.getState() != null)
-            {
-            // TODO, figure this out
-            addState(classDef, classDef.getState(), All);
-            }
-
-        if (classDef.getInitialState() != null)
-            {
-            addInitialState(classDef, classDef.getInitialState());
-            }
-
-        for (Operation operation : classDef.getOperationList())
-            {
-            addOperation(classDef, operation, null);
-            }
-
-        if (newClassDef)
-            {
-            specification.getClassDefList().add(classDef);
-            }
-
-        specificationView.addClassView(index, classView);
         specificationView.revalidate();
         specificationView.repaint();
-    }
-
-    /**
-     * Add a ClassDef to the specification (TOZE).  If the ClassDef is null a new ClassDef is created.
-     * If the ClassDef is not null it is added to the end of the specification (TOZE), it calls
-     * addClass(classDef, n) where n is the index of the last classDef + 1, if any, or 0 if there are
-     * no classDefs.
-     *
-     * @param classDef The ClassDef to add to the specification (TOZE)
-     *
-     */
-    public void addClass(ClassDef classDef)
-    {
-        // add at the index at which it exists in the specification already (existing class)
-        // or add it at the end (new class)
-        int index = specification.getClassDefList().indexOf(classDef);
-
-        if (index == -1)
-            {
-            index = specification.getClassDefList().size();
-            }
-
-        addClass(classDef, index);
     }
 
     public void removeClass(ClassDef classDef)
     {
-        removeClass(classDef, true);
-    }
-
-    public void removeClass(ClassDef classDef, boolean deep)
-    {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
-
-        if (deep)
-            {
-                if (classDef.getVisibilityList() != null)
-                {
-                    removeVisibilityList(classDef);
-                }
-                if (classDef.getInheritedClass() != null)
-                {
-                    removeInheritedClass(classDef);
-                }
-                if (classDef.getState() != null)
-                {
-                    removeState(classDef);
-                }
-                if (classDef.getInitialState() != null)
-                {
-                    removeInitialState(classDef);
-                }
-
-                for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
-                {
-                    removeAxiomaticType(axiomaticDef);
-                }
-                for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
-                {
-                    removeAbbreviation(abbreviationDef);
-                }
-                for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-                {
-                    removeBasicType(basicTypeDef);
-                }
-                for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-                {
-                    removeFreeType(freeTypeDef);
-                }
-                for (Operation operation : classDef.getOperationList())
-                {
-                    removeOperation(operation);
-                }
-            }
         specification.getClassDefList().remove(classDef);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getClassNameText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView);
-
-        specificationView.removeClassView(classView);
+        specification.setClassDefList(specification.getClassDefList());
 
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     /**
-     * @param axiomaticDef
      */
-    public void addAxiomaticType(SpecObject object, AxiomaticDef axiomaticDef, boolean hasPredicate)
+    public void addAxiomaticType(SpecObject object, boolean hasPredicate)
     {
-        if (object == null)
-            {
-            throw new IllegalArgumentException("object is null");
-            }
+        checkIllegalArgument(object, "specObject");
 
-        boolean newAxiomaticDef = (axiomaticDef == null);
+        AxiomaticDef axiomaticDef = new AxiomaticDef();
+        axiomaticDef.setDeclaration("New Axiomatic Type");
 
-        // create a new one
-        if (newAxiomaticDef)
-            {
-            axiomaticDef = new AxiomaticDef();
-            axiomaticDef.setDeclaration("New Axiomatic Type");
-            }
-
-        AxiomaticView axiomaticDefView = new AxiomaticView();
-        viewToObjectMap.put(axiomaticDefView, new SpecObjectPropertyPair(axiomaticDef, null));
-        axiomaticDefView.addMouseListener(mouseAdapter);
-
-        TozeTextArea declarationText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "declaration");
-        axiomaticDefView.setDeclarationText(declarationText);
-
-        if (newAxiomaticDef && hasPredicate)
+        if (hasPredicate)
             {
             axiomaticDef.setPredicate("New Predicate");
             }
 
-        if (axiomaticDef.getPredicate() != null)
-            {
-            TozeTextArea predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate");
-            axiomaticDefView.setPredicateText(predicateText);
-            }
-
         if (object == specification)
             {
-            // add to the root specification
-            if (newAxiomaticDef)
-                {
-                specification.getAxiomaticDefList().add(axiomaticDef);
-                }
-            specificationView.addAxiomaticView(axiomaticDefView);
+            axiomaticDef.setSpecification(specification);
+
+            // TODO:  make add*/remove* methods
+            specification.getAxiomaticDefList().add(axiomaticDef);
+            specification.setAxiomaticDefList(specification.getAxiomaticDefList());
             }
         else
             {
-            // otherwise it must be a class
-            if (newAxiomaticDef)
-                {
-                ((ClassDef) object).getAxiomaticDefList().add(axiomaticDef);
-                }
-            ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
-            classView.addAxiomaticView(axiomaticDefView);
+            ClassDef classDef = (ClassDef)object;
+            axiomaticDef.setClassDef(classDef);
+            classDef.getAxiomaticDefList().add(axiomaticDef);
+            classDef.setAxiomaticDefList(classDef.getAxiomaticDefList());
             }
+
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     public void removeAxiomaticType(AxiomaticDef axiomaticDef)
     {
-        if (axiomaticDef == null)
-            {
-            throw new IllegalArgumentException("axiomaticDef is null");
-            }
+        checkIllegalArgument(axiomaticDef, "axiomaticDef");
 
-        AxiomaticView axiomaticView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-        JComponent parent = (JComponent)axiomaticView.getParent();
-
-        if (parent instanceof ClassView)
-            {
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(parent).getObject();
-            classDef.getAxiomaticDefList().remove(axiomaticDef);
-            ((ClassView)parent).removeAxiomaticView(axiomaticView);
-            }
-        else
+        if (axiomaticDef.getSpecification() != null)
             {
             specification.getAxiomaticDefList().remove(axiomaticDef);
-            specificationView.removeAxiomaticView(axiomaticView);
+            specification.setAxiomaticDefList(specification.getAxiomaticDefList());
             }
-
-        removeAxiomaticPredicate(axiomaticDef);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, axiomaticView.getDeclarationText());
-        Utils.mapRemoveNotNull(viewToObjectMap, axiomaticView);
+        else if (axiomaticDef.getClassDef() != null)
+            {
+            ClassDef classDef = axiomaticDef.getClassDef();
+            classDef.getAxiomaticDefList().remove(axiomaticDef);
+            classDef.setAxiomaticDefList(classDef.getAxiomaticDefList());
+            }
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -791,16 +387,9 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void addAxiomaticPredicate(AxiomaticDef axiomaticDef)
     {
-        if (axiomaticDef == null)
-            {
-            throw new IllegalArgumentException("axiomaticDef is null");
-            }
+        checkIllegalArgument(axiomaticDef, "axiomaticDef");
 
         axiomaticDef.setPredicate("New Predicate");
-
-        AxiomaticView axiomaticDefView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-        TozeTextArea predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate");
-        axiomaticDefView.setPredicateText(predicateText);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -808,74 +397,43 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeAxiomaticPredicate(AxiomaticDef axiomaticDef)
     {
-        if (axiomaticDef == null)
-            {
-            throw new IllegalArgumentException("axiomaticDef is null");
-            }
+        checkIllegalArgument(axiomaticDef, "axiomaticDef");
 
         axiomaticDef.setPredicate(null);
-
-        AxiomaticView axiomaticDefView = (AxiomaticView) componentForObjectOfType(axiomaticDef, AxiomaticView.class);
-        Utils.mapRemoveNotNull(viewToObjectMap, axiomaticDefView.getPredicateText());
-        axiomaticDefView.setPredicateText(null);
 
         specificationView.revalidate();
         specificationView.repaint();
     }
 
 
-    /**
-     * @param abbreviationDef
-     */
-    public void addAbbreviation(SpecObject object, AbbreviationDef abbreviationDef)
+    private void addAbbreviation(ParentSpecObject parentSpecObject)
     {
-        if (object == null)
-            {
-            throw new IllegalArgumentException("object is null");
-            }
 
-        boolean newAbbreviationDef = (abbreviationDef == null);
+    }
+    /**
+     */
+    public void addAbbreviation(SpecObject object)
+    {
+        checkIllegalArgument(object, "specObject");
 
-        if (newAbbreviationDef)
-            {
-            abbreviationDef = new AbbreviationDef();
-            abbreviationDef.setName("New Abbreviation");
-            abbreviationDef.setExpression("New Expression");
-            }
-
-        AbbreviationView abbreviationView = new AbbreviationView();
-        abbreviationView.addMouseListener(mouseAdapter);
-
-        viewToObjectMap.put(abbreviationView, new SpecObjectPropertyPair(abbreviationDef, null));
-
-        if (abbreviationDef.getName() != null)
-            {
-            TozeTextArea nameText = buildTextArea(abbreviationDef, abbreviationDef.getName(), "name");
-            abbreviationView.setNameText(nameText);
-            }
-
-        if (abbreviationDef.getExpression() != null)
-            {
-            TozeTextArea expressionText = buildTextArea(abbreviationDef, abbreviationDef.getExpression(), "expression");
-            abbreviationView.setExpressionText(expressionText);
-            }
+        AbbreviationDef abbreviationDef = new AbbreviationDef();
+        abbreviationDef.setName("New Abbreviation");
+        abbreviationDef.setExpression("New Expression");
 
         if (object == specification)
             {
-            if (newAbbreviationDef)
-                {
-                specification.getAbbreviationDefList().add(abbreviationDef);
-                }
-            specificationView.addAbbreviationView(abbreviationView);
+            abbreviationDef.setSpecification(specification);
+
+            // TODO:  make add*/remove* methods
+            specification.getAbbreviationDefList().add(abbreviationDef);
+            specification.setAbbreviationDefList(specification.getAbbreviationDefList());
             }
         else
             {
-            if (newAbbreviationDef)
-                {
-                ((ClassDef) object).getAbbreviationDefList().add(abbreviationDef);
-                }
-            ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
-            classView.addAbbreviationView(abbreviationView);
+            ClassDef classDef = (ClassDef)object;
+            abbreviationDef.setClassDef(classDef);
+            classDef.getAbbreviationDefList().add(abbreviationDef);
+            classDef.setAbbreviationDefList(classDef.getAbbreviationDefList());
             }
 
         specificationView.revalidate();
@@ -888,66 +446,37 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeAbbreviation(AbbreviationDef abbreviationDef)
     {
+        checkIllegalArgument(abbreviationDef, "abbreviationDef");
+
         specification.getAbbreviationDefList().remove(abbreviationDef);
-
-        AbbreviationView abbreviationView = (AbbreviationView) componentForObjectOfType(abbreviationDef,
-                                                                                        AbbreviationView.class
-        );
-
-        Utils.mapRemoveNotNull(viewToObjectMap, abbreviationView.getNameText());
-        Utils.mapRemoveNotNull(viewToObjectMap, abbreviationView.getExpressionText());
-        Utils.mapRemoveNotNull(viewToObjectMap, abbreviationView);
-
-        specificationView.removeAbbreviationView(abbreviationView);
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     /**
      * @param object
-     * @param basicTypeDef
      */
-    public void addBasicType(SpecObject object, BasicTypeDef basicTypeDef)
+    public void addBasicType(SpecObject object)
     {
-        if (object == null)
-            {
-            throw new IllegalArgumentException("object is null");
-            }
+        checkIllegalArgument(object, "specObject");
 
-        boolean newBasicTypeDef = (basicTypeDef == null);
-
-        if (newBasicTypeDef)
-            {
-            basicTypeDef = new BasicTypeDef();
-            basicTypeDef.setName("New Basic Type");
-            }
-
-        BasicTypeView basicTypeView = new BasicTypeView();
-        basicTypeView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(basicTypeView, new SpecObjectPropertyPair(basicTypeDef, null));
-
-        if (basicTypeDef.getName() != null)
-            {
-            TozeTextArea nameText = buildTextArea(basicTypeDef, basicTypeDef.getName(), "name");
-            basicTypeView.setNameText(nameText);
-            }
+        BasicTypeDef basicTypeDef = new BasicTypeDef();
+        basicTypeDef.setName("New Basic Type");
 
         if (object == specification)
             {
-            if (newBasicTypeDef)
-                {
-                specification.getBasicTypeDefList().add(basicTypeDef);
-                }
-            specificationView.addBasicTypeView(basicTypeView);
+            basicTypeDef.setSpecification(specification);
+
+            // TODO:  make add*/remove* methods
+            specification.getBasicTypeDefList().add(basicTypeDef);
+            specification.setBasicTypeDefList(specification.getBasicTypeDefList());
             }
         else
             {
-            if (newBasicTypeDef)
-                {
-                ((ClassDef) object).getBasicTypeDefList().add(basicTypeDef);
-                }
-            ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
-            classView.addBasicTypeView(basicTypeView);
+            ClassDef classDef = (ClassDef)object;
+            basicTypeDef.setClassDef(classDef);
+            classDef.getBasicTypeDefList().add(basicTypeDef);
+            classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
             }
 
         specificationView.revalidate();
@@ -956,29 +485,19 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeBasicType(BasicTypeDef basicTypeDef)
     {
-        if (basicTypeDef == null)
-            {
-            throw new IllegalArgumentException(("basicTypeDef is null"));
-            }
+        checkIllegalArgument(basicTypeDef, "basicTypeDef");
 
-        BasicTypeView basicTypeView = (BasicTypeView) componentForObjectOfType(basicTypeDef, BasicTypeView.class);
-
-        JComponent parent = (JComponent) basicTypeView.getParent();
-
-        if (parent instanceof ClassView)
-            {
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(parent).getObject();
-            classDef.getBasicTypeDefList().remove(basicTypeDef);
-            ((ClassView)parent).removeBasicTypeView(basicTypeView);
-            }
-        else
+        if (basicTypeDef.getSpecification() != null)
             {
             specification.getBasicTypeDefList().remove(basicTypeDef);
-            specificationView.removeBasicTypeView(basicTypeView);
+            specification.setBasicTypeDefList(specification.getBasicTypeDefList());
             }
-
-        Utils.mapRemoveNotNull(viewToObjectMap, basicTypeView.getNameText());
-        Utils.mapRemoveNotNull(viewToObjectMap, basicTypeView);
+        else if (basicTypeDef.getClassDef() != null)
+            {
+            ClassDef classDef = basicTypeDef.getClassDef();
+            classDef.getBasicTypeDefList().remove(classDef);
+            classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
+            }
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -986,56 +505,29 @@ public class SpecificationController extends Observable implements FocusListener
 
     /**
      * @param object
-     * @param freeTypeDef
      */
-    public void addFreeType(SpecObject object, FreeTypeDef freeTypeDef)
+    public void addFreeType(SpecObject object)
     {
-        if (object == null)
-            {
-            throw new IllegalArgumentException("object is null");
-            }
+        checkIllegalArgument(object, "specObject");
 
-        boolean newFreeTypeDef = (freeTypeDef == null);
-
-        if (newFreeTypeDef)
-            {
-            freeTypeDef = new FreeTypeDef();
-            freeTypeDef.setDeclaration("New Free Type");
-            freeTypeDef.setPredicate("New Predicate");
-            }
-
-        FreeTypeView freeTypeView = new FreeTypeView();
-        freeTypeView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(freeTypeView, new SpecObjectPropertyPair(freeTypeDef, null));
-
-        if (freeTypeDef.getDeclaration() != null)
-            {
-            TozeTextArea declarationText = buildTextArea(freeTypeDef, freeTypeDef.getDeclaration(), "declaration");
-            freeTypeView.setDeclarationText(declarationText);
-            }
-
-        if (freeTypeDef.getPredicate() != null)
-            {
-            TozeTextArea predicateText = buildTextArea(freeTypeDef, freeTypeDef.getPredicate(), "predicate");
-            freeTypeView.setPredicateText(predicateText);
-            }
+        FreeTypeDef freeTypeDef = new FreeTypeDef();
+        freeTypeDef.setDeclaration("New Free Type");
+        freeTypeDef.setPredicate("New Predicate");
 
         if (object == specification)
             {
-            if (newFreeTypeDef)
-                {
-                specification.getFreeTypeDefList().add(freeTypeDef);
-                }
-            specificationView.addFreeTypeView(freeTypeView);
+            freeTypeDef.setSpecification(specification);
+
+            // TODO:  make add*/remove* methods
+            specification.getFreeTypeDefList().add(freeTypeDef);
+            specification.setFreeTypeDefList(specification.getFreeTypeDefList());
             }
         else
             {
-            if (newFreeTypeDef)
-                {
-                ((ClassDef) object).getFreeTypeDefList().add(freeTypeDef);
-                }
-            ClassView classView = (ClassView) componentForObjectOfType(object, ClassView.class);
-            classView.addFreeTypeView(freeTypeView);
+            ClassDef classDef = (ClassDef)object;
+            freeTypeDef.setClassDef(classDef);
+            classDef.getFreeTypeDefList().add(freeTypeDef);
+            classDef.setFreeTypeDefList(classDef.getFreeTypeDefList());
             }
 
         specificationView.revalidate();
@@ -1044,27 +536,19 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeFreeType(FreeTypeDef freeTypeDef)
     {
-        if (freeTypeDef == null)
-            {
-            throw new IllegalArgumentException(("freeTypeDef is null"));
-            }
+        checkIllegalArgument(freeTypeDef, "freeTypeDef");
 
-        FreeTypeView freeTypeView = (FreeTypeView) componentForObjectOfType(freeTypeDef, FreeTypeView.class);
-        JComponent parent = (JComponent) freeTypeView.getParent();
-
-        if (parent instanceof ClassView)
-            {
-            ((ClassView)parent).removeFreeTypeView(freeTypeView);
-            }
-        else
+        if (freeTypeDef.getSpecification() != null)
             {
             specification.getFreeTypeDefList().remove(freeTypeDef);
-            specificationView.removeFreeTypeView(freeTypeView);
+            specification.setFreeTypeDefList(specification.getFreeTypeDefList());
             }
-
-        Utils.mapRemoveNotNull(viewToObjectMap, freeTypeView.getDeclarationText());
-        Utils.mapRemoveNotNull(viewToObjectMap, freeTypeView.getPredicateText());
-        Utils.mapRemoveNotNull(viewToObjectMap, freeTypeView);
+        else if (freeTypeDef.getClassDef() != null)
+            {
+            ClassDef classDef = freeTypeDef.getClassDef();
+            classDef.getFreeTypeDefList().remove(freeTypeDef);
+            classDef.setFreeTypeDefList(specification.getFreeTypeDefList());
+            }
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1088,10 +572,7 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeGenericType(GenericDef genericDef)
     {
-        if (genericDef == null)
-            {
-            throw new IllegalArgumentException("genericDef is null");
-            }
+        checkIllegalArgument(genericDef, "genericDef");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1104,9 +585,6 @@ public class SpecificationController extends Observable implements FocusListener
     {
         specification.setPredicate("New Predicate");
 
-        TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
-        specificationView.setPredicateText(predicateText);
-
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -1118,10 +596,6 @@ public class SpecificationController extends Observable implements FocusListener
     {
         specification.setPredicate(null);
 
-        Utils.mapRemoveNotNull(viewToObjectMap, specificationView.getPredicateText());
-
-        specificationView.setPredicateText(null);
-
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -1130,32 +604,12 @@ public class SpecificationController extends Observable implements FocusListener
      * Add a VisibiliityList to a ClassDef
      *
      * @param classDef       The ClassDef to add the VisibilityList
-     * @param visibilityList The VisibilityList to add to the ClassDef, if it is
-     *                       null a new VisibilityList is add to the ClassDef
      */
-    public void addVisibilityList(ClassDef classDef, String visibilityList)
+    public void addVisibilityList(ClassDef classDef)
     {
-        if (visibilityList == null)
-            {
-            visibilityList = "New Visibility List";
-            classDef.setVisibilityList(visibilityList);
-            }
+        checkIllegalArgument(classDef, "classDef");
 
-        VisibilityListView visibilityListView = new VisibilityListView();
-
-        if (classDef.getVisibilityList() != null)
-            {
-            TozeTextArea visibilityListText = buildTextArea(classDef, classDef.getVisibilityList(), "visibilityList");
-            visibilityListView.setVisibilityListText(visibilityListText);
-            }
-
-        classDef.setVisibilityList(visibilityList);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.setVisibilityListView(visibilityListView);
-
-        visibilityListView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(visibilityListView, new SpecObjectPropertyPair(classDef, "visibilityList"));
+        classDef.setVisibilityList("New Visibility List");
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1163,18 +617,9 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void removeVisibilityList(ClassDef classDef)
     {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
+        checkIllegalArgument(classDef, "classDef");
 
         classDef.setVisibilityList(null);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getVisibilityListView().getVisibilityListText());
-        Utils.mapRemoveNotNull(viewToObjectMap, classView.getVisibilityListView());
-        classView.setVisibilityListView(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1184,29 +629,14 @@ public class SpecificationController extends Observable implements FocusListener
      * Add an InheritedClass to a ClassDef
      *
      * @param classDef       The ClassDef to add the InheritedClass
-     * @param inheritedClass The InhertiedClass to add to the ClassDef, if it is
-     *                       null a new InheritedClass is added to the ClassDef
      */
-    public void addInheritedClass(ClassDef classDef, InheritedClass inheritedClass)
+    public void addInheritedClass(ClassDef classDef)
     {
-        boolean newInheritedClass = (inheritedClass == null);
+        checkIllegalArgument(classDef, "classDef");
 
-        if (newInheritedClass)
-            {
-            inheritedClass = new InheritedClass();
-            inheritedClass.setName("New InheritedClass");
-            classDef.setInheritedClass(inheritedClass);
-            }
-
-        InheritedClassView inheritedClassView = new InheritedClassView();
-        inheritedClassView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(inheritedClassView, new SpecObjectPropertyPair(inheritedClass, null));
-
-        TozeTextArea nameText = buildTextArea(inheritedClass, inheritedClass.getName(), "name");
-        inheritedClassView.setInheritedClassText(nameText);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.setInheritedClassView(inheritedClassView);
+        InheritedClass inheritedClass = new InheritedClass();
+        inheritedClass.setName("New InheritedClass");
+        classDef.setInheritedClass(inheritedClass);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1218,20 +648,9 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeInheritedClass(ClassDef classDef)
     {
-        if (classDef == null)
-            {
-            throw new IllegalArgumentException("classDef is null");
-            }
+        checkIllegalArgument(classDef, "classDef");
 
         classDef.setInheritedClass(null);
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        InheritedClassView inheritedClassView = (InheritedClassView) componentForObjectOfType(classDef.getInheritedClass(), InheritedClassView.class);
-
-        Utils.mapRemoveNotNull(viewToObjectMap, inheritedClassView.getInheritedClassText());
-        Utils.mapRemoveNotNull(viewToObjectMap, inheritedClassView);
-
-        classView.setInheritedClassView(null);
 
         specificationView.revalidate();
         specificationView.repaint();
@@ -1242,102 +661,42 @@ public class SpecificationController extends Observable implements FocusListener
      * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
      *
      * @param classDef A ClassDef to add the Operation to
-     * @param operation An Operation to be added to ClassDef
      * @param operationType used when operation is null to determine the default type of operation to create, use null
      *                      when passing a non-null value for operation
-     * @param index The position in the ClassDef to add the Operation
      */
-    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType, int index)
+    public void addOperation(ClassDef classDef, OperationType operationType)
     {
-        boolean newOperation = (operation == null);
+        checkIllegalArgument(classDef, "classDef");
 
-        if (newOperation)
+        Operation operation = new Operation();
+        switch (operationType)
             {
-            operation = new Operation();
-            switch (operationType)
-                {
-                case All:
-                    operation.setName("New Operation");
-                    operation.setDeltaList("New Delta");
-                    operation.setPredicate("New Predicate");
-                    operation.setDeclaration("New Declaration");
-                    operation.setName("New Operation");
-                    break;
-                case NoDeclaration:
-                    operation.setName("New Operation");
-                    operation.setPredicate("New Predicate");
-                    break;
-                case NoPredicate:
-                    operation.setName("New Operation");
-                    operation.setDeltaList("New Delta");
-                    operation.setDeclaration("New Declaration");
-                    break;
-                case Expression:
-                    operation.setName("New Operation");
-                    operation.setOperationExpression("New Expression");
-                }
-
-            classDef.getOperationList().add(index, operation);
+            case All:
+                operation.setName("New Operation");
+                operation.setDeltaList("New Delta");
+                operation.setPredicate("New Predicate");
+                operation.setDeclaration("New Declaration");
+                operation.setName("New Operation");
+                break;
+            case NoDeclaration:
+                operation.setName("New Operation");
+                operation.setPredicate("New Predicate");
+                break;
+            case NoPredicate:
+                operation.setName("New Operation");
+                operation.setDeltaList("New Delta");
+                operation.setDeclaration("New Declaration");
+                break;
+            case Expression:
+                operation.setName("New Operation");
+                operation.setOperationExpression("New Expression");
             }
 
-        // need to add view to object map right away
-        // as subsequent code assumes it is there
-        OperationView operationView = new OperationView();
-        operationView.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(operationView, new SpecObjectPropertyPair(operation, null));
+        classDef.getOperationList().add(operation);
+        classDef.setOperationList(classDef.getOperationList());
 
-        TozeTextArea operationText = buildTextArea(operation, operation.getName(), "name");
-        operationView.setOperationNameText(operationText);
-
-        if (operation.getDeltaList() != null)
-            {
-            addDeltaList(operation, operation.getDeltaList());
-            }
-
-        if (operation.getDeclaration() != null)
-            {
-            addDeclaration(operation, operation.getDeclaration());
-            }
-
-        if (operation.getPredicate() != null)
-            {
-            addOperationPredicate(operation, operation.getPredicate());
-            }
-
-        if (operation.getOperationExpression() != null)
-            {
-            addOperationExpression(operation, operation.getOperationExpression());
-            }
-
-        ClassView classView = (ClassView) componentForObjectOfType(classDef, ClassView.class);
-        classView.addOperationView(index, operationView);
         specificationView.revalidate();
         specificationView.repaint();
-    }
-
-    /**
-     * An Operation is added to the given ClassDef.  If the Operation is null a new Operation is created given
-     * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
-     * The operation is added to the end, it calls addOperation(classDef, operation, operationType, n) where
-     * n is the index of the last operation + 1, if any, or 0 if there are no operations
-     *
-     * @param classDef A ClassDef to add the Operation to
-     * @param operation An Operation to be added to ClassDef
-     * @param operationType used when operation is null to determine the default type of operation to create, use null
-     *                      when passing a non-null value for operation
-     */
-    public void addOperation(ClassDef classDef, Operation operation, OperationType operationType)
-    {
-        // add at the index at which it exists in the class already (existing operation)
-        // or add it at the end (new operation)
-        int index = classDef.getOperationList().indexOf(operation);
-
-        if (index == -1)
-            {
-            index = classDef.getOperationList().size();
-            }
-
-        addOperation(classDef, operation, operationType, index);
     }
 
     /**
@@ -1346,40 +705,15 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void removeOperation(Operation operation)
     {
-        removeOperation(operation, true);
-    }
+        checkIllegalArgument(operation, "operation");
 
-    public void removeOperation(Operation operation, boolean deep)
-    {
-        if (operation == null)
-            {
-            throw new IllegalArgumentException("operation is null");
-            }
-
-        OperationView operationView = (OperationView) componentForObjectOfType(operation, OperationView.class);
-        ClassView classView = (ClassView) operationView.getParent();
-
-        SpecObjectPropertyPair pair = viewToObjectMap.get(classView);
-        ClassDef classDef = (ClassDef)pair.getObject();
+        ClassDef classDef = operation.getClassDef();
         classDef.getOperationList().remove(operation);
-
-        if (deep)
-            {
-            removeOperationExpression(operation);
-            removeOperationPredicate(operation);
-            removeDeltaList(operation);
-            removeOperationExpression(operation);
-            }
-
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView.getOperationNameText());
-        Utils.mapRemoveNotNull(viewToObjectMap, operationView);
-
-        classView.removeOperationView(operationView);
+        classDef.setOperationList(classDef.getOperationList());
 
         specificationView.revalidate();
         specificationView.repaint();
     }
-
 
     /**
      * Helper method to easily add a document listener / binding to a text
@@ -1437,8 +771,10 @@ public class SpecificationController extends Observable implements FocusListener
             errors.add(new SpecObjectPropertyError(pair.getObject(), pair.getProperty(), tozeToken));
 
             // update the ui
-            TozeTextArea specObjectText = (TozeTextArea)componentForObjectOfType(pair.getObject(), pair.getProperty(), TozeTextArea.class);
-            specObjectText.addError(tozeToken.m_lineNum, tozeToken.m_pos);
+
+            // TODO: need to figure out how to update UI with errors
+//            TozeTextArea specObjectText = (TozeTextArea)componentForObjectOfType(pair.getObject(), pair.getProperty(), TozeTextArea.class);
+//            specObjectText.addError(tozeToken.m_lineNum, tozeToken.m_pos);
 
             }
 
@@ -1458,62 +794,63 @@ public class SpecificationController extends Observable implements FocusListener
         parseSpecification();
     }
 
-    /**
-     * Builds a TozeTextArea that is bound to the modelObject by the specified property.
-     *
-     * @param modelObject The model object to display and edit
-     * @param value The initial value for the text field (same as the modelObject property?)
-     * @param property The property on the modelObject to display and edit
-     * @param ignoresEnter Determines if the enter key works on this field, e.g. it can contain CRLF
-     * @return The built TozeTextArea
-     */
-    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
-    {
-        TozeTextArea text = new TozeTextArea(value);
-        text.setIgnoresEnter(ignoresEnter);
-        addDocumentListener(text, modelObject, property);
-        text.addMouseListener(mouseAdapter);
-        viewToObjectMap.put(text, new SpecObjectPropertyPair(modelObject, property));
-        text.addFocusListener(this);
-        return text;
-    }
+//    /**
+//     * Builds a TozeTextArea that is bound to the modelObject by the specified property.
+//     *
+//     * @param modelObject The model object to display and edit
+//     * @param value The initial value for the text field (same as the modelObject property?)
+//     * @param property The property on the modelObject to display and edit
+//     * @param ignoresEnter Determines if the enter key works on this field, e.g. it can contain CRLF
+//     * @return The built TozeTextArea
+//     */
+//    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
+//    {
+//        TozeTextArea text = new TozeTextArea(value);
+//        text.setIgnoresEnter(ignoresEnter);
+//        addDocumentListener(text, modelObject, property);
+//        text.addMouseListener(mouseAdapter);
+//        viewToObjectMap.put(text, new SpecObjectPropertyPair(modelObject, property));
+//        text.addFocusListener(this);
+//        return text;
+//    }
+//
+//    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
+//    {
+//        return buildTextArea(modelObject, value, property, true);
+//    }
+//
 
-    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
-    {
-        return buildTextArea(modelObject, value, property, true);
-    }
-
-    /**
-     * Utility to get the UI component for a model object of the given type and property.  If property is null, return
-     * the view for the specification object as a whole
-     *
-     * @param modelObject The specification object used to find the associated view
-     * @param property The specification property to find the associate view, usually a text area
-     * @param clazz The type of view object to find
-     * @return
-     */
-    private JComponent componentForObjectOfType(SpecObject modelObject, String property, Class clazz)
-    {
-        for (Map.Entry entry : viewToObjectMap.entrySet())
-            {
-            SpecObjectPropertyPair pair = (SpecObjectPropertyPair)entry.getValue();
-            Object key = entry.getKey();
-
-            if ((modelObject == pair.getObject()) &&
-                    ((property == null) || (property.equals(pair.getProperty()))) &&
-                    (key.getClass() == clazz))
-                {
-                return (JComponent) key;
-                }
-            }
-
-        return null;
-    }
-
-    private JComponent componentForObjectOfType(SpecObject modelObject, Class clazz)
-    {
-        return componentForObjectOfType(modelObject, null, clazz);
-    }
+//    /**
+//     * Utility to get the UI component for a model object of the given type and property.  If property is null, return
+//     * the view for the specification object as a whole
+//     *
+//     * @param modelObject The specification object used to find the associated view
+//     * @param property The specification property to find the associate view, usually a text area
+//     * @param clazz The type of view object to find
+//     * @return
+//     */
+//    private JComponent componentForObjectOfType(SpecObject modelObject, String property, Class clazz)
+//    {
+//        for (Map.Entry entry : viewToObjectMap.entrySet())
+//            {
+//            SpecObjectPropertyPair pair = (SpecObjectPropertyPair)entry.getValue();
+//            Object key = entry.getKey();
+//
+//            if ((modelObject == pair.getObject()) &&
+//                    ((property == null) || (property.equals(pair.getProperty()))) &&
+//                    (key.getClass() == clazz))
+//                {
+//                return (JComponent) key;
+//                }
+//            }
+//
+//        return null;
+//    }
+//
+//    private JComponent componentForObjectOfType(SpecObject modelObject, Class clazz)
+//    {
+//        return componentForObjectOfType(modelObject, null, clazz);
+//    }
 
     public void insertSymbol(String symbol)
     {
@@ -1536,40 +873,34 @@ public class SpecificationController extends Observable implements FocusListener
         currentTextArea = (TozeTextArea)e.getSource();
     }
 
-    public TozeTextArea highlightError(SpecObjectPropertyError error)
-    {
-        unhighlightErrors();
-        System.out.println("error = " + error);
-        TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
+//    public TozeTextArea highlightError(SpecObjectPropertyError error)
+//    {
+        // TODO: flag the error in the domain object?
+//        unhighlightErrors();
+//        System.out.println("error = " + error);
+//        TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
+//
+//        System.out.println("textArea = " + textArea);
+//        textArea.setHighlighted(true);
 
-        System.out.println("textArea = " + textArea);
-        textArea.setHighlighted(true);
-
-        specificationView.revalidate();
-        specificationView.repaint();
-
-        return textArea;
-    }
+//        specificationView.revalidate();
+//        specificationView.repaint();
+//
+//        return textArea;
+//    }
 
     public void moveUp(SpecObject object)
     {
-        Class viewClass = objectToViewMap.get(object.getClass());
-        JComponent viewToMove = componentForObjectOfType(object, viewClass);
-
         if (object instanceof AxiomaticDef)
             {
             AxiomaticDef axiomaticDef = (AxiomaticDef)object;
-            AxiomaticView axiomaticView = (AxiomaticView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)axiomaticView.getParent();
-
             List<AxiomaticDef> axiomaticDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (axiomaticDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                axiomaticDefList = classDef.getAxiomaticDefList();
+                axiomaticDefList = axiomaticDef.getClassDef().getAxiomaticDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (axiomaticDef.getSpecification() != null)
                 {
                 axiomaticDefList = specification.getAxiomaticDefList();
                 }
@@ -1579,24 +910,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(axiomaticDefList, axiomaticDef, index - 1);
-                parentView.removeAxiomaticView(axiomaticView);
-                parentView.addAxiomaticView(index - 1, axiomaticView);
                 }
             }
         else if (object instanceof AbbreviationDef)
             {
             AbbreviationDef abbreviationDef = (AbbreviationDef)object;
-            AbbreviationView abbreviationView = (AbbreviationView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)abbreviationView.getParent();
 
             List<AbbreviationDef> abbreviationDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (abbreviationDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                abbreviationDefList = classDef.getAbbreviationDefList();
+                abbreviationDefList = abbreviationDef.getClassDef().getAbbreviationDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (abbreviationDef.getSpecification() != null)
                 {
                 abbreviationDefList = specification.getAbbreviationDefList();
                 }
@@ -1606,24 +932,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(abbreviationDefList, abbreviationDef, index - 1);
-                parentView.removeAbbreviationView(abbreviationView);
-                parentView.addAbbreviationView(index - 1, abbreviationView);
                 }
             }
         else if (object instanceof BasicTypeDef)
             {
             BasicTypeDef basicTypeDef = (BasicTypeDef)object;
-            BasicTypeView basicTypeView = (BasicTypeView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)basicTypeView.getParent();
 
             List<BasicTypeDef> basicTypeDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (basicTypeDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                basicTypeDefList = classDef.getBasicTypeDefList();
+                basicTypeDefList = basicTypeDef.getClassDef().getBasicTypeDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (basicTypeDef.getSpecification() != null)
                 {
                 basicTypeDefList = specification.getBasicTypeDefList();
                 }
@@ -1633,24 +954,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(basicTypeDefList, basicTypeDef, index - 1);
-                parentView.removeBasicTypeView(basicTypeView);
-                parentView.addBasicTypeView(index - 1, basicTypeView);
                 }
             }
         else if (object instanceof FreeTypeDef)
             {
             FreeTypeDef freeTypeDef = (FreeTypeDef)object;
-            FreeTypeView freeTypeView = (FreeTypeView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)freeTypeView.getParent();
 
             List<FreeTypeDef> freeTypeDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (freeTypeDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                freeTypeDefList = classDef.getFreeTypeDefList();
+                freeTypeDefList = freeTypeDef.getClassDef().getFreeTypeDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (freeTypeDef.getSpecification() != null)
                 {
                 freeTypeDefList = specification.getFreeTypeDefList();
                 }
@@ -1660,14 +976,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(freeTypeDefList, freeTypeDef, index - 1);
-                parentView.removeFreeTypeView(freeTypeView);
-                parentView.addFreeTypeView(index - 1, freeTypeView);
                 }
             }
         else if (object instanceof ClassDef)
             {
             ClassDef classDef = (ClassDef)object;
-            ClassView classView = (ClassView)viewToMove;
 
             List<ClassDef> classDefList = specification.getClassDefList();
 
@@ -1676,52 +989,40 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(classDefList, classDef, index - 1);
-                specificationView.removeClassView(classView);
-                specificationView.addClassView(index - 1, classView);
                 }
             }
         else if (object instanceof Operation)
             {
             Operation operation = (Operation)object;
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
 
-            List<Operation> operationList = classDef.getOperationList();
+            List<Operation> operationList = operation.getClassDef().getOperationList();
 
             int index = operationList.indexOf(operation);
 
             if (index > 0)
                 {
-                ClassView classView = (ClassView)viewToMove.getParent();
-                OperationView operationView = (OperationView)viewToMove;
                 Utils.listMove(operationList, operation, index - 1);
-                classView.removeOperationView(operationView);
-                classView.addOperationView(index - 1, operationView);
                 }
             }
 
+        specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
     }
 
     public void moveDown(SpecObject object)
     {
-        Class viewClass = objectToViewMap.get(object.getClass());
-        JComponent viewToMove = componentForObjectOfType(object, viewClass);
-
         if (object instanceof AxiomaticDef)
             {
             AxiomaticDef axiomaticDef = (AxiomaticDef)object;
-            AxiomaticView axiomaticView = (AxiomaticView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)axiomaticView.getParent();
 
             List<AxiomaticDef> axiomaticDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (axiomaticDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                axiomaticDefList = classDef.getAxiomaticDefList();
+                axiomaticDefList = axiomaticDef.getClassDef().getAxiomaticDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (axiomaticDef.getSpecification() != null)
                 {
                 axiomaticDefList = specification.getAxiomaticDefList();
                 }
@@ -1733,24 +1034,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(axiomaticDefList, axiomaticDef, index + 1);
-                parentView.removeAxiomaticView(axiomaticView);
-                parentView.addAxiomaticView(index + 1, axiomaticView);
                 }
             }
         else if (object instanceof AbbreviationDef)
             {
             AbbreviationDef abbreviationDef = (AbbreviationDef)object;
-            AbbreviationView abbreviationView = (AbbreviationView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)abbreviationView.getParent();
 
             List<AbbreviationDef> abbreviationDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (abbreviationDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                abbreviationDefList = classDef.getAbbreviationDefList();
+                abbreviationDefList = abbreviationDef.getClassDef().getAbbreviationDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (abbreviationDef.getSpecification() != null)
                 {
                 abbreviationDefList = specification.getAbbreviationDefList();
                 }
@@ -1762,24 +1058,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(abbreviationDefList, abbreviationDef, index + 1);
-                parentView.removeAbbreviationView(abbreviationView);
-                parentView.addAbbreviationView(index + 1, abbreviationView);
                 }
             }
         else if (object instanceof BasicTypeDef)
             {
             BasicTypeDef basicTypeDef = (BasicTypeDef)object;
-            BasicTypeView basicTypeView = (BasicTypeView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)basicTypeView.getParent();
 
             List<BasicTypeDef> basicTypeDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (basicTypeDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                basicTypeDefList = classDef.getBasicTypeDefList();
+                basicTypeDefList = basicTypeDef.getClassDef().getBasicTypeDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (basicTypeDef.getSpecification() != null)
                 {
                 basicTypeDefList = specification.getBasicTypeDefList();
                 }
@@ -1791,24 +1082,19 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(basicTypeDefList, basicTypeDef, index + 1);
-                parentView.removeBasicTypeView(basicTypeView);
-                parentView.addBasicTypeView(index + 1, basicTypeView);
                 }
             }
         else if (object instanceof FreeTypeDef)
             {
             FreeTypeDef freeTypeDef = (FreeTypeDef)object;
-            FreeTypeView freeTypeView = (FreeTypeView)viewToMove;
-            MoveableParagraphView parentView = (MoveableParagraphView)freeTypeView.getParent();
 
             List<FreeTypeDef> freeTypeDefList = null;
 
-            if (parentView instanceof ClassView)
+            if (freeTypeDef.getClassDef() != null)
                 {
-                ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-                freeTypeDefList = classDef.getFreeTypeDefList();
+                freeTypeDefList = freeTypeDef.getClassDef().getFreeTypeDefList();
                 }
-            else if (parentView instanceof SpecificationView)
+            else if (freeTypeDef.getSpecification() != null)
                 {
                 freeTypeDefList = specification.getFreeTypeDefList();
                 }
@@ -1820,14 +1106,11 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(freeTypeDefList, freeTypeDef, index + 1);
-                parentView.removeFreeTypeView(freeTypeView);
-                parentView.addFreeTypeView(index + 1, freeTypeView);
                 }
             }
         else if (object instanceof ClassDef)
             {
             ClassDef classDef = (ClassDef)object;
-            ClassView classView = (ClassView)viewToMove;
 
             int size = specification.getClassDefList().size();
             int index = specification.getClassDefList().indexOf(object);
@@ -1837,30 +1120,24 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(specification.getClassDefList(), classDef, index + 1);
-                specificationView.removeClassView(classView);
-                specificationView.addClassView(index + 1, classView);
                 }
             }
         else if (object instanceof Operation)
             {
             Operation operation = (Operation)object;
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(viewToMove.getParent()).getObject();
-
-            int size = classDef.getOperationList().size();
-            int index = classDef.getOperationList().indexOf(operation);
+            List<Operation> operationList = operation.getClassDef().getOperationList();
+            int size = operationList.size();
+            int index = operationList.indexOf(operation);
             int last = size - 1;
 
             // only move down if not already at bottom
             if (index < last)
                 {
-                ClassView classView = (ClassView)viewToMove.getParent();
-                OperationView operationView = (OperationView)viewToMove;
-                Utils.listMove(classDef.getOperationList(), operation, index + 1);
-                classView.removeOperationView(operationView);
-                classView.addOperationView(index + 1, operationView);
+                Utils.listMove(operationList, operation, index + 1);
                 }
             }
 
+        specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -1893,7 +1170,7 @@ public class SpecificationController extends Observable implements FocusListener
 
             if (property == null)
             {
-                removeClass(classDef, false);
+                removeClass(classDef);
             }
             else if ("visibilityList".equals(property))
             {
@@ -1910,9 +1187,7 @@ public class SpecificationController extends Observable implements FocusListener
         }
         else if (object instanceof InheritedClass)
         {
-            Component component = componentForObjectOfType(object, ClassView.class);
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(component).getObject();
-            removeInheritedClass(classDef);
+            removeInheritedClass(((InheritedClass)object).getClassDef());
         }
         else if (object instanceof InitialState)
         {
@@ -1925,7 +1200,7 @@ public class SpecificationController extends Observable implements FocusListener
             Operation operation = (Operation)object;
             if (property == null)
             {
-                removeOperation(operation, false);
+                removeOperation(operation);
             }
             else if ("deltaList".equals(property))
             {
@@ -1940,6 +1215,9 @@ public class SpecificationController extends Observable implements FocusListener
         }
 
         selectedParagraph = null;
+        specificationView.requestRebuild();
+        specificationView.revalidate();
+        specificationView.repaint();
     }
 
     public void copy()
@@ -1948,62 +1226,146 @@ public class SpecificationController extends Observable implements FocusListener
         cachedObject = null;
         SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
         SpecObject object = specObjectPropertyPair.getObject();
-        cachedObject = object;
+
+        try
+            {
+            cachedObject = (SpecObject)object.clone();
+            }
+        catch (CloneNotSupportedException e)
+            {
+            }
     }
 
     public void paste()
     {
+        // TODO: need to check where the paste is happening, fly a dialog
+        // if additional user action is required (no parent object, etc.)
         SpecObject selectedObject = specification;
 
         if (selectedParagraph != null)
-        {
+            {
             selectedObject = (SpecObject)viewToObjectMap.get(selectedParagraph).getObject();
-        }
+            }
 
         if (cachedObject instanceof AbbreviationDef)
-        {
-            addAbbreviation(selectedObject, (AbbreviationDef)cachedObject);
-        }
+            {
+
+            AbbreviationDef abbreviationDef = (AbbreviationDef)cachedObject;
+
+            if (selectedObject == specification)
+                {
+                abbreviationDef.setSpecification(specification);
+                specification.getAbbreviationDefList().add((AbbreviationDef)cachedObject);
+                specification.setAbbreviationDefList(specification.getAbbreviationDefList());
+                }
+            else
+                {
+                ClassDef classDef = (ClassDef)selectedObject;
+                abbreviationDef.setClassDef(classDef);
+                classDef.getAbbreviationDefList().add(abbreviationDef);
+                classDef.setAbbreviationDefList(classDef.getAbbreviationDefList());
+                }
+            }
         else if (cachedObject instanceof AxiomaticDef)
-        {
+            {
             AxiomaticDef axiomaticDef = (AxiomaticDef)cachedObject;
-            addAxiomaticType(selectedObject, axiomaticDef, axiomaticDef.getPredicate() != null);
-        }
+
+            if (selectedObject == specification)
+                {
+                axiomaticDef.setSpecification(specification);
+                specification.getAxiomaticDefList().add(axiomaticDef);
+                specification.setAxiomaticDefList(specification.getAxiomaticDefList());
+                }
+            else
+                {
+                ClassDef classDef = (ClassDef)selectedObject;
+                axiomaticDef.setClassDef(classDef);
+                classDef.getAxiomaticDefList().add(axiomaticDef);
+                classDef.setAxiomaticDefList(classDef.getAxiomaticDefList());
+                }
+            }
         else if (cachedObject instanceof BasicTypeDef)
-        {
-            addBasicType(selectedObject, (BasicTypeDef)cachedObject);
-        }
+            {
+            BasicTypeDef basicTypeDef = (BasicTypeDef)cachedObject;
+
+            if (selectedObject == specification)
+                {
+                basicTypeDef.setSpecification(specification);
+                specification.getBasicTypeDefList().add(basicTypeDef);
+                specification.setBasicTypeDefList(specification.getBasicTypeDefList());
+                }
+            else
+                {
+                ClassDef classDef = (ClassDef)selectedObject;
+                basicTypeDef.setClassDef(classDef);
+                classDef.getBasicTypeDefList().add(basicTypeDef);
+                classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
+                }
+            }
         else if (cachedObject instanceof ClassDef)
-        {
-            addClass((ClassDef)cachedObject);
-        }
+            {
+            specification.getClassDefList().add((ClassDef)cachedObject);
+            }
         else if (cachedObject instanceof FreeTypeDef)
-        {
-            addFreeType(selectedObject, (FreeTypeDef)cachedObject);
-        }
+            {
+            BasicTypeDef basicTypeDef = (BasicTypeDef)cachedObject;
+
+            if (selectedObject == specification)
+                {
+                basicTypeDef.setSpecification(specification);
+                specification.getBasicTypeDefList().add(basicTypeDef);
+                specification.setBasicTypeDefList(specification.getBasicTypeDefList());
+                }
+            else
+                {
+                ClassDef classDef = (ClassDef)selectedObject;
+                basicTypeDef.setClassDef(classDef);
+                classDef.getBasicTypeDefList().add(basicTypeDef);
+                classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
+                }
+            }
         else if (cachedObject instanceof GenericDef)
-        {
-            addGenericType((GenericDef)cachedObject, ((GenericDef)cachedObject).getPredicate() != null);
-        }
+            {
+            GenericDef genericDef = (GenericDef)cachedObject;
+
+            if (selectedObject == specification)
+                {
+                genericDef.setSpecification(specification);
+                specification.getGenericDefList().add(genericDef);
+                specification.setGenericDefList(specification.getGenericDefList());
+                }
+            }
         else if (cachedObject instanceof InheritedClass)
-        {
-            addInheritedClass((ClassDef)selectedObject, (InheritedClass)cachedObject);
-        }
+            {
+            ((ClassDef)selectedObject).setInheritedClass((InheritedClass)cachedObject);
+            }
         else if (cachedObject instanceof InitialState)
-        {
-            addInitialState((ClassDef)selectedObject, (InitialState)cachedObject);
-        }
+            {
+            ((ClassDef)selectedObject).setInitialState((InitialState)cachedObject);
+            }
         else if (cachedObject instanceof Operation)
-        {
-            // TODO: need to determine the OperationType
-            addOperation((ClassDef)selectedObject, (Operation)cachedObject, OperationType.All);
-        }
+            {
+            ((ClassDef)selectedObject).getOperationList().add((Operation)cachedObject);
+            ((ClassDef)selectedObject).setOperationList(((ClassDef)selectedObject).getOperationList());
+            }
         else if (cachedObject instanceof State)
-        {
-            // TODO: need to dertemine the StateType
-            addState((ClassDef)selectedObject, (State)cachedObject, StateType.All);
-        }
+            {
+            ((ClassDef)selectedObject).setState((State)cachedObject);
+            }
+
+        specificationView.requestRebuild();
+        specificationView.revalidate();
+        specificationView.repaint();
     }
+
+    private void checkIllegalArgument(Object object, String description)
+    {
+        if (object == null)
+            {
+            throw new IllegalArgumentException(description + " is null");
+            }
+    }
+
 
     // Get Keystroke events
     private class ControllerKeyAdapter extends KeyAdapter

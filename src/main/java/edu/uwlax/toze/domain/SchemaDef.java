@@ -13,6 +13,7 @@ public class SchemaDef extends SpecObject
 
     public void setName(String name) {
         this.name = name;
+        this.update("schemaDef");
     }
 
     public String getDeclaration() {
@@ -21,6 +22,7 @@ public class SchemaDef extends SpecObject
 
     public void setDeclaration(String declaration) {
         this.declaration = declaration;
+        this.update("declaration");
     }
 
     public String getPredicate() {
@@ -29,6 +31,7 @@ public class SchemaDef extends SpecObject
 
     public void setPredicate(String predicate) {
         this.predicate = predicate;
+        this.update("predicate");
     }
 
     public String getExpression() {
@@ -37,5 +40,6 @@ public class SchemaDef extends SpecObject
 
     public void setExpression(String expression) {
         this.expression = expression;
+        this.update("expression");
     }
 }

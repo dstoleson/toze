@@ -1,31 +1,29 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.Operation;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class DeltaListView extends ParagraphView implements Placement
+public class DeltaListView extends ParagraphView implements Placement, Observer
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
     static final String DeltaListPost = ")";
     //
+    private Operation operation;
+    //
     private TozeTextArea deltaListText;
 
-    public DeltaListView()
+    public DeltaListView(Operation operation)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getDeltaListText()
-    {
-        return this.deltaListText;
-    }
-
-    public void setDeltaListText(TozeTextArea deltaListText)
-    {
-        this.deltaListText = deltaListText;
+        this.operation = operation;
+        operation.addObserver(this);
         requestRebuild();
     }
 
@@ -34,7 +32,11 @@ public class DeltaListView extends ParagraphView implements Placement
     {
         removeAll();
 
-        addNotNull(deltaListText);
+        if (operation != null && operation.getDeltaList() != null)
+            {
+            deltaListText = buildTextArea(operation, operation.getDeltaList(), "deltaList");
+            add(deltaListText);
+            }
     }
 
     @Override
@@ -105,5 +107,14 @@ public class DeltaListView extends ParagraphView implements Placement
         Dimension cd = deltaListText.getPreferredSize();
         g.drawString(DeltaListPre, xoffset, yoffset + ystring);
         g.drawString(DeltaListPost, xoffset + fm.stringWidth(DeltaListPre) + cd.width, yoffset + ystring);
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        if (o == operation && "deltaList".equals(arg))
+            {
+            requestRebuild();
+            }
     }
 }

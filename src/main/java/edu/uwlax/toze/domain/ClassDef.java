@@ -3,7 +3,7 @@ package edu.uwlax.toze.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassDef extends SpecObject
+public class ClassDef extends SpecObject implements ParentSpecObject
 {
     private String name;
     private String visibilityList;
@@ -24,6 +24,7 @@ public class ClassDef extends SpecObject
 
     public void setName(String name) {
         this.name = name;
+        this.update("name");
     }
 
     public String getVisibilityList() {
@@ -32,6 +33,7 @@ public class ClassDef extends SpecObject
 
     public void setVisibilityList(String visibilityList) {
         this.visibilityList = visibilityList;
+        this.update("visibilityList");
     }
 
     public InheritedClass getInheritedClass() {
@@ -40,6 +42,7 @@ public class ClassDef extends SpecObject
 
     public void setInheritedClass(InheritedClass inheritedClass) {
         this.inheritedClass = inheritedClass;
+        this.update("inheritedClass");
     }
 
     public List<BasicTypeDef> getBasicTypeDefList() {
@@ -48,6 +51,7 @@ public class ClassDef extends SpecObject
 
     public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList) {
         this.basicTypeDefList = basicTypeDefList;
+        this.update("basicTypeDefList");
     }
 
     public List<AxiomaticDef> getAxiomaticDefList() {
@@ -56,6 +60,7 @@ public class ClassDef extends SpecObject
 
     public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList) {
         this.axiomaticDefList = axiomaticDefList;
+        this.update("axiomaticDefList");
     }
 
     public List<AbbreviationDef> getAbbreviationDefList() {
@@ -64,6 +69,7 @@ public class ClassDef extends SpecObject
 
     public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList) {
         this.abbreviationDefList = abbreviationDefList;
+        this.update("abbreviationDefList");
     }
 
     public List<FreeTypeDef> getFreeTypeDefList() {
@@ -72,6 +78,7 @@ public class ClassDef extends SpecObject
 
     public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList) {
         this.freeTypeDefList = freeTypeDefList;
+        this.update("freeTypeDefList");
     }
 
     public State getState() {
@@ -80,6 +87,7 @@ public class ClassDef extends SpecObject
 
     public void setState(State state) {
         this.state = state;
+        this.update("state");
     }
 
     public InitialState getInitialState() {
@@ -88,6 +96,7 @@ public class ClassDef extends SpecObject
 
     public void setInitialState(InitialState initialState) {
         this.initialState = initialState;
+        this.update("initialState");
     }
 
     public List<Operation> getOperationList() {
@@ -96,6 +105,7 @@ public class ClassDef extends SpecObject
 
     public void setOperationList(List<Operation> operationList) {
         this.operationList = operationList;
+        this.update("operationList");
     }
 
     public Specification getSpecification() {
@@ -104,5 +114,44 @@ public class ClassDef extends SpecObject
 
     public void setSpecification(Specification specification) {
         this.specification = specification;
+    }
+
+    @Override
+    public ClassDef clone()
+    {
+        ClassDef clone = new ClassDef();
+
+        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
+            {
+            clone.getAbbreviationDefList().add((AbbreviationDef)abbreviationDef.clone());
+            }
+
+        for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
+            {
+            clone.getAxiomaticDefList().add((AxiomaticDef)axiomaticDef.clone());
+            }
+
+        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
+            {
+            clone.getBasicTypeDefList().add((BasicTypeDef)basicTypeDef.clone());
+            }
+
+        for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
+            {
+            clone.getFreeTypeDefList().add((FreeTypeDef)freeTypeDef.clone());
+            }
+
+        for (Operation operation : this.getOperationList())
+            {
+            clone.getOperationList().add((Operation)operation.clone());
+            }
+
+        clone.setName(this.getName());
+        clone.setInheritedClass(this.getInheritedClass());
+        clone.setInitialState(this.getInitialState());
+        clone.setState(this.getState());
+        clone.setVisibilityList(this.getVisibilityList());
+
+        return clone;
     }
 }

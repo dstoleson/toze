@@ -3,7 +3,7 @@ package edu.uwlax.toze.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Specification extends SpecObject
+public class Specification extends SpecObject implements ParentSpecObject
 {
     private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
     private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
@@ -19,6 +19,7 @@ public class Specification extends SpecObject
 
     public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList) {
         this.basicTypeDefList = basicTypeDefList;
+        this.update("basicTypeDefList");
     }
 
     public List<AxiomaticDef> getAxiomaticDefList() {
@@ -27,6 +28,7 @@ public class Specification extends SpecObject
 
     public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList) {
         this.axiomaticDefList = axiomaticDefList;
+        this.update("axiomaticDefList");
     }
 
     public List<GenericDef> getGenericDefList() {
@@ -35,14 +37,28 @@ public class Specification extends SpecObject
 
     public void setGenericDefList(List<GenericDef> genericDefList) {
         this.genericDefList = genericDefList;
+        this.update("genericDefList");
     }
 
     public List<AbbreviationDef> getAbbreviationDefList() {
-        return abbreviationDefList;
+        return new ArrayList<AbbreviationDef>(abbreviationDefList);
+    }
+
+    public void addAbbreviationDef(AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.add(abbreviationDef);
+        this.update("abbreviationDefList");
+    }
+
+    public void removeAbbeviationDef(AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.remove(abbreviationDef);
+        this.update("abbreviationDefList");
     }
 
     public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList) {
         this.abbreviationDefList = abbreviationDefList;
+        this.update("abbreviationDefList");
     }
 
     public List<FreeTypeDef> getFreeTypeDefList() {
@@ -51,6 +67,7 @@ public class Specification extends SpecObject
 
     public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList) {
         this.freeTypeDefList = freeTypeDefList;
+        this.update("freeTypeDefList");
     }
 
     public List<ClassDef> getClassDefList() {
@@ -59,6 +76,7 @@ public class Specification extends SpecObject
 
     public void setClassDefList(List<ClassDef> classDefList) {
         this.classDefList = classDefList;
+        this.update("classDefList");
     }
 
     public String getPredicate() {
@@ -67,5 +85,6 @@ public class Specification extends SpecObject
 
     public void setPredicate(String predicate) {
         this.predicate = predicate;
+        this.update("predicate");
     }
 }

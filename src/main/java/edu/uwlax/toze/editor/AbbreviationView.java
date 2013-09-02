@@ -1,45 +1,28 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.domain.SpecObject;
+import edu.uwlax.toze.domain.AbbreviationDef;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class AbbreviationView extends ParagraphView
+public class AbbreviationView extends ParagraphView implements Observer
 {
     static final String AbbreviationMid = " == ";
     //
+    private AbbreviationDef abbreviationDef;
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
-    public AbbreviationView()
+    public AbbreviationView(AbbreviationDef abbreviationDef)
     {
-        this.setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getNameText()
-    {
-        return this.nameText;
-    }
-
-    public void setNameText(TozeTextArea nameText)
-    {
-        this.nameText = nameText;
-        requestRebuild();
-    }
-
-    public TozeTextArea getExpressionText()
-    {
-        return this.expressionText;
-    }
-
-    public void setExpressionText(TozeTextArea expressionText)
-    {
-        this.expressionText = expressionText;
+        setLayout(new ParaLayout(this));
+        this.abbreviationDef = abbreviationDef;
+        abbreviationDef.addObserver(this);
         requestRebuild();
     }
 
@@ -48,8 +31,16 @@ public class AbbreviationView extends ParagraphView
     {
         removeAll();
 
-        addNotNull(nameText);
-        addNotNull(expressionText);
+        if (abbreviationDef.getName() != null)
+            {
+            nameText = buildTextArea(abbreviationDef, abbreviationDef.getName(), "name");
+            add(nameText);
+            }
+        if (abbreviationDef.getExpression() != null)
+            {
+            expressionText = buildTextArea(abbreviationDef, abbreviationDef.getExpression(), "expression");
+            add(expressionText);
+            }
     }
 
 
@@ -120,5 +111,11 @@ public class AbbreviationView extends ParagraphView
 
         xoffset += d.width;
         g.drawString(AbbreviationMid, xoffset, yoffset + ystring);
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        return;
     }
 }

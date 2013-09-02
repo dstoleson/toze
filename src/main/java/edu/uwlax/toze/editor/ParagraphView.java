@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.SpecObject;
+import edu.uwlax.toze.editor.bindings.Binding;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,17 +106,6 @@ public abstract class ParagraphView extends JPanel implements Placement
         if (!ignoreRebuild)
             {
             rebuild();
-
-//            Component[] components = getComponents();
-//            List<Component> componentList = Arrays.asList(components);
-//
-//            for(Component component : componentList)
-//                {
-//                if (componentList instanceof ParagraphView)
-//                    {
-//                    requestRebuild();
-//                    }
-//                }
             }
     }
 
@@ -127,22 +117,6 @@ public abstract class ParagraphView extends JPanel implements Placement
      */
     abstract protected void rebuild();
 
-    /**
-     * Utility method to handle null components so a if-check isn't required
-     * every time to prevent NullPointerExceptions.
-     *
-     * @param component The component to add, can be null.
-     * @return The component that was added, or null.
-     */
-    public Component addNotNull(Component component)
-    {
-        if (component != null)
-            {
-            add(component);
-            }
-        return component;
-    }
-
     public void setSelected(boolean selected)
     {
         this.selected = selected;
@@ -151,5 +125,26 @@ public abstract class ParagraphView extends JPanel implements Placement
     public boolean isSelected()
     {
         return selected;
+    }
+
+    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
+    {
+        TozeTextArea text = new TozeTextArea(value);
+        text.setIgnoresEnter(ignoresEnter);
+        addDocumentListener(text, modelObject, property);
+//        text.addMouseListener(mouseAdapter);
+//        text.addFocusListener(specController);
+        return text;
+    }
+
+    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
+    {
+        return buildTextArea(modelObject, value, property, true);
+    }
+
+    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    {
+        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
+//        textArea.addKeyListener(keyAdapter);
     }
 }

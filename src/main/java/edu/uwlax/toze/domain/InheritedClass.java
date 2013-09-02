@@ -6,19 +6,33 @@ public class InheritedClass extends SpecObject
 
     private ClassDef classDef;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
+        this.update("name");
     }
 
-    public ClassDef getClassDef() {
+    public ClassDef getClassDef()
+    {
         return classDef;
     }
 
-    public void setClassDef(ClassDef classDef) {
+    public void setClassDef(ClassDef classDef)
+    {
         this.classDef = classDef;
+    }
+
+    @Override
+    public InheritedClass clone()
+    {
+        InheritedClass clone = new InheritedClass();
+        clone.setName(this.getName());
+
+        return clone;
     }
 }

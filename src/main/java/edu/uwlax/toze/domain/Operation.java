@@ -10,51 +10,81 @@ public class Operation extends SpecObject
 
     private ClassDef classDef;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
+        this.update("name");
     }
 
-    public String getDeltaList() {
+    public String getDeltaList()
+    {
         return deltaList;
     }
 
-    public void setDeltaList(String deltaList) {
+    public void setDeltaList(String deltaList)
+    {
         this.deltaList = deltaList;
+        this.update("deltaList");
     }
 
-    public String getDeclaration() {
+    public String getDeclaration()
+    {
         return declaration;
     }
 
-    public void setDeclaration(String declaration) {
+    public void setDeclaration(String declaration)
+    {
         this.declaration = declaration;
+        this.update("declaration");
     }
 
-    public String getPredicate() {
+    public String getPredicate()
+    {
         return predicate;
     }
 
-    public void setPredicate(String predicate) {
+    public void setPredicate(String predicate)
+    {
         this.predicate = predicate;
+        this.update("predicate");
     }
 
-    public String getOperationExpression() {
+    public String getOperationExpression()
+    {
         return operationExpression;
     }
 
-    public void setOperationExpression(String operationExpression) {
+    public void setOperationExpression(String operationExpression)
+    {
         this.operationExpression = operationExpression;
+        this.update("operationExpression");
     }
 
-    public ClassDef getClassDef() {
+    public ClassDef getClassDef()
+    {
         return classDef;
     }
 
-    public void setClassDef(ClassDef classDef) {
+    public void setClassDef(ClassDef classDef)
+    {
         this.classDef = classDef;
+    }
+
+    @Override
+    public Operation clone()
+    {
+        Operation clone = new Operation();
+        clone.setDeclaration(this.getDeclaration());
+        clone.setOperationExpression(this.getOperationExpression());
+        clone.setPredicate(this.getPredicate());
+        clone.setDeltaList(this.getDeltaList());
+        clone.setName(this.getName());
+
+        return clone;
     }
 }

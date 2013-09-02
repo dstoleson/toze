@@ -14,6 +14,7 @@ public class AxiomaticDef extends SpecObject
 
     public void setDeclaration(String declaration) {
         this.declaration = declaration;
+        this.update("declaration");
     }
 
     public String getPredicate() {
@@ -22,6 +23,7 @@ public class AxiomaticDef extends SpecObject
 
     public void setPredicate(String predicate) {
         this.predicate = predicate;
+        this.update("predicate");
     }
 
     public Specification getSpecification() {
@@ -38,5 +40,15 @@ public class AxiomaticDef extends SpecObject
 
     public void setClassDef(ClassDef classDef) {
         this.classDef = classDef;
+    }
+
+    @Override
+    public AxiomaticDef clone()
+    {
+        AxiomaticDef clone = new AxiomaticDef();
+        clone.setDeclaration(this.getDeclaration());
+        clone.setPredicate(this.getPredicate());
+
+        return clone;
     }
 }

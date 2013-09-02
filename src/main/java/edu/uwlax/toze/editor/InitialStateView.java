@@ -1,12 +1,16 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.InitialState;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class InitialStateView extends ParagraphView
+public class InitialStateView extends ParagraphView implements Observer
 {
     static private final int InitOffset = 10;
     static private final int InitLineMargin = 5;
@@ -19,21 +23,14 @@ public class InitialStateView extends ParagraphView
     static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
     static private final String m_post = "]";
     //
+    private InitialState initialState;
+    //
     private TozeTextArea predicateText;
 
-    public InitialStateView()
+    public InitialStateView(InitialState initialState)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getPredicateText()
-    {
-        return this.predicateText;
-    }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
+        this.initialState = initialState;
         requestRebuild();
     }
 
@@ -42,7 +39,11 @@ public class InitialStateView extends ParagraphView
     {
         removeAll();
 
-        addNotNull(predicateText);
+        if (initialState != null && initialState.getPredicate() != null)
+            {
+            predicateText = buildTextArea(initialState, initialState.getPredicate(), "predicate");
+            add(predicateText);
+            }
     }
 
     @Override
@@ -168,5 +169,14 @@ public class InitialStateView extends ParagraphView
                        cd.height - 1 - VMargin);
             g.drawLine(HMargin, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
 // type == 2           }
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        if (o == initialState)
+            {
+            requestRebuild();
+            }
     }
 }

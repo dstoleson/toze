@@ -1,31 +1,30 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.ClassDef;
+import edu.uwlax.toze.domain.Operation;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class VisibilityListView extends ParagraphView implements Placement
+public class VisibilityListView extends ParagraphView implements Placement, Observer
 {
     static private final String BasicTypePre = TozeFontMap.CHAR_RHARPOON + "(";
     static private final String BasicTypePost = ")";
-    //   
+    //
+    private ClassDef classDef;
+
     private TozeTextArea visibilityListText;
 
-    public VisibilityListView()
+    public VisibilityListView(ClassDef classDef)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getVisibilityListText()
-    {
-        return this.visibilityListText;
-    }
-
-    public void setVisibilityListText(TozeTextArea visibilityListText)
-    {
-        this.visibilityListText = visibilityListText;
+        this.classDef = classDef;
+        classDef.addObserver(this);
         requestRebuild();
     }
 
@@ -34,7 +33,11 @@ public class VisibilityListView extends ParagraphView implements Placement
     {
         removeAll();
 
-        addNotNull(visibilityListText);
+        if (classDef != null && classDef.getVisibilityList() != null)
+            {
+            visibilityListText = buildTextArea(classDef, classDef.getVisibilityList(), "visibilityList");
+            add(visibilityListText);
+            }
     }
 
     @Override
@@ -92,5 +95,14 @@ public class VisibilityListView extends ParagraphView implements Placement
         g.drawString(BasicTypePre, xoffset, yoffset + ystring);
         int numLines = visibilityListText.getLineCount();
         g.drawString(BasicTypePost, xoffset + fm.stringWidth(BasicTypePre) + cd.width, yoffset + ystring + (fm.getHeight() * (numLines - 1)));
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        if (o == classDef && "visibilityList".equals(arg))
+            {
+            requestRebuild();
+            }
     }
 }

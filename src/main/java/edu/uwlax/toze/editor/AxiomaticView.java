@@ -1,44 +1,30 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.AxiomaticDef;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class AxiomaticView extends ParagraphView
+public class AxiomaticView extends ParagraphView implements Observer
 {
     static private final int AxContentOffset = 10;
     static private final int AxLineMargin = 5;
     static private final int AxExtraLine = 10;
     //
+    private AxiomaticDef axiomaticDef;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public AxiomaticView()
+    public AxiomaticView(AxiomaticDef axiomaticDef)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getDeclarationText()
-    {
-        return declarationText;
-    }
-
-    public void setDeclarationText(TozeTextArea declarationText)
-    {
-        this.declarationText = declarationText;
-        requestRebuild();
-    }
-
-    public TozeTextArea getPredicateText()
-    {
-        return predicateText;
-    }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
+        this.axiomaticDef = axiomaticDef;
+        axiomaticDef.addObserver(this);
         requestRebuild();
     }
 
@@ -47,8 +33,17 @@ public class AxiomaticView extends ParagraphView
     {
         removeAll();
 
-        addNotNull(declarationText);
-        addNotNull(predicateText);
+        if (axiomaticDef.getDeclaration() != null)
+            {
+            declarationText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "declaration");
+            add(declarationText);
+            }
+
+        if (axiomaticDef.getPredicate() != null)
+            {
+            predicateText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "predicate");
+            add(predicateText);
+            }
     }
 
     @Override
@@ -150,5 +145,13 @@ public class AxiomaticView extends ParagraphView
             g.drawLine(xoffset, yoffset, xoffset + cd.width - 1, yoffset);
             g.drawLine(xoffset, yoffset, xoffset, cd.height - VMargin);
             }
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        // nothing to do (no sub-views)
+        // text views are updated using another mechanism
+        return;
     }
 }

@@ -1,30 +1,30 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.BasicTypeDef;
+import edu.uwlax.toze.domain.SpecObject;
+import edu.uwlax.toze.domain.SpecObjectPropertyPair;
+import edu.uwlax.toze.editor.bindings.Binding;
+
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
-public class BasicTypeView extends ParagraphView
+public class BasicTypeView extends ParagraphView implements Observer
 {
     private static final String BasicTypePre = "[";
     private static final String BasicTypePost = "]";
-    //  
+    //
+    private BasicTypeDef basicTypeDef;
     private TozeTextArea nameText;
 
-    public BasicTypeView()
+    public BasicTypeView(BasicTypeDef basicTypeDef)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getNameText()
-    {
-        return this.nameText;
-    }
-
-    public void setNameText(TozeTextArea nameText)
-    {
-        this.nameText = nameText;
+        this.basicTypeDef = basicTypeDef;
+        basicTypeDef.addObserver(this);
         requestRebuild();
     }
 
@@ -33,7 +33,11 @@ public class BasicTypeView extends ParagraphView
     {
         removeAll();
 
-        addNotNull(nameText);
+        if (basicTypeDef.getName() != null)
+            {
+            nameText = buildTextArea(basicTypeDef, basicTypeDef.getName(), "name");
+            add(nameText);
+            }
     }
 
     @Override
@@ -87,5 +91,13 @@ public class BasicTypeView extends ParagraphView
         Dimension cd = nameText.getPreferredSize();
         g.drawString(BasicTypePre, HMargin, VMargin + ystring);
         g.drawString(BasicTypePost, HMargin + fm.stringWidth(BasicTypePre) + cd.width, VMargin + ystring);
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        // nothing to do (no sub-views)
+        // text views are updated using another mechanism
+        return;
     }
 }

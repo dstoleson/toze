@@ -14,6 +14,7 @@ public class AbbreviationDef extends SpecObject
 
     public void setName(String name) {
         this.name = name;
+        this.update("name");
     }
 
     public String getExpression() {
@@ -22,6 +23,7 @@ public class AbbreviationDef extends SpecObject
 
     public void setExpression(String expression) {
         this.expression = expression;
+        this.update("expression");
     }
 
     public Specification getSpecification() {
@@ -38,5 +40,15 @@ public class AbbreviationDef extends SpecObject
 
     public void setClassDef(ClassDef classDef) {
         this.classDef = classDef;
+    }
+
+    @Override
+    public AbbreviationDef clone()
+    {
+        AbbreviationDef clone = new AbbreviationDef();
+        clone.setName(this.getName());
+        clone.setExpression(this.getExpression());
+
+        return clone;
     }
 }

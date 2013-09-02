@@ -1,10 +1,9 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.spec.ClassDef;
+import edu.uwlax.toze.domain.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -12,16 +11,16 @@ import java.util.List;
  *
  * @author dhs
  */
-public class ClassView extends ParagraphView implements MoveableParagraphView
+public class ClassView extends ParagraphView implements Observer
 {
     static final private int ClassNameOffset = 10;
     static final private int ClassNameLineMargin = 5;
     static final private int ClassNameSpace = 5;
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
-
+    //
     private ClassDef classDef;
-
+    //
     private TozeTextArea classNameText;
     private List<AxiomaticView> axiomaticViews;
     private VisibilityListView visibilityListView;
@@ -33,186 +32,87 @@ public class ClassView extends ParagraphView implements MoveableParagraphView
     private InitialStateView initialStateView;
     private List<OperationView> operationViews;
 
-    public ClassView()
+    public ClassView(ClassDef classDef)
     {
         this.setLayout(new ParaLayout(this));
+        this.classDef = classDef;
+        classDef.addObserver(this);
 
         axiomaticViews = new ArrayList<AxiomaticView>();
         abbreviationViews = new ArrayList<AbbreviationView>();
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
-    }
 
-    public TozeTextArea getClassNameText()
-    {
-        return this.classNameText;
-    }
-
-    public void setClassNameText(TozeTextArea classNameText)
-    {
-        this.classNameText = classNameText;
         requestRebuild();
     }
 
-    public VisibilityListView getVisibilityListView()
+    private void addView(ParagraphView view, List views)
     {
-        return this.visibilityListView;
-    }
-
-    public void setVisibilityListView(VisibilityListView visibilityListView)
-    {
-        this.visibilityListView = visibilityListView;
-        requestRebuild();
-    }
-
-    public StateView getStateView()
-    {
-        return this.stateView;
-    }
-
-    public void setStateView(StateView stateView)
-    {
-        this.stateView = stateView;
-        requestRebuild();
-    }
-
-    public InitialStateView getInitialStateView()
-    {
-        return this.initialStateView;
-    }
-
-    public void setInitialStateView(InitialStateView initialStateView)
-    {
-        this.initialStateView = initialStateView;
-        requestRebuild();
-    }
-
-    public void addAxiomaticView(AxiomaticView axiomaticView)
-    {
-        addAxiomaticView(axiomaticViews.size(), axiomaticView);
-    }
-
-    public void addAxiomaticView(int index, AxiomaticView axiomaticView)
-    {
-        axiomaticViews.add(index, axiomaticView);
-        requestRebuild();
-    }
-
-    public void removeAxiomaticView(AxiomaticView axiomaticView)
-    {
-        axiomaticViews.remove(axiomaticView);
-        requestRebuild();
-    }
-
-    public void addAbbreviationView(AbbreviationView abbreviationView)
-    {
-        addAbbreviationView(abbreviationViews.size(), abbreviationView);
-    }
-
-    public void addAbbreviationView(int index, AbbreviationView abbreviationView)
-    {
-        abbreviationViews.add(index, abbreviationView);
-        requestRebuild();
-    }
-
-    public void removeAbbreviationView(AbbreviationView abbreviationView)
-    {
-        abbreviationViews.remove(abbreviationView);
-        requestRebuild();
-    }
-
-    public void addBasicTypeView(BasicTypeView basicTypeView)
-    {
-        addBasicTypeView(basicTypeViews.size(), basicTypeView);
-    }
-
-    public void addBasicTypeView(int index, BasicTypeView basicTypeView)
-    {
-        basicTypeViews.add(index, basicTypeView);
-        requestRebuild();
-    }
-
-    public void removeBasicTypeView(BasicTypeView basicTypeView)
-    {
-        basicTypeViews.remove(basicTypeView);
-        requestRebuild();
-    }
-
-    public void addFreeTypeView(FreeTypeView freeTypeView)
-    {
-        addFreeTypeView(freeTypeViews.size(), freeTypeView);
-    }
-
-    public void addFreeTypeView(int index, FreeTypeView freeTypeView)
-    {
-        freeTypeViews.add(index, freeTypeView);
-        requestRebuild();
-    }
-
-    public void removeFreeTypeView(FreeTypeView freeTypeView)
-    {
-        freeTypeViews.remove(freeTypeView);
-        requestRebuild();
-    }
-
-    public void addOperationView(OperationView operationView)
-    {
-        addOperationView(operationViews.size(), operationView);
-    }
-
-    public void addOperationView(int index, OperationView operationView)
-    {
-        operationViews.add(index, operationView);
-        requestRebuild();
-    }
-
-    public void removeOperationView(OperationView operationView)
-    {
-        operationViews.remove(operationView);
-        requestRebuild();
-    }
-
-    public InheritedClassView getInheritedClassView()
-    {
-        return this.inheritedClassView;
-    }
-
-    public void setInheritedClassView(InheritedClassView inheritedClassView)
-    {
-        this.inheritedClassView = inheritedClassView;
-        requestRebuild();
+//        view.addMouseListener(mouseAdapter);
+//        view.addKeyListener(keyAdapter);
+        add(view);
+        views.add(view);
     }
 
     public void rebuild()
     {
         removeAll();
+        axiomaticViews.clear();
+        abbreviationViews.clear();
+        basicTypeViews.clear();
+        freeTypeViews.clear();
+        operationViews.clear();
 
-        addNotNull(classNameText);
-        addNotNull(visibilityListView);
-        addNotNull(stateView);
-        addNotNull(inheritedClassView);
-        addNotNull(initialStateView);
+        if (classDef.getClass() != null)
+            {
+            classNameText = buildTextArea(classDef, classDef.getName(), "name");
+            }
+        if (classDef.getVisibilityList() != null)
+            {
+            visibilityListView = new VisibilityListView(classDef);
+            }
+        if (classDef.getState() != null)
+            {
+            stateView = new StateView(classDef.getState());
+            }
+        if (classDef.getInheritedClass() != null)
+            {
+            inheritedClassView = new InheritedClassView(classDef.getInheritedClass());
+            }
+        if (classDef.getInitialState() != null)
+            {
+            initialStateView = new InitialStateView(classDef.getInitialState());
+            }
 
-        for (AxiomaticView axiomaticView : axiomaticViews)
+        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
             {
-            addNotNull(axiomaticView);
+            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef);
+            addView(axiomaticView, axiomaticViews);
             }
-        for (AbbreviationView abbreviationView : abbreviationViews)
+
+        for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
             {
-            addNotNull(abbreviationView);
+            AbbreviationView abbreviationView = new AbbreviationView((abbreviationDef));
+            addView(abbreviationView, abbreviationViews);
             }
-        for (BasicTypeView basicTypeView : basicTypeViews)
+
+        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
             {
-            addNotNull(basicTypeView);
+            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
+            addView(basicTypeView, basicTypeViews);
             }
-        for (FreeTypeView freeTypeView : freeTypeViews)
+
+        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
             {
-            addNotNull(freeTypeView);
+            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
+            addView(freeTypeView, freeTypeViews);
             }
-        for (OperationView operationView : operationViews)
+
+        for (Operation operation : classDef.getOperationList())
             {
-            addNotNull(operationView);
+            OperationView operationView = new OperationView(operation);
+            addView(operationView, operationViews);
             }
     }
 
@@ -455,6 +355,15 @@ public class ClassView extends ParagraphView implements MoveableParagraphView
             d = operationView.getPreferredSize(this.getGraphics());
             operationView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
+            }
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        if (o == classDef)
+            {
+            requestRebuild();
             }
     }
 }

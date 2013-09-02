@@ -1,51 +1,49 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.FreeTypeDef;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class FreeTypeView extends ParagraphView implements Placement
+public class FreeTypeView extends ParagraphView implements Placement, Observer
 {
     private final String FreeTypeMid = " ::= ";
     //
+    private FreeTypeDef freeTypeDef;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public FreeTypeView()
+    public FreeTypeView(FreeTypeDef freeTypeDef)
     {
         setLayout(new ParaLayout(this));
-    }
-
-    public TozeTextArea getDeclarationText()
-    {
-        return this.declarationText;
-    }
-
-    public void setDeclarationText(TozeTextArea declarationText)
-    {
-        this.declarationText = declarationText;
+        this.freeTypeDef = freeTypeDef;
+        freeTypeDef.addObserver(this);
         requestRebuild();
-    }
 
-    public TozeTextArea getPredicateText()
-    {
-        return this.predicateText;
-    }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
-        requestRebuild();
     }
 
     @Override
     protected void rebuild()
     {
-        addNotNull(declarationText);
-        addNotNull(predicateText);
+        removeAll();
+
+        if (freeTypeDef.getDeclaration() != null)
+            {
+            declarationText = buildTextArea(freeTypeDef, freeTypeDef.getDeclaration(), "declaration");
+            add(declarationText);
+            }
+
+        if (freeTypeDef.getPredicate() != null)
+            {
+            predicateText = buildTextArea(freeTypeDef, freeTypeDef.getPredicate(), "predicate");
+            add(predicateText);
+            }
     }
 
     @Override
@@ -115,5 +113,13 @@ public class FreeTypeView extends ParagraphView implements Placement
 
         xoffset += d.width;
         g.drawString(FreeTypeMid, xoffset, yoffset + ystring);
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        // nothing to do (no sub-views)
+        // text views are updated using another mechanism
+        return;
     }
 }

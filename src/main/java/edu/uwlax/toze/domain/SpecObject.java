@@ -1,5 +1,6 @@
 package edu.uwlax.toze.domain;
 
+import java.util.Observable;
 import java.util.UUID;
 
 /**
@@ -7,12 +8,25 @@ import java.util.UUID;
  * a way to generate a UUID for each object in the specification document
  * tree.
  */
-public class SpecObject
+public class SpecObject extends Observable implements Cloneable
 {
     final private String id = UUID.randomUUID().toString();
     
     public String getId()
     {
         return id;
+    }
+
+    protected void update(Object property)
+    {
+        this.setChanged();
+        this.notifyObservers(property);
+    }
+
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
     }
 }

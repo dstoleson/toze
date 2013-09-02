@@ -388,8 +388,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         treeModel.addSpecificationDocument(specificationDocument);
 
 
-        SpecificationView specView = new SpecificationView();
+        SpecificationView specView = new SpecificationView(specification);
+        specification.addObserver(specView);
+
         SpecificationController controller = new SpecificationController(specificationDocument, specView);
+        specView.setController(controller);
         specView.setLayout(new TozeLayout());
 
         JPanel panel = new JPanel(false);
@@ -571,8 +574,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 {
                 int tabIndex = specificationTabPanel.getSelectedIndex();
                 SpecificationController specificationController = tabControllers.get(tabIndex);
-                TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
-                textArea.scrollRectToVisible(textArea.getBounds());
+
+                // TODO: need to update how errors in text areas are displayed.
+//                TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
+//                textArea.scrollRectToVisible(textArea.getBounds());
                 System.out.println(errorsList.getSelectedValue());
                 }
         }

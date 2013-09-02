@@ -260,7 +260,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAbbreviation(toze, null);
+                controller.addAbbreviation(toze);
             }
         });
         popupMenu.add(menuItem);
@@ -273,7 +273,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAxiomaticType(toze, null, true);
+                controller.addAxiomaticType(toze, true);
             }
         });
         axiomaticMenu.add(menuItem);
@@ -283,7 +283,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAxiomaticType(toze, null, false);
+                controller.addAxiomaticType(toze, false);
             }
         });
         axiomaticMenu.add(menuItem);
@@ -294,7 +294,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addBasicType(toze, null);
+                controller.addBasicType(toze);
             }
         });
         popupMenu.add(menuItem);
@@ -304,7 +304,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addClass(null);
+                controller.addClass();
             }
         });
         popupMenu.add(menuItem);
@@ -314,7 +314,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addFreeType(toze, null);
+                controller.addFreeType(toze);
             }
         });
         popupMenu.add(menuItem);
@@ -378,7 +378,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addVisibilityList(classDef, null);
+                controller.addVisibilityList(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -400,7 +400,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addInheritedClass(classDef, null);
+                controller.addInheritedClass(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -421,7 +421,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAbbreviation(classDef, null);
+                controller.addAbbreviation(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -434,7 +434,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAxiomaticType(classDef, null, true);
+                controller.addAxiomaticType(classDef, true);
             }
         });
         axiomaticMenu.add(menuItem);
@@ -444,7 +444,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addAxiomaticType(classDef, null, false);
+                controller.addAxiomaticType(classDef, false);
             }
         });
         axiomaticMenu.add(menuItem);
@@ -455,7 +455,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addBasicType(classDef, null);
+                controller.addBasicType(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -465,7 +465,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addFreeType(classDef, null);
+                controller.addFreeType(classDef);
             }
         });
         popupMenu.add(menuItem);
@@ -478,7 +478,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, All);
+                controller.addState(classDef, All);
             }
         });
         stateMenu.add(menuItem);
@@ -488,7 +488,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, Bracket);
+                controller.addState(classDef, Bracket);
             }
         });
         stateMenu.add(menuItem);
@@ -498,7 +498,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, NoPredicate);
+                controller.addState(classDef, NoPredicate);
             }
         });
         stateMenu.add(menuItem);
@@ -508,7 +508,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addState(classDef, null, NoDeclaration);
+                controller.addState(classDef, NoDeclaration);
             }
         });
         stateMenu.add(menuItem);
@@ -534,7 +534,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO need additional parameter for = and not-equal
-                controller.addInitialState(classDef, null);
+                controller.addInitialState(classDef);
             }
         });
         initStateMenu.add(menuItem);
@@ -545,7 +545,7 @@ public class PopUpMenuBuilder
             public void actionPerformed(ActionEvent e)
             {
                 // TODO need additional parameter for = and not-equal
-                controller.addInitialState(classDef, null);
+                controller.addInitialState(classDef);
             }
         });
         initStateMenu.add(menuItem);
@@ -569,7 +569,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addOperation(classDef, null, OperationType.All);
+                controller.addOperation(classDef, OperationType.All);
             }
         });
         operationMenu.add(menuItem);
@@ -579,7 +579,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addOperation(classDef, null, OperationType.NoPredicate);
+                controller.addOperation(classDef, OperationType.NoPredicate);
             }
         });
         operationMenu.add(menuItem);
@@ -589,7 +589,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addOperation(classDef, null, OperationType.NoDeclaration);
+                controller.addOperation(classDef, OperationType.NoDeclaration);
             }
         });
         operationMenu.add(menuItem);
@@ -599,7 +599,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addOperation(classDef, null, OperationType.Expression);
+                controller.addOperation(classDef, OperationType.Expression);
             }
         });
         operationMenu.add(menuItem);
@@ -631,7 +631,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addDeltaList(operation, null);
+                controller.addDeltaList(operation);
             }
         });
         popupMenu.add(menuItem);
@@ -653,7 +653,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addDeclaration(operation, null);
+                controller.addDeclaration(operation);
             }
         });
         popupMenu.add(menuItem);
@@ -675,7 +675,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addOperationPredicate(operation, null);
+                controller.addOperationPredicate(operation);
             }
         });
         popupMenu.add(menuItem);
