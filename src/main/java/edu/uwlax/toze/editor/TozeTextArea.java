@@ -19,7 +19,6 @@ public class TozeTextArea extends JTextArea
 
     private boolean highlighted = false;
     private boolean ignoresEnter = true;
-    private TozeChars m_map = new TozeChars();
     private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
     static private boolean m_anyChanged = false;
     private List m_typeErrorIds = new ArrayList();
@@ -153,11 +152,12 @@ public class TozeTextArea extends JTextArea
                 }
 
             int pos = this.getCaretPosition();
-            String str = m_map.mapLast(getText(), pos);
-            if (str != null)
+            TozeChars.TozeMap tozeMap = TozeChars.mapLast(getText(), pos);
+
+            if (tozeMap != null)
                 {
-                setText(str);
-                setCaretPosition(m_map.m_pos);
+                setText(tozeMap.tozeChar);
+                setCaretPosition(tozeMap.pos);
                 revalidate();
                 }
             }

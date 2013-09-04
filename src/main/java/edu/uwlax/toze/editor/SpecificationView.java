@@ -25,6 +25,7 @@ public class SpecificationView extends JPanel implements Observer
     {
         super();
         this.specification = specification;
+        requestRebuild();
     }
 
     public void setController(SpecificationController specController)
@@ -39,48 +40,58 @@ public class SpecificationView extends JPanel implements Observer
         this.rebuild();
     }
 
+    // TODO:  duplicate methods in ParagraphView, NOPE!!!
+    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
+    {
+        TozeTextArea text = new TozeTextArea(value);
+        text.setIgnoresEnter(ignoresEnter);
+        addDocumentListener(text, modelObject, property);
+//        text.addMouseListener(mouseAdapter);
+//        text.addFocusListener(specController);
+        return text;
+    }
+
+    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
+    {
+        return buildTextArea(modelObject, value, property, true);
+    }
+
+    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    {
+        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
+//        textArea.addKeyListener(keyAdapter);
+    }
+
     public void rebuild()
     {
         removeAll();
 
-        addNotNull(predicateText);
+        if (specification.getPredicate() != null)
+            {
+            predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
+            add(predicateText);
+            }
 
         for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
             {
-            addAxiomaticView(axiomaticDef);
+            addView(new AxiomaticView(axiomaticDef));
             }
         for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
             {
-            addAbbreviationView(abbreviationDef);
+            addView(new AbbreviationView(abbreviationDef));
             }
         for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
             {
-            addBasicTypeView(basicTypeDef);
+            addView(new BasicTypeView(basicTypeDef));
             }
         for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
             {
-            addFreeTypeView(freeTypeDef);
+            addView(new FreeTypeView(freeTypeDef));
             }
         for (ClassDef classDef : specification.getClassDefList())
             {
-            addClassView(classDef);
+            addView(new ClassView(classDef));
             }
-    }
-
-    /**
-     * Utility method to handle null components so a if-check isn't required
-     * every time to prevent NullPointerExceptions.
-     *
-     * @param component The component to add, can be null.
-     * @return The component that was added, or null.
-     */
-    public Component addNotNull(Component component)
-    {
-        if (component != null)
-            {
-            add(component);
-            }
-        return component;
     }
 
     @Override
@@ -131,36 +142,6 @@ public class SpecificationView extends JPanel implements Observer
         view.addMouseListener(mouseAdapter);
         view.addKeyListener(keyAdapter);
         add(view);
-    }
-
-    private void addClassView(ClassDef classDef)
-    {
-        ClassView classView = new ClassView(classDef);
-        addView(classView);
-    }
-
-    private void addAxiomaticView(AxiomaticDef axiomaticDef)
-    {
-        AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef);
-        addView(axiomaticView);
-    }
-
-    private void addAbbreviationView(AbbreviationDef abbreviationDef)
-    {
-        AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef);
-        addView(abbreviationView);
-    }
-
-    private void addBasicTypeView(BasicTypeDef basicTypeDef)
-    {
-        BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
-        addView(basicTypeView);
-    }
-
-    private void addFreeTypeView(FreeTypeDef freeTypeDef)
-    {
-        FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
-        addView(freeTypeView);
     }
 
     @Override

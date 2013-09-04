@@ -1,6 +1,9 @@
 package edu.uwlax.toze.domain;
 
+import edu.uwlax.toze.objectz.TozeToken;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Specification extends SpecObject implements ParentSpecObject
@@ -41,19 +44,7 @@ public class Specification extends SpecObject implements ParentSpecObject
     }
 
     public List<AbbreviationDef> getAbbreviationDefList() {
-        return new ArrayList<AbbreviationDef>(abbreviationDefList);
-    }
-
-    public void addAbbreviationDef(AbbreviationDef abbreviationDef)
-    {
-        abbreviationDefList.add(abbreviationDef);
-        this.update("abbreviationDefList");
-    }
-
-    public void removeAbbeviationDef(AbbreviationDef abbreviationDef)
-    {
-        abbreviationDefList.remove(abbreviationDef);
-        this.update("abbreviationDefList");
+        return abbreviationDefList;
     }
 
     public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList) {
@@ -86,5 +77,69 @@ public class Specification extends SpecObject implements ParentSpecObject
     public void setPredicate(String predicate) {
         this.predicate = predicate;
         this.update("predicate");
+    }
+
+    @Override
+    public List<TozeToken> getErrors()
+    {
+        List<TozeToken> errorList = super.getErrors();
+
+        for (BasicTypeDef basicTypeDef : basicTypeDefList)
+            {
+            errorList.addAll(basicTypeDef.getErrors());
+            }
+        for (AxiomaticDef axiomaticDef : axiomaticDefList)
+            {
+            errorList.addAll(axiomaticDef.getErrors());
+            }
+        for (AbbreviationDef abbreviationDef : abbreviationDefList)
+            {
+            errorList.addAll(abbreviationDef.getErrors());
+            }
+        for (FreeTypeDef freeTypeDef : freeTypeDefList)
+            {
+            errorList.addAll(freeTypeDef.getErrors());
+            }
+        for (GenericDef genericDef : genericDefList)
+            {
+            errorList.addAll(genericDef.getErrors());
+            }
+        for (ClassDef classDef : classDefList)
+            {
+            errorList.addAll(classDef.getErrors());
+            }
+
+        return errorList;
+    }
+
+    @Override
+    public void clearErrors()
+    {
+        super.clearErrors();
+
+        for (BasicTypeDef basicTypeDef : basicTypeDefList)
+            {
+            basicTypeDef.clearErrors();
+            }
+        for (AxiomaticDef axiomaticDef : axiomaticDefList)
+            {
+            axiomaticDef.clearErrors();
+            }
+        for (AbbreviationDef abbreviationDef : abbreviationDefList)
+            {
+            abbreviationDef.clearErrors();
+            }
+        for (FreeTypeDef freeTypeDef : freeTypeDefList)
+            {
+            freeTypeDef.clearErrors();
+            }
+        for (GenericDef genericDef : genericDefList)
+            {
+            genericDef.clearErrors();
+            }
+        for (ClassDef classDef : classDefList)
+            {
+            classDef.clearErrors();
+            }
     }
 }

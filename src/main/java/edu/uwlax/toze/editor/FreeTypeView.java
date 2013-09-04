@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.FreeTypeDef;
+import edu.uwlax.toze.domain.Operation;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,6 +27,12 @@ public class FreeTypeView extends ParagraphView implements Placement, Observer
         freeTypeDef.addObserver(this);
         requestRebuild();
 
+    }
+
+    @Override
+    public FreeTypeDef getSpecObject()
+    {
+        return freeTypeDef;
     }
 
     @Override

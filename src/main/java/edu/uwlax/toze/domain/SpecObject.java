@@ -1,28 +1,58 @@
 package edu.uwlax.toze.domain;
 
-import java.util.Observable;
-import java.util.UUID;
+import edu.uwlax.toze.objectz.TozeToken;
+
+import java.util.*;
 
 /**
  * Abstract super class for all of the specification classes.  It provides
  * a way to generate a UUID for each object in the specification document
  * tree.
  */
-public class SpecObject extends Observable implements Cloneable
+public abstract class SpecObject extends Observable implements Cloneable
 {
-    final private String id = UUID.randomUUID().toString();
-    
-    public String getId()
+    private HashMap<String, TozeToken> errors;
+
+    public SpecObject()
     {
-        return id;
+        errors = new HashMap<String, TozeToken>();
     }
 
+    public void setErrorForProperty(String property, TozeToken error)
+    {
+        errors.put(property, error);
+    }
+
+    public TozeToken getErrorForProperty(String property)
+    {
+        return errors.get(property);
+    }
+
+    public List<TozeToken> getErrors()
+    {
+        ArrayList<TozeToken> errorList = new ArrayList<TozeToken>();
+        errorList.addAll(errors.values());
+
+        return errorList;
+    }
+
+    public void clearErrors()
+    {
+        errors.clear();
+    }
+
+    protected static void notNullClearErrors(SpecObject specObject)
+    {
+        if (specObject != null)
+            {
+            specObject.clearErrors();
+            }
+    }
     protected void update(Object property)
     {
         this.setChanged();
         this.notifyObservers(property);
     }
-
 
     @Override
     public Object clone() throws CloneNotSupportedException

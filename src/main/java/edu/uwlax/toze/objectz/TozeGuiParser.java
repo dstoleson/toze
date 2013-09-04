@@ -14,7 +14,7 @@ public class TozeGuiParser extends TozeParser
 
     private Stack<SpecificationSection> sectionsStack = new Stack<SpecificationSection>();
     private Stack m_nodes = new Stack();
-    private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();
+//    private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();     x
 
     public void parseForErrors(Specification toze)
     {        
@@ -249,7 +249,7 @@ public class TozeGuiParser extends TozeParser
             }
         end(); // domain
 
-        if (getSyntaxErrors().isEmpty())
+        if (toze.getErrors().isEmpty())
             {
             Ast.AstSpec astSpec = getSpec();
             astSpec.populateTypeTable(null);
@@ -261,11 +261,6 @@ public class TozeGuiParser extends TozeParser
 //                astSpec.checkType();
                 }
             }
-    }
-
-    public HashMap<TozeToken, SpecObjectPropertyPair> getSyntaxErrors()
-    {
-        return (HashMap<TozeToken, SpecObjectPropertyPair>)errors.clone();
     }
 
     public Set<String> getTypeErrors()
@@ -522,7 +517,7 @@ public class TozeGuiParser extends TozeParser
     {
         if (t != null)
             {
-            errors.put(t, new SpecObjectPropertyPair(o, property));
+            o.setErrorForProperty(property, t);
             }
         else
             {

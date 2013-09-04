@@ -117,6 +117,37 @@ public class ClassDef extends SpecObject implements ParentSpecObject
     }
 
     @Override
+    public void clearErrors()
+    {
+        super.clearErrors();
+
+        notNullClearErrors(inheritedClass);
+        notNullClearErrors(initialState);
+        notNullClearErrors(state);
+
+        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
+            {
+            abbreviationDef.clearErrors();
+            }
+        for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
+            {
+            axiomaticDef.clearErrors();
+            }
+        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
+            {
+            basicTypeDef.clearErrors();
+            }
+        for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
+            {
+            freeTypeDef.clearErrors();
+            }
+        for (Operation operation : this.getOperationList())
+            {
+            operation.clearErrors();
+            }
+    }
+
+    @Override
     public ClassDef clone()
     {
         ClassDef clone = new ClassDef();

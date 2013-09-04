@@ -27,6 +27,12 @@ public class AbbreviationView extends ParagraphView implements Observer
     }
 
     @Override
+    public AbbreviationDef getSpecObject()
+    {
+        return abbreviationDef;
+    }
+
+    @Override
     protected void rebuild()
     {
         removeAll();

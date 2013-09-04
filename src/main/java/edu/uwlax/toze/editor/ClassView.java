@@ -47,12 +47,27 @@ public class ClassView extends ParagraphView implements Observer
         requestRebuild();
     }
 
+    @Override
+    public ClassDef getSpecObject()
+    {
+        return classDef;
+    }
+
+    private void addView(ParagraphView view)
+    {
+        addView(view, null);
+    }
+
     private void addView(ParagraphView view, List views)
     {
 //        view.addMouseListener(mouseAdapter);
 //        view.addKeyListener(keyAdapter);
         add(view);
-        views.add(view);
+
+        if (views != null)
+            {
+            views.add(view);
+            }
     }
 
     public void rebuild()
@@ -67,22 +82,27 @@ public class ClassView extends ParagraphView implements Observer
         if (classDef.getClass() != null)
             {
             classNameText = buildTextArea(classDef, classDef.getName(), "name");
+            add(classNameText);
             }
         if (classDef.getVisibilityList() != null)
             {
             visibilityListView = new VisibilityListView(classDef);
+            add(visibilityListView);
             }
         if (classDef.getState() != null)
             {
             stateView = new StateView(classDef.getState());
+            add(stateView);
             }
         if (classDef.getInheritedClass() != null)
             {
             inheritedClassView = new InheritedClassView(classDef.getInheritedClass());
+            add(inheritedClassView);
             }
         if (classDef.getInitialState() != null)
             {
             initialStateView = new InitialStateView(classDef.getInitialState());
+            addView(initialStateView);
             }
 
         for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())

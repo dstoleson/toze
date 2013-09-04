@@ -44,6 +44,12 @@ public class OperationView extends ParagraphView implements Observer
     }
 
     @Override
+    public Operation getSpecObject()
+    {
+        return operation;
+    }
+
+    @Override
     protected void rebuild()
     {
         removeAll();
@@ -57,21 +63,25 @@ public class OperationView extends ParagraphView implements Observer
         if (operation.getDeltaList() != null)
             {
             deltaListView = new DeltaListView(operation);
+            add(deltaListView);
             }
 
         if (operation.getDeclaration() != null)
             {
             declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration");
+            add(declarationText);
             }
 
         if (operation.getPredicate() != null)
             {
             predicateText = buildTextArea(operation, operation.getPredicate(), "predicate");
+            add(predicateText);
             }
 
         if (operation.getOperationExpression() != null)
             {
             operationExpressionText = buildTextArea(operation, operation.getOperationExpression(), "operationExpression");
+            add(operationExpressionText);
             }
     }
 

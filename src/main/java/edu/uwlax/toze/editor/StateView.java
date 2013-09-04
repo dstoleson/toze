@@ -30,41 +30,13 @@ public class StateView extends ParagraphView implements Observer
         setLayout(new ParaLayout(this));
         this.state = state;
         state.addObserver(this);
-    }
-
-    public TozeTextArea getDeclarationText()
-    {
-        return this.declarationText;
-    }
-
-    public void setDeclarationText(TozeTextArea declarationText)
-    {
-        this.declarationText = declarationText;
         requestRebuild();
     }
 
-    public TozeTextArea getPredicateText()
+    public State getSpecObject()
     {
-        return this.predicateText;
+        return state;
     }
-
-    public void setPredicateText(TozeTextArea predicateText)
-    {
-        this.predicateText = predicateText;
-        requestRebuild();
-    }
-
-    public TozeTextArea getStateNameText()
-    {
-        return this.stateNameText;
-    }
-
-    public void setStateNameText(TozeTextArea stateNameText)
-    {
-        this.stateNameText = stateNameText;
-        requestRebuild();
-    }
-
 
     @Override
     protected void rebuild()
@@ -74,14 +46,17 @@ public class StateView extends ParagraphView implements Observer
         if (state.getDeclaration() != null)
             {
             declarationText = buildTextArea(state, state.getDeclaration(), "declaration");
+            add(declarationText);
             }
         if (state.getPredicate() != null)
             {
             predicateText = buildTextArea(state, state.getPredicate(), "predicate");
+            add(predicateText);
             }
         if (state.getName() != null)
             {
             stateNameText = buildTextArea(state, state.getName(), "name");
+            add(stateNameText);
             }
     }
 

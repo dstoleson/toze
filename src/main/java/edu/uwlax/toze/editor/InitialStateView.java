@@ -1,5 +1,6 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.InheritedClass;
 import edu.uwlax.toze.domain.InitialState;
 
 import java.awt.Color;
@@ -31,7 +32,14 @@ public class InitialStateView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.initialState = initialState;
+        initialState.addObserver(this);
         requestRebuild();
+    }
+
+    @Override
+    public InitialState getSpecObject()
+    {
+        return initialState;
     }
 
     @Override

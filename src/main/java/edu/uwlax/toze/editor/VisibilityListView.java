@@ -28,6 +28,11 @@ public class VisibilityListView extends ParagraphView implements Placement, Obse
         requestRebuild();
     }
 
+    public ClassDef getSpecObject()
+    {
+        return classDef;
+    }
+
     @Override
     protected void rebuild()
     {

@@ -394,6 +394,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         SpecificationController controller = new SpecificationController(specificationDocument, specView);
         specView.setController(controller);
         specView.setLayout(new TozeLayout());
+        specView.requestRebuild();
 
         JPanel panel = new JPanel(false);
         JScrollPane specScroller = new JScrollPane();

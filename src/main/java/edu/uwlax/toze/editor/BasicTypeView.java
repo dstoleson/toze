@@ -1,5 +1,6 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.AxiomaticDef;
 import edu.uwlax.toze.domain.BasicTypeDef;
 import edu.uwlax.toze.domain.SpecObject;
 import edu.uwlax.toze.domain.SpecObjectPropertyPair;
@@ -26,6 +27,12 @@ public class BasicTypeView extends ParagraphView implements Observer
         this.basicTypeDef = basicTypeDef;
         basicTypeDef.addObserver(this);
         requestRebuild();
+    }
+
+    @Override
+    public BasicTypeDef getSpecObject()
+    {
+        return basicTypeDef;
     }
 
     @Override

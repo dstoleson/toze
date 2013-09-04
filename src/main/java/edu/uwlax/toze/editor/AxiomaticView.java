@@ -29,6 +29,12 @@ public class AxiomaticView extends ParagraphView implements Observer
     }
 
     @Override
+    public AxiomaticDef getSpecObject()
+    {
+        return axiomaticDef;
+    }
+
+    @Override
     protected void rebuild()
     {
         removeAll();

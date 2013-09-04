@@ -147,4 +147,6 @@ public abstract class ParagraphView extends JPanel implements Placement
         textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
 //        textArea.addKeyListener(keyAdapter);
     }
+
+    public abstract SpecObject getSpecObject();
 }

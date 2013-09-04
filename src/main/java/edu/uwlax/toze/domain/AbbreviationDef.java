@@ -1,5 +1,7 @@
 package edu.uwlax.toze.domain;
 
+import edu.uwlax.toze.objectz.TozeToken;
+
 public class AbbreviationDef extends SpecObject
 {
     private String name;

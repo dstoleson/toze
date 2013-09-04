@@ -41,7 +41,7 @@ public class SpecificationController extends Observable implements FocusListener
     private SpecificationDocument specificationDocument;
     private Specification specification;
 
-    private HashMap<JComponent, SpecObjectPropertyPair> viewToObjectMap;
+//    private HashMap<JComponent, SpecObjectPropertyPair> viewToObjectMap;
 
     //    private HashMap<Component, SpecObjectPropertyPair> viewToObjectMap;
     private SpecificationView specificationView;
@@ -70,7 +70,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         // create a map of the UI views to the model objects
         // they represent
-        viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
+//        viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
 
         initView();
     }
@@ -92,8 +92,10 @@ public class SpecificationController extends Observable implements FocusListener
      */
     private void initView()
     {
-        viewToObjectMap.put(specificationView, new SpecObjectPropertyPair(specification, null));
+//        viewToObjectMap.put(specificationView, new SpecObjectPropertyPair(specification, null));
 
+        specification.addObserver(specificationView);
+        specificationView.addMouseListener(mouseAdapter);
         specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
@@ -405,11 +407,6 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.repaint();
     }
 
-
-    private void addAbbreviation(ParentSpecObject parentSpecObject)
-    {
-
-    }
     /**
      */
     public void addAbbreviation(SpecObject object)
@@ -729,28 +726,23 @@ public class SpecificationController extends Observable implements FocusListener
         textArea.addKeyListener(keyAdapter);
     }
 
-    // should create a loop and pass a block to each object
-    private void unhighlightErrors()
-    {
-        for (Object view : viewToObjectMap.keySet())
-            {
-            if (view instanceof TozeTextArea)
-                {
-                ((TozeTextArea)view).setHighlighted(false);
-                }
-            }
-    }
+//    // should create a loop and pass a block to each object
+//    private void unhighlightErrors()
+//    {
+//        for (Object view : viewToObjectMap.keySet())
+//            {
+//            if (view instanceof TozeTextArea)
+//                {
+//                ((TozeTextArea)view).setHighlighted(false);
+//                }
+//            }
+//    }
 
     private void resetErrors()
     {
-        for (Object view : viewToObjectMap.keySet())
-            {
-            if (view instanceof TozeTextArea)
-                {
-                ((TozeTextArea)view).clearAllErrors();
-                ((TozeTextArea)view).setHighlighted(false);
-                }
-            }
+        specification.clearErrors();
+        specificationView.revalidate();
+        specificationView.repaint();
     }
 
     public void parseSpecification()
@@ -760,24 +752,7 @@ public class SpecificationController extends Observable implements FocusListener
         TozeGuiParser parser = new TozeGuiParser();
         parser.parseForErrors(specification);
 
-        List errors = new ArrayList<String>();
-
-        HashMap<TozeToken, SpecObjectPropertyPair> errorMap = parser.getSyntaxErrors();
-        for (Map.Entry<TozeToken, SpecObjectPropertyPair> entry : errorMap.entrySet())
-            {
-            // add the error to the list
-            TozeToken tozeToken = entry.getKey();
-            SpecObjectPropertyPair pair = entry.getValue();
-            errors.add(new SpecObjectPropertyError(pair.getObject(), pair.getProperty(), tozeToken));
-
-            // update the ui
-
-            // TODO: need to figure out how to update UI with errors
-//            TozeTextArea specObjectText = (TozeTextArea)componentForObjectOfType(pair.getObject(), pair.getProperty(), TozeTextArea.class);
-//            specObjectText.addError(tozeToken.m_lineNum, tozeToken.m_pos);
-
-            }
-
+        List errors = specification.getErrors();
 
 // TODO:  need to figure out how to make a type error similar to a syntax error for the list / highlighting, etc.
 //        errors.addAll(parser.getTypeErrors());
@@ -1147,70 +1122,67 @@ public class SpecificationController extends Observable implements FocusListener
         // put selected objects into the global cache
         // remove the selected object from the view
         cachedObject = null;
-        SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
-        SpecObject object = specObjectPropertyPair.getObject();
-        cachedObject = object;
-        String property = specObjectPropertyPair.getProperty();
+        SpecObject specObject = selectedParagraph.getSpecObject();
+        cachedObject = specObject;
 
-        if (object instanceof AbbreviationDef)
+        if (specObject instanceof AbbreviationDef)
         {
-            removeAbbreviation((AbbreviationDef)object);
+            removeAbbreviation((AbbreviationDef)specObject);
         }
-        else if (object instanceof AxiomaticDef)
+        else if (specObject instanceof AxiomaticDef)
         {
-            removeAxiomaticType((AxiomaticDef)object);
+            removeAxiomaticType((AxiomaticDef)specObject);
         }
-        else if (object instanceof BasicTypeDef)
+        else if (specObject instanceof BasicTypeDef)
         {
-            removeBasicType((BasicTypeDef)object);
+            removeBasicType((BasicTypeDef)specObject);
         }
-        else if (object instanceof ClassDef)
+        else if (specObject instanceof ClassDef)
         {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef)specObject;
 
-            if (property == null)
+            if (selectedParagraph instanceof ClassView)
             {
                 removeClass(classDef);
             }
-            else if ("visibilityList".equals(property))
+            else if (selectedParagraph instanceof VisibilityListView)
             {
                 removeVisibilityList(classDef);
             }
         }
-        else if (object instanceof FreeTypeDef)
+        else if (specObject instanceof FreeTypeDef)
         {
-            removeFreeType((FreeTypeDef)object);
+            removeFreeType((FreeTypeDef)specObject);
         }
-        else if (object instanceof GenericDef)
+        else if (specObject instanceof GenericDef)
         {
-            removeGenericType((GenericDef)object);
+            removeGenericType((GenericDef)specObject);
         }
-        else if (object instanceof InheritedClass)
+        else if (specObject instanceof InheritedClass)
         {
-            removeInheritedClass(((InheritedClass)object).getClassDef());
+            removeInheritedClass(((InheritedClass)specObject).getClassDef());
         }
-        else if (object instanceof InitialState)
+        else if (specObject instanceof InitialState)
         {
-            ClassView classView = (ClassView)selectedParagraph.getParent();
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+            ClassDef classDef = ((InitialState)specObject).getClassDef();
             removeInitialState(classDef);
         }
-        else if (object instanceof Operation)
+        else if (specObject instanceof Operation)
         {
-            Operation operation = (Operation)object;
-            if (property == null)
+            Operation operation = (Operation)specObject;
+
+            if (selectedParagraph instanceof OperationView)
             {
                 removeOperation(operation);
             }
-            else if ("deltaList".equals(property))
+            else if (selectedParagraph instanceof DeltaListView)
             {
                 removeDeltaList(operation);
             }
         }
-        else if (object instanceof State)
+        else if (specObject instanceof State)
         {
-            ClassView classView = (ClassView)selectedParagraph.getParent();
-            ClassDef classDef = (ClassDef)viewToObjectMap.get(classView).getObject();
+            ClassDef classDef = ((State)specObject).getClassDef();
             removeState(classDef);
         }
 
@@ -1224,12 +1196,11 @@ public class SpecificationController extends Observable implements FocusListener
     {
         // put selected objects into the global cache
         cachedObject = null;
-        SpecObjectPropertyPair specObjectPropertyPair = viewToObjectMap.get(selectedParagraph);
-        SpecObject object = specObjectPropertyPair.getObject();
+        SpecObject selectedObject = selectedParagraph.getSpecObject();
 
         try
             {
-            cachedObject = (SpecObject)object.clone();
+            cachedObject = (SpecObject)selectedObject.clone();
             }
         catch (CloneNotSupportedException e)
             {
@@ -1244,7 +1215,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (selectedParagraph != null)
             {
-            selectedObject = (SpecObject)viewToObjectMap.get(selectedParagraph).getObject();
+            selectedObject = selectedParagraph.getSpecObject();
             }
 
         if (cachedObject instanceof AbbreviationDef)
@@ -1398,11 +1369,21 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 // right click
                 Component clickedComponent = e.getComponent();
-                Object modelObject = viewToObjectMap.get(clickedComponent).getObject();
 
-                JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(modelObject, null, SpecificationController.this);
-                popupMenu.show(clickedComponent, e.getX(), e.getY());
+                if (clickedComponent instanceof ParagraphView)
+                    {
+                    SpecObject specObject = ((ParagraphView)clickedComponent).getSpecObject();
+
+                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specObject, null, SpecificationController.this);
+                    popupMenu.show(clickedComponent, e.getX(), e.getY());
+                    }
+                else if (clickedComponent instanceof  SpecificationView)
+                    {
+                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specification, null, SpecificationController.this);
+                    popupMenu.show(clickedComponent, e.getX(), e.getY());
+                    }
                 }
+
             else if (MouseEvent.BUTTON1 == e.getButton())
                 {
                 // left click

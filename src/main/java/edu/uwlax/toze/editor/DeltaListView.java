@@ -1,5 +1,6 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.ClassDef;
 import edu.uwlax.toze.domain.Operation;
 
 import java.awt.Color;
@@ -25,6 +26,12 @@ public class DeltaListView extends ParagraphView implements Placement, Observer
         this.operation = operation;
         operation.addObserver(this);
         requestRebuild();
+    }
+
+    @Override
+    public Operation getSpecObject()
+    {
+        return operation;
     }
 
     @Override

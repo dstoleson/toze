@@ -1,5 +1,6 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.FreeTypeDef;
 import edu.uwlax.toze.domain.InheritedClass;
 
 import java.awt.Dimension;
@@ -19,6 +20,13 @@ public class InheritedClassView extends ParagraphView implements Placement, Obse
         setLayout(new ParaLayout(this));
         this.inheritedClass = inheritedClass;
         inheritedClass.addObserver(this);
+        requestRebuild();
+    }
+
+    @Override
+    public InheritedClass getSpecObject()
+    {
+        return inheritedClass;
     }
 
     public TozeTextArea getInheritedClassText()
