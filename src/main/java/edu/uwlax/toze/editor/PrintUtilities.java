@@ -17,7 +17,7 @@ import java.awt.print.PrinterJob;
 
 public class PrintUtilities implements Printable
 {
-    public BufferedImage img;
+    public final BufferedImage img;
     public int numPages = 0;
 
     public static void printImage(BufferedImage img)

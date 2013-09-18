@@ -14,12 +14,12 @@ public class StateView extends ParagraphView
 {
     static private final int StateContentOffset = 10;
     static private final int StateLineMargin = 5;
-    static private final int StateExtraLine = 10;
+    // --Commented out by Inspection (9/17/13 10:59 PM):static private final int StateExtraLine = 10;
     //
-    static final String m_pre = "[";
-    static final String m_post = "]";
+    private static final String m_pre = "[";
+    private static final String m_post = "]";
     //
-    private State state;
+    private final State state;
     //   
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
@@ -44,17 +44,18 @@ public class StateView extends ParagraphView
 
         if (state.getDeclaration() != null)
             {
-            declarationText = buildTextArea(state, state.getDeclaration(), "declaration");
+            declarationText = buildTextArea(state, state.getDeclaration(), "declaration", false);
             add(declarationText);
             }
         if (state.getPredicate() != null)
             {
-            predicateText = buildTextArea(state, state.getPredicate(), "predicate");
+            predicateText = buildTextArea(state, state.getPredicate(), "predicate", false
+            );
             add(predicateText);
             }
         if (state.getName() != null)
             {
-            stateNameText = buildTextArea(state, state.getName(), "name");
+            stateNameText = buildTextArea(state, state.getName(), "name", true);
             add(stateNameText);
             }
     }

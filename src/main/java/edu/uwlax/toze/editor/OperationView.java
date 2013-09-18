@@ -19,7 +19,7 @@ import java.util.Observer;
 public class OperationView extends ParagraphView
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
-    static final String DeltaListPost = ")";
+    // --Commented out by Inspection (9/17/13 10:55 PM):static final String DeltaListPost = ")";
     static final private String OperationMid = " " + TozeFontMap.CHAR_DEFS + " ";
     //
     static final private int OperationName = 10;
@@ -28,10 +28,10 @@ public class OperationView extends ParagraphView
     static final private int OperationLineMargin = 5;
     static final private int OperationExtraLine = 10;
     //
-    private MouseAdapter mouseAdapter;
-    private KeyAdapter keyAdapter;
+    private final MouseAdapter mouseAdapter;
+    private final KeyAdapter keyAdapter;
     //
-    private Operation operation;
+    private final Operation operation;
     //
     private TozeTextArea operationNameText;
     private DeltaListView deltaListView;
@@ -73,7 +73,7 @@ public class OperationView extends ParagraphView
 
         if (operation.getName() != null)
             {
-            operationNameText = buildTextArea(operation, operation.getName(), "name");
+            operationNameText = buildTextArea(operation, operation.getName(), "name", true);
             add(operationNameText);
             }
 
@@ -85,19 +85,19 @@ public class OperationView extends ParagraphView
 
         if (operation.getDeclaration() != null)
             {
-            declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration");
+            declarationText = buildTextArea(operation, operation.getDeclaration(), "declaration", false);
             add(declarationText);
             }
 
         if (operation.getPredicate() != null)
             {
-            predicateText = buildTextArea(operation, operation.getPredicate(), "predicate");
+            predicateText = buildTextArea(operation, operation.getPredicate(), "predicate", false);
             add(predicateText);
             }
 
         if (operation.getOperationExpression() != null)
             {
-            operationExpressionText = buildTextArea(operation, operation.getOperationExpression(), "operationExpression");
+            operationExpressionText = buildTextArea(operation, operation.getOperationExpression(), "operationExpression", false);
             add(operationExpressionText);
             }
     }

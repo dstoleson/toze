@@ -30,12 +30,8 @@ public class SpecificationBuilder
      *
      * @return A Specification object containing the specification built from
      *         the input stream data.
-     *
-     * @throws Exception When there is a problem creating a TOZE specification
-     *                   from the
-     *                   data provided by the input stream.
      */
-    public Specification buildFromStream(InputStream inputStream) throws Exception
+    public Specification buildFromStream(InputStream inputStream)
     {
         TOZE toze = null;
 
@@ -51,8 +47,7 @@ public class SpecificationBuilder
             e.printStackTrace();
             }
 
-        Specification specification = TOZEToSpecificationBuilder.buildSpecification(toze);
-        return specification;
+        return TOZEToSpecificationBuilder.buildSpecification(toze);
     }
 
     /**

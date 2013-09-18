@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class ParaLayout implements LayoutManager
 {
-   Placement m_placement;
+   final Placement m_placement;
    
    public ParaLayout(Placement p)
    {

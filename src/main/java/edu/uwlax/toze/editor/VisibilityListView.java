@@ -16,7 +16,7 @@ public class VisibilityListView extends ParagraphView implements Placement
     static private final String BasicTypePre = TozeFontMap.CHAR_RHARPOON + "(";
     static private final String BasicTypePost = ")";
     //
-    private ClassDef classDef;
+    private final ClassDef classDef;
 
     private TozeTextArea visibilityListText;
 
@@ -39,7 +39,7 @@ public class VisibilityListView extends ParagraphView implements Placement
 
         if (classDef != null && classDef.getVisibilityList() != null)
             {
-            visibilityListText = buildTextArea(classDef, classDef.getVisibilityList(), "visibilityList");
+            visibilityListText = buildTextArea(classDef, classDef.getVisibilityList(), "visibilityList", true);
             add(visibilityListText);
             }
     }

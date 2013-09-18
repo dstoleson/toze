@@ -11,7 +11,7 @@ package edu.uwlax.toze.persist;
  * 
  * @author dhs
  */
-public class CharToXMLTransformer
+class CharToXMLTransformer
 {
     /**
      * Transform an Java String into an encoded XML string

@@ -18,7 +18,7 @@ public class BasicTypeView extends ParagraphView
     private static final String BasicTypePre = "[";
     private static final String BasicTypePost = "]";
     //
-    private BasicTypeDef basicTypeDef;
+    private final BasicTypeDef basicTypeDef;
     private TozeTextArea nameText;
 
     public BasicTypeView(BasicTypeDef basicTypeDef)
@@ -41,7 +41,7 @@ public class BasicTypeView extends ParagraphView
 
         if (basicTypeDef.getName() != null)
             {
-            nameText = buildTextArea(basicTypeDef, basicTypeDef.getName(), "name");
+            nameText = buildTextArea(basicTypeDef, basicTypeDef.getName(), "name", true);
             add(nameText);
             }
     }

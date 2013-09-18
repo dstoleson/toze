@@ -5,8 +5,8 @@ package edu.uwlax.toze.domain;
  */
 public class SpecObjectPropertyPair
 {
-    private SpecObject object;
-    private String property;
+    private final SpecObject object;
+    private final String property;
 
     public SpecObjectPropertyPair(SpecObject object, String property)
     {

@@ -15,13 +15,8 @@ import javax.swing.text.BadLocationException;
  */
 public class SpecDocumentListener implements DocumentListener
 {
-    private Binding binding;
-    
-    public SpecDocumentListener()
-    {
-        
-    }
-    
+    private final Binding binding;
+
     public SpecDocumentListener(Binding binding)
     {
         this.binding = binding;

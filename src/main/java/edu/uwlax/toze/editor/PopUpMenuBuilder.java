@@ -11,14 +11,14 @@ import static edu.uwlax.toze.editor.StateType.*;
 
 public class PopUpMenuBuilder
 {
-    static private ResourceBundle uiBundle;
+    static private final ResourceBundle uiBundle;
 
     static
         {
         uiBundle = ResourceBundle.getBundle("edu.uwlax.toze.editor.toze");
         }
 
-    static public JPopupMenu buildPopup(final Object object, String property, final SpecificationController controller)
+    static public JPopupMenu buildPopup(final Object object, final SpecificationController controller)
     {
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem moveUp = new JMenuItem(uiBundle.getString("specificationMenu.moveUp.title"));
@@ -61,14 +61,7 @@ public class PopUpMenuBuilder
             }
         else if (object instanceof Operation)
             {
-            if ("deltaList".equals(property))
-                {
-                // do nothing
-                }
-            else
-                {
-                popupMenu = buildOperationPopup(popupMenu, (Operation) object, controller);
-                }
+            popupMenu = buildOperationPopup(popupMenu, (Operation) object, controller);
             }
         else if (object instanceof AbbreviationDef)
             {

@@ -8,7 +8,7 @@ import java.io.File;
 public class SpecificationDocument
 {
     private File file;
-    private Specification specification;
+    private final Specification specification;
     private boolean edited;
     
     public SpecificationDocument(File file, Specification specification)

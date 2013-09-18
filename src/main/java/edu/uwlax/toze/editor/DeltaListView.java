@@ -13,10 +13,10 @@ import java.util.Observer;
 
 public class DeltaListView extends ParagraphView implements Placement
 {
-    static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
-    static final String DeltaListPost = ")";
+    private static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
+    private static final String DeltaListPost = ")";
     //
-    private Operation operation;
+    private final Operation operation;
     //
     private TozeTextArea deltaListText;
 
@@ -40,7 +40,7 @@ public class DeltaListView extends ParagraphView implements Placement
 
         if (operation != null && operation.getDeltaList() != null)
             {
-            deltaListText = buildTextArea(operation, operation.getDeltaList(), "deltaList");
+            deltaListText = buildTextArea(operation, operation.getDeltaList(), "deltaList", true);
             add(deltaListText);
             }
     }
@@ -73,7 +73,7 @@ public class DeltaListView extends ParagraphView implements Placement
         return getPreferredSize(g);
     }
 
-    public Dimension getPreferredSize(Graphics g)
+    Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;

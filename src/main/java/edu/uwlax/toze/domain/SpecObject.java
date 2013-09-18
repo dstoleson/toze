@@ -11,7 +11,7 @@ import java.util.*;
  */
 public abstract class SpecObject implements Cloneable
 {
-    private HashMap<String, TozeToken> errors;
+    private final HashMap<String, TozeToken> errors;
 
     public SpecObject()
     {

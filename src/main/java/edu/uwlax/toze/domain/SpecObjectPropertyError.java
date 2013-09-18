@@ -7,9 +7,9 @@ import edu.uwlax.toze.objectz.TozeToken;
  */
 public class SpecObjectPropertyError
 {
-    private SpecObject object;
-    private String property;
-    private TozeToken error;
+    private final SpecObject object;
+    private final String property;
+    private final TozeToken error;
 
     public SpecObjectPropertyError(SpecObject object, String property, TozeToken error)
     {

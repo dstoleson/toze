@@ -12,9 +12,9 @@ import java.util.Observer;
 
 public class AbbreviationView extends ParagraphView
 {
-    static final String AbbreviationMid = " == ";
+    private static final String AbbreviationMid = " == ";
     //
-    private AbbreviationDef abbreviationDef;
+    private final AbbreviationDef abbreviationDef;
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
@@ -38,12 +38,12 @@ public class AbbreviationView extends ParagraphView
 
         if (abbreviationDef.getName() != null)
             {
-            nameText = buildTextArea(abbreviationDef, abbreviationDef.getName(), "name");
+            nameText = buildTextArea(abbreviationDef, abbreviationDef.getName(), "name", true);
             add(nameText);
             }
         if (abbreviationDef.getExpression() != null)
             {
-            expressionText = buildTextArea(abbreviationDef, abbreviationDef.getExpression(), "expression");
+            expressionText = buildTextArea(abbreviationDef, abbreviationDef.getExpression(), "expression", false);
             add(expressionText);
             }
     }

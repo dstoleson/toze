@@ -31,9 +31,9 @@ import java.util.List;
  */
 public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeListener
 {
-    static int untitledCount = 1;
+    private static int untitledCount = 1;
 
-    private ResourceBundle uiBundle;
+    private final ResourceBundle uiBundle;
 
     // Editor Tabs
     private JTabbedPane specificationTabPanel;
@@ -43,7 +43,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     private HashMap<Specification, List>specificationErrors;
 
 //    private ErrorListController errorListController;
-    private HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
+    private final HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
     // was closed.
@@ -52,7 +52,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     //    a) warning dialog and remove from list
     //    b) warning dialog and find the file
     //    c) no warning dialog but display in the list as an error
-    private SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("ROOT"));
+    private final SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("ROOT"));
 
     /**
      * Creates new form TozeEditor
@@ -522,8 +522,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     private SpecificationController currentSpecificationController()
     {
         int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-        SpecificationController specController = tabControllers.get(selectedTabIndex);
-        return specController;
+        return tabControllers.get(selectedTabIndex);
     }
 
     private void newSpecification()
@@ -733,7 +732,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             }
     }
 
-    public class EditorMouseAdaptor extends MouseAdapter
+    private class EditorMouseAdaptor extends MouseAdapter
     {
         @Override
         public void mouseClicked(MouseEvent e)

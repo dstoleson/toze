@@ -16,5 +16,5 @@ public enum SpecificationSection
     Operation,
     Predicate,
     State,
-    VisibilityList;
+    VisibilityList
 }

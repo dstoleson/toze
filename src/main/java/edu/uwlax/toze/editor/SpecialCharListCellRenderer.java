@@ -10,8 +10,8 @@ import javax.swing.ListCellRenderer;
 
 class SpecialCharListCellRenderer extends JPanel implements ListCellRenderer
 {
-    private JLabel tozeChar;
-    private JLabel mnemonic;
+    private final JLabel tozeChar;
+    private final JLabel mnemonic;
 //    private JLabel right;
 
     public SpecialCharListCellRenderer()

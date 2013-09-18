@@ -132,20 +132,12 @@ public abstract class ParagraphView extends JPanel implements Placement
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
-//        text.addMouseListener(mouseAdapter);
-//        text.addFocusListener(specController);
         return text;
-    }
-
-    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
-    {
-        return buildTextArea(modelObject, value, property, true);
     }
 
     private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
     {
         textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-//        textArea.addKeyListener(keyAdapter);
     }
 
     public abstract SpecObject getSpecObject();

@@ -16,7 +16,7 @@ public class FreeTypeView extends ParagraphView implements Placement
 {
     private final String FreeTypeMid = " ::= ";
     //
-    private FreeTypeDef freeTypeDef;
+    private final FreeTypeDef freeTypeDef;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
@@ -41,13 +41,13 @@ public class FreeTypeView extends ParagraphView implements Placement
 
         if (freeTypeDef.getDeclaration() != null)
             {
-            declarationText = buildTextArea(freeTypeDef, freeTypeDef.getDeclaration(), "declaration");
+            declarationText = buildTextArea(freeTypeDef, freeTypeDef.getDeclaration(), "declaration", false);
             add(declarationText);
             }
 
         if (freeTypeDef.getPredicate() != null)
             {
-            predicateText = buildTextArea(freeTypeDef, freeTypeDef.getPredicate(), "predicate");
+            predicateText = buildTextArea(freeTypeDef, freeTypeDef.getPredicate(), "predicate", false);
             add(predicateText);
             }
     }

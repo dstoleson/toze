@@ -11,7 +11,7 @@ import java.util.Observer;
 
 public class InheritedClassView extends ParagraphView implements Placement
 {
-    private InheritedClass inheritedClass;
+    private final InheritedClass inheritedClass;
     //
     private TozeTextArea inheritedClassText;
 
@@ -28,17 +28,6 @@ public class InheritedClassView extends ParagraphView implements Placement
         return inheritedClass;
     }
 
-    public TozeTextArea getInheritedClassText()
-    {
-        return this.inheritedClassText;
-    }
-
-    public void setInheritedClassText(TozeTextArea inheritedClassText)
-    {
-        this.inheritedClassText = inheritedClassText;
-        requestRebuild();
-    }
-
     @Override
     protected void rebuild()
     {
@@ -46,7 +35,7 @@ public class InheritedClassView extends ParagraphView implements Placement
 
         if (inheritedClass != null && inheritedClass.getName() != null)
             {
-            inheritedClassText = buildTextArea(inheritedClass, inheritedClass.getName(), "name");
+            inheritedClassText = buildTextArea(inheritedClass, inheritedClass.getName(), "name", true);
             add(inheritedClassText);
             }
     }

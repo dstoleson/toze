@@ -50,12 +50,12 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     public List<BasicTypeDef> getBasicTypeDefList()
     {
-        return new ArrayList(basicTypeDefList);
+        return new ArrayList<BasicTypeDef>(basicTypeDefList);
     }
 
     public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList)
     {
-        this.basicTypeDefList = new ArrayList(basicTypeDefList);
+        this.basicTypeDefList = new ArrayList<BasicTypeDef>(basicTypeDefList);
     }
 
     public void addBasicTypeDef(final BasicTypeDef basicTypeDef)
@@ -70,12 +70,12 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     public List<AxiomaticDef> getAxiomaticDefList()
     {
-        return new ArrayList(axiomaticDefList);
+        return new ArrayList<AxiomaticDef>(axiomaticDefList);
     }
 
     public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList)
     {
-        this.axiomaticDefList = new ArrayList(axiomaticDefList);
+        this.axiomaticDefList = new ArrayList<AxiomaticDef>(axiomaticDefList);
     }
 
     public void addAxiomaticDef(final AxiomaticDef axiomaticDef)
@@ -90,12 +90,12 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     public List<AbbreviationDef> getAbbreviationDefList()
     {
-        return new ArrayList(abbreviationDefList);
+        return new ArrayList<AbbreviationDef>(abbreviationDefList);
     }
 
     public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList)
     {
-        this.abbreviationDefList = new ArrayList(abbreviationDefList);
+        this.abbreviationDefList = new ArrayList<AbbreviationDef>(abbreviationDefList);
     }
 
     public void addAbbreviationDef(final AbbreviationDef abbreviationDef)
@@ -110,12 +110,12 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     public List<FreeTypeDef> getFreeTypeDefList()
     {
-        return new ArrayList(freeTypeDefList);
+        return new ArrayList<FreeTypeDef>(freeTypeDefList);
     }
 
     public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList)
     {
-        this.freeTypeDefList = new ArrayList(freeTypeDefList);
+        this.freeTypeDefList = new ArrayList<FreeTypeDef>(freeTypeDefList);
     }
 
     public void addFreeTypeDef(final FreeTypeDef freeTypeDef)
@@ -150,12 +150,12 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     public List<Operation> getOperationList()
     {
-        return new ArrayList(operationList);
+        return new ArrayList<Operation>(operationList);
     }
 
     public void setOperationList(List<Operation> operationList)
     {
-        this.operationList = new ArrayList(operationList);
+        this.operationList = new ArrayList<Operation>(operationList);
     }
 
     public void addOperation(final Operation operation)
@@ -218,27 +218,27 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
         for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
             {
-            clone.getAbbreviationDefList().add((AbbreviationDef) abbreviationDef.clone());
+            clone.getAbbreviationDefList().add(abbreviationDef.clone());
             }
 
         for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
             {
-            clone.getAxiomaticDefList().add((AxiomaticDef) axiomaticDef.clone());
+            clone.getAxiomaticDefList().add(axiomaticDef.clone());
             }
 
         for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
             {
-            clone.getBasicTypeDefList().add((BasicTypeDef) basicTypeDef.clone());
+            clone.getBasicTypeDefList().add(basicTypeDef.clone());
             }
 
         for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
             {
-            clone.getFreeTypeDefList().add((FreeTypeDef) freeTypeDef.clone());
+            clone.getFreeTypeDefList().add(freeTypeDef.clone());
             }
 
         for (Operation operation : this.getOperationList())
             {
-            clone.getOperationList().add((Operation) operation.clone());
+            clone.getOperationList().add(operation.clone());
             }
 
         clone.setName(this.getName());

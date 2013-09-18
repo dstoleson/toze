@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
 {
-    private JLabel errorLabel;
+    private final JLabel errorLabel;
 
     public ErrorListCellRenderer()
     {

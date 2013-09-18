@@ -17,14 +17,14 @@ public class InitialStateView extends ParagraphView
     static private final int InitLineMargin = 5;
     static private final int InitSpace = 5;
     static private final int StateContentOffset = 10;
-    static private final int StateLineMargin = 5;
-    static private final int StateExtraLine = 10;
+//    static private final int StateLineMargin = 5;
+//    static private final int StateExtraLine = 10;
     //
     static private final String m_init = "Init";
-    static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
-    static private final String m_post = "]";
+//    static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
+//    static private final String m_post = "]";
     //
-    private InitialState initialState;
+    private final InitialState initialState;
     //
     private TozeTextArea predicateText;
 
@@ -48,7 +48,7 @@ public class InitialStateView extends ParagraphView
 
         if (initialState != null && initialState.getPredicate() != null)
             {
-            predicateText = buildTextArea(initialState, initialState.getPredicate(), "predicate");
+            predicateText = buildTextArea(initialState, initialState.getPredicate(), "predicate", false);
             add(predicateText);
             }
     }

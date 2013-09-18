@@ -16,7 +16,7 @@ public class AxiomaticView extends ParagraphView
     static private final int AxLineMargin = 5;
     static private final int AxExtraLine = 10;
     //
-    private AxiomaticDef axiomaticDef;
+    private final AxiomaticDef axiomaticDef;
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
@@ -40,13 +40,13 @@ public class AxiomaticView extends ParagraphView
 
         if (axiomaticDef.getDeclaration() != null)
             {
-            declarationText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "declaration");
+            declarationText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "declaration", false);
             add(declarationText);
             }
 
         if (axiomaticDef.getPredicate() != null)
             {
-            predicateText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "predicate");
+            predicateText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "predicate", false);
             add(predicateText);
             }
     }

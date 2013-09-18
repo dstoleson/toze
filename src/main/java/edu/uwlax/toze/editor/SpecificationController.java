@@ -23,12 +23,12 @@ public class SpecificationController extends Observable implements FocusListener
 {
     static private SpecObject cachedObject = null;
 
-    private SpecificationDocument specificationDocument;
-    private Specification specification;
+    private final SpecificationDocument specificationDocument;
+    private final Specification specification;
 
     private SpecificationView specificationView;
-    private ControllerMouseAdapter mouseAdapter;
-    private ControllerKeyAdapter keyAdapter;
+    private final ControllerMouseAdapter mouseAdapter;
+    private final ControllerKeyAdapter keyAdapter;
     private TozeTextArea currentTextArea = null;
     private SpecObject selectedObject;
     private ParagraphView selectedView;
@@ -441,7 +441,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            ClassDef classDef = (ClassDef)abbreviationDef.getClassDef();
+            ClassDef classDef = abbreviationDef.getClassDef();
             classDef.removeAbbreviationDef(abbreviationDef);
             }
 
@@ -1343,12 +1343,12 @@ public class SpecificationController extends Observable implements FocusListener
                     {
                     SpecObject specObject = ((ParagraphView)clickedComponent).getSpecObject();
 
-                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specObject, null, SpecificationController.this);
+                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specObject, SpecificationController.this);
                     popupMenu.show(clickedComponent, e.getX(), e.getY());
                     }
                 else if (clickedComponent instanceof  SpecificationView)
                     {
-                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specification, null, SpecificationController.this);
+                    JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specification, SpecificationController.this);
                     popupMenu.show(clickedComponent, e.getX(), e.getY());
                     }
                 }

@@ -13,11 +13,11 @@ import java.util.List;
 
 public class SpecificationView extends JPanel
 {
-    private Specification specification;
+    private final Specification specification;
 
-    private SpecificationController specController;
-    private MouseAdapter mouseAdapter;
-    private KeyAdapter keyAdapter;
+    private final SpecificationController specController;
+    private final MouseAdapter mouseAdapter;
+    private final KeyAdapter keyAdapter;
 
     public SpecificationView(Specification specification, SpecificationController specController)
     {
@@ -102,12 +102,6 @@ public class SpecificationView extends JPanel
         setForeground(Color.BLACK);
 
         super.paint(g);
-    }
-
-    @Override
-    public Dimension preferredSize()
-    {
-        return super.preferredSize();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

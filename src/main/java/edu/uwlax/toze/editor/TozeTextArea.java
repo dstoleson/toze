@@ -14,15 +14,15 @@ import java.util.List;
 
 public class TozeTextArea extends JTextArea
 {
-    static private Color ERROR_COLOR = new Color(255, 121, 118);
-    static private Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
+    static private final Color ERROR_COLOR = new Color(255, 121, 118);
+    static private final Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
 
     private boolean highlighted = false;
     private boolean ignoresEnter = true;
-    private List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
+    private final List<ErrorPos> m_errors = new ArrayList<ErrorPos>();
     static private boolean m_anyChanged = false;
-    private List m_typeErrorIds = new ArrayList();
-    private List m_tokens = new ArrayList();
+    private final List m_typeErrorIds = new ArrayList();
+    private final List m_tokens = new ArrayList();
     private String m_orig = null;
 
     /**
@@ -33,15 +33,6 @@ public class TozeTextArea extends JTextArea
     {
         super(s);
         setFocusable(true);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isIgnoresEnter()
-    {
-        return ignoresEnter;
     }
 
     /**
@@ -377,7 +368,7 @@ public class TozeTextArea extends JTextArea
         int i;
         for (i = 0; i < m_typeErrorIds.size(); i++)
             {
-            if (id.equals((String) m_typeErrorIds.get(i)))
+            if (id.equals(m_typeErrorIds.get(i)))
                 {
                 this.requestFocus();
                 TozeToken token = (TozeToken) m_tokens.get(i);
@@ -492,8 +483,8 @@ public class TozeTextArea extends JTextArea
      */
     private class ErrorPos
     {
-        int m_line;
-        int m_pos;
+        final int m_line;
+        final int m_pos;
 
         /**
          *

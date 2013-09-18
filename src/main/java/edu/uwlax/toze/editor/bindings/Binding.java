@@ -14,12 +14,12 @@ public class Binding<T, V>
     /**
      * The source or model object that provides the values
      */
-    protected T source;
+    private final T source;
     
     /**
      * The source property to update with new values
      */
-    protected String property;
+    private final String property;
     
     public Binding(T source, String property)
     {
@@ -38,13 +38,13 @@ public class Binding<T, V>
             BeanInfo beanInfo = Introspector.getBeanInfo(source.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             PropertyDescriptor foundProperty = null;
-            
-            for (int i = 0; i < propertyDescriptors.length; i++)
+
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
                 {
-                    if (propertyDescriptors[i].getName().equals(this.property))
-                        {
-                        foundProperty = propertyDescriptors[i];
-                        }
+                if (propertyDescriptor.getName().equals(this.property))
+                    {
+                    foundProperty = propertyDescriptor;
+                    }
                 }
             if (foundProperty != null)
                 {

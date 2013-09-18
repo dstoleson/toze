@@ -18,12 +18,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<BasicTypeDef> getBasicTypeDefList()
     {
-        return new ArrayList(basicTypeDefList);
+        return new ArrayList<BasicTypeDef>(basicTypeDefList);
     }
 
     public void setBasicTypeDefList(final List<BasicTypeDef> basicTypeDefList)
     {
-        this.basicTypeDefList = new ArrayList(basicTypeDefList);
+        this.basicTypeDefList = new ArrayList<BasicTypeDef>(basicTypeDefList);
     }
 
     public void addBasicTypeDef(final BasicTypeDef basicTypeDef)
@@ -38,13 +38,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<AxiomaticDef> getAxiomaticDefList()
     {
-        return new ArrayList(axiomaticDefList);
+        return new ArrayList<AxiomaticDef>(axiomaticDefList);
     }
 
     public void setAxiomaticDefList(final List<AxiomaticDef> axiomaticDefList)
     {
-        this.axiomaticDefList = new ArrayList(axiomaticDefList);
-//        this.update("axiomaticDefList");
+        this.axiomaticDefList = new ArrayList<AxiomaticDef>(axiomaticDefList);
     }
 
     public void addAxiomaticDef(final AxiomaticDef axiomaticDef)
@@ -59,12 +58,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<GenericDef> getGenericDefList()
     {
-        return new ArrayList(genericDefList);
+        return new ArrayList<GenericDef>(genericDefList);
     }
 
     public void setGenericDefList(final List<GenericDef> genericDefList)
     {
-        this.genericDefList = new ArrayList(genericDefList);
+        this.genericDefList = new ArrayList<GenericDef>(genericDefList);
     }
 
     public void addGenericDef(final GenericDef genericDef)
@@ -79,12 +78,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<AbbreviationDef> getAbbreviationDefList()
     {
-        return abbreviationDefList;
+        return new ArrayList<AbbreviationDef>(abbreviationDefList);
     }
 
     public void setAbbreviationDefList(final List<AbbreviationDef> abbreviationDefList)
     {
-        this.abbreviationDefList = new ArrayList(abbreviationDefList);
+        this.abbreviationDefList = new ArrayList<AbbreviationDef>(abbreviationDefList);
     }
 
     public void addAbbreviationDef(final AbbreviationDef abbreviationDef)
@@ -99,12 +98,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<FreeTypeDef> getFreeTypeDefList()
     {
-        return new ArrayList(freeTypeDefList);
+        return new ArrayList<FreeTypeDef>(freeTypeDefList);
     }
 
     public void setFreeTypeDefList(final List<FreeTypeDef> freeTypeDefList)
     {
-        this.freeTypeDefList = new ArrayList(freeTypeDefList);
+        this.freeTypeDefList = new ArrayList<FreeTypeDef>(freeTypeDefList);
     }
 
     public void addFreeTypeDef(final FreeTypeDef freeTypeDef)
@@ -119,12 +118,12 @@ public class Specification extends SpecObject implements ParentSpecObject
 
     public List<ClassDef> getClassDefList()
     {
-        return new ArrayList(classDefList);
+        return new ArrayList<ClassDef>(classDefList);
     }
 
     public void setClassDefList(final List<ClassDef> classDefList)
     {
-        this.classDefList = new ArrayList(classDefList);
+        this.classDefList = new ArrayList<ClassDef>(classDefList);
     }
 
     public void addClassDef(final ClassDef classDef)

@@ -24,12 +24,6 @@ public class SpecificationTreeModel extends DefaultTreeModel
         initSpecifications();
     }
 
-    public SpecificationTreeModel(TreeNode tn, boolean bln)
-    {
-        super(tn, bln);
-        initSpecifications();
-    }
-
     private void initSpecifications()
     {
         specificationDocuments = new ArrayList<SpecificationDocument>();
@@ -125,7 +119,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
     public class SpecificationNode extends DefaultMutableTreeNode
     {
-        private SpecificationDocument specificationDocument;
+        private final SpecificationDocument specificationDocument;
 
         public SpecificationNode(Object userObject, SpecificationDocument specificationDocument)
         {
@@ -141,7 +135,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
     class ClassNode extends DefaultMutableTreeNode
     {
-        private ClassDef classDef;
+        private final ClassDef classDef;
 
         public ClassNode(Object userObject, ClassDef classDef)
         {

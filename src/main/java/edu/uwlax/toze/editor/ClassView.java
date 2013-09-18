@@ -21,23 +21,23 @@ public class ClassView extends ParagraphView
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
     //
-    private SpecificationController specController;
+    private final SpecificationController specController;
     //
-    private MouseAdapter mouseAdapter;
-    private KeyAdapter keyAdapter;
+    private final MouseAdapter mouseAdapter;
+    private final KeyAdapter keyAdapter;
     //
-    private ClassDef classDef;
+    private final ClassDef classDef;
     //
     private TozeTextArea classNameText;
-    private List<AxiomaticView> axiomaticViews;
+    private final List<AxiomaticView> axiomaticViews;
     private VisibilityListView visibilityListView;
     private InheritedClassView inheritedClassView;
-    private List<AbbreviationView> abbreviationViews;
-    private List<BasicTypeView> basicTypeViews;
-    private List<FreeTypeView> freeTypeViews;
+    private final List<AbbreviationView> abbreviationViews;
+    private final List<BasicTypeView> basicTypeViews;
+    private final List<FreeTypeView> freeTypeViews;
     private StateView stateView;
     private InitialStateView initialStateView;
-    private List<OperationView> operationViews;
+    private final List<OperationView> operationViews;
 
     public ClassView(ClassDef classDef, SpecificationController specController)
     {
@@ -94,7 +94,7 @@ public class ClassView extends ParagraphView
 
         if (classDef.getClass() != null)
             {
-            classNameText = buildTextArea(classDef, classDef.getName(), "name");
+            classNameText = buildTextArea(classDef, classDef.getName(), "name", true);
             add(classNameText);
             }
         if (classDef.getVisibilityList() != null)
@@ -185,7 +185,7 @@ public class ClassView extends ParagraphView
         return getPreferredSize(g);
     }
 
-    public Dimension getPreferredSize(Graphics g)
+    Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
