@@ -14,7 +14,6 @@ public class FreeTypeDef extends SpecObject
 
     public void setDeclaration(String declaration) {
         this.declaration = declaration;
-        this.update("declaration");
     }
 
     public String getPredicate() {
@@ -23,7 +22,6 @@ public class FreeTypeDef extends SpecObject
 
     public void setPredicate(String predicate) {
         this.predicate = predicate;
-        this.update("predicate");
     }
 
     public Specification getSpecification() {
@@ -43,8 +41,10 @@ public class FreeTypeDef extends SpecObject
     }
 
     @Override
-    public FreeTypeDef clone()
+    public FreeTypeDef clone() throws CloneNotSupportedException
     {
+        super.clone();
+
         FreeTypeDef clone = new FreeTypeDef();
         clone.setDeclaration(this.getDeclaration());
         clone.setPredicate(this.getPredicate());

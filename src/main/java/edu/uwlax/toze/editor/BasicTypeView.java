@@ -13,7 +13,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class BasicTypeView extends ParagraphView implements Observer
+public class BasicTypeView extends ParagraphView
 {
     private static final String BasicTypePre = "[";
     private static final String BasicTypePost = "]";
@@ -25,7 +25,6 @@ public class BasicTypeView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.basicTypeDef = basicTypeDef;
-        basicTypeDef.addObserver(this);
         requestRebuild();
     }
 
@@ -98,13 +97,5 @@ public class BasicTypeView extends ParagraphView implements Observer
         Dimension cd = nameText.getPreferredSize();
         g.drawString(BasicTypePre, HMargin, VMargin + ystring);
         g.drawString(BasicTypePost, HMargin + fm.stringWidth(BasicTypePre) + cd.width, VMargin + ystring);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        // nothing to do (no sub-views)
-        // text views are updated using another mechanism
-        return;
     }
 }

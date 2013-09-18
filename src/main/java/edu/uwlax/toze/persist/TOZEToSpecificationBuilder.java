@@ -22,42 +22,42 @@ public class TOZEToSpecificationBuilder
         for (edu.uwlax.toze.spec.AbbreviationDef tozeAbbreviationDef : toze.getAbbreviationDef())
             {
             AbbreviationDef abbreviationDef = build(tozeAbbreviationDef);
-            specification.getAbbreviationDefList().add(abbreviationDef);
+            specification.addAbbreviationDef(abbreviationDef);
             abbreviationDef.setSpecification(specification);
             }
 
         for (edu.uwlax.toze.spec.AxiomaticDef tozeAxiomaticDef : toze.getAxiomaticDef())
             {
             AxiomaticDef axiomaticDef = build(tozeAxiomaticDef);
-            specification.getAxiomaticDefList().add(axiomaticDef);
+            specification.addAxiomaticDef(axiomaticDef);
             axiomaticDef.setSpecification(specification);
             }
 
         for (edu.uwlax.toze.spec.BasicTypeDef tozeBasicTypeDef : toze.getBasicTypeDef())
             {
             BasicTypeDef basicTypeDef = build(tozeBasicTypeDef);
-            specification.getBasicTypeDefList().add(basicTypeDef);
+            specification.addBasicTypeDef(basicTypeDef);
             basicTypeDef.setSpecification(specification);
             }
 
         for (edu.uwlax.toze.spec.FreeTypeDef tozeFreeTypeDef : toze.getFreeTypeDef())
             {
             FreeTypeDef freeTypeDef = build(tozeFreeTypeDef);
-            specification.getFreeTypeDefList().add(freeTypeDef);
+            specification.addFreeTypeDef(freeTypeDef);
             freeTypeDef.setSpecification(specification);
             }
 
         for (edu.uwlax.toze.spec.ClassDef tozeClassDef : toze.getClassDef())
             {
             ClassDef classDef = build(tozeClassDef);
-            specification.getClassDefList().add(classDef);
+            specification.addClassDef(classDef);
             classDef.setSpecification(specification);
             }
 
         for (edu.uwlax.toze.spec.GenericDef tozeGenericDef : toze.getGenericDef())
             {
             GenericDef genericDef = build(tozeGenericDef);
-            specification.getGenericDefList().add(genericDef);
+            specification.addGenericDef(genericDef);
             genericDef.setSpecification(specification);
             }
 
@@ -117,35 +117,35 @@ public class TOZEToSpecificationBuilder
         for (edu.uwlax.toze.spec.AbbreviationDef tozeAbbreviationDef : tozeClassDef.getAbbreviationDef())
             {
             AbbreviationDef abbreviationDef = build(tozeAbbreviationDef);
-            classDef.getAbbreviationDefList().add(abbreviationDef);
+            classDef.addAbbreviationDef(abbreviationDef);
             abbreviationDef.setClassDef(classDef);
             }
 
         for (edu.uwlax.toze.spec.AxiomaticDef tozeAxiomaticDef : tozeClassDef.getAxiomaticDef())
             {
             AxiomaticDef axiomaticDef = build(tozeAxiomaticDef);
-            classDef.getAxiomaticDefList().add(axiomaticDef);
+            classDef.addAxiomaticDef(axiomaticDef);
             axiomaticDef.setClassDef(classDef);
             }
 
         for (edu.uwlax.toze.spec.BasicTypeDef tozeBasicTypeDef : tozeClassDef.getBasicTypeDef())
             {
             BasicTypeDef basicTypeDef = build(tozeBasicTypeDef);
-            classDef.getBasicTypeDefList().add(basicTypeDef);
+            classDef.addBasicTypeDef(basicTypeDef);
             basicTypeDef.setClassDef(classDef);
             }
 
         for (edu.uwlax.toze.spec.FreeTypeDef tozeFreeTypeDef : tozeClassDef.getFreeTypeDef())
             {
             FreeTypeDef freeTypeDef = build(tozeFreeTypeDef);
-            classDef.getFreeTypeDefList().add(freeTypeDef);
+            classDef.addFreeTypeDef(freeTypeDef);
             freeTypeDef.setClassDef(classDef);
             }
 
         for (edu.uwlax.toze.spec.Operation tozeOperation : tozeClassDef.getOperation())
             {
             Operation operation = build(tozeOperation);
-            classDef.getOperationList().add(operation);
+            classDef.addOperation(operation);
             operation.setClassDef(classDef);
             }
 

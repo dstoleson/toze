@@ -18,7 +18,6 @@ public class Operation extends SpecObject
     public void setName(String name)
     {
         this.name = name;
-        this.update("name");
     }
 
     public String getDeltaList()
@@ -29,7 +28,6 @@ public class Operation extends SpecObject
     public void setDeltaList(String deltaList)
     {
         this.deltaList = deltaList;
-        this.update("deltaList");
     }
 
     public String getDeclaration()
@@ -40,7 +38,6 @@ public class Operation extends SpecObject
     public void setDeclaration(String declaration)
     {
         this.declaration = declaration;
-        this.update("declaration");
     }
 
     public String getPredicate()
@@ -51,7 +48,6 @@ public class Operation extends SpecObject
     public void setPredicate(String predicate)
     {
         this.predicate = predicate;
-        this.update("predicate");
     }
 
     public String getOperationExpression()
@@ -62,7 +58,6 @@ public class Operation extends SpecObject
     public void setOperationExpression(String operationExpression)
     {
         this.operationExpression = operationExpression;
-        this.update("operationExpression");
     }
 
     public ClassDef getClassDef()
@@ -76,8 +71,10 @@ public class Operation extends SpecObject
     }
 
     @Override
-    public Operation clone()
+    public Operation clone() throws CloneNotSupportedException
     {
+        super.clone();
+
         Operation clone = new Operation();
         clone.setDeclaration(this.getDeclaration());
         clone.setOperationExpression(this.getOperationExpression());

@@ -11,7 +11,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class InitialStateView extends ParagraphView implements Observer
+public class InitialStateView extends ParagraphView
 {
     static private final int InitOffset = 10;
     static private final int InitLineMargin = 5;
@@ -32,7 +32,6 @@ public class InitialStateView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.initialState = initialState;
-        initialState.addObserver(this);
         requestRebuild();
     }
 
@@ -177,14 +176,5 @@ public class InitialStateView extends ParagraphView implements Observer
                        cd.height - 1 - VMargin);
             g.drawLine(HMargin, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
 // type == 2           }
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o == initialState)
-            {
-            requestRebuild();
-            }
     }
 }

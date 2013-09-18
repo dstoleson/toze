@@ -8,7 +8,7 @@ public interface ParentSpecObject
     public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList);
 
     public List<AxiomaticDef> getAxiomaticDefList();
-    public void setAxiomaticDefList(List<AxiomaticDef> axiomatDefList);
+    public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList);
 
     public List<BasicTypeDef> getBasicTypeDefList();
     public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList);

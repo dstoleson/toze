@@ -18,101 +18,163 @@ public class ClassDef extends SpecObject implements ParentSpecObject
 
     private Specification specification;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
-        this.update("name");
     }
 
-    public String getVisibilityList() {
+    public String getVisibilityList()
+    {
         return visibilityList;
     }
 
-    public void setVisibilityList(String visibilityList) {
+    public void setVisibilityList(String visibilityList)
+    {
         this.visibilityList = visibilityList;
-        this.update("visibilityList");
     }
 
-    public InheritedClass getInheritedClass() {
+    public InheritedClass getInheritedClass()
+    {
         return inheritedClass;
     }
 
-    public void setInheritedClass(InheritedClass inheritedClass) {
+    public void setInheritedClass(InheritedClass inheritedClass)
+    {
         this.inheritedClass = inheritedClass;
-        this.update("inheritedClass");
     }
 
-    public List<BasicTypeDef> getBasicTypeDefList() {
-        return basicTypeDefList;
+    public List<BasicTypeDef> getBasicTypeDefList()
+    {
+        return new ArrayList(basicTypeDefList);
     }
 
-    public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList) {
-        this.basicTypeDefList = basicTypeDefList;
-        this.update("basicTypeDefList");
+    public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList)
+    {
+        this.basicTypeDefList = new ArrayList(basicTypeDefList);
     }
 
-    public List<AxiomaticDef> getAxiomaticDefList() {
-        return axiomaticDefList;
+    public void addBasicTypeDef(final BasicTypeDef basicTypeDef)
+    {
+        basicTypeDefList.add(basicTypeDef);
     }
 
-    public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList) {
-        this.axiomaticDefList = axiomaticDefList;
-        this.update("axiomaticDefList");
+    public void removeBasicTypeDef(final BasicTypeDef basicTypeDef)
+    {
+        basicTypeDefList.remove(basicTypeDef);
     }
 
-    public List<AbbreviationDef> getAbbreviationDefList() {
-        return abbreviationDefList;
+    public List<AxiomaticDef> getAxiomaticDefList()
+    {
+        return new ArrayList(axiomaticDefList);
     }
 
-    public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList) {
-        this.abbreviationDefList = abbreviationDefList;
-        this.update("abbreviationDefList");
+    public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList)
+    {
+        this.axiomaticDefList = new ArrayList(axiomaticDefList);
     }
 
-    public List<FreeTypeDef> getFreeTypeDefList() {
-        return freeTypeDefList;
+    public void addAxiomaticDef(final AxiomaticDef axiomaticDef)
+    {
+        axiomaticDefList.add(axiomaticDef);
     }
 
-    public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList) {
-        this.freeTypeDefList = freeTypeDefList;
-        this.update("freeTypeDefList");
+    public void removeAxiomaticDef(final AxiomaticDef axiomaticDef)
+    {
+        axiomaticDefList.remove(axiomaticDef);
     }
 
-    public State getState() {
+    public List<AbbreviationDef> getAbbreviationDefList()
+    {
+        return new ArrayList(abbreviationDefList);
+    }
+
+    public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList)
+    {
+        this.abbreviationDefList = new ArrayList(abbreviationDefList);
+    }
+
+    public void addAbbreviationDef(final AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.add(abbreviationDef);
+    }
+
+    public void removeAbbreviationDef(final AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.remove(abbreviationDef);
+    }
+
+    public List<FreeTypeDef> getFreeTypeDefList()
+    {
+        return new ArrayList(freeTypeDefList);
+    }
+
+    public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList)
+    {
+        this.freeTypeDefList = new ArrayList(freeTypeDefList);
+    }
+
+    public void addFreeTypeDef(final FreeTypeDef freeTypeDef)
+    {
+        freeTypeDefList.add(freeTypeDef);
+    }
+
+    public void removeFreeTypeDef(final FreeTypeDef freeTypeDef)
+    {
+        freeTypeDefList.remove(freeTypeDef);
+    }
+
+    public State getState()
+    {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(State state)
+    {
         this.state = state;
-        this.update("state");
     }
 
-    public InitialState getInitialState() {
+    public InitialState getInitialState()
+    {
         return initialState;
     }
 
-    public void setInitialState(InitialState initialState) {
+    public void setInitialState(InitialState initialState)
+    {
         this.initialState = initialState;
-        this.update("initialState");
     }
 
-    public List<Operation> getOperationList() {
-        return operationList;
+    public List<Operation> getOperationList()
+    {
+        return new ArrayList(operationList);
     }
 
-    public void setOperationList(List<Operation> operationList) {
-        this.operationList = operationList;
-        this.update("operationList");
+    public void setOperationList(List<Operation> operationList)
+    {
+        this.operationList = new ArrayList(operationList);
     }
 
-    public Specification getSpecification() {
+    public void addOperation(final Operation operation)
+    {
+        operationList.add(operation);
+    }
+
+    public void removeOperation(final Operation operation)
+    {
+        operationList.remove(operation);
+    }
+
+    public Specification getSpecification()
+    {
         return specification;
     }
 
-    public void setSpecification(Specification specification) {
+    public void setSpecification(Specification specification)
+    {
         this.specification = specification;
     }
 
@@ -148,33 +210,35 @@ public class ClassDef extends SpecObject implements ParentSpecObject
     }
 
     @Override
-    public ClassDef clone()
+    public ClassDef clone() throws CloneNotSupportedException
     {
+        super.clone();
+
         ClassDef clone = new ClassDef();
 
         for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
             {
-            clone.getAbbreviationDefList().add((AbbreviationDef)abbreviationDef.clone());
+            clone.getAbbreviationDefList().add((AbbreviationDef) abbreviationDef.clone());
             }
 
         for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
             {
-            clone.getAxiomaticDefList().add((AxiomaticDef)axiomaticDef.clone());
+            clone.getAxiomaticDefList().add((AxiomaticDef) axiomaticDef.clone());
             }
 
         for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
             {
-            clone.getBasicTypeDefList().add((BasicTypeDef)basicTypeDef.clone());
+            clone.getBasicTypeDefList().add((BasicTypeDef) basicTypeDef.clone());
             }
 
         for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
             {
-            clone.getFreeTypeDefList().add((FreeTypeDef)freeTypeDef.clone());
+            clone.getFreeTypeDefList().add((FreeTypeDef) freeTypeDef.clone());
             }
 
         for (Operation operation : this.getOperationList())
             {
-            clone.getOperationList().add((Operation)operation.clone());
+            clone.getOperationList().add((Operation) operation.clone());
             }
 
         clone.setName(this.getName());

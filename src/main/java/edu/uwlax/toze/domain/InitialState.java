@@ -14,7 +14,6 @@ public class InitialState extends SpecObject
     public void setPredicate(String predicate)
     {
         this.predicate = predicate;
-        this.update("predicate");
     }
 
     public ClassDef getClassDef() {
@@ -27,8 +26,10 @@ public class InitialState extends SpecObject
     }
 
     @Override
-    public InitialState clone()
+    public InitialState clone() throws CloneNotSupportedException
     {
+        super.clone();
+
         InitialState clone = new InitialState();
         clone.setPredicate(this.getPredicate());
 

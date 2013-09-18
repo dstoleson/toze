@@ -10,7 +10,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class AbbreviationView extends ParagraphView implements Observer
+public class AbbreviationView extends ParagraphView
 {
     static final String AbbreviationMid = " == ";
     //
@@ -22,7 +22,6 @@ public class AbbreviationView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.abbreviationDef = abbreviationDef;
-        abbreviationDef.addObserver(this);
         requestRebuild();
     }
 
@@ -117,11 +116,5 @@ public class AbbreviationView extends ParagraphView implements Observer
 
         xoffset += d.width;
         g.drawString(AbbreviationMid, xoffset, yoffset + ystring);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        return;
     }
 }

@@ -16,67 +16,135 @@ public class Specification extends SpecObject implements ParentSpecObject
     private List<ClassDef> classDefList = new ArrayList<ClassDef>();
     private String predicate;
 
-    public List<BasicTypeDef> getBasicTypeDefList() {
-        return basicTypeDefList;
+    public List<BasicTypeDef> getBasicTypeDefList()
+    {
+        return new ArrayList(basicTypeDefList);
     }
 
-    public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList) {
-        this.basicTypeDefList = basicTypeDefList;
-        this.update("basicTypeDefList");
+    public void setBasicTypeDefList(final List<BasicTypeDef> basicTypeDefList)
+    {
+        this.basicTypeDefList = new ArrayList(basicTypeDefList);
     }
 
-    public List<AxiomaticDef> getAxiomaticDefList() {
-        return axiomaticDefList;
+    public void addBasicTypeDef(final BasicTypeDef basicTypeDef)
+    {
+        basicTypeDefList.add(basicTypeDef);
     }
 
-    public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList) {
-        this.axiomaticDefList = axiomaticDefList;
-        this.update("axiomaticDefList");
+    public void removeBasicTypeDef(final BasicTypeDef basicTypeDef)
+    {
+        basicTypeDefList.remove(basicTypeDef);
     }
 
-    public List<GenericDef> getGenericDefList() {
-        return genericDefList;
+    public List<AxiomaticDef> getAxiomaticDefList()
+    {
+        return new ArrayList(axiomaticDefList);
     }
 
-    public void setGenericDefList(List<GenericDef> genericDefList) {
-        this.genericDefList = genericDefList;
-        this.update("genericDefList");
+    public void setAxiomaticDefList(final List<AxiomaticDef> axiomaticDefList)
+    {
+        this.axiomaticDefList = new ArrayList(axiomaticDefList);
+//        this.update("axiomaticDefList");
     }
 
-    public List<AbbreviationDef> getAbbreviationDefList() {
+    public void addAxiomaticDef(final AxiomaticDef axiomaticDef)
+    {
+        axiomaticDefList.add(axiomaticDef);
+    }
+
+    public void removeAxiomaticDef(final AxiomaticDef axiomaticDef)
+    {
+        axiomaticDefList.remove(axiomaticDef);
+    }
+
+    public List<GenericDef> getGenericDefList()
+    {
+        return new ArrayList(genericDefList);
+    }
+
+    public void setGenericDefList(final List<GenericDef> genericDefList)
+    {
+        this.genericDefList = new ArrayList(genericDefList);
+    }
+
+    public void addGenericDef(final GenericDef genericDef)
+    {
+        genericDefList.add(genericDef);
+    }
+
+    public void removeGenericDef(final GenericDef genericDef)
+    {
+        genericDefList.remove(genericDef);
+    }
+
+    public List<AbbreviationDef> getAbbreviationDefList()
+    {
         return abbreviationDefList;
     }
 
-    public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList) {
-        this.abbreviationDefList = abbreviationDefList;
-        this.update("abbreviationDefList");
+    public void setAbbreviationDefList(final List<AbbreviationDef> abbreviationDefList)
+    {
+        this.abbreviationDefList = new ArrayList(abbreviationDefList);
     }
 
-    public List<FreeTypeDef> getFreeTypeDefList() {
-        return freeTypeDefList;
+    public void addAbbreviationDef(final AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.add(abbreviationDef);
     }
 
-    public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList) {
-        this.freeTypeDefList = freeTypeDefList;
-        this.update("freeTypeDefList");
+    public void removeAbbreviationDef(final AbbreviationDef abbreviationDef)
+    {
+        abbreviationDefList.remove(abbreviationDef);
     }
 
-    public List<ClassDef> getClassDefList() {
-        return classDefList;
+    public List<FreeTypeDef> getFreeTypeDefList()
+    {
+        return new ArrayList(freeTypeDefList);
     }
 
-    public void setClassDefList(List<ClassDef> classDefList) {
-        this.classDefList = classDefList;
-        this.update("classDefList");
+    public void setFreeTypeDefList(final List<FreeTypeDef> freeTypeDefList)
+    {
+        this.freeTypeDefList = new ArrayList(freeTypeDefList);
     }
 
-    public String getPredicate() {
+    public void addFreeTypeDef(final FreeTypeDef freeTypeDef)
+    {
+        freeTypeDefList.add(freeTypeDef);
+    }
+
+    public void removeFreeTypeDef(final FreeTypeDef freeTypeDef)
+    {
+        freeTypeDefList.remove(freeTypeDef);
+    }
+
+    public List<ClassDef> getClassDefList()
+    {
+        return new ArrayList(classDefList);
+    }
+
+    public void setClassDefList(final List<ClassDef> classDefList)
+    {
+        this.classDefList = new ArrayList(classDefList);
+    }
+
+    public void addClassDef(final ClassDef classDef)
+    {
+        classDefList.add(classDef);
+    }
+
+    public void removeClassDef(final ClassDef classDef)
+    {
+        classDefList.remove(classDef);
+    }
+
+    public String getPredicate()
+    {
         return predicate;
     }
 
-    public void setPredicate(String predicate) {
+    public void setPredicate(final String predicate)
+    {
         this.predicate = predicate;
-        this.update("predicate");
     }
 
     @Override

@@ -11,28 +11,27 @@ import java.awt.event.MouseAdapter;
 import java.util.*;
 import java.util.List;
 
-public class SpecificationView extends JPanel implements Observer
+public class SpecificationView extends JPanel
 {
     private Specification specification;
-
-    private TozeTextArea predicateText;
 
     private SpecificationController specController;
     private MouseAdapter mouseAdapter;
     private KeyAdapter keyAdapter;
 
-    public SpecificationView(Specification specification)
+    public SpecificationView(Specification specification, SpecificationController specController)
     {
         super();
         this.specification = specification;
-        requestRebuild();
-    }
 
-    public void setController(SpecificationController specController)
-    {
-        this.addMouseListener(specController.getMouseAdapter());
-        this.addKeyListener(specController.getKeyAdapter());
         this.specController = specController;
+        mouseAdapter = specController.getMouseAdapter();
+        keyAdapter = specController.getKeyAdapter();
+
+        addMouseListener(mouseAdapter);
+        addKeyListener(keyAdapter);
+
+        requestRebuild();
     }
 
     public void requestRebuild()
@@ -46,8 +45,9 @@ public class SpecificationView extends JPanel implements Observer
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
-//        text.addMouseListener(mouseAdapter);
-//        text.addFocusListener(specController);
+        text.addMouseListener(mouseAdapter);
+        text.addFocusListener(specController);
+
         return text;
     }
 
@@ -59,16 +59,16 @@ public class SpecificationView extends JPanel implements Observer
     private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
     {
         textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-//        textArea.addKeyListener(keyAdapter);
+        textArea.addKeyListener(keyAdapter);
     }
 
-    public void rebuild()
+    protected void rebuild()
     {
         removeAll();
 
         if (specification.getPredicate() != null)
             {
-            predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
+            TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
             add(predicateText);
             }
 
@@ -90,7 +90,8 @@ public class SpecificationView extends JPanel implements Observer
             }
         for (ClassDef classDef : specification.getClassDefList())
             {
-            addView(new ClassView(classDef));
+            ClassView classView = new ClassView(classDef, specController);
+            addView(classView);
             }
     }
 
@@ -142,14 +143,5 @@ public class SpecificationView extends JPanel implements Observer
         view.addMouseListener(mouseAdapter);
         view.addKeyListener(keyAdapter);
         add(view);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o instanceof Specification)
-            {
-            requestRebuild();
-            }
     }
 }

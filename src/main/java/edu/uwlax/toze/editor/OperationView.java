@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,7 +16,7 @@ import java.util.Observer;
  *
  * @author dhs
  */
-public class OperationView extends ParagraphView implements Observer
+public class OperationView extends ParagraphView
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
     static final String DeltaListPost = ")";
@@ -25,7 +27,9 @@ public class OperationView extends ParagraphView implements Observer
     static final private int OperationContentOffset = 10;
     static final private int OperationLineMargin = 5;
     static final private int OperationExtraLine = 10;
-//    static final private int OperationHeaderLineMargin = 5;
+    //
+    private MouseAdapter mouseAdapter;
+    private KeyAdapter keyAdapter;
     //
     private Operation operation;
     //
@@ -35,11 +39,17 @@ public class OperationView extends ParagraphView implements Observer
     private TozeTextArea predicateText;
     private TozeTextArea operationExpressionText;
 
-    public OperationView(Operation operation)
+    public OperationView(Operation operation, SpecificationController specController)
     {        
         setLayout(new ParaLayout(this));
         this.operation = operation;
-        operation.addObserver(this);
+
+        mouseAdapter = specController.getMouseAdapter();
+        keyAdapter = specController.getKeyAdapter();
+
+        addMouseListener(mouseAdapter);
+        addKeyListener(keyAdapter);
+
         requestRebuild();
     }
 
@@ -47,6 +57,13 @@ public class OperationView extends ParagraphView implements Observer
     public Operation getSpecObject()
     {
         return operation;
+    }
+
+    private void addView(ParagraphView view)
+    {
+        view.addMouseListener(mouseAdapter);
+        view.addKeyListener(keyAdapter);
+        add(view);
     }
 
     @Override
@@ -63,7 +80,7 @@ public class OperationView extends ParagraphView implements Observer
         if (operation.getDeltaList() != null)
             {
             deltaListView = new DeltaListView(operation);
-            add(deltaListView);
+            addView(deltaListView);
             }
 
         if (operation.getDeclaration() != null)
@@ -313,11 +330,5 @@ public class OperationView extends ParagraphView implements Observer
                 g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
                 }
             }
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        requestRebuild();
     }
 }

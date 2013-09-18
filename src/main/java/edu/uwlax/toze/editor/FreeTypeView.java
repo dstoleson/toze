@@ -12,7 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class FreeTypeView extends ParagraphView implements Placement, Observer
+public class FreeTypeView extends ParagraphView implements Placement
 {
     private final String FreeTypeMid = " ::= ";
     //
@@ -24,7 +24,6 @@ public class FreeTypeView extends ParagraphView implements Placement, Observer
     {
         setLayout(new ParaLayout(this));
         this.freeTypeDef = freeTypeDef;
-        freeTypeDef.addObserver(this);
         requestRebuild();
 
     }
@@ -120,13 +119,5 @@ public class FreeTypeView extends ParagraphView implements Placement, Observer
 
         xoffset += d.width;
         g.drawString(FreeTypeMid, xoffset, yoffset + ystring);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        // nothing to do (no sub-views)
-        // text views are updated using another mechanism
-        return;
     }
 }

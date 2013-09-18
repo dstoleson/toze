@@ -1,11 +1,9 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.SpecObjectPropertyError;
 import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.persist.SpecificationBuilder;
 import edu.uwlax.toze.persist.TozeJaxbContext;
-import edu.uwlax.toze.spec.TOZE;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -35,33 +33,12 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 {
     static int untitledCount = 1;
 
-    private JMenuBar menuBar;
-    private JMenu fileMenu;
-    private JMenuItem newSpecificationMenu;
-    private JMenuItem openSpecificationMenu;
-    private JMenuItem checkSpecificationMenu;
-    private JMenuItem saveSpecificationMenu;
-    private JMenuItem saveAsSpecificationMenu;
-    private JMenuItem closeSpecificationMenu;
-    // Main UI layout
-    private JSplitPane editorSplitPane;
-    private JSplitPane leftSplitPane;
-    private JSplitPane rightSplitPane;
+    private ResourceBundle uiBundle;
+
     // Editor Tabs
     private JTabbedPane specificationTabPanel;
-    // Tree View of Specification Documents
-    private JScrollPane specificationTreeScrollPane;
     private JTree specificationTree;
-    // Special Chars and Paragraphs Palettes
-    private JTabbedPane paletteTabPanel;
-    private JScrollPane paragraphsScrollPane;
-    private JList paragraphsList;
-//    private ParagraphPaletteController paragraphPaletteController;
-    private JScrollPane specialCharsScrollPane;
     private JList specialCharsList;
-//    private SpecialCharPaletteController specialCharPaletteControler;
-    // Error List View
-    private JScrollPane errorScrollPane;
     private JList errorsList;
     private HashMap<Specification, List>specificationErrors;
 
@@ -82,9 +59,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
      */
     public TozeEditor()
     {
+        uiBundle = ResourceBundle.getBundle("edu.uwlax.toze.editor.toze");
+
         initComponents();
 
-        // init and cache the JAXB context on startup do it doesn't delay opening / closing documents
+        // init and cache the JAXB context on startup
+        // slight performance / user experience improvement when
+        // open / saving documents
         TozeJaxbContext.getTozeJaxbContext();
     }
 
@@ -104,40 +85,31 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     {
         EditorMouseAdaptor mouseAdaptor = new EditorMouseAdaptor();
 
-        editorSplitPane = new JSplitPane();
-        leftSplitPane = new JSplitPane();
-        rightSplitPane = new JSplitPane();
+        JSplitPane editorSplitPane = new JSplitPane();
+        JSplitPane leftSplitPane = new JSplitPane();
+        JSplitPane rightSplitPane = new JSplitPane();
 
-        specificationTreeScrollPane = new JScrollPane();
+        JScrollPane specificationTreeScrollPane = new JScrollPane();
         specificationTree = new JTree();
 
         specificationTabPanel = new JTabbedPane();
         specificationTabPanel.addChangeListener(this);
-        paletteTabPanel = new JTabbedPane();
+        JTabbedPane paletteTabPanel = new JTabbedPane();
 
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu();
-        newSpecificationMenu = new JMenuItem();
-        openSpecificationMenu = new JMenuItem();
-        saveSpecificationMenu = new JMenuItem();
-        saveAsSpecificationMenu = new JMenuItem();
-        closeSpecificationMenu = new JMenuItem();
-        checkSpecificationMenu = new JMenuItem();
-
-        specialCharsScrollPane = new JScrollPane();
+        JScrollPane specialCharsScrollPane = new JScrollPane();
         specialCharsList = new JList(TozeCharMap.getAllChars().toArray());
         specialCharsList.setCellRenderer(new SpecialCharListCellRenderer());
         specialCharsList.setFont(TozeFontMap.getFont());
         specialCharsList.addMouseListener(mouseAdaptor);
 
-        paragraphsScrollPane = new JScrollPane();
-        String[] paragraphs =
-            {
-            "Basic Type", "Class", "Operation"
-            };
-        paragraphsList = new JList(paragraphs);
+//        paragraphsScrollPane = new JScrollPane();
+//        String[] paragraphs =
+//            {
+//            "Basic Type", "Class", "Operation"
+//            };
+//        paragraphsList = new JList(paragraphs);
 
-        errorScrollPane = new JScrollPane();
+        JScrollPane errorScrollPane = new JScrollPane();
         errorsList = new JList();
         errorsList.setCellRenderer(new ErrorListCellRenderer());
         errorsList.setFont(TozeFontMap.getFont());
@@ -180,91 +152,101 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         specificationTreeScrollPane.setViewportView(specificationTree);
         specialCharsScrollPane.setViewportView(specialCharsList);
-        paragraphsScrollPane.setViewportView(paragraphsList);
+//        paragraphsScrollPane.setViewportView(paragraphsList);
         errorScrollPane.setViewportView(errorsList);
 
-        paletteTabPanel.addTab("Characters", specialCharsScrollPane);
-        paletteTabPanel.addTab("Paragraphs", paragraphsScrollPane);
+        paletteTabPanel.addTab(uiBundle.getString("specialCharsTab.title"), specialCharsScrollPane);
+//        paletteTabPanel.addTab(uiBundle.getString("paragraphTab.title"), paragraphsScrollPane);
 
-        fileMenu.setText("File");
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu();
+        fileMenu.setText(uiBundle.getString("fileMenu.title"));
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        newSpecificationMenu.setText("New");
-        newSpecificationMenu.setMnemonic(KeyEvent.VK_N);
-        newSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-        newSpecificationMenu.addActionListener(new ActionListener()
+        JMenuItem menuItem;
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.newSpecification.title"));
+        menuItem.setMnemonic(KeyEvent.VK_N);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
                 newSpecification();
             }
         });
-        fileMenu.add(newSpecificationMenu);
+        fileMenu.add(menuItem);
 
-        openSpecificationMenu.setText("Open");
-        openSpecificationMenu.setMnemonic(KeyEvent.VK_O);
-        openSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        openSpecificationMenu.addActionListener(new ActionListener()
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.openSpecification.title"));
+        menuItem.setMnemonic(KeyEvent.VK_O);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
                 openSpecification();
             }
         });
-        fileMenu.add(openSpecificationMenu);
+        fileMenu.add(menuItem);
 
-        saveSpecificationMenu.setText("Save");
-        saveSpecificationMenu.setMnemonic(KeyEvent.VK_S);
-        saveSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        saveSpecificationMenu.addActionListener(new ActionListener()
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.saveSpecification.title"));
+        menuItem.setMnemonic(KeyEvent.VK_S);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
                 saveSpecification();
             }
         });
-        fileMenu.add(saveSpecificationMenu);
+        fileMenu.add(menuItem);
 
-        saveAsSpecificationMenu.setText("Save As...");
-        saveAsSpecificationMenu.setMnemonic(KeyEvent.VK_A);
-        saveAsSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        saveAsSpecificationMenu.addActionListener(new ActionListener() {
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.saveAsSpecification.title"));
+        menuItem.setMnemonic(KeyEvent.VK_A);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 saveAsSpecification();
             }
         });
-        fileMenu.add(saveAsSpecificationMenu);
+        fileMenu.add(menuItem);
 
-        checkSpecificationMenu.setText("Check");
-        checkSpecificationMenu.setMnemonic(KeyEvent.VK_K);
-        checkSpecificationMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
-        checkSpecificationMenu.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                checkSpecification();
-            }
-        });
-        fileMenu.add(checkSpecificationMenu);
-
-        closeSpecificationMenu.setText("Close");
-        closeSpecificationMenu.addActionListener(new ActionListener()
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.closeSpecification.title"));
+        menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
                 closeSpecification();
             }
         });
-        fileMenu.add(closeSpecificationMenu);
+        fileMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.quit.title"));
+        menuItem.setMnemonic(KeyEvent.VK_Q);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                quit();
+            }
+        });
+        fileMenu.add(menuItem);
 
         menuBar.add(fileMenu);
 
-        JMenu editMenu = new JMenu("Edit");
+        JMenu editMenu = new JMenu(uiBundle.getString("editMenu.title"));
         editMenu.setMnemonic(KeyEvent.VK_E);
 
-        JMenuItem menuItem;
-
-        menuItem = new JMenuItem("Cut");
+        menuItem = new JMenuItem(uiBundle.getString("editMenu.cut.title"));
         menuItem.setMnemonic(KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
         menuItem.addActionListener(new ActionListener()
@@ -277,7 +259,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         });
         editMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Copy");
+        menuItem = new JMenuItem(uiBundle.getString("editMenu.copy.title"));
         menuItem.setMnemonic(KeyEvent.VK_C);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         menuItem.addActionListener(new ActionListener()
@@ -290,7 +272,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         });
         editMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Paste");
+        menuItem = new JMenuItem(uiBundle.getString("editMenu.paste.title"));
         menuItem.setMnemonic(KeyEvent.VK_P);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
         menuItem.addActionListener(new ActionListener()
@@ -305,6 +287,194 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         menuBar.add(editMenu);
 
+        JMenu specificationMenu = new JMenu(uiBundle.getString("specificationMenu.title"));
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.check.title"));
+        menuItem.setMnemonic(KeyEvent.VK_K);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                checkSpecification();
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addAbbreviation(specController.getSpecification());
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        JMenu addAxiomaticDefMenu = new JMenu();
+        addAxiomaticDefMenu.setText(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.title"));
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addAxiomaticType(specController.getSpecification(), true);
+            }
+        });
+
+        addAxiomaticDefMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withoutPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addAxiomaticType(specController.getSpecification(), false);
+            }
+        });
+        addAxiomaticDefMenu.add(menuItem);
+
+        specificationMenu.add(addAxiomaticDefMenu);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addBasicTypeDef.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addBasicType(specController.getSpecification());
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addClass.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addClass();
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addFreeTypeDef.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addFreeType(specController.getSpecification());
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        JMenu addGenericDefMenu = new JMenu();
+        addGenericDefMenu.setText(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.title"));
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+//                specController.addGenericType(specController.getSpecification(), true);
+            }
+        });
+        addGenericDefMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withoutPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+//                specController.addGenericType(specController.getSpecification(), false);
+            }
+        });
+        addGenericDefMenu.add(menuItem);
+
+        specificationMenu.add(addGenericDefMenu);
+
+//        JMenu addSchemaMenu = new JMenu();
+//        addSchemaMenu.setText(uiBundle.getString("specificationMenu.addSchemaMenu.title"));
+//
+//        menuItem = new JMenuItem();
+//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withPredicate.title"));
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                SpecificationController specController = currentSpecificationController();
+//                specController.addSchemaDef(specController.getSpecification(), true);
+//            }
+//        });
+//        addSchemaMenu.add(menuItem);
+//
+//        menuItem = new JMenuItem();
+//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withoutPredicate.title"));
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                SpecificationController specController = currentSpecificationController();
+//                specController.addSchemaDef(specController.getSpecification(), true);
+//            }
+//        });
+//        addSchemaMenu.add(menuItem);
+//
+//        menuItem = new JMenuItem();
+//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withExpression.title"));
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                SpecificationController specController = currentSpecificationController();
+//                specController.addSchemaDef(specController.getSpecification(), true);
+//            }
+//        });
+//        addSchemaMenu.add(menuItem);
+//
+//        specificationMenu.add(addSchemaMenu);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.addPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpecificationController specController = currentSpecificationController();
+                specController.addSpecificationPredicate();
+            }
+        });
+        specificationMenu.add(menuItem);
+
+        menuBar.add(specificationMenu);
         setJMenuBar(menuBar);
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -324,6 +494,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)));
 
         pack();
+    }
+
+    private void quit()
+    {
+        // for now
+        System.exit(0);
+
+        // TODO: need to check for edited specifications, prompt to save, etc.
     }
 
     private void cut()
@@ -387,12 +565,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         SpecificationDocument specificationDocument = new SpecificationDocument(specificationFile, specification);
         treeModel.addSpecificationDocument(specificationDocument);
 
+        SpecificationController controller = new SpecificationController(specificationDocument);
+        SpecificationView specView = new SpecificationView(specification, controller);
+        controller.setSpecificationView(specView);
 
-        SpecificationView specView = new SpecificationView(specification);
-        specification.addObserver(specView);
-
-        SpecificationController controller = new SpecificationController(specificationDocument, specView);
-        specView.setController(controller);
         specView.setLayout(new TozeLayout());
         specView.requestRebuild();
 

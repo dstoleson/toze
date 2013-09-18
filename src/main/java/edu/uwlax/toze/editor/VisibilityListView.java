@@ -11,7 +11,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class VisibilityListView extends ParagraphView implements Placement, Observer
+public class VisibilityListView extends ParagraphView implements Placement
 {
     static private final String BasicTypePre = TozeFontMap.CHAR_RHARPOON + "(";
     static private final String BasicTypePost = ")";
@@ -24,7 +24,6 @@ public class VisibilityListView extends ParagraphView implements Placement, Obse
     {
         setLayout(new ParaLayout(this));
         this.classDef = classDef;
-        classDef.addObserver(this);
         requestRebuild();
     }
 
@@ -100,14 +99,5 @@ public class VisibilityListView extends ParagraphView implements Placement, Obse
         g.drawString(BasicTypePre, xoffset, yoffset + ystring);
         int numLines = visibilityListText.getLineCount();
         g.drawString(BasicTypePost, xoffset + fm.stringWidth(BasicTypePre) + cd.width, yoffset + ystring + (fm.getHeight() * (numLines - 1)));
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o == classDef && "visibilityList".equals(arg))
-            {
-            requestRebuild();
-            }
     }
 }

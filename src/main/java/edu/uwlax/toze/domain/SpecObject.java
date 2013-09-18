@@ -9,7 +9,7 @@ import java.util.*;
  * a way to generate a UUID for each object in the specification document
  * tree.
  */
-public abstract class SpecObject extends Observable implements Cloneable
+public abstract class SpecObject implements Cloneable
 {
     private HashMap<String, TozeToken> errors;
 
@@ -47,11 +47,6 @@ public abstract class SpecObject extends Observable implements Cloneable
             {
             specObject.clearErrors();
             }
-    }
-    protected void update(Object property)
-    {
-        this.setChanged();
-        this.notifyObservers(property);
     }
 
     @Override

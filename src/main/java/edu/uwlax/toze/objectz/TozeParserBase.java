@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TozeParserBase
 {
-    private TozeTokenizer m_tokenizer;
     private List m_tokens = new ArrayList();
     int m_current;
     public TozeToken m_failed = null;
@@ -115,7 +114,7 @@ public class TozeParserBase
         m_tokens.clear();
         m_longest = 0;
 
-        m_tokenizer = new TozeTokenizer(reader);
+        TozeTokenizer m_tokenizer = new TozeTokenizer(reader);
 
         try
             {

@@ -13,7 +13,6 @@ public class BasicTypeDef extends SpecObject
 
     public void setName(String name) {
         this.name = name;
-        this.update("name");
     }
 
     public Specification getSpecification() {
@@ -33,8 +32,9 @@ public class BasicTypeDef extends SpecObject
     }
 
     @Override
-    public BasicTypeDef clone()
+    public BasicTypeDef clone() throws CloneNotSupportedException
     {
+        super.clone();
         BasicTypeDef clone = new BasicTypeDef();
         clone.setName(this.getName());
 

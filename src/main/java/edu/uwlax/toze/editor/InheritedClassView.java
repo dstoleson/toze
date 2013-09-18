@@ -9,7 +9,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class InheritedClassView extends ParagraphView implements Placement, Observer
+public class InheritedClassView extends ParagraphView implements Placement
 {
     private InheritedClass inheritedClass;
     //
@@ -19,7 +19,6 @@ public class InheritedClassView extends ParagraphView implements Placement, Obse
     {
         setLayout(new ParaLayout(this));
         this.inheritedClass = inheritedClass;
-        inheritedClass.addObserver(this);
         requestRebuild();
     }
 
@@ -95,13 +94,5 @@ public class InheritedClassView extends ParagraphView implements Placement, Obse
     public Dimension minimumSize()
     {
         return preferredSize();
-    }
-
-    public void update(Observable o, Object arg)
-    {
-        if (o == inheritedClass)
-            {
-            requestRebuild();
-            }
     }
 }

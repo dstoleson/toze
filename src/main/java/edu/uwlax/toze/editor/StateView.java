@@ -10,7 +10,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class StateView extends ParagraphView implements Observer
+public class StateView extends ParagraphView
 {
     static private final int StateContentOffset = 10;
     static private final int StateLineMargin = 5;
@@ -29,7 +29,6 @@ public class StateView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.state = state;
-        state.addObserver(this);
         requestRebuild();
     }
 
@@ -110,6 +109,59 @@ public class StateView extends ParagraphView implements Observer
         return getPreferredSize(g);
     }
 
+    @Override
+    public Dimension minimumSize()
+    {
+        //return new Dimension(100, 100);
+        return preferredSize();
+    }
+
+    @Override
+    public void paint(Graphics g) // int xoffset, int yoffset)
+    {
+        super.paint(g);
+
+        int xoffset = HMargin;
+        int yoffset = VMargin;
+        Dimension d;
+        FontMetrics fm = g.getFontMetrics();
+        Dimension cd = getPreferredSize();
+        int declsHeight = 0;
+
+        g.setColor(Color.BLACK);
+
+        if (stateNameText != null)
+            {
+            d = stateNameText.getPreferredSize();
+            g.drawString(m_pre, xoffset, yoffset + (fm.getHeight() - fm.getDescent()));
+            g.drawString(m_post, xoffset + fm.stringWidth(m_pre) + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
+            }
+        else
+            {
+            g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
+
+            if (declarationText != null)
+                {
+                declsHeight += InterVMargin;
+                d = declarationText.getPreferredSize();
+                declsHeight += d.height + InterVMargin;
+
+                g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight);
+                yoffset += declsHeight;
+                }
+
+            g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
+
+            if (predicateText != null)
+                {
+                g.drawLine(xoffset, yoffset, xoffset, yoffset + StateLineMargin);
+                yoffset += StateLineMargin;
+                g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
+                g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
+                }
+            }
+    }
+
     public Dimension getPreferredSize(Graphics g)
     {
         FontMetrics fm = g.getFontMetrics();
@@ -174,67 +226,5 @@ public class StateView extends ParagraphView implements Observer
         height += StateLineMargin;
 
         return new Dimension(width, height);
-    }
-
-    @Override
-    public Dimension minimumSize()
-    {
-        //return new Dimension(100, 100);
-        return preferredSize();
-    }
-
-    @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
-    {
-        super.paint(g);
-
-        int xoffset = HMargin;
-        int yoffset = VMargin;
-        Dimension d;
-        FontMetrics fm = g.getFontMetrics();
-        Dimension cd = getPreferredSize();
-        int declsHeight = 0;
-
-        g.setColor(Color.BLACK);
-
-        if (stateNameText != null)
-            {
-            d = stateNameText.getPreferredSize();
-            g.drawString(m_pre, xoffset, yoffset + (fm.getHeight() - fm.getDescent()));
-            g.drawString(m_post, xoffset + fm.stringWidth(m_pre) + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
-            }
-        else
-            {
-            g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
-
-            if (declarationText != null)
-                {
-                declsHeight += InterVMargin;
-                d = declarationText.getPreferredSize();
-                declsHeight += d.height + InterVMargin;
-
-                g.drawLine(xoffset, yoffset, xoffset, yoffset + declsHeight);
-                yoffset += declsHeight;
-                }
-
-            g.drawLine(xoffset, yoffset, cd.width - 1 - HMargin, yoffset);
-
-            if (predicateText != null)
-                {
-                g.drawLine(xoffset, yoffset, xoffset, yoffset + StateLineMargin);
-                yoffset += StateLineMargin;
-                g.drawLine(xoffset, yoffset, xoffset, cd.height - 1 - VMargin);
-                g.drawLine(xoffset, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
-                }
-            }
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o == state)
-            {
-            requestRebuild();
-            }
     }
 }

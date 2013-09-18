@@ -5,16 +5,24 @@ import edu.uwlax.toze.domain.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 import static edu.uwlax.toze.editor.StateType.*;
 
 public class PopUpMenuBuilder
 {
+    static private ResourceBundle uiBundle;
+
+    static
+        {
+        uiBundle = ResourceBundle.getBundle("edu.uwlax.toze.editor.toze");
+        }
+
     static public JPopupMenu buildPopup(final Object object, String property, final SpecificationController controller)
     {
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem moveUp = new JMenuItem("Move Up");
-        JMenuItem moveDown = new JMenuItem("Move Down");
+        JMenuItem moveUp = new JMenuItem(uiBundle.getString("specificationMenu.moveUp.title"));
+        JMenuItem moveDown = new JMenuItem(uiBundle.getString("specificationMenu.moveDown.title"));
 
         if (object instanceof SpecObject)
             {
@@ -110,9 +118,9 @@ public class PopUpMenuBuilder
     
     static private JPopupMenu buildAbbreviationPopup(JPopupMenu popupMenu, final AbbreviationDef abbreviationDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Abbreviation");
+        addTitle(popupMenu, uiBundle.getString("abbreviationPopupMenu.title"));
         
-        JMenuItem menuItem = new JMenuItem("Delete Abbreviation Definition");
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("abbreviationPopupMenu.deleteAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -127,9 +135,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildAxiomaticPopup(JPopupMenu popupMenu, final AxiomaticDef axiomaticDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Axiomatic");
-        
-        JMenuItem menuItem = new JMenuItem("Delete Axiomatic Definition");
+        addTitle(popupMenu, uiBundle.getString("axiomaticPopupMenu.title"));
+
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("axiomaticPopupMenu.deleteAxiomaticDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             @Override
@@ -140,7 +148,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("axiomaticPopupMenu.addPredicate.title"));
         menuItem.setEnabled(axiomaticDef.getPredicate() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -152,7 +160,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Remove Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("axiomaticPopupMenu.removePredicate.title"));
         menuItem.setEnabled(axiomaticDef.getPredicate() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -169,9 +177,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildBasicTypePopup(JPopupMenu popupMenu, final BasicTypeDef basicTypeDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Basic Type");
+        addTitle(popupMenu, uiBundle.getString("basicTypePopupMenu.title"));
         
-        JMenuItem menuItem = new JMenuItem("Delete Basic Type Definition");
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("basicTypePopupMenu.deleteBasicTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -186,9 +194,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildDeltaListPopup(JPopupMenu popupMenu, final Operation operation, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Delta List");
+        addTitle(popupMenu, uiBundle.getString("deltaListPopupMenu.title"));
         
-        JMenuItem menuItem = new JMenuItem("Delete Delta List");
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("deltaListPopupMenu.deleteDeltaList.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -203,9 +211,9 @@ public class PopUpMenuBuilder
 
         static private JPopupMenu buildFreeTypePopup(JPopupMenu popupMenu, final FreeTypeDef freeTypeDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Free Type");
-        
-        JMenuItem menuItem = new JMenuItem("Delete Free Type");
+        addTitle(popupMenu, uiBundle.getString("freeTypePopupMenu.title"));
+
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("freeTypePopupMenu.deleteFreeType.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -220,9 +228,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildGenericPopup(JPopupMenu popupMenu, final GenericDef genericDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Generic Type");
-        
-        JMenuItem menuItem = new JMenuItem("Delete Generic Type");
+        addTitle(popupMenu, uiBundle.getString("genericTypePopupMenu.title"));
+
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("genericTypePopupMenu.deleteGenericType.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -254,8 +262,8 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final Specification toze, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Specification");
-        JMenuItem menuItem = new JMenuItem("Add Abbreviation Definition");
+        addTitle(popupMenu, uiBundle.getString("specificationMenu.title"));
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -266,9 +274,9 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         //AXIOMATIC DEFINITION
-        JMenu axiomaticMenu = new JMenu("Add Axiomatic Definition");
+        JMenu axiomaticMenu = new JMenu(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.title"));
 
-        menuItem = new JMenuItem("With Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -278,7 +286,7 @@ public class PopUpMenuBuilder
         });
         axiomaticMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withoutPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -289,7 +297,7 @@ public class PopUpMenuBuilder
         axiomaticMenu.add(menuItem);
         popupMenu.add(axiomaticMenu);
 
-        menuItem = new JMenuItem("Add Basic Type Definition");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addBasicTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -299,7 +307,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Class");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addClass.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -309,7 +317,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Free Type Definition");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addFreeTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -320,9 +328,9 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         // GENERIC DEFINITION
-        JMenu genericMenu = new JMenu("Add Generic Definition");
+        JMenu genericMenu = new JMenu(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.title"));
 
-        menuItem = new JMenuItem("With Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -332,7 +340,7 @@ public class PopUpMenuBuilder
         });
         genericMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withoutPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -343,7 +351,7 @@ public class PopUpMenuBuilder
         genericMenu.add(menuItem);
         popupMenu.add(genericMenu);
 
-        menuItem = new JMenuItem("Add Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addPredicate.title"));
         menuItem.setEnabled(toze.getPredicate() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -354,7 +362,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Remove Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.deletePredicate.title"));
         menuItem.setEnabled(toze.getPredicate() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -370,9 +378,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildClassPopup(JPopupMenu popupMenu, final ClassDef classDef, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Class");
+        addTitle(popupMenu, uiBundle.getString("classPopupMenu.title"));
 
-        JMenuItem menuItem = new JMenuItem("Add Visibility List");
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addVisibilityList.title"));
         menuItem.setEnabled(classDef.getVisibilityList() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -383,7 +391,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Delete Visibility List");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteVisibilityList.title"));
         menuItem.setEnabled(classDef.getVisibilityList() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -394,7 +402,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Inherited Class");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addInheritedClass.title"));
         menuItem.setEnabled(classDef.getInheritedClass() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -405,7 +413,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Delete Inherited Class");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteInheritedClass.title"));
         menuItem.setEnabled(classDef.getInheritedClass() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -416,7 +424,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Abbreviation Definition");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -427,9 +435,9 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         //AXIOMATIC DEFINITION
-        JMenu axiomaticMenu = new JMenu("Add Axiomatic Definition");
+        JMenu axiomaticMenu = new JMenu(uiBundle.getString("classPopupMenu.addAxiomaticDefinitionMenu.title"));
 
-        menuItem = new JMenuItem("With Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAxiomaticDefinitionMenu.withPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -439,7 +447,7 @@ public class PopUpMenuBuilder
         });
         axiomaticMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAxiomaticDefinitionMenu.withoutPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -450,7 +458,7 @@ public class PopUpMenuBuilder
         axiomaticMenu.add(menuItem);
         popupMenu.add(axiomaticMenu);
 
-        menuItem = new JMenuItem("Add Basic Type Definition");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addBasicTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -460,7 +468,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Free Type Definition");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addFreeTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -471,9 +479,9 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         // STATE
-        JMenu stateMenu = new JMenu("Add State");
+        JMenu stateMenu = new JMenu(uiBundle.getString("classPopupMenu.addStateMenu.title"));
         menuItem.setEnabled(classDef.getState() == null);
-        menuItem = new JMenuItem("State");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.state.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -483,7 +491,7 @@ public class PopUpMenuBuilder
         });
         stateMenu.add(menuItem);
 
-        menuItem = new JMenuItem("State []");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withBrackets.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -493,7 +501,7 @@ public class PopUpMenuBuilder
         });
         stateMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withoutPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -503,7 +511,7 @@ public class PopUpMenuBuilder
         });
         stateMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Declaration");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withoutDeclaration.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -514,7 +522,7 @@ public class PopUpMenuBuilder
         stateMenu.add(menuItem);
         popupMenu.add(stateMenu);
 
-        menuItem = new JMenuItem("Delete State");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteState.title"));
         menuItem.setEnabled(classDef.getState() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -526,8 +534,8 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         // INITIAL STATE
-        JMenu initStateMenu = new JMenu("Add Initial State");
-        menuItem = new JMenuItem("Initial State");
+        JMenu initStateMenu = new JMenu(uiBundle.getString("classPopupMenu.addInitialStateMenu.title"));
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addInitialStateMenu.initialState.title"));
         menuItem.setEnabled(classDef.getInitialState() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -539,7 +547,7 @@ public class PopUpMenuBuilder
         });
         initStateMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Initial State = ");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addInitialStateMenu.initialStateEquals.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -551,7 +559,7 @@ public class PopUpMenuBuilder
         initStateMenu.add(menuItem);
         popupMenu.add(initStateMenu);
 
-        menuItem = new JMenuItem("Delete Initial State");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteInitialState.title"));
         menuItem.setEnabled(classDef.getInitialState() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -562,9 +570,9 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        JMenu operationMenu = new JMenu("Add Operation");
+        JMenu operationMenu = new JMenu(uiBundle.getString("classPopupMenu.addOperationMenu.title"));
 
-        menuItem = new JMenuItem("Operation");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.operation.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -574,7 +582,7 @@ public class PopUpMenuBuilder
         });
         operationMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withoutPredicate.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -584,7 +592,7 @@ public class PopUpMenuBuilder
         });
         operationMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Without Declaration");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withoutDeclaration.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -594,7 +602,7 @@ public class PopUpMenuBuilder
         });
         operationMenu.add(menuItem);
 
-        menuItem = new JMenuItem("With Expression");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withExpression.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -605,7 +613,7 @@ public class PopUpMenuBuilder
         operationMenu.add(menuItem);
         popupMenu.add(operationMenu);
 
-        menuItem = new JMenuItem("Delete Class");
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteClass.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -623,9 +631,9 @@ public class PopUpMenuBuilder
 
     static private JPopupMenu buildOperationPopup(JPopupMenu popupMenu, final Operation operation, final SpecificationController controller)
     {
-        addTitle(popupMenu, "Operation");
+        addTitle(popupMenu, uiBundle.getString("operationMenu.title"));
 
-        JMenuItem menuItem = new JMenuItem("Add Delta List");
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("operationMenu.addDeltaList.title"));
         menuItem.setEnabled(operation.getDeltaList() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -636,7 +644,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Remove Delta List");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteDeltaList.title"));
         menuItem.setEnabled(operation.getDeltaList() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -647,7 +655,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Declaration");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.addDeclaration.title"));
         menuItem.setEnabled(operation.getDeclaration() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -658,7 +666,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Remove Declaration");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteDeclaration.title"));
         menuItem.setEnabled(operation.getDeclaration() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -669,7 +677,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Add Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.addPredicate.title"));
         menuItem.setEnabled(operation.getPredicate() == null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -680,7 +688,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Remove Predicate");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.deletePredicate.title"));
         menuItem.setEnabled(operation.getPredicate() != null);
         menuItem.addActionListener(new ActionListener()
         {
@@ -691,7 +699,7 @@ public class PopUpMenuBuilder
         });
         popupMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Delete Operation");
+        menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteOperation.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)

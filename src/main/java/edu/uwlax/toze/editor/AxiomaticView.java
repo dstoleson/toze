@@ -10,7 +10,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class AxiomaticView extends ParagraphView implements Observer
+public class AxiomaticView extends ParagraphView
 {
     static private final int AxContentOffset = 10;
     static private final int AxLineMargin = 5;
@@ -24,7 +24,6 @@ public class AxiomaticView extends ParagraphView implements Observer
     {
         setLayout(new ParaLayout(this));
         this.axiomaticDef = axiomaticDef;
-        axiomaticDef.addObserver(this);
         requestRebuild();
     }
 
@@ -151,13 +150,5 @@ public class AxiomaticView extends ParagraphView implements Observer
             g.drawLine(xoffset, yoffset, xoffset + cd.width - 1, yoffset);
             g.drawLine(xoffset, yoffset, xoffset, cd.height - VMargin);
             }
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        // nothing to do (no sub-views)
-        // text views are updated using another mechanism
-        return;
     }
 }

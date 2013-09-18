@@ -11,7 +11,7 @@ import java.awt.Insets;
 import java.util.Observable;
 import java.util.Observer;
 
-public class DeltaListView extends ParagraphView implements Placement, Observer
+public class DeltaListView extends ParagraphView implements Placement
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
     static final String DeltaListPost = ")";
@@ -24,7 +24,6 @@ public class DeltaListView extends ParagraphView implements Placement, Observer
     {
         setLayout(new ParaLayout(this));
         this.operation = operation;
-        operation.addObserver(this);
         requestRebuild();
     }
 
@@ -114,14 +113,5 @@ public class DeltaListView extends ParagraphView implements Placement, Observer
         Dimension cd = deltaListText.getPreferredSize();
         g.drawString(DeltaListPre, xoffset, yoffset + ystring);
         g.drawString(DeltaListPost, xoffset + fm.stringWidth(DeltaListPre) + cd.width, yoffset + ystring);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o == operation && "deltaList".equals(arg))
-            {
-            requestRebuild();
-            }
     }
 }

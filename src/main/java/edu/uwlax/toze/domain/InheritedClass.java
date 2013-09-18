@@ -14,7 +14,6 @@ public class InheritedClass extends SpecObject
     public void setName(String name)
     {
         this.name = name;
-        this.update("name");
     }
 
     public ClassDef getClassDef()
@@ -28,8 +27,10 @@ public class InheritedClass extends SpecObject
     }
 
     @Override
-    public InheritedClass clone()
+    public InheritedClass clone() throws CloneNotSupportedException
     {
+        super.clone();
+
         InheritedClass clone = new InheritedClass();
         clone.setName(this.getName());
 

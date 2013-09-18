@@ -3,6 +3,8 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.domain.*;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
 import java.util.*;
 import java.util.List;
 
@@ -11,13 +13,18 @@ import java.util.List;
  *
  * @author dhs
  */
-public class ClassView extends ParagraphView implements Observer
+public class ClassView extends ParagraphView
 {
     static final private int ClassNameOffset = 10;
     static final private int ClassNameLineMargin = 5;
     static final private int ClassNameSpace = 5;
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
+    //
+    private SpecificationController specController;
+    //
+    private MouseAdapter mouseAdapter;
+    private KeyAdapter keyAdapter;
     //
     private ClassDef classDef;
     //
@@ -32,17 +39,23 @@ public class ClassView extends ParagraphView implements Observer
     private InitialStateView initialStateView;
     private List<OperationView> operationViews;
 
-    public ClassView(ClassDef classDef)
+    public ClassView(ClassDef classDef, SpecificationController specController)
     {
         this.setLayout(new ParaLayout(this));
         this.classDef = classDef;
-        classDef.addObserver(this);
 
         axiomaticViews = new ArrayList<AxiomaticView>();
         abbreviationViews = new ArrayList<AbbreviationView>();
         basicTypeViews = new ArrayList<BasicTypeView>();
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
+
+        this.specController = specController;
+        mouseAdapter = specController.getMouseAdapter();
+        keyAdapter = specController.getKeyAdapter();
+
+        addMouseListener(mouseAdapter);
+        addKeyListener(keyAdapter);
 
         requestRebuild();
     }
@@ -60,8 +73,8 @@ public class ClassView extends ParagraphView implements Observer
 
     private void addView(ParagraphView view, List views)
     {
-//        view.addMouseListener(mouseAdapter);
-//        view.addKeyListener(keyAdapter);
+        view.addMouseListener(mouseAdapter);
+        view.addKeyListener(keyAdapter);
         add(view);
 
         if (views != null)
@@ -131,7 +144,7 @@ public class ClassView extends ParagraphView implements Observer
 
         for (Operation operation : classDef.getOperationList())
             {
-            OperationView operationView = new OperationView(operation);
+            OperationView operationView = new OperationView(operation, specController);
             addView(operationView, operationViews);
             }
     }
@@ -375,15 +388,6 @@ public class ClassView extends ParagraphView implements Observer
             d = operationView.getPreferredSize(this.getGraphics());
             operationView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
-            }
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        if (o == classDef)
-            {
-            requestRebuild();
             }
     }
 }

@@ -23,7 +23,7 @@ public class CharToXMLTransformer
             return source;
             }
 
-        // @TODO should validate that there are equals numbers of '&#'
+        // @TODO should v alidate that there are equals numbers of '&#'
         // and integer values and that they are in pairs.
         
         StringBuilder string = new StringBuilder();
