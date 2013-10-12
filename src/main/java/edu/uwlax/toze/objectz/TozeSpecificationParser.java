@@ -8,8 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class TozeGuiParser extends TozeParser
+public class TozeSpecificationParser extends TozeParser
 {
+
     Ast.AstBase result;
 
     private Stack<SpecificationSection> sectionsStack = new Stack<SpecificationSection>();

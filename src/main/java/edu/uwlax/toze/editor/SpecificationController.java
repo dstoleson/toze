@@ -1,20 +1,15 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.*;
-import edu.uwlax.toze.domain.SpecObjectPropertyError;
-import edu.uwlax.toze.domain.SpecObjectPropertyPair;
 
 import edu.uwlax.toze.editor.bindings.Binding;
-import edu.uwlax.toze.objectz.TozeGuiParser;
-import edu.uwlax.toze.objectz.TozeToken;
+import edu.uwlax.toze.objectz.TozeSpecificationParser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
-
-import static edu.uwlax.toze.editor.StateType.All;
 
 /**
  *
@@ -750,7 +745,7 @@ public class SpecificationController extends Observable implements FocusListener
     {
         resetErrors();
 
-        TozeGuiParser parser = new TozeGuiParser();
+        TozeSpecificationParser parser = new TozeSpecificationParser();
         parser.parseForErrors(specification);
 
         List errors = specification.getErrors();
