@@ -1,5 +1,6 @@
 package edu.uwlax.toze.persist;
 
+import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.spec.TOZE;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,32 +20,34 @@ public class SpecificationBuilderTest
     public void testSpecificationBuilder() throws Exception
     {
         InputStream inputStream = new FileInputStream("src/test/resources/ComputerCompany");
-        SpecificationBuilder specBuilder = new SpecificationBuilder();
+        SpecificationReader specReader = new SpecificationReader(inputStream);
 
         // TODO: fix to use Specification
-        TOZE toze = null; //specBuilder.buildFromStream(inputStream);
+        Specification toze = specReader.read();
         inputStream.close();
         assertNotNull(toze);
-        assertEquals(1, toze.getBasicTypeDef().size());
-        assertEquals("CUSTOMERID, VENDOR, COMPUTERMODEL, PARTTYPE, STRING, COMPUTERID, PARTID", toze.getBasicTypeDef().get(0).getName());
-        assertEquals(4, toze.getClassDef().size());
-        assertEquals("Part", toze.getClassDef().get(0).getName());
-        assertEquals("Computer", toze.getClassDef().get(1).getName());
-        assertEquals("Customer", toze.getClassDef().get(2).getName());
-        assertEquals("ComputerCompany", toze.getClassDef().get(3).getName());
+        assertEquals(1, toze.getBasicTypeDefList().size());
+        assertEquals("CUSTOMERID, VENDOR, COMPUTERMODEL, PARTTYPE, STRING, COMPUTERID, PARTID", toze.getBasicTypeDefList().get(0).getName());
+        assertEquals(4, toze.getClassDefList().size());
+        assertEquals("Part", toze.getClassDefList().get(0).getName());
+        assertEquals("Computer", toze.getClassDefList().get(1).getName());
+        assertEquals("Customer", toze.getClassDefList().get(2).getName());
+        assertEquals("ComputerCompany", toze.getClassDefList().get(3).getName());
     }
 
     @Test
     public void testSpecificationMarshaller() throws Exception
     {
         InputStream inputStream = new FileInputStream("src/test/resources/ComputerCompany");
-        SpecificationBuilder specBuilder = new SpecificationBuilder();
+        SpecificationReader specReader = new SpecificationReader(inputStream);
 
         // TODO: fix to use Specification
-        TOZE toze = null; // specBuilder.buildFromStream(inputStream);
+        Specification toze = specReader.read();
         inputStream.close();
         
         FileOutputStream outputStream = new FileOutputStream("/tmp/ComputerCompany");
-//        specBuilder.writeToStream(toze, outputStream);
+        SpecificationWriter specWriter = new SpecificationWriter(outputStream);
+
+        specWriter.write(toze);
     }
 }

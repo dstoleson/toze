@@ -1,12 +1,5 @@
 package edu.uwlax.toze.objectz;
 
-import edu.uwlax.toze.persist.SpecificationBuilder;
-import edu.uwlax.toze.domain.SpecObject;
-import edu.uwlax.toze.spec.TOZE;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Set;
 //import static org.junit.Assert.*;
 //import org.junit.Test;
 
@@ -15,7 +8,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testParserNoErrors() throws Exception
 //    {
-//        TozeGuiParser parser = parseSpecification("src/test/resources/ComputerCompany");
+//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompany");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (TozeToken error : syntaxErrors.keySet())
@@ -29,7 +22,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testSyntaxErrors() throws Exception
 //    {
-//        TozeGuiParser parser = parseSpecification("src/test/resources/ComputerCompanySyntaxErrors");
+//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompanySyntaxErrors");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (TozeToken error : syntaxErrors.keySet())
@@ -43,7 +36,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testTypeErrors() throws Exception
 //    {
-//        TozeGuiParser parser = parseSpecification("src/test/resources/ComputerCompanyTypeErrors");
+//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompanyTypeErrors");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (String error : typeErrors)
@@ -54,13 +47,13 @@ public class SpecificationParserTest
 //        assertEquals(2, typeErrors.size());
 //    }
 //
-//    private TozeGuiParser parseSpecification(String specificationFile) throws Exception
+//    private TozeSpecificationParser parseSpecification(String specificationFile) throws Exception
 //    {
 //        InputStream inputStream = new FileInputStream(specificationFile);
 //        SpecificationBuilder specBuilder = new SpecificationBuilder();
 //        TOZE toze = specBuilder.buildFromStream(inputStream);
 //        inputStream.close();
-//        TozeGuiParser parser = new TozeGuiParser();
+//        TozeSpecificationParser parser = new TozeSpecificationParser();
 //        parser.parseForErrors(toze);
 //
 //        return parser;

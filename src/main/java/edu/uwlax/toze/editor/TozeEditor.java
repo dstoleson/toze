@@ -2,7 +2,8 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
-import edu.uwlax.toze.persist.SpecificationBuilder;
+import edu.uwlax.toze.persist.SpecificationReader;
+import edu.uwlax.toze.persist.SpecificationWriter;
 import edu.uwlax.toze.persist.TozeJaxbContext;
 
 import javax.swing.*;
@@ -544,8 +545,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             try
                 {
                 InputStream inputStream = new FileInputStream(specificationFile);
-                SpecificationBuilder specBuilder = new SpecificationBuilder();
-                Specification specification = specBuilder.buildFromStream(inputStream);
+                SpecificationReader specReader = new SpecificationReader(inputStream);
+                Specification specification = specReader.read();
                 inputStream.close();
 
                 openSpecificationTab(specification, specificationFile);
@@ -632,8 +633,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
             System.out.println("Writing to file: " + specificationFile.getAbsolutePath());
             OutputStream outputStream = new FileOutputStream(specificationFile);
-            SpecificationBuilder specBuilder = new SpecificationBuilder();
-            specBuilder.writeToStream(specification, outputStream);
+            SpecificationWriter specWriter = new SpecificationWriter(outputStream);
+            specWriter.write(specification);
             outputStream.close();
             System.out.println("Wrote to file: " + specificationFile.getAbsolutePath());
             }
