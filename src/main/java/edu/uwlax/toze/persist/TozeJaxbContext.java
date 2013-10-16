@@ -1,6 +1,6 @@
 package edu.uwlax.toze.persist;
 
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.domain.Specification;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,7 +15,7 @@ public class TozeJaxbContext
             {
             if (jaxbContext == null)
                 {
-                jaxbContext = JAXBContext.newInstance(TOZE.class);
+                jaxbContext = JAXBContext.newInstance(Specification.class);
                 }
             }
         catch (JAXBException e)

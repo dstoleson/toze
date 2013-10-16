@@ -1,9 +1,27 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassDef extends SpecObject implements ParentSpecObject
+@XmlRootElement(name = "classDef")
+@XmlType(propOrder =
+                 {
+                    "name",
+                    "visibilityList",
+                    "inheritedClass",
+                    "basicTypeDefList",
+                    "axiomaticDefList",
+                    "abbreviationDefList",
+                    "freeTypeDefList",
+                    "state",
+                    "initialState",
+                    "operationList"
+                 })
+public class ClassDef extends SpecObject
 {
     private String name;
     private String visibilityList;
@@ -48,6 +66,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         this.inheritedClass = inheritedClass;
     }
 
+    @XmlElement(name = "basicTypeDef")
     public List<BasicTypeDef> getBasicTypeDefList()
     {
         return new ArrayList<BasicTypeDef>(basicTypeDefList);
@@ -68,6 +87,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         basicTypeDefList.remove(basicTypeDef);
     }
 
+    @XmlElement(name = "axiomaticDef")
     public List<AxiomaticDef> getAxiomaticDefList()
     {
         return new ArrayList<AxiomaticDef>(axiomaticDefList);
@@ -88,6 +108,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         axiomaticDefList.remove(axiomaticDef);
     }
 
+    @XmlElement(name = "abbreviationDef")
     public List<AbbreviationDef> getAbbreviationDefList()
     {
         return new ArrayList<AbbreviationDef>(abbreviationDefList);
@@ -108,6 +129,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         abbreviationDefList.remove(abbreviationDef);
     }
 
+    @XmlElement(name = "freeTypeDef")
     public List<FreeTypeDef> getFreeTypeDefList()
     {
         return new ArrayList<FreeTypeDef>(freeTypeDefList);
@@ -148,6 +170,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         this.initialState = initialState;
     }
 
+    @XmlElement(name = "operation")
     public List<Operation> getOperationList()
     {
         return new ArrayList<Operation>(operationList);
@@ -168,6 +191,7 @@ public class ClassDef extends SpecObject implements ParentSpecObject
         operationList.remove(operation);
     }
 
+    @XmlTransient
     public Specification getSpecification()
     {
         return specification;

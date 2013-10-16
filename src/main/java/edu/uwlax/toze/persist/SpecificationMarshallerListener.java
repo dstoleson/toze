@@ -1,16 +1,6 @@
 package edu.uwlax.toze.persist;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.InheritedClass;
-import edu.uwlax.toze.spec.InitialState;
-import edu.uwlax.toze.spec.SchemaDef;
-import edu.uwlax.toze.spec.State;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.domain.*;
 import javax.xml.bind.Marshaller;
 
 public class SpecificationMarshallerListener extends Marshaller.Listener
@@ -22,9 +12,9 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
         super.beforeMarshal(source);
 
         // Transform the CDATA Escaped Chars into Java Chars
-        if (source instanceof TOZE)
+        if (source instanceof Specification)
             {
-            TOZE toze = (TOZE) source;
+            Specification toze = (Specification) source;
             toze.setPredicate(CharToXMLTransformer.transform(toze.getPredicate()));
             }
         else if (source instanceof AbbreviationDef)
@@ -73,9 +63,9 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
             InitialState initialState = (InitialState) source;
             initialState.setPredicate(CharToXMLTransformer.transform(initialState.getPredicate()));
             }
-        else if (source instanceof edu.uwlax.toze.spec.Operation)
+        else if (source instanceof Operation)
             {
-            edu.uwlax.toze.spec.Operation operation = (edu.uwlax.toze.spec.Operation) source;            
+            Operation operation = (Operation) source;
             operation.setName(CharToXMLTransformer.transform(operation.getName()));
             operation.setDeltaList(CharToXMLTransformer.transform(operation.getDeltaList()));
             operation.setDeclaration(CharToXMLTransformer.transform(operation.getDeclaration()));

@@ -3,7 +3,7 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.domain.*;
 
 import edu.uwlax.toze.editor.bindings.Binding;
-import edu.uwlax.toze.objectz.TozeSpecificationParser;
+import edu.uwlax.toze.objectz.TozeSpecificationChecker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -745,8 +745,8 @@ public class SpecificationController extends Observable implements FocusListener
     {
         resetErrors();
 
-        TozeSpecificationParser parser = new TozeSpecificationParser();
-        parser.parseForErrors(specification);
+        TozeSpecificationChecker parser = new TozeSpecificationChecker();
+        parser.check(specification);
 
         List errors = specification.getErrors();
 

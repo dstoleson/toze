@@ -1,7 +1,6 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.domain.Specification;
-import edu.uwlax.toze.spec.TOZE;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -23,16 +22,16 @@ public class SpecificationBuilderTest
         SpecificationReader specReader = new SpecificationReader(inputStream);
 
         // TODO: fix to use Specification
-        Specification toze = specReader.read();
+        Specification specification = specReader.read();
         inputStream.close();
-        assertNotNull(toze);
-        assertEquals(1, toze.getBasicTypeDefList().size());
-        assertEquals("CUSTOMERID, VENDOR, COMPUTERMODEL, PARTTYPE, STRING, COMPUTERID, PARTID", toze.getBasicTypeDefList().get(0).getName());
-        assertEquals(4, toze.getClassDefList().size());
-        assertEquals("Part", toze.getClassDefList().get(0).getName());
-        assertEquals("Computer", toze.getClassDefList().get(1).getName());
-        assertEquals("Customer", toze.getClassDefList().get(2).getName());
-        assertEquals("ComputerCompany", toze.getClassDefList().get(3).getName());
+        assertNotNull(specification);
+        assertEquals(1, specification.getBasicTypeDefList().size());
+        assertEquals("CUSTOMERID, VENDOR, COMPUTERMODEL, PARTTYPE, STRING, COMPUTERID, PARTID", specification.getBasicTypeDefList().get(0).getName());
+        assertEquals(4, specification.getClassDefList().size());
+        assertEquals("Part", specification.getClassDefList().get(0).getName());
+        assertEquals("Computer", specification.getClassDefList().get(1).getName());
+        assertEquals("Customer", specification.getClassDefList().get(2).getName());
+        assertEquals("ComputerCompany", specification.getClassDefList().get(3).getName());
     }
 
     @Test

@@ -8,7 +8,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testParserNoErrors() throws Exception
 //    {
-//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompany");
+//        TozeSpecificationChecker parser = parseSpecification("src/test/resources/ComputerCompany");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (TozeToken error : syntaxErrors.keySet())
@@ -22,7 +22,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testSyntaxErrors() throws Exception
 //    {
-//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompanySyntaxErrors");
+//        TozeSpecificationChecker parser = parseSpecification("src/test/resources/ComputerCompanySyntaxErrors");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (TozeToken error : syntaxErrors.keySet())
@@ -36,7 +36,7 @@ public class SpecificationParserTest
 //    @Test
 //    public void testTypeErrors() throws Exception
 //    {
-//        TozeSpecificationParser parser = parseSpecification("src/test/resources/ComputerCompanyTypeErrors");
+//        TozeSpecificationChecker parser = parseSpecification("src/test/resources/ComputerCompanyTypeErrors");
 //        HashMap<TozeToken, SpecObject> syntaxErrors = parser.getSyntaxErrors();
 //        Set<String> typeErrors = parser.getTypeErrors();
 //        for (String error : typeErrors)
@@ -47,13 +47,13 @@ public class SpecificationParserTest
 //        assertEquals(2, typeErrors.size());
 //    }
 //
-//    private TozeSpecificationParser parseSpecification(String specificationFile) throws Exception
+//    private TozeSpecificationChecker parseSpecification(String specificationFile) throws Exception
 //    {
 //        InputStream inputStream = new FileInputStream(specificationFile);
 //        SpecificationBuilder specBuilder = new SpecificationBuilder();
 //        TOZE toze = specBuilder.buildFromStream(inputStream);
 //        inputStream.close();
-//        TozeSpecificationParser parser = new TozeSpecificationParser();
+//        TozeSpecificationChecker parser = new TozeSpecificationChecker();
 //        parser.parseForErrors(toze);
 //
 //        return parser;

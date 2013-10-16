@@ -1,7 +1,6 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.domain.Specification;
-import edu.uwlax.toze.spec.TOZE;
 import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBContext;
@@ -34,11 +33,7 @@ public class SpecificationWriter
      */
     public void write(Specification specification) throws Exception
     {
-        // because the specification needs to be altered to write proper XML with CDATA tags
-        // to be backwards compatible with existing TOZE files, the first things to do is to create a
-        // deep copy / clone of the specification which can be altered while writing
-
-        TOZE tozeToWrite = SpecificationToTOZEBuilder.buildTOZE(specification);
+        Specification specToWrite = (Specification) specification.clone();
 
         // Create an empty DOM document
         // DocumentBuilderFactory is not thread-safe
@@ -50,7 +45,7 @@ public class SpecificationWriter
             JAXBContext context = TozeJaxbContext.getTozeJaxbContext();
             Marshaller marshaller = context.createMarshaller();
             marshaller.setListener(new SpecificationMarshallerListener());
-            marshaller.marshal(tozeToWrite, document);
+            marshaller.marshal(specToWrite, document);
             }
         catch (JAXBException e)
             {
@@ -75,6 +70,7 @@ public class SpecificationWriter
                         + " predicate"
 
         );
+
         nullTransformer.transform(new DOMSource(document), new StreamResult(outputStream));
     }
 }

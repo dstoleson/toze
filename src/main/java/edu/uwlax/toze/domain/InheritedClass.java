@@ -1,5 +1,14 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement
+@XmlType(propOrder =
+                 {
+                    "name"
+                 })
 public class InheritedClass extends SpecObject
 {
     private String name;
@@ -16,6 +25,7 @@ public class InheritedClass extends SpecObject
         this.name = name;
     }
 
+    @XmlTransient
     public ClassDef getClassDef()
     {
         return classDef;

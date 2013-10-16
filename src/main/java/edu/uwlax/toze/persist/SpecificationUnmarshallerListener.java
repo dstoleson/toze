@@ -1,17 +1,6 @@
 package edu.uwlax.toze.persist;
 
-import edu.uwlax.toze.spec.AbbreviationDef;
-import edu.uwlax.toze.spec.AxiomaticDef;
-import edu.uwlax.toze.spec.BasicTypeDef;
-import edu.uwlax.toze.spec.ClassDef;
-import edu.uwlax.toze.spec.FreeTypeDef;
-import edu.uwlax.toze.spec.GenericDef;
-import edu.uwlax.toze.spec.InheritedClass;
-import edu.uwlax.toze.spec.InitialState;
-import edu.uwlax.toze.spec.Operation;
-import edu.uwlax.toze.spec.SchemaDef;
-import edu.uwlax.toze.spec.State;
-import edu.uwlax.toze.spec.TOZE;
+import edu.uwlax.toze.domain.*;
 import javax.xml.bind.Unmarshaller;
 
 /**
@@ -31,9 +20,9 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
         super.afterUnmarshal(target, parent);
 
         // Transform the CDATA Escaped Chars into Java Chars
-        if (target instanceof TOZE)
+        if (target instanceof Specification)
             {
-            TOZE toze = (TOZE) target;
+            Specification toze = (Specification) target;
             toze.setPredicate(XMLToCharTransformer.transform(toze.getPredicate()));
             }
         else if (target instanceof AbbreviationDef)
@@ -41,29 +30,67 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             AbbreviationDef abbreviationDef = (AbbreviationDef) target;
             abbreviationDef.setName(XMLToCharTransformer.transform(abbreviationDef.getName()));
             abbreviationDef.setExpression(XMLToCharTransformer.transform(abbreviationDef.getExpression()));
+
+            if (parent instanceof Specification)
+                {
+                abbreviationDef.setSpecification((Specification)parent);
+                }
+            else if (parent instanceof ClassDef)
+                {
+                abbreviationDef.setClassDef((ClassDef)parent);
+                }
             }
         else if (target instanceof AxiomaticDef)
             {
             AxiomaticDef axiomaticDef = (AxiomaticDef) target;
             axiomaticDef.setDeclaration(XMLToCharTransformer.transform(axiomaticDef.getDeclaration()));
             axiomaticDef.setPredicate(XMLToCharTransformer.transform(axiomaticDef.getPredicate()));
+
+            if (parent instanceof Specification)
+                {
+                axiomaticDef.setSpecification((Specification)parent);
+                }
+            else if (parent instanceof ClassDef)
+                {
+                axiomaticDef.setClassDef((ClassDef)parent);
+                }
             }
         else if (target instanceof BasicTypeDef)
             {
             BasicTypeDef basicTypeDef = (BasicTypeDef) target;
             basicTypeDef.setName(XMLToCharTransformer.transform(basicTypeDef.getName()));
+
+            if (parent instanceof Specification)
+                {
+                basicTypeDef.setSpecification((Specification)parent);
+                }
+            else if (parent instanceof ClassDef)
+                {
+                basicTypeDef.setClassDef((ClassDef)parent);
+                }
             }
         else if (target instanceof ClassDef)
             {
             ClassDef classDef = (ClassDef) target;
             classDef.setName(XMLToCharTransformer.transform(classDef.getName()));
             classDef.setVisibilityList(XMLToCharTransformer.transform(classDef.getVisibilityList()));
+
+            classDef.setSpecification((Specification)parent);
             }
         else if (target instanceof FreeTypeDef)
             {
             FreeTypeDef freeTypeDef = (FreeTypeDef) target;
             freeTypeDef.setDeclaration(XMLToCharTransformer.transform(freeTypeDef.getDeclaration()));
             freeTypeDef.setPredicate(XMLToCharTransformer.transform(freeTypeDef.getPredicate()));
+
+            if (parent instanceof Specification)
+                {
+                freeTypeDef.setSpecification((Specification)parent);
+                }
+            else if (parent instanceof ClassDef)
+                {
+                freeTypeDef.setClassDef((ClassDef)parent);
+                }
             }
         else if (target instanceof GenericDef)
             {
@@ -71,16 +98,22 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             genericDef.setFormalParameters(XMLToCharTransformer.transform(genericDef.getFormalParameters()));
             genericDef.setDeclaration(XMLToCharTransformer.transform(genericDef.getDeclaration()));
             genericDef.setPredicate(XMLToCharTransformer.transform(genericDef.getPredicate()));
+
+            genericDef.setSpecification((Specification)parent);
             }
         else if (target instanceof InheritedClass)
             {
             InheritedClass inheritedClass = (InheritedClass) target;
             inheritedClass.setName(XMLToCharTransformer.transform(inheritedClass.getName()));
+
+            inheritedClass.setClassDef((ClassDef)parent);
             }
         else if (target instanceof InitialState)
             {
             InitialState initialState = (InitialState) target;
             initialState.setPredicate(XMLToCharTransformer.transform(initialState.getPredicate()));
+
+            initialState.setClassDef((ClassDef)parent);
             }
         else if (target instanceof Operation)
             {
@@ -89,7 +122,9 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             operation.setDeltaList(XMLToCharTransformer.transform(operation.getDeltaList()));
             operation.setDeclaration(XMLToCharTransformer.transform(operation.getDeclaration()));
             operation.setPredicate(XMLToCharTransformer.transform(operation.getPredicate()));
-            operation.setOperationExpression(XMLToCharTransformer.transform(operation.getOperationExpression()));            
+            operation.setOperationExpression(XMLToCharTransformer.transform(operation.getOperationExpression()));
+
+            operation.setClassDef((ClassDef)parent);
             }
 //        else if (target instanceof SchemaDef)
 //            {
@@ -105,6 +140,8 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
             state.setDeclaration(XMLToCharTransformer.transform(state.getDeclaration()));
             state.setPredicate(XMLToCharTransformer.transform(state.getPredicate()));
             state.setName(XMLToCharTransformer.transform(state.getName()));
+
+            state.setClassDef((ClassDef)parent);
             }
     }
 }

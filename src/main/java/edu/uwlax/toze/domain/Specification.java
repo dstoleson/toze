@@ -2,11 +2,25 @@ package edu.uwlax.toze.domain;
 
 import edu.uwlax.toze.objectz.TozeToken;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Specification extends SpecObject implements ParentSpecObject
+@XmlRootElement(name = "TOZE")
+@XmlType(propOrder =
+                 {
+        "basicTypeDefList",
+        "axiomaticDefList",
+        "genericDefList",
+        "abbreviationDefList",
+        "freeTypeDefList",
+        "classDefList",
+        "predicate"
+                 })
+public class Specification extends SpecObject
 {
     private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
     private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
@@ -16,6 +30,7 @@ public class Specification extends SpecObject implements ParentSpecObject
     private List<ClassDef> classDefList = new ArrayList<ClassDef>();
     private String predicate;
 
+    @XmlElement(name = "basicTypeDef")
     public List<BasicTypeDef> getBasicTypeDefList()
     {
         return new ArrayList<BasicTypeDef>(basicTypeDefList);
@@ -36,6 +51,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         basicTypeDefList.remove(basicTypeDef);
     }
 
+    @XmlElement(name = "axiomaticDef")
     public List<AxiomaticDef> getAxiomaticDefList()
     {
         return new ArrayList<AxiomaticDef>(axiomaticDefList);
@@ -56,6 +72,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         axiomaticDefList.remove(axiomaticDef);
     }
 
+    @XmlElement(name = "genericDef")
     public List<GenericDef> getGenericDefList()
     {
         return new ArrayList<GenericDef>(genericDefList);
@@ -76,6 +93,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         genericDefList.remove(genericDef);
     }
 
+    @XmlElement(name = "abbreviationDef")
     public List<AbbreviationDef> getAbbreviationDefList()
     {
         return new ArrayList<AbbreviationDef>(abbreviationDefList);
@@ -96,6 +114,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         abbreviationDefList.remove(abbreviationDef);
     }
 
+    @XmlElement(name = "freeTypeDef")
     public List<FreeTypeDef> getFreeTypeDefList()
     {
         return new ArrayList<FreeTypeDef>(freeTypeDefList);
@@ -116,6 +135,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         freeTypeDefList.remove(freeTypeDef);
     }
 
+    @XmlElement(name = "classDef")
     public List<ClassDef> getClassDefList()
     {
         return new ArrayList<ClassDef>(classDefList);
@@ -136,6 +156,7 @@ public class Specification extends SpecObject implements ParentSpecObject
         classDefList.remove(classDef);
     }
 
+    @XmlElement(name = "predicate")
     public String getPredicate()
     {
         return predicate;

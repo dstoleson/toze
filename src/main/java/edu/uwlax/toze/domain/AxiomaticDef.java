@@ -1,5 +1,15 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "axiomaticDef")
+@XmlType(propOrder =
+                 {
+                    "declaration",
+                    "predicate"
+                 })
 public class AxiomaticDef extends SpecObject
 {
     private String declaration;
@@ -24,6 +34,7 @@ public class AxiomaticDef extends SpecObject
         this.predicate = predicate;
     }
 
+    @XmlTransient
     public Specification getSpecification() {
         return specification;
     }
@@ -32,6 +43,7 @@ public class AxiomaticDef extends SpecObject
         this.specification = specification;
     }
 
+    @XmlTransient
     public ClassDef getClassDef() {
         return classDef;
     }

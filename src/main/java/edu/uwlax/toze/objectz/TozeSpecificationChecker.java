@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class TozeSpecificationParser extends TozeParser
+public class TozeSpecificationChecker extends TozeParser
 {
 
     Ast.AstBase result;
@@ -17,7 +17,7 @@ public class TozeSpecificationParser extends TozeParser
     private Stack m_nodes = new Stack();
 //    private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();     x
 
-    public void parseForErrors(Specification toze)
+    public void check(Specification toze)
     {        
         // @TODO Need to way to map the errors to the place in the document
         // There needs to be a map of some unique id to an element in the document

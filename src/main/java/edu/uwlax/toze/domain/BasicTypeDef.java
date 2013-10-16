@@ -1,5 +1,14 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "basicTypeDef")
+@XmlType(propOrder =
+                 {
+                     "name"
+                 })
 public class BasicTypeDef extends SpecObject
 {
     private String name;
@@ -15,6 +24,7 @@ public class BasicTypeDef extends SpecObject
         this.name = name;
     }
 
+    @XmlTransient
     public Specification getSpecification() {
         return specification;
     }
@@ -23,6 +33,7 @@ public class BasicTypeDef extends SpecObject
         this.specification = specification;
     }
 
+    @XmlTransient
     public ClassDef getClassDef() {
         return classDef;
     }

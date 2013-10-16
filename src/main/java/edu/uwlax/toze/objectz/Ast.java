@@ -100,12 +100,12 @@ public class Ast
 
     public class AstVector extends AstBase
     {
-        Vector m_list = new Vector();
+        List m_list = new ArrayList();
     }
 
     public class AstSpec extends AstBase
     {
-        Vector m_paras = new Vector();
+        List m_paras = new ArrayList();
 
         public void add(AstBase n)
         {
@@ -205,7 +205,7 @@ public class Ast
 
     public class AstBasicTypeDefinition extends AstPara
     {
-        Vector m_identifiers = new Vector();
+        List m_identifiers = new ArrayList();
 
         private boolean containsId(AstIdentifier id)
         {
@@ -390,7 +390,7 @@ public class Ast
                     m_predicateList = new AstPredicateList();
                     }
                 int i;
-                Vector v = ((AstVector) n).m_list;
+                List v = ((AstVector) n).m_list;
                 for (i = 0; i < v.size(); i++)
                     {
                     m_predicateList.add((AstBase) v.get(i));
@@ -532,7 +532,7 @@ public class Ast
     public class AstFreeTypeDefinition extends AstPara
     {
         AstIdentifier m_identifier;
-        Vector m_branches = new Vector();
+        List m_branches = new ArrayList();
         AstType m_type;
 
         public void print(int l)
@@ -758,11 +758,11 @@ public class Ast
         AstClassName m_className;
         AstFormalParameters m_formalParameters;
         AstVisibilityList m_visibilityList;
-        Vector m_inheritedClasses = new Vector();
-        Vector m_localDefinitions = new Vector();
+        List m_inheritedClasses = new ArrayList();
+        List m_localDefinitions = new ArrayList();
         AstState m_state;
         AstInitialState m_initialState;
-        Vector m_operations = new Vector();
+        List m_operations = new ArrayList();
 
         public void print(int l)
         {
@@ -1055,7 +1055,7 @@ public class Ast
 
     public class AstPredicateList extends AstBase
     {
-        Vector m_predicates = new Vector();
+        List m_predicates = new ArrayList();
 
         public void add(AstBase n)
         {
@@ -1066,7 +1066,7 @@ public class Ast
             else if (n instanceof AstVector)
                 {
                 int i;
-                Vector v = ((AstVector) n).m_list;
+                List v = ((AstVector) n).m_list;
                 for (i = 0; i < v.size(); i++)
                     {
                     m_predicates.add((AstPredicate) v.get(i));
@@ -1254,7 +1254,7 @@ public class Ast
                     m_predicateList = new AstPredicateList();
                     }
                 int i;
-                Vector v = ((AstVector) n).m_list;
+                List v = ((AstVector) n).m_list;
                 for (i = 0; i < v.size(); i++)
                     {
                     m_predicateList.add((AstPredicate) v.get(i));
@@ -1440,7 +1440,7 @@ public class Ast
                     m_predicateList = new AstPredicateList();
                     }
                 int i;
-                Vector v = ((AstVector) n).m_list;
+                List v = ((AstVector) n).m_list;
                 for (i = 0; i < v.size(); i++)
                     {
                     m_predicateList.m_predicates.add((AstBase) v.get(i));
@@ -1530,7 +1530,7 @@ public class Ast
             if (m_deltaList != null)
                 {
                 int i;
-                Vector v = m_deltaList.m_declarationNameList.m_declarationNameList;
+                List v = m_deltaList.m_declarationNameList.m_declarationNameList;
                 for (i = 0; i < v.size(); i++)
                     {
                     AstDeclarationName id = (AstDeclarationName) v.get(i);
@@ -1782,7 +1782,7 @@ public class Ast
 
     public class AstFormalParameters extends AstBase
     {
-        Vector m_identifiers = new Vector();
+        List m_identifiers = new ArrayList();
 
         public int getNumParameters()
         {
@@ -1875,7 +1875,7 @@ public class Ast
 
     public class AstDecorations extends AstBase
     {
-        Vector m_decorations = new Vector();
+        List m_decorations = new ArrayList();
 
         public void add(char c)
         {
@@ -1994,7 +1994,7 @@ public class Ast
 
     public class AstDeclarationNameList extends AstBase
     {
-        Vector m_declarationNameList = new Vector();
+        List m_declarationNameList = new ArrayList();
 
         public void print(int l)
         {
@@ -2096,7 +2096,7 @@ public class Ast
 
     public class AstActualParameters extends AstBase
     {
-        Vector m_actualParameters = new Vector(); // AstActualParameter
+        List m_actualParameters = new ArrayList(); // AstActualParameter
 
         public int getNumParams()
         {
@@ -2158,7 +2158,7 @@ public class Ast
 
     public class AstRenameList extends AstBase
     {
-        Vector m_renameList = new Vector(); // AstRenameItem
+        List m_renameList = new ArrayList(); // AstRenameItem
     }
 
     public class AstRenameItem extends AstBase
@@ -2219,7 +2219,7 @@ public class Ast
 
     public class AstDeclaration extends AstBase
     {
-        Vector m_decls = new Vector();
+        List m_decls = new ArrayList();
 
         public void print(int l)
         {
@@ -2509,7 +2509,7 @@ public class Ast
             if (m_deltaList != null)
                 {
                 int i;
-                Vector v = m_deltaList.m_declarationNameList.m_declarationNameList;
+                List v = m_deltaList.m_declarationNameList.m_declarationNameList;
                 for (i = 0; i < v.size(); i++)
                     {
                     AstDeclarationName id = (AstDeclarationName) v.get(i);
@@ -2722,7 +2722,7 @@ public class Ast
 
     public class AstLetP extends AstPredicate
     {
-        Vector m_lets = new Vector();
+        List m_lets = new ArrayList();
         AstPredicate m_predicate;
 
         public void print(int l)
@@ -2888,7 +2888,7 @@ public class Ast
 
     public class AstRelationsP extends AstPredicate
     {
-        Vector m_relations = new Vector();
+        List m_relations = new ArrayList();
         AstExpression m_expressionL;
         AstExpression m_expressionR;
 
@@ -4002,7 +4002,7 @@ public class Ast
 
     public class AstExpressionListX extends AstExpression
     {
-        Vector m_expressions = new Vector();
+        List m_expressions = new ArrayList();
 
         public void populateTypeTable(AstSymbolTable stable)
         {
@@ -4298,12 +4298,12 @@ public class Ast
 
     public class AstAngleX extends AstExpression
     {
-        Vector m_expressions = new Vector();
+        List m_expressions = new ArrayList();
     }
 
     public class AstBagX extends AstExpression
     {
-        Vector m_expressions = new Vector();
+        List m_expressions = new ArrayList();
 
         public void print(int l)
         {
@@ -4527,7 +4527,7 @@ public class Ast
         public AstType getType()
         {
             m_schemaText.checkType();
-            Vector decls = m_schemaText.m_declaration.m_decls;
+            List decls = m_schemaText.m_declaration.m_decls;
             AstType ttype = new AstType(AstType.TYPE_TUPLE);
             int i;
             for (i = 0; i < decls.size(); i++)
@@ -4535,7 +4535,7 @@ public class Ast
                 if (decls.get(i) instanceof AstBasicDeclaration1)
                     {
                     AstBasicDeclaration1 dec = (AstBasicDeclaration1) decls.get(i);
-                    Vector names = dec.m_declarationNameList.m_declarationNameList;
+                    List names = dec.m_declarationNameList.m_declarationNameList;
                     int j;
                     for (j = 0; j < names.size(); j++)
                         {
@@ -4565,7 +4565,7 @@ public class Ast
 
     public class AstLetX extends AstExpression
     {
-        Vector m_letDefinitions = new Vector();
+        List m_letDefinitions = new ArrayList();
         AstExpression m_expression;
     }
 
@@ -4647,7 +4647,7 @@ public class Ast
 
     public class AstSetExpressionX1 extends AstSetExpressionX
     {
-        Vector m_expressions = new Vector();
+        List m_expressions = new ArrayList();
 
         public void print(int l)
         {
@@ -4820,7 +4820,7 @@ public class Ast
 
     public class AstSequenceX extends AstExpression
     {
-        Vector m_expressions = new Vector();
+        List m_expressions = new ArrayList();
 
         public void print(int l)
         {
@@ -5137,7 +5137,7 @@ public class Ast
                     }
                 }
 
-            Vector vtmp = ftype.getSetType().m_tupleTypes;
+            List vtmp = ftype.getSetType().m_tupleTypes;
             return (AstType) vtmp.get(vtmp.size() - 1);
         }
     }

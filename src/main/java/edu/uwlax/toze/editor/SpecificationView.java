@@ -2,7 +2,6 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.editor.bindings.Binding;
-import edu.uwlax.toze.spec.TOZE;
 
 import javax.swing.*;
 import java.awt.*;

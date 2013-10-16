@@ -1,7 +1,6 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.domain.Specification;
-import edu.uwlax.toze.spec.TOZE;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,20 +24,20 @@ public class SpecificationReader
      */
     public Specification read()
     {
-        TOZE toze = null;
+        Specification specification = null;
 
         try
             {
-            JAXBContext context = JAXBContext.newInstance(TOZE.class);
+            JAXBContext context = TozeJaxbContext.getTozeJaxbContext();
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setListener(new SpecificationUnmarshallerListener());
-            toze = (TOZE) unmarshaller.unmarshal(inputStream);
+            specification = (Specification) unmarshaller.unmarshal(inputStream);
             }
         catch (JAXBException e)
             {
             e.printStackTrace();
             }
 
-        return TOZEToSpecificationBuilder.buildSpecification(toze);
+        return specification;
     }
 }

@@ -1,7 +1,6 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.Specification;
-import edu.uwlax.toze.spec.TOZE;
 
 import java.io.File;
 

@@ -1,5 +1,7 @@
 package edu.uwlax.toze.objectz;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -27,7 +29,7 @@ public class AstType
    static final int TYPE_EMPTYSEQ     = 19;
    
    AstType m_setType = null;
-   Vector m_tupleTypes = new Vector();
+   List m_tupleTypes = new ArrayList();
    
    AstSymbolTable m_classMembers = null;
    

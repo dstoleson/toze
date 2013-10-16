@@ -1,5 +1,14 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "initialState")
+@XmlType(propOrder =
+                 {
+                    "predicate"
+                 })
 public class InitialState extends SpecObject
 {
     private String predicate;
@@ -16,7 +25,9 @@ public class InitialState extends SpecObject
         this.predicate = predicate;
     }
 
-    public ClassDef getClassDef() {
+    @XmlTransient
+    public ClassDef getClassDef()
+    {
         return classDef;
     }
 

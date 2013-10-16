@@ -1,5 +1,16 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "schemaDef")
+@XmlType(propOrder =
+                 {
+                    "name",
+                    "declaration",
+                    "predicate",
+                    "expression"
+                 })
 public class SchemaDef extends SpecObject
 {
     private String name;

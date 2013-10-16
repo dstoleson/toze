@@ -1,5 +1,18 @@
 package edu.uwlax.toze.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "operation")
+@XmlType(propOrder =
+                 {
+                    "name",
+                    "deltaList",
+                    "declaration",
+                    "predicate",
+                    "operationExpression"
+                 })
 public class Operation extends SpecObject
 {
     private String name;
@@ -60,6 +73,7 @@ public class Operation extends SpecObject
         this.operationExpression = operationExpression;
     }
 
+    @XmlTransient
     public ClassDef getClassDef()
     {
         return classDef;
