@@ -1,15 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.InheritedClass;
 import edu.uwlax.toze.domain.InitialState;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class InitialStateView extends ParagraphView
 {
@@ -28,8 +21,10 @@ public class InitialStateView extends ParagraphView
     //
     private TozeTextArea predicateText;
 
-    public InitialStateView(InitialState initialState)
+    public InitialStateView(InitialState initialState, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.initialState = initialState;
         requestRebuild();
@@ -54,13 +49,12 @@ public class InitialStateView extends ParagraphView
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
-        Dimension d2;
 
         int x = insets.left;
         int y = insets.top;
@@ -85,20 +79,15 @@ public class InitialStateView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Insets insets = getInsets();
         int width = 0;
         int height = 0;
-        int w;
+//        int w;
 
 //        if (m_type == 2)
 //            {
@@ -132,28 +121,25 @@ public class InitialStateView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        //return new Dimension(100, 100);
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
-        Dimension d;
         int y = 0;
         FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
-        int declsHeight = 0;
 
         g.setColor(Color.BLACK);
 
 //        if (m_type == 2)
 //            {
-//            d = m_predicate.getPreferredSize();
+//            Dimension d = m_predicate.getPreferredSize();
 //            g.drawString(m_pre, xoffset, yoffset + (fm.getHeight() - fm.getDescent()));
 //            g.drawString(m_post, xoffset + fm.stringWidth(m_pre) + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
 //            }

@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.*;
 import java.util.List;
 
@@ -21,14 +24,14 @@ public class SpecificationView extends JPanel
     public SpecificationView(Specification specification, SpecificationController specController)
     {
         super();
-        this.specification = specification;
 
+        this.specification = specification;
         this.specController = specController;
         mouseAdapter = specController.getMouseAdapter();
         keyAdapter = specController.getKeyAdapter();
 
-        addMouseListener(mouseAdapter);
-        addKeyListener(keyAdapter);
+//        addMouseListener(mouseAdapter);
+//        addKeyListener(keyAdapter);
 
         requestRebuild();
     }
@@ -44,8 +47,8 @@ public class SpecificationView extends JPanel
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
-        text.addMouseListener(mouseAdapter);
-        text.addFocusListener(specController);
+//        text.addMouseListener(mouseAdapter);
+//        text.addFocusListener(specController);
 
         return text;
     }
@@ -58,7 +61,7 @@ public class SpecificationView extends JPanel
     private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
     {
         textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-        textArea.addKeyListener(keyAdapter);
+//        textArea.addKeyListener(keyAdapter);
     }
 
     protected void rebuild()
@@ -73,19 +76,19 @@ public class SpecificationView extends JPanel
 
         for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
             {
-            addView(new AxiomaticView(axiomaticDef));
+            addView(new AxiomaticView(axiomaticDef, specController));
             }
         for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
             {
-            addView(new AbbreviationView(abbreviationDef));
+            addView(new AbbreviationView(abbreviationDef, specController));
             }
         for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
             {
-            addView(new BasicTypeView(basicTypeDef));
+            addView(new BasicTypeView(basicTypeDef, specController));
             }
         for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
             {
-            addView(new FreeTypeView(freeTypeDef));
+            addView(new FreeTypeView(freeTypeDef, specController));
             }
         for (ClassDef classDef : specification.getClassDefList())
             {
@@ -95,12 +98,12 @@ public class SpecificationView extends JPanel
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
         setBackground(Color.WHITE);
         setForeground(Color.BLACK);
 
-        super.paint(g);
+        super.paintComponent(g);
     }
 
     @Override

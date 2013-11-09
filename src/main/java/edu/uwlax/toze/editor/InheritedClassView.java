@@ -1,13 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.FreeTypeDef;
 import edu.uwlax.toze.domain.InheritedClass;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class InheritedClassView extends ParagraphView implements Placement
 {
@@ -15,8 +10,10 @@ public class InheritedClassView extends ParagraphView implements Placement
     //
     private TozeTextArea inheritedClassText;
 
-    public InheritedClassView(InheritedClass inheritedClass)
+    public InheritedClassView(InheritedClass inheritedClass, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.inheritedClass = inheritedClass;
         requestRebuild();
@@ -41,10 +38,9 @@ public class InheritedClassView extends ParagraphView implements Placement
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
-        Graphics g = getGraphics();
         Dimension d;
 
         int x = insets.left + HMargin;
@@ -58,13 +54,7 @@ public class InheritedClassView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension preferredSize()
-    {
-        Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
+    public Dimension getPreferredSize()
     {
         Dimension newDim = null;
         
@@ -80,8 +70,8 @@ public class InheritedClassView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 }

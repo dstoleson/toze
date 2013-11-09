@@ -6,6 +6,7 @@ import edu.uwlax.toze.persist.SpecificationReader;
 import edu.uwlax.toze.persist.SpecificationWriter;
 import edu.uwlax.toze.persist.TozeJaxbContext;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -15,6 +16,8 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -103,13 +106,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         specialCharsList.setFont(TozeFontMap.getFont());
         specialCharsList.addMouseListener(mouseAdaptor);
 
-//        paragraphsScrollPane = new JScrollPane();
-//        String[] paragraphs =
-//            {
-//            "Basic Type", "Class", "Operation"
-//            };
-//        paragraphsList = new JList(paragraphs);
-
         JScrollPane errorScrollPane = new JScrollPane();
         errorsList = new JList();
         errorsList.setCellRenderer(new ErrorListCellRenderer());
@@ -153,11 +149,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         specificationTreeScrollPane.setViewportView(specificationTree);
         specialCharsScrollPane.setViewportView(specialCharsList);
-//        paragraphsScrollPane.setViewportView(paragraphsList);
         errorScrollPane.setViewportView(errorsList);
 
         paletteTabPanel.addTab(uiBundle.getString("specialCharsTab.title"), specialCharsScrollPane);
-//        paletteTabPanel.addTab(uiBundle.getString("paragraphTab.title"), paragraphsScrollPane);
 
         JMenuBar menuBar = new JMenuBar();
 
@@ -215,6 +209,34 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 saveAsSpecification();
             }
         });
+        fileMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("fileMenu.printSpecification.title"));
+        menuItem.setMnemonic(KeyEvent.VK_P);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                printSpecification();
+            }
+        }
+        );
+        fileMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText("Export as JPEG...");
+        menuItem.setMnemonic(KeyEvent.VK_E);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                exportSpecification();
+            }
+        });
+
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -627,21 +649,113 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             }
     }
 
+    private void exportSpecification()
+    {
+        String filename = "";
+        FileDialog fd = new FileDialog(this, "Export as JPEG", FileDialog.SAVE);
+        fd.show();
+        if (fd.getFile() != null)
+            {
+            filename          = fd.getDirectory() + fd.getFile();
+            SpecificationView specificationView = currentSpecificationController().getSpecificationView();
+            Dimension     d   = specificationView.getSize();
+            BufferedImage img = (BufferedImage)specificationView.createImage(d.width, d.height);
+            specificationView.paint(img.getGraphics());
+            try
+                {
+                File fname = new File(filename);
+                String name = fname.getName();
+                if (name.length() != 0)
+                    {
+                    if (name.indexOf(".") == -1)
+                        {
+                        filename = filename + ".jpg";
+                        }
+                    ImageIO.write(img, "jpeg", new File(filename));
+                    }
+                }
+            catch (Exception e2)
+                {
+                System.out.println(e2.toString());
+                }
+            }
+    }
+
+    private void printSpecification()
+    {
+        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
+        SpecificationController specController = tabControllers.get(selectedTabIndex);
+        SpecificationView specificationView = specController.getSpecificationView();
+
+        List<Integer> pageBreaks = calcPageBreaks(specificationView);
+        Dimension d = specificationView.getSize();
+        BufferedImage img = (BufferedImage)specificationView.createImage(d.width, d.height);
+        specificationView.paint(img.getGraphics());
+
+        PrintUtilities.printImage(img, pageBreaks);
+    }
+
+    private List<Integer> calcPageBreaks(final Container c)
+    {
+        ArrayList<Integer> pageBreaks = new ArrayList<Integer>();
+
+        int numSpecParagraphs = c.getComponentCount();
+
+        for (int i = 0; i < numSpecParagraphs; i++)
+            {
+            Component specChild = c.getComponent(i);
+
+            if (specChild instanceof ParagraphView)
+                {
+                // special handling of class view sub-paragraphs
+                // sub paragraphs are relative to the class paragraph
+                if (specChild instanceof ClassView)
+                    {
+                    int classHeightOffset = specChild.getY();
+                    int numClassParagraphs = ((ClassView) specChild).getComponentCount();
+
+                    for (int j = 0; j < numClassParagraphs; j++)
+                        {
+                        Component classChild = ((ClassView) specChild).getComponent(j);
+                        if (classChild instanceof ParagraphView)
+                            {
+                            pageBreaks.add(classChild.getY() + classChild.getHeight() + classHeightOffset);
+                            printComponent(classChild);
+                            }
+                        }
+                    }
+
+                pageBreaks.add(specChild.getY() + specChild.getHeight());
+                printComponent(specChild);
+                }
+            }
+
+        Collections.sort(pageBreaks);
+
+        System.out.println("pageBreaks: " + pageBreaks);
+
+        return pageBreaks;
+    }
+
+    private void printComponent(Component c)
+    {
+        Rectangle b = c.getBounds();
+
+        System.out.println(c.getClass().getSimpleName() + "--> x: " + c.getX() + ", y: " + c.getY() + ", w: " + c.getWidth() + ", h: " + c.getHeight());
+    }
+
     private void writeSpecificationToFile(Specification specification, File specificationFile)
     {
         try
             {
-            System.out.println("Writing to file: " + specificationFile.getAbsolutePath());
             OutputStream outputStream = new FileOutputStream(specificationFile);
             SpecificationWriter specWriter = new SpecificationWriter(outputStream);
             specWriter.write(specification);
             outputStream.close();
-            System.out.println("Wrote to file: " + specificationFile.getAbsolutePath());
             }
         catch (Exception e)
             {
             e.printStackTrace();
-            System.out.println("Problem writing to file: " + specificationFile.getAbsolutePath());
             JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
             }
 
@@ -721,6 +835,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             specificationErrors.put(specificationController.getSpecification(), errors);
 
             // TODO:  add back type checking
+            // TODO:  add back type checking
             if (!errors.isEmpty())
                 {
                 errorsList.setListData(errors.toArray());
@@ -755,7 +870,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 // TODO: need to update how errors in text areas are displayed.
 //                TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
 //                textArea.scrollRectToVisible(textArea.getBounds());
-                System.out.println(errorsList.getSelectedValue());
                 }
         }
     }

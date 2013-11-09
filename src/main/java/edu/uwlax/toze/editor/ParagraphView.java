@@ -5,6 +5,7 @@ import edu.uwlax.toze.editor.bindings.Binding;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -16,13 +17,26 @@ public abstract class ParagraphView extends JPanel implements Placement
     static final protected int VMargin = 5;
     static final protected int InterVMargin = 5;
 
-
     private boolean mouseInView = false;
     private boolean ignoreRebuild = false;
     private boolean selected = false;
 
+    protected SpecificationController specController;
+
+    private ParagraphView()
+    {
+    }
+
+    public ParagraphView(SpecificationController specController)
+    {
+        this.specController = specController;
+        addMouseListener(new ParagraphViewMouseAdapter());
+//        addKeyListener(specController.getKeyAdapter());
+//        addMouseListener(specController.getMouseAdapter());
+    }
+
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
         if (mouseInView)
             {
@@ -51,8 +65,7 @@ public abstract class ParagraphView extends JPanel implements Placement
                 }
             }
         setFont(TozeFontMap.getFont());
-        addMouseListener(new ParagraphViewMouseAdapter());
-        super.paint(g);
+        super.paintComponent(g);
     }
 
     private class ParagraphViewMouseAdapter extends MouseAdapter
@@ -135,9 +148,18 @@ public abstract class ParagraphView extends JPanel implements Placement
         return text;
     }
 
+    /**
+     * Helper method to easily add a document listener / binding to a text
+     * field.
+     *
+     * @param textArea The TextArea adding the listener
+     * @param obj      The model object containing the value
+     * @param property The property of the model object containing the value
+     */
     private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
     {
         textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
+//        textArea.addKeyListener(specController.getKeyAdapter());
     }
 
     public abstract SpecObject getSpecObject();

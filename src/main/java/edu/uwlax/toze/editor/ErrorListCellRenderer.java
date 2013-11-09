@@ -1,7 +1,6 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.objectz.TozeToken;
-import edu.uwlax.toze.domain.SpecObjectPropertyError;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,9 +37,9 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
             errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText((String) value);
             }
-        else if (value instanceof SpecObjectPropertyError)
+        else if (value instanceof TozeToken /* SpecObjectPropertyError */)
             {
-            TozeToken error = ((SpecObjectPropertyError)value).getError();
+            TozeToken error = (TozeToken)value; // ((SpecObjectPropertyError)value).getError();
             errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText("Syntax Error: @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos);
             }

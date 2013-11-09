@@ -1,17 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.AxiomaticDef;
 import edu.uwlax.toze.domain.BasicTypeDef;
-import edu.uwlax.toze.domain.SpecObject;
-import edu.uwlax.toze.domain.SpecObjectPropertyPair;
-import edu.uwlax.toze.editor.bindings.Binding;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class BasicTypeView extends ParagraphView
 {
@@ -21,8 +12,10 @@ public class BasicTypeView extends ParagraphView
     private final BasicTypeDef basicTypeDef;
     private TozeTextArea nameText;
 
-    public BasicTypeView(BasicTypeDef basicTypeDef)
+    public BasicTypeView(BasicTypeDef basicTypeDef, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.basicTypeDef = basicTypeDef;
         requestRebuild();
@@ -47,7 +40,7 @@ public class BasicTypeView extends ParagraphView
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
@@ -62,14 +55,9 @@ public class BasicTypeView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
 
@@ -81,15 +69,15 @@ public class BasicTypeView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         FontMetrics fm = g.getFontMetrics();
         int ystring = (fm.getHeight() - fm.getDescent());

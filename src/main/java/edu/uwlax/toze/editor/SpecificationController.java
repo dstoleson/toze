@@ -50,6 +50,11 @@ public class SpecificationController extends Observable implements FocusListener
 
     }
 
+    public SpecificationView getSpecificationView()
+    {
+        return specificationView;
+    }
+
     public void setSpecificationView(SpecificationView specificationView)
     {
         this.specificationView = specificationView;
@@ -705,20 +710,6 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
-    }
-
-    /**
-     * Helper method to easily add a document listener / binding to a text
-     * field.
-     *
-     * @param textArea The TextArea adding the listener
-     * @param obj      The model object containing the value
-     * @param property The property of the model object containing the value
-     */
-    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
-    {
-        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-        textArea.addKeyListener(keyAdapter);
     }
 
 //    // should create a loop and pass a block to each object

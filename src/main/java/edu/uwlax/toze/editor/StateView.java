@@ -25,8 +25,10 @@ public class StateView extends ParagraphView
     private TozeTextArea predicateText;
     private TozeTextArea stateNameText;
 
-    public StateView(State state)
+    public StateView(State state, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.state = state;
         requestRebuild();
@@ -61,13 +63,12 @@ public class StateView extends ParagraphView
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
-        Dimension d2;
 
         int x = insets.left;
         int y = insets.top;
@@ -104,23 +105,15 @@ public class StateView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getMinimumSize()
     {
-        Graphics g = getGraphics();
-        return getPreferredSize(g);
+        return getPreferredSize();
     }
 
     @Override
-    public Dimension minimumSize()
+    public void paintComponent(Graphics g)
     {
-        //return new Dimension(100, 100);
-        return preferredSize();
-    }
-
-    @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
-    {
-        super.paint(g);
+        super.paintComponent(g);
 
         int xoffset = HMargin;
         int yoffset = VMargin;
@@ -163,8 +156,9 @@ public class StateView extends ParagraphView
             }
     }
 
-    public Dimension getPreferredSize(Graphics g)
+    public Dimension getPreferredSize()
     {
+        Graphics g = getGraphics();
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Insets insets = getInsets();

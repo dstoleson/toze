@@ -1,15 +1,8 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.FreeTypeDef;
-import edu.uwlax.toze.domain.Operation;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 
 public class FreeTypeView extends ParagraphView implements Placement
@@ -20,12 +13,13 @@ public class FreeTypeView extends ParagraphView implements Placement
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public FreeTypeView(FreeTypeDef freeTypeDef)
+    public FreeTypeView(FreeTypeDef freeTypeDef, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.freeTypeDef = freeTypeDef;
         requestRebuild();
-
     }
 
     @Override
@@ -53,7 +47,7 @@ public class FreeTypeView extends ParagraphView implements Placement
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
@@ -72,14 +66,9 @@ public class FreeTypeView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d = declarationText.getPreferredSize();
 
@@ -95,15 +84,15 @@ public class FreeTypeView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         int xoffset = 0;
         int yoffset = 0;

@@ -1,15 +1,8 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.ClassDef;
 import edu.uwlax.toze.domain.Operation;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class DeltaListView extends ParagraphView implements Placement
 {
@@ -20,8 +13,10 @@ public class DeltaListView extends ParagraphView implements Placement
     //
     private TozeTextArea deltaListText;
 
-    public DeltaListView(Operation operation)
+    public DeltaListView(Operation operation, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.operation = operation;
         requestRebuild();
@@ -46,17 +41,13 @@ public class DeltaListView extends ParagraphView implements Placement
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
 
-        int maxWidth = getWidth()
-                       - (insets.left + insets.right);
-        int maxHeight = getHeight()
-                        - (insets.top + insets.bottom);
         int x = insets.left, y = insets.top;
 
         x += HMargin;
@@ -67,14 +58,9 @@ public class DeltaListView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
 
@@ -89,18 +75,16 @@ public class DeltaListView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
-        Dimension cnd = deltaListText.getPreferredSize();
-        Dimension d = getPreferredSize();
         FontMetrics fm = g.getFontMetrics();
         int ystring;
 

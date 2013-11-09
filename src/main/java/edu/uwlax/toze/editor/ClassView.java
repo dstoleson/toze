@@ -21,11 +21,6 @@ public class ClassView extends ParagraphView
     static final private int ClassContentOffset = 10;
     static final private int ExtraLine = 10;
     //
-    private final SpecificationController specController;
-    //
-    private final MouseAdapter mouseAdapter;
-    private final KeyAdapter keyAdapter;
-    //
     private final ClassDef classDef;
     //
     private TozeTextArea classNameText;
@@ -41,6 +36,8 @@ public class ClassView extends ParagraphView
 
     public ClassView(ClassDef classDef, SpecificationController specController)
     {
+        super(specController);
+
         this.setLayout(new ParaLayout(this));
         this.classDef = classDef;
 
@@ -51,8 +48,8 @@ public class ClassView extends ParagraphView
         operationViews = new ArrayList<OperationView>();
 
         this.specController = specController;
-        mouseAdapter = specController.getMouseAdapter();
-        keyAdapter = specController.getKeyAdapter();
+        MouseAdapter mouseAdapter = specController.getMouseAdapter();
+        KeyAdapter keyAdapter = specController.getKeyAdapter();
 
         addMouseListener(mouseAdapter);
         addKeyListener(keyAdapter);
@@ -73,8 +70,6 @@ public class ClassView extends ParagraphView
 
     private void addView(ParagraphView view, List views)
     {
-        view.addMouseListener(mouseAdapter);
-        view.addKeyListener(keyAdapter);
         add(view);
 
         if (views != null)
@@ -99,46 +94,46 @@ public class ClassView extends ParagraphView
             }
         if (classDef.getVisibilityList() != null)
             {
-            visibilityListView = new VisibilityListView(classDef);
+            visibilityListView = new VisibilityListView(classDef, specController);
             add(visibilityListView);
             }
         if (classDef.getState() != null)
             {
-            stateView = new StateView(classDef.getState());
+            stateView = new StateView(classDef.getState(), specController);
             add(stateView);
             }
         if (classDef.getInheritedClass() != null)
             {
-            inheritedClassView = new InheritedClassView(classDef.getInheritedClass());
+            inheritedClassView = new InheritedClassView(classDef.getInheritedClass(), specController);
             add(inheritedClassView);
             }
         if (classDef.getInitialState() != null)
             {
-            initialStateView = new InitialStateView(classDef.getInitialState());
+            initialStateView = new InitialStateView(classDef.getInitialState(), specController);
             addView(initialStateView);
             }
 
         for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
             {
-            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef);
+            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef, specController);
             addView(axiomaticView, axiomaticViews);
             }
 
         for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
             {
-            AbbreviationView abbreviationView = new AbbreviationView((abbreviationDef));
+            AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef, specController);
             addView(abbreviationView, abbreviationViews);
             }
 
         for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
             {
-            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef);
+            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef, specController);
             addView(basicTypeView, basicTypeViews);
             }
 
         for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
             {
-            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef);
+            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef, specController);
             addView(freeTypeView, freeTypeViews);
             }
 
@@ -150,9 +145,9 @@ public class ClassView extends ParagraphView
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         int xoffset = 0;
         int yoffset = 0;
@@ -179,18 +174,9 @@ public class ClassView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
-        Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    Dimension getPreferredSize(Graphics g)
-    {
-        FontMetrics fm = g.getFontMetrics();
         Dimension d;
-        Insets insets = getInsets();
-        Enumeration elements;
         int width = 0;
         int height = 0;
 
@@ -229,7 +215,7 @@ public class ClassView extends ParagraphView
 
         for (AxiomaticView axiomaticView : axiomaticViews)
             {
-            d = axiomaticView.getPreferredSize(this.getGraphics());
+            d = axiomaticView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -240,7 +226,7 @@ public class ClassView extends ParagraphView
 
         for (BasicTypeView basicTypeView : basicTypeViews)
             {
-            d = basicTypeView.getPreferredSize(this.getGraphics());
+            d = basicTypeView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -251,7 +237,7 @@ public class ClassView extends ParagraphView
 
         for (FreeTypeView freeTypeView : freeTypeViews)
             {
-            d = freeTypeView.getPreferredSize(this.getGraphics());
+            d = freeTypeView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -262,7 +248,7 @@ public class ClassView extends ParagraphView
 
         for (AbbreviationView abbreviationView : abbreviationViews)
             {
-            d = abbreviationView.getPreferredSize(this.getGraphics());
+            d = abbreviationView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -273,7 +259,7 @@ public class ClassView extends ParagraphView
 
         if (stateView != null)
             {
-            d = stateView.getPreferredSize(this.getGraphics());
+            d = stateView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -284,7 +270,7 @@ public class ClassView extends ParagraphView
 
         if (initialStateView != null)
             {
-            d = initialStateView.getPreferredSize(this.getGraphics());
+            d = initialStateView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -295,7 +281,7 @@ public class ClassView extends ParagraphView
 
         for (OperationView operationView : operationViews)
             {
-            d = operationView.getPreferredSize(this.getGraphics());
+            d = operationView.getPreferredSize();
             int w = ClassContentOffset + d.width + ExtraLine;
             if (w > width)
                 {
@@ -311,13 +297,13 @@ public class ClassView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
 
@@ -344,48 +330,48 @@ public class ClassView extends ParagraphView
 
         for (AxiomaticView axiomaticView : axiomaticViews)
             {
-            d = axiomaticView.getPreferredSize(this.getGraphics());
+            d = axiomaticView.getPreferredSize();
             axiomaticView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
         for (BasicTypeView basicTypeView : basicTypeViews)
             {
-            d = basicTypeView.getPreferredSize(this.getGraphics());
+            d = basicTypeView.getPreferredSize();
             basicTypeView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
         for (FreeTypeView freeTypeView : freeTypeViews)
             {
-            d = freeTypeView.getPreferredSize(this.getGraphics());
+            d = freeTypeView.getPreferredSize();
             freeTypeView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
         for (AbbreviationView abbreviationView : abbreviationViews)
             {
-            d = abbreviationView.getPreferredSize(this.getGraphics());
+            d = abbreviationView.getPreferredSize();
             abbreviationView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
         if (stateView != null)
             {
-            d = stateView.getPreferredSize(this.getGraphics());
+            d = stateView.getPreferredSize();
             stateView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
         if (initialStateView != null)
             {
-            d = initialStateView.getPreferredSize(this.getGraphics());
+            d = initialStateView.getPreferredSize();
             initialStateView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }
 
         for (OperationView operationView : operationViews)
             {
-            d = operationView.getPreferredSize(this.getGraphics());
+            d = operationView.getPreferredSize();
             operationView.setBounds(x + ClassContentOffset, y, d.width, d.height);
             y += d.height + InterVMargin;
             }

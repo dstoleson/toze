@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,10 +21,13 @@ public class AxiomaticView extends ParagraphView
     private TozeTextArea declarationText;
     private TozeTextArea predicateText;
 
-    public AxiomaticView(AxiomaticDef axiomaticDef)
+    public AxiomaticView(AxiomaticDef axiomaticDef, SpecificationController controller)
     {
+        super(controller);
+
         setLayout(new ParaLayout(this));
         this.axiomaticDef = axiomaticDef;
+
         requestRebuild();
     }
 
@@ -46,17 +50,15 @@ public class AxiomaticView extends ParagraphView
 
         if (axiomaticDef.getPredicate() != null)
             {
-            predicateText = buildTextArea(axiomaticDef, axiomaticDef.getDeclaration(), "predicate", false);
+            predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate", false);
             add(predicateText);
             }
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
-        Graphics g = getGraphics();
-        FontMetrics fm = g.getFontMetrics();
         Dimension d;
 
         int x = insets.left + HMargin;
@@ -77,15 +79,8 @@ public class AxiomaticView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
-        Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
-        FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Insets insets = getInsets();
         int width = HMargin * 2;
@@ -117,20 +112,18 @@ public class AxiomaticView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        //return new Dimension(100, 100);
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         Insets insets = getInsets();
         Dimension d;
-        FontMetrics fm = g.getFontMetrics();
         Dimension cd = getPreferredSize();
         int declsHeight = 0;
 

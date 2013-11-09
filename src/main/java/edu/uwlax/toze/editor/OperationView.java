@@ -2,15 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.Operation;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.event.KeyAdapter;
-import java.awt.event.MouseAdapter;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 /**
  *
@@ -19,7 +11,7 @@ import java.util.Observer;
 public class OperationView extends ParagraphView
 {
     static final String DeltaListPre = TozeFontMap.CHAR_DELTA + "(";
-    // --Commented out by Inspection (9/17/13 10:55 PM):static final String DeltaListPost = ")";
+    static final String DeltaListPost = ")";
     static final private String OperationMid = " " + TozeFontMap.CHAR_DEFS + " ";
     //
     static final private int OperationName = 10;
@@ -27,9 +19,6 @@ public class OperationView extends ParagraphView
     static final private int OperationContentOffset = 10;
     static final private int OperationLineMargin = 5;
     static final private int OperationExtraLine = 10;
-    //
-    private final MouseAdapter mouseAdapter;
-    private final KeyAdapter keyAdapter;
     //
     private final Operation operation;
     //
@@ -40,15 +29,17 @@ public class OperationView extends ParagraphView
     private TozeTextArea operationExpressionText;
 
     public OperationView(Operation operation, SpecificationController specController)
-    {        
+    {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.operation = operation;
 
-        mouseAdapter = specController.getMouseAdapter();
-        keyAdapter = specController.getKeyAdapter();
-
-        addMouseListener(mouseAdapter);
-        addKeyListener(keyAdapter);
+//        mouseAdapter = specController.getMouseAdapter();
+//        keyAdapter = specController.getKeyAdapter();
+//
+//        addMouseListener(mouseAdapter);
+//        addKeyListener(keyAdapter);
 
         requestRebuild();
     }
@@ -61,8 +52,8 @@ public class OperationView extends ParagraphView
 
     private void addView(ParagraphView view)
     {
-        view.addMouseListener(mouseAdapter);
-        view.addKeyListener(keyAdapter);
+//        view.addMouseListener(mouseAdapter);
+//        view.addKeyListener(keyAdapter);
         add(view);
     }
 
@@ -79,7 +70,7 @@ public class OperationView extends ParagraphView
 
         if (operation.getDeltaList() != null)
             {
-            deltaListView = new DeltaListView(operation);
+            deltaListView = new DeltaListView(operation, specController);
             addView(deltaListView);
             }
 
@@ -97,13 +88,15 @@ public class OperationView extends ParagraphView
 
         if (operation.getOperationExpression() != null)
             {
-            operationExpressionText = buildTextArea(operation, operation.getOperationExpression(), "operationExpression", false);
+            operationExpressionText = buildTextArea(operation, operation.getOperationExpression(),
+                                                    "operationExpression", false
+            );
             add(operationExpressionText);
             }
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
@@ -157,14 +150,9 @@ public class OperationView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d;
         Insets insets = getInsets();
@@ -256,20 +244,15 @@ public class OperationView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        //return new Dimension(100, 100);
-        return preferredSize();
+        return getPreferredSize();
     }
 
-    /**
-     *
-     * @param g
-     */
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         Dimension d;
         FontMetrics fm = g.getFontMetrics();

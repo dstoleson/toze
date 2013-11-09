@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,8 +19,10 @@ public class AbbreviationView extends ParagraphView
     private TozeTextArea nameText = null;
     private TozeTextArea expressionText = null;
 
-    public AbbreviationView(AbbreviationDef abbreviationDef)
+    public AbbreviationView(AbbreviationDef abbreviationDef, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.abbreviationDef = abbreviationDef;
         requestRebuild();
@@ -50,7 +53,7 @@ public class AbbreviationView extends ParagraphView
 
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
@@ -69,14 +72,9 @@ public class AbbreviationView extends ParagraphView
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d = nameText.getPreferredSize();
 
@@ -92,15 +90,15 @@ public class AbbreviationView extends ParagraphView
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         int xoffset = 0;
         int yoffset = 0;

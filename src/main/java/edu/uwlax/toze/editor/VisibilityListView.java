@@ -1,15 +1,8 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.ClassDef;
-import edu.uwlax.toze.domain.Operation;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class VisibilityListView extends ParagraphView implements Placement
 {
@@ -20,8 +13,10 @@ public class VisibilityListView extends ParagraphView implements Placement
 
     private TozeTextArea visibilityListText;
 
-    public VisibilityListView(ClassDef classDef)
+    public VisibilityListView(ClassDef classDef, SpecificationController specController)
     {
+        super(specController);
+
         setLayout(new ParaLayout(this));
         this.classDef = classDef;
         requestRebuild();
@@ -45,7 +40,7 @@ public class VisibilityListView extends ParagraphView implements Placement
     }
 
     @Override
-    public void layout()
+    public void doLayout()
     {
         Insets insets = getInsets();
         Graphics g = getGraphics();
@@ -59,14 +54,9 @@ public class VisibilityListView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension preferredSize()
+    public Dimension getPreferredSize()
     {
         Graphics g = getGraphics();
-        return getPreferredSize(g);
-    }
-
-    public Dimension getPreferredSize(Graphics g)
-    {
         FontMetrics fm = g.getFontMetrics();
         Dimension d = visibilityListText.getPreferredSize();
         int width = fm.stringWidth(BasicTypePre) + d.width + HMargin * 2 + fm.stringWidth(BasicTypePost);
@@ -76,16 +66,15 @@ public class VisibilityListView extends ParagraphView implements Placement
     }
 
     @Override
-    public Dimension minimumSize()
+    public Dimension getMinimumSize()
     {
-        //return new Dimension(100, 100);
-        return preferredSize();
+        return getPreferredSize();
     }
 
     @Override
-    public void paint(Graphics g) // int xoffset, int yoffset)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
+        super.paintComponent(g);
 
         int xoffset = HMargin;
         int yoffset = VMargin;
