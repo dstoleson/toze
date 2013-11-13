@@ -80,37 +80,6 @@ public class TozeSpecificationChecker extends TozeParser
             end();  // generic
             }
 
-//        for (SchemaDef schemaDef : toze.getSchemaDef())
-//            {
-//            if (schemaDef.getExpression() != null)
-//                {
-//                start(SpecificationSection.Schema2);
-//                }
-//            else
-//                {
-//                start(SpecificationSection.Schema1);
-//                }
-//
-//            parse_guiSchemaHeader(schemaDef, schemaDef.getName());
-//
-//            if (schemaDef.getDeclaration() != null)
-//                {
-//                parse_guiDeclaration(schemaDef, schemaDef.getDeclaration());
-//                }
-//
-//            if (schemaDef.getPredicate() != null)
-//                {
-//                parse_guiPredicateList(schemaDef, schemaDef.getPredicate());
-//                }
-//
-//            if (schemaDef.getExpression() != null)
-//                {
-//                parse_guiSchemaExpression(schemaDef, schemaDef.getExpression());
-//                }
-//
-//            end();  // schema
-//            }
-
         if (toze.getPredicate() != null)
             {
             start(SpecificationSection.Predicate);

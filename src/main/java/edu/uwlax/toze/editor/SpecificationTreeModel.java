@@ -154,43 +154,14 @@ public class SpecificationTreeModel extends DefaultTreeModel
         @Override
         public int getChildCount()
         {
-            int classChildCount = 0;
+            int operationCount = 0;
 
-
-//            if (classDef.getAbbreviationDef() != null && !classDef.getAbbreviationDef().isEmpty())
-//                {
-//                classChildCount += classDef.getAbbreviationDef().size();
-//                }
-//            if (classDef.getAxiomaticDef() != null && !classDef.getAxiomaticDef().isEmpty())
-//                {
-//                classChildCount += classDef.getAxiomaticDef().size();
-//                }
-//            if (classDef.getBasicTypeDef() != null && !classDef.getBasicTypeDef().isEmpty())
-//                {
-//                classChildCount += classDef.getBasicTypeDef().size();
-//                }
-//            if (classDef.getFreeTypeDef() != null && !classDef.getFreeTypeDef().isEmpty())
-//                {
-//                classChildCount += classDef.getFreeTypeDef().size();
-//                }
-//            if (classDef.getInitialState() != null)
-//                {
-//                classChildCount++;
-//                }
             if (classDef.getOperationList() != null && !classDef.getOperationList().isEmpty())
                 {
-                classChildCount += classDef.getOperationList().size();
+                operationCount += classDef.getOperationList().size();
                 }
-//            if (classDef.getState() != null)
-//                {
-//                classChildCount++;
-//                }
-//            if (classDef.getVisibilityList() != null && !"".equals(classDef.getVisibilityList()))
-//                {
-//                classChildCount++;
-//                }
 
-            return classChildCount;
+            return operationCount;
         }
     }
 }

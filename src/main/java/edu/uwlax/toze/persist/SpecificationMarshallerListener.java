@@ -73,14 +73,6 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
             operation.setPredicate(CharToXMLTransformer.transform(operation.getPredicate()));
             operation.setOperationExpression(CharToXMLTransformer.transform(operation.getOperationExpression()));
             }
-//        else if (source instanceof SchemaDef)
-//            {
-//            SchemaDef schemaDef = (SchemaDef) source;
-//            schemaDef.setName(CharToXMLTransformer.transform(schemaDef.getName()));
-//            schemaDef.setDeclaration(CharToXMLTransformer.transform(schemaDef.getDeclaration()));
-//            schemaDef.setPredicate(CharToXMLTransformer.transform(schemaDef.getPredicate()));
-//            schemaDef.setExpression(CharToXMLTransformer.transform(schemaDef.getExpression()));
-//            }
         else if (source instanceof State)
             {
             State state = (State) source;

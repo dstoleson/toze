@@ -344,19 +344,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         JMenu specificationMenu = new JMenu(uiBundle.getString("specificationMenu.title"));
 
-//        menuItem = new JMenuItem();
-//        menuItem.setText(uiBundle.getString("specificationMenu.check.title"));
-//        menuItem.setMnemonic(KeyEvent.VK_K);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
-//        menuItem.addActionListener(new ActionListener()
-//        {
-//            public void actionPerformed(ActionEvent event)
-//            {
-//                checkSpecification();
-//            }
-//        });
-//        specificationMenu.add(menuItem);
-
         menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
@@ -479,50 +466,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         addGenericDefMenu.add(menuItem);
 
         specificationMenu.add(addGenericDefMenu);
-
-//        JMenu addSchemaMenu = new JMenu();
-//        addSchemaMenu.setText(uiBundle.getString("specificationMenu.addSchemaMenu.title"));
-//
-//        menuItem = new JMenuItem();
-//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withPredicate.title"));
-//        menuItem.addActionListener(new ActionListener()
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                SpecificationController specController = currentSpecificationController();
-//                specController.addSchemaDef(specController.getSpecification(), true);
-//            }
-//        });
-//        addSchemaMenu.add(menuItem);
-//
-//        menuItem = new JMenuItem();
-//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withoutPredicate.title"));
-//        menuItem.addActionListener(new ActionListener()
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                SpecificationController specController = currentSpecificationController();
-//                specController.addSchemaDef(specController.getSpecification(), true);
-//            }
-//        });
-//        addSchemaMenu.add(menuItem);
-//
-//        menuItem = new JMenuItem();
-//        menuItem.setText(uiBundle.getString("specificationMenu.addSchemaMenu.withExpression.title"));
-//        menuItem.addActionListener(new ActionListener()
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                SpecificationController specController = currentSpecificationController();
-//                specController.addSchemaDef(specController.getSpecification(), true);
-//            }
-//        });
-//        addSchemaMenu.add(menuItem);
-//
-//        specificationMenu.add(addSchemaMenu);
 
         menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("specificationMenu.addPredicate.title"));
@@ -874,12 +817,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             }
     }
 
-    private void checkSpecification()
-    {
-        SpecificationController specController = currentSpecificationController();
-        specController.parseSpecification();
-    }
-
     public void insertSymbol(String symbol)
     {
         SpecificationController selectedController = currentSpecificationController();
@@ -906,6 +843,19 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         );
     }
 
+    private void updateErrors(List errors)
+    {
+        if (errors != null && !errors.isEmpty())
+            {
+            errorsList.setListData(errors.toArray());
+            }
+        else
+            {
+            String[] noErrors = {"No Errors."};
+            errorsList.setListData(noErrors);
+            }
+    }
+
     public void update(Observable o, Object arg)
     {
         if (o instanceof SpecificationController)
@@ -916,16 +866,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
             // TODO:  add back type checking
             // TODO:  add back type checking
-            if (!errors.isEmpty())
-                {
-                errorsList.setListData(errors.toArray());
-                }
-            else
-                {
-                String[] noErrors = {"No Errors."};
-                errorsList.setListData(noErrors);
-                }
-            }
+
+            updateErrors(errors);
+        }
     }
 
     private class EditorMouseAdaptor extends MouseAdapter
@@ -963,13 +906,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
             List errors = specificationErrors.get(selectedController.getSpecificationDocument());
 
-            if (errors != null)
+            if (errors != null && !errors.isEmpty())
                 {
                 errorsList.setListData(errors.toArray());
                 }
             else
                 {
-                errorsList.setListData((Object[]) null);
+                String[] noErrors = {"No Errors."};
+                errorsList.setListData(noErrors);
                 }
             }
     }

@@ -127,14 +127,6 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
 
             operation.setClassDef((ClassDef) parent);
             }
-//        else if (target instanceof SchemaDef)
-//            {
-//            SchemaDef schemaDef = (SchemaDef) target;
-//            schemaDef.setName(XMLToCharTransformer.transform(schemaDef.getName()));
-//            schemaDef.setDeclaration(XMLToCharTransformer.transform(schemaDef.getDeclaration()));
-//            schemaDef.setPredicate(XMLToCharTransformer.transform(schemaDef.getPredicate()));
-//            schemaDef.setExpression(XMLToCharTransformer.transform(schemaDef.getExpression()));
-//            }
         else if (target instanceof State)
             {
             State state = (State) target;
