@@ -44,7 +44,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     private JTree specificationTree;
     private JList specialCharsList;
     private JList errorsList;
-    private HashMap<Specification, List> specificationErrors;
 
     //    private ErrorListController errorListController;
     private final HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
@@ -111,8 +110,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         errorsList.setCellRenderer(new ErrorListCellRenderer());
         errorsList.setFont(TozeFontMap.getFont());
         errorsList.addMouseListener(mouseAdaptor);
-
-        specificationErrors = new HashMap<Specification, List>();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -811,6 +808,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                         int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
                         specificationTabPanel.removeTabAt(tabIndex);
                         tabControllers.remove(tabIndex);
+                        updateErrors(null);
                         }
                     }
                 }
@@ -843,32 +841,47 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         );
     }
 
+    /**
+     * Display any errors in the current document, a 'no errors' message if there
+     * are no errors in the current document, display nothing if there is no
+     * current document.
+     *
+     * @param errors Not empty, errors -> display them
+     *               Empty, no errors -> display no errors message
+     *               Null, no document -> display nothing
+     */
     private void updateErrors(List errors)
     {
-        if (errors != null && !errors.isEmpty())
+        Object[] errorArray = null;
+
+        if (errors != null)
             {
-            errorsList.setListData(errors.toArray());
+            if (!errors.isEmpty())
+                {
+                // display the errors
+                errorArray = errors.toArray();
+                }
+            else
+                {
+                // display that there are no errors in the current document
+                errorArray = new String[]{uiBundle.getString("errorList.noErrors")};
+                }
             }
         else
             {
-            String[] noErrors = {"No Errors."};
-            errorsList.setListData(noErrors);
+            // no current document, thus no errors
+            errorArray = new String[]{};
             }
+
+        errorsList.setListData(errorArray);
     }
 
     public void update(Observable o, Object arg)
     {
         if (o instanceof SpecificationController)
             {
-            SpecificationController specificationController = (SpecificationController) o;
-            List errors = (List) arg;
-            specificationErrors.put(specificationController.getSpecification(), errors);
-
-            // TODO:  add back type checking
-            // TODO:  add back type checking
-
-            updateErrors(errors);
-        }
+            updateErrors(((SpecificationController)o).getSpecification().getErrors());
+            }
     }
 
     private class EditorMouseAdaptor extends MouseAdapter
@@ -889,7 +902,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 {
                 TozeToken errorToken = (TozeToken) errorsList.getSelectedValue();
                 SpecificationController specificationController = currentSpecificationController();
-                specificationController.selectError(errorToken);
+
+                if (specificationController != null)
+                    {
+                        specificationController.selectError(errorToken);
+                    }
                 }
         }
     }
@@ -900,21 +917,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        SpecificationController selectedController = currentSpecificationController();
+        SpecificationController specificationController = currentSpecificationController();
 
-        if (selectedController != null)
+        if (specificationController != null)
             {
-            List errors = specificationErrors.get(selectedController.getSpecificationDocument());
-
-            if (errors != null && !errors.isEmpty())
-                {
-                errorsList.setListData(errors.toArray());
-                }
-            else
-                {
-                String[] noErrors = {"No Errors."};
-                errorsList.setListData(noErrors);
-                }
+            updateErrors(specificationController.getSpecification().getErrors());
             }
     }
 }

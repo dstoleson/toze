@@ -730,33 +730,6 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.repaint();
     }
 
-
-//    /**
-//     * Builds a TozeTextArea that is bound to the modelObject by the specified property.
-//     *
-//     * @param modelObject The model object to display and edit
-//     * @param value The initial value for the text field (same as the modelObject property?)
-//     * @param property The property on the modelObject to display and edit
-//     * @param ignoresEnter Determines if the enter key works on this field, e.g. it can contain CRLF
-//     * @return The built TozeTextArea
-//     */
-//    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
-//    {
-//        TozeTextArea text = new TozeTextArea(value);
-//        text.setIgnoresEnter(ignoresEnter);
-//        addDocumentListener(text, modelObject, property);
-//        text.addMouseListener(mouseAdapter);
-//        viewToObjectMap.put(text, new SpecObjectPropertyPair(modelObject, property));
-//        text.addFocusListener(this);
-//        return text;
-//    }
-//
-//    private TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
-//    {
-//        return buildTextArea(modelObject, value, property, true);
-//    }
-//
-
     public void insertSymbol(String symbol)
     {
         if (currentTextArea != null)
@@ -777,22 +750,6 @@ public class SpecificationController extends Observable implements FocusListener
     {
         currentTextArea = (TozeTextArea) e.getSource();
     }
-
-//    public TozeTextArea highlightError(SpecObjectPropertyError error)
-//    {
-    // TODO: flag the error in the domain object?
-//        unhighlightErrors();
-//        System.out.println("error = " + error);
-//        TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
-//
-//        System.out.println("textArea = " + textArea);
-//        textArea.setHighlighted(true);
-
-//        specificationView.revalidate();
-//        specificationView.repaint();
-//
-//        return textArea;
-//    }
 
     public void moveUp(SpecObject object)
     {
@@ -816,6 +773,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(axiomaticDefList, axiomaticDef, index - 1);
                 }
+
+            if (axiomaticDef.getClassDef() != null)
+                {
+                axiomaticDef.getClassDef().setAxiomaticDefList(axiomaticDefList);
+                }
+            else if (axiomaticDef.getSpecification() != null)
+                {
+                specification.setAxiomaticDefList(axiomaticDefList);
+                }
             }
         else if (object instanceof AbbreviationDef)
             {
@@ -837,6 +803,15 @@ public class SpecificationController extends Observable implements FocusListener
             if (index > 0)
                 {
                 Utils.listMove(abbreviationDefList, abbreviationDef, index - 1);
+                }
+
+            if (abbreviationDef.getClassDef() != null)
+                {
+                abbreviationDef.getClassDef().setAbbreviationDefList(abbreviationDefList);
+                }
+            else if (abbreviationDef.getSpecification() != null)
+                {
+                specification.setAbbreviationDefList(abbreviationDefList);
                 }
             }
         else if (object instanceof BasicTypeDef)
@@ -860,6 +835,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(basicTypeDefList, basicTypeDef, index - 1);
                 }
+
+            if (basicTypeDef.getClassDef() != null)
+                {
+                basicTypeDef.getClassDef().setBasicTypeDefList(basicTypeDefList);
+                }
+            else if (basicTypeDef.getSpecification() != null)
+                {
+                specification.setBasicTypeDefList(basicTypeDefList);
+                }
             }
         else if (object instanceof FreeTypeDef)
             {
@@ -882,6 +866,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(freeTypeDefList, freeTypeDef, index - 1);
                 }
+
+            if (freeTypeDef.getClassDef() != null)
+                {
+                freeTypeDef.getClassDef().setFreeTypeDefList(freeTypeDefList);
+                }
+            else if (freeTypeDef.getSpecification() != null)
+                {
+                specification.setFreeTypeDefList(freeTypeDefList);
+                }
             }
         else if (object instanceof ClassDef)
             {
@@ -895,6 +888,8 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(classDefList, classDef, index - 1);
                 }
+
+            specification.setClassDefList(classDefList);
             }
         else if (object instanceof Operation)
             {
@@ -908,6 +903,8 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(operationList, operation, index - 1);
                 }
+
+            operation.getClassDef().setOperationList(operationList);
             }
 
         specificationView.requestRebuild();
@@ -940,6 +937,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(axiomaticDefList, axiomaticDef, index + 1);
                 }
+
+            if (axiomaticDef.getClassDef() != null)
+                {
+                axiomaticDef.getClassDef().setAxiomaticDefList(axiomaticDefList);
+                }
+            else if (axiomaticDef.getSpecification() != null)
+                {
+                specification.setAxiomaticDefList(axiomaticDefList);
+                }
             }
         else if (object instanceof AbbreviationDef)
             {
@@ -963,6 +969,15 @@ public class SpecificationController extends Observable implements FocusListener
             if (index < last)
                 {
                 Utils.listMove(abbreviationDefList, abbreviationDef, index + 1);
+                }
+
+            if (abbreviationDef.getClassDef() != null)
+                {
+                abbreviationDef.getClassDef().setAbbreviationDefList(abbreviationDefList);
+                }
+            else if (abbreviationDef.getSpecification() != null)
+                {
+                specification.setAbbreviationDefList(abbreviationDefList);
                 }
             }
         else if (object instanceof BasicTypeDef)
@@ -988,6 +1003,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(basicTypeDefList, basicTypeDef, index + 1);
                 }
+
+            if (basicTypeDef.getClassDef() != null)
+                {
+                basicTypeDef.getClassDef().setBasicTypeDefList(basicTypeDefList);
+                }
+            else if (basicTypeDef.getSpecification() != null)
+                {
+                specification.setBasicTypeDefList(basicTypeDefList);
+                }
             }
         else if (object instanceof FreeTypeDef)
             {
@@ -1012,6 +1036,15 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(freeTypeDefList, freeTypeDef, index + 1);
                 }
+
+            if (freeTypeDef.getClassDef() != null)
+                {
+                freeTypeDef.getClassDef().setFreeTypeDefList(freeTypeDefList);
+                }
+            else if (freeTypeDef.getSpecification() != null)
+                {
+                specification.setFreeTypeDefList(freeTypeDefList);
+                }
             }
         else if (object instanceof ClassDef)
             {
@@ -1019,13 +1052,18 @@ public class SpecificationController extends Observable implements FocusListener
 
             int size = specification.getClassDefList().size();
             int index = specification.getClassDefList().indexOf(object);
+
+            List<ClassDef> classDefList = specification.getClassDefList();
+
             int last = size - 1;
 
             // only move down if not already at bottom
             if (index < last)
                 {
-                Utils.listMove(specification.getClassDefList(), classDef, index + 1);
+                Utils.listMove(classDefList, classDef, index + 1);
                 }
+
+            specification.setClassDefList(classDefList);
             }
         else if (object instanceof Operation)
             {
@@ -1040,6 +1078,8 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 Utils.listMove(operationList, operation, index + 1);
                 }
+
+            operation.getClassDef().setOperationList(operationList);
             }
 
         specificationView.requestRebuild();
@@ -1155,15 +1195,13 @@ public class SpecificationController extends Observable implements FocusListener
             if (selectedObject == specification)
                 {
                 abbreviationDef.setSpecification(specification);
-                specification.getAbbreviationDefList().add((AbbreviationDef) cachedObject);
-                specification.setAbbreviationDefList(specification.getAbbreviationDefList());
+                specification.addAbbreviationDef((AbbreviationDef) cachedObject);
                 }
             else
                 {
                 ClassDef classDef = (ClassDef) selectedObject;
                 abbreviationDef.setClassDef(classDef);
-                classDef.getAbbreviationDefList().add(abbreviationDef);
-                classDef.setAbbreviationDefList(classDef.getAbbreviationDefList());
+                classDef.addAbbreviationDef(abbreviationDef);
                 }
             }
         else if (cachedObject instanceof AxiomaticDef)
@@ -1173,15 +1211,13 @@ public class SpecificationController extends Observable implements FocusListener
             if (selectedObject == specification)
                 {
                 axiomaticDef.setSpecification(specification);
-                specification.getAxiomaticDefList().add(axiomaticDef);
-                specification.setAxiomaticDefList(specification.getAxiomaticDefList());
+                specification.addAxiomaticDef(axiomaticDef);
                 }
             else
                 {
                 ClassDef classDef = (ClassDef) selectedObject;
                 axiomaticDef.setClassDef(classDef);
-                classDef.getAxiomaticDefList().add(axiomaticDef);
-                classDef.setAxiomaticDefList(classDef.getAxiomaticDefList());
+                classDef.addAxiomaticDef(axiomaticDef);
                 }
             }
         else if (cachedObject instanceof BasicTypeDef)
@@ -1191,37 +1227,33 @@ public class SpecificationController extends Observable implements FocusListener
             if (selectedObject == specification)
                 {
                 basicTypeDef.setSpecification(specification);
-                specification.getBasicTypeDefList().add(basicTypeDef);
-                specification.setBasicTypeDefList(specification.getBasicTypeDefList());
+                specification.addBasicTypeDef(basicTypeDef);
                 }
             else
                 {
                 ClassDef classDef = (ClassDef) selectedObject;
                 basicTypeDef.setClassDef(classDef);
-                classDef.getBasicTypeDefList().add(basicTypeDef);
-                classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
+                classDef.addBasicTypeDef(basicTypeDef);
                 }
             }
         else if (cachedObject instanceof ClassDef)
             {
-            specification.getClassDefList().add((ClassDef) cachedObject);
+            specification.addClassDef((ClassDef) cachedObject);
             }
         else if (cachedObject instanceof FreeTypeDef)
             {
-            BasicTypeDef basicTypeDef = (BasicTypeDef) cachedObject;
+            FreeTypeDef freeTypeDef = (FreeTypeDef) cachedObject;
 
             if (selectedObject == specification)
                 {
-                basicTypeDef.setSpecification(specification);
-                specification.getBasicTypeDefList().add(basicTypeDef);
-                specification.setBasicTypeDefList(specification.getBasicTypeDefList());
+                freeTypeDef.setSpecification(specification);
+                specification.addFreeTypeDef(freeTypeDef);
                 }
             else
                 {
                 ClassDef classDef = (ClassDef) selectedObject;
-                basicTypeDef.setClassDef(classDef);
-                classDef.getBasicTypeDefList().add(basicTypeDef);
-                classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
+                freeTypeDef.setClassDef(classDef);
+                classDef.addFreeTypeDef(freeTypeDef);
                 }
             }
         else if (cachedObject instanceof GenericDef)
@@ -1231,8 +1263,7 @@ public class SpecificationController extends Observable implements FocusListener
             if (selectedObject == specification)
                 {
                 genericDef.setSpecification(specification);
-                specification.getGenericDefList().add(genericDef);
-                specification.setGenericDefList(specification.getGenericDefList());
+                specification.addGenericDef(genericDef);
                 }
             }
         else if (cachedObject instanceof InheritedClass)
@@ -1245,8 +1276,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof Operation)
             {
-            ((ClassDef) selectedObject).getOperationList().add((Operation) cachedObject);
-            ((ClassDef) selectedObject).setOperationList(((ClassDef) selectedObject).getOperationList());
+            ((ClassDef) selectedObject).addOperation((Operation) cachedObject);
             }
         else if (cachedObject instanceof State)
             {
@@ -1346,6 +1376,7 @@ public class SpecificationController extends Observable implements FocusListener
                     {
                     selectedView = (ParagraphView) clickedComponent;
                     selectedView.setSelected(true);
+                    selectedObject = selectedView.getSpecObject();
                     }
                 }
             super.mouseClicked(e);
