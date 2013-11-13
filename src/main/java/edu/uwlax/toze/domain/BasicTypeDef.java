@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "basicTypeDef")
 @XmlType(propOrder =
                  {
-                     "name"
+                         "name"
                  })
 public class BasicTypeDef extends SpecObject
 {
@@ -16,29 +16,35 @@ public class BasicTypeDef extends SpecObject
     private Specification specification;
     private ClassDef classDef;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
     @XmlTransient
-    public Specification getSpecification() {
+    public Specification getSpecification()
+    {
         return specification;
     }
 
-    public void setSpecification(Specification specification) {
+    public void setSpecification(Specification specification)
+    {
         this.specification = specification;
     }
 
     @XmlTransient
-    public ClassDef getClassDef() {
+    public ClassDef getClassDef()
+    {
         return classDef;
     }
 
-    public void setClassDef(ClassDef classDef) {
+    public void setClassDef(ClassDef classDef)
+    {
         this.classDef = classDef;
     }
 

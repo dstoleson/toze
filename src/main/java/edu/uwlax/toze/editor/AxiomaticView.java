@@ -2,14 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.AxiomaticDef;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.event.KeyAdapter;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class AxiomaticView extends ParagraphView
 {
@@ -53,6 +46,13 @@ public class AxiomaticView extends ParagraphView
             predicateText = buildTextArea(axiomaticDef, axiomaticDef.getPredicate(), "predicate", false);
             add(predicateText);
             }
+    }
+
+    @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(axiomaticDef, declarationText, "declaration");
+        notNullUpdateError(axiomaticDef, predicateText, "predicate");
     }
 
     @Override

@@ -4,16 +4,24 @@ package edu.uwlax.toze.editor;
 /*
  * Class to handle converting tokens to LaTeX commands.
  */
+
+import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.objectz.TozeTokenizer;
+
 import java.io.StringReader;
 
-public class TozeLatex
+public class TozeLatexExporter
 {
     String m_spec = "";
     int m_classLevel = 0;
 
-    public TozeLatex()
+    static public String getLatex(Specification specification)
+    {
+        return "LATEX";
+    }
+
+    public TozeLatexExporter()
     {
         m_spec = "\\documentstyle[11pt,oz]{article}\n\\begin{document}\n";
     }

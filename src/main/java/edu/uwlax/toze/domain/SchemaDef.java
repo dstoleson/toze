@@ -6,10 +6,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "schemaDef")
 @XmlType(propOrder =
                  {
-                    "name",
-                    "declaration",
-                    "predicate",
-                    "expression"
+                         "name",
+                         "declaration",
+                         "predicate",
+                         "expression"
                  })
 public class SchemaDef extends SpecObject
 {
@@ -18,35 +18,43 @@ public class SchemaDef extends SpecObject
     private String predicate;
     private String expression;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getDeclaration() {
+    public String getDeclaration()
+    {
         return declaration;
     }
 
-    public void setDeclaration(String declaration) {
+    public void setDeclaration(String declaration)
+    {
         this.declaration = declaration;
     }
 
-    public String getPredicate() {
+    public String getPredicate()
+    {
         return predicate;
     }
 
-    public void setPredicate(String predicate) {
+    public void setPredicate(String predicate)
+    {
         this.predicate = predicate;
     }
 
-    public String getExpression() {
+    public String getExpression()
+    {
         return expression;
     }
 
-    public void setExpression(String expression) {
+    public void setExpression(String expression)
+    {
         this.expression = expression;
     }
 }

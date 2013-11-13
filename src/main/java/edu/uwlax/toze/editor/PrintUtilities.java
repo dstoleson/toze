@@ -1,10 +1,10 @@
 package edu.uwlax.toze.editor;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.List;
 
@@ -17,11 +17,10 @@ import java.util.List;
 
 public class PrintUtilities implements Printable
 {
-    static final double SCALE = 1.0;
-    static final double SCALE_ADJUSTMENT_FACTOR = 1.0 / SCALE;
+    private BufferedImage img;
+    private List<Integer> pageBreaks;
+    private double scale = 1.0;
 
-    final private BufferedImage img;
-    final private List<Integer> pageBreaks;
     private int nextPageBreakIndex = 0;
     private int totalPrintedHeight = 0;
 
@@ -31,6 +30,12 @@ public class PrintUtilities implements Printable
     private int lastPagePrinted = -1;
     private int lastPrintedHeight = 0;
     private int lastPageBreakIndex = 0;
+
+
+    public static boolean checkPageWidth(int width)
+    {
+        return (width <= PrinterJob.getPrinterJob().defaultPage().getWidth());
+    }
 
     public static void printImage(BufferedImage img, List<Integer> pageBreaks)
     {
@@ -45,17 +50,41 @@ public class PrintUtilities implements Printable
 
     public void print()
     {
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(this);
-        if (printJob.printDialog())
+        // Ask the user for the page format they prefer
+        PageFormat pageFormat = PrinterJob.getPrinterJob().pageDialog(PrinterJob.getPrinterJob().defaultPage());
+
+        // check to see that the page fits
+        // it not warn user and they can print at a smaller scale
+        boolean shouldPrint = PrintUtilities.checkPageWidth(img.getWidth());
+
+        int state = JOptionPane.YES_OPTION;
+
+        if (!shouldPrint)
             {
-            try
+            state = JOptionPane.showConfirmDialog(new JFrame(),
+                                                  "The specification is to wide for the page to be printed.  Would you like to scale specification (75%) to fit the page?",
+                                                  "Scale and Print", JOptionPane.OK_CANCEL_OPTION
+            );
+            if (state == JOptionPane.YES_OPTION)
                 {
-                printJob.print();
+                scale = 0.75;
                 }
-            catch (Throwable e)
+            }
+
+        if (state == JOptionPane.YES_OPTION)
+            {
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            printJob.setPrintable(this, pageFormat);
+            if (printJob.printDialog())
                 {
-                System.out.println("Error printing: " + e);
+                try
+                    {
+                    printJob.print();
+                    }
+                catch (Throwable e)
+                    {
+                    System.out.println("Error printing: " + e);
+                    }
                 }
             }
     }
@@ -80,7 +109,7 @@ public class PrintUtilities implements Printable
         // don't print anything past the total height of
         // the image to be printed (no extra pages)
         // need to compensate for the last page
-        int lastPageBreak = pageBreaks.get(pageBreaks.size() -1);
+        int lastPageBreak = pageBreaks.get(pageBreaks.size() - 1);
 
         if (totalPrintedHeight > lastPageBreak)
             {
@@ -89,14 +118,14 @@ public class PrintUtilities implements Printable
 
         // shift Graphics to printable region
         // of the page
-        Graphics2D g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D) g;
         g2d.translate(imageableX, imageableY);
 
         // make it a reasonable printed size
-        g2d.scale(SCALE, SCALE);
+        g2d.scale(scale, scale);
 
         // adjust the printed width for the scaling
-        int printWidth = (int)(imageableWidth * SCALE_ADJUSTMENT_FACTOR);
+        int printWidth = (int) (imageableWidth * (1 / scale));
 
         // adjust for scaling and
         // don't go beyond the bounds of the source image
@@ -107,7 +136,7 @@ public class PrintUtilities implements Printable
             }
 
         // get the remaining scaled height to print
-        int printHeight = (int)(imageableHeight * SCALE_ADJUSTMENT_FACTOR);
+        int printHeight = (int) (imageableHeight * (1 / scale));
 
         // don't beyond the end of the image
         if (printHeight > imageHeight - totalPrintedHeight)
@@ -158,45 +187,4 @@ public class PrintUtilities implements Printable
 
         return PAGE_EXISTS;
     }
-
-//    public int print2(Graphics g, PageFormat pageFormat, int pageIndex)
-//    {
-//        Rectangle r = g.getClipBounds();
-//
-//        int w = r.width;
-//        int h = r.height;
-//        int iw = img.getWidth();
-//        int ih = img.getHeight();
-//
-//        // how many times does the image width fit onto the page
-//        double ratio = (double) w / (double) iw;
-//        //  number of image pixels at this scale.
-//        double sh = (double) ih * ratio;
-//
-//        double numpages = (float) r.height / (float) sh;
-//
-//        int ty = (int) ((float) h / ratio) * pageIndex;
-//        int th = (int) ((float) h / ratio);
-//        int oth = th;
-//        if (ty > ih)
-//            {
-//            return NO_SUCH_PAGE;
-//            }
-//        if ((ty + th) > ih)
-//            {
-//            th = ih - ty;
-//            }
-//        g.drawImage(img.getSubimage(0,
-//                                    ty,
-//                                    iw,
-//                                    th),
-//                    r.x,
-//                    r.y,
-//                    r.width,
-//                    (int) ((float) r.height * ((float) th / (float) oth)),
-//                    null);
-//
-//        numPages++;
-//        return (PAGE_EXISTS);
-//    }
 }

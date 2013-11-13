@@ -2,13 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.State;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class StateView extends ParagraphView
 {
@@ -60,6 +54,14 @@ public class StateView extends ParagraphView
             stateNameText = buildTextArea(state, state.getName(), "name", true);
             add(stateNameText);
             }
+    }
+
+    @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(state, declarationText, "declaration");
+        notNullUpdateError(state, predicateText, "predicate");
+        notNullUpdateError(state, stateNameText, "name");
     }
 
     @Override
@@ -128,7 +130,9 @@ public class StateView extends ParagraphView
             {
             d = stateNameText.getPreferredSize();
             g.drawString(m_pre, xoffset, yoffset + (fm.getHeight() - fm.getDescent()));
-            g.drawString(m_post, xoffset + fm.stringWidth(m_pre) + d.width, yoffset + (fm.getHeight() - fm.getDescent()));
+            g.drawString(m_post, xoffset + fm.stringWidth(m_pre) + d.width,
+                         yoffset + (fm.getHeight() - fm.getDescent())
+            );
             }
         else
             {

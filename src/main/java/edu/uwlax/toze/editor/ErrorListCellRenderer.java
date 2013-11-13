@@ -39,9 +39,11 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
             }
         else if (value instanceof TozeToken /* SpecObjectPropertyError */)
             {
-            TozeToken error = (TozeToken)value; // ((SpecObjectPropertyError)value).getError();
+            TozeToken error = (TozeToken) value; // ((SpecObjectPropertyError)value).getError();
             errorLabel.setFont(TozeFontMap.getFont());
-            errorLabel.setText("Syntax Error: @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos);
+            errorLabel.setText(
+                    "Syntax Error: @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos + " -- " + error.getDescription()
+            );
             }
 
         return this;

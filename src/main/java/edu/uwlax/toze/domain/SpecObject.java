@@ -2,7 +2,10 @@ package edu.uwlax.toze.domain;
 
 import edu.uwlax.toze.objectz.TozeToken;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract super class for all of the specification classes.  It provides
@@ -23,6 +26,22 @@ public abstract class SpecObject implements Cloneable
         errors.put(property, error);
     }
 
+    public String getPropertyForError(TozeToken error)
+    {
+        String property = null;
+
+        for (Map.Entry<String, TozeToken> entry : errors.entrySet())
+            {
+            TozeToken entryToken = entry.getValue();
+            if (entryToken == error)
+                {
+                property = entry.getKey();
+                break;
+                }
+            }
+        return property;
+    }
+
     public TozeToken getErrorForProperty(String property)
     {
         return errors.get(property);
@@ -39,6 +58,18 @@ public abstract class SpecObject implements Cloneable
     public void clearErrors()
     {
         errors.clear();
+    }
+
+    protected static List<TozeToken> notNullGetErrors(SpecObject specObject)
+    {
+        List<TozeToken> errorList = new ArrayList<TozeToken>();
+
+        if (specObject != null)
+            {
+            errorList.addAll(specObject.getErrors());
+            }
+
+        return errorList;
     }
 
     protected static void notNullClearErrors(SpecObject specObject)

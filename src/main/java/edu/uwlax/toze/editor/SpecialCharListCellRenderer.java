@@ -1,12 +1,7 @@
 package edu.uwlax.toze.editor;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
+import java.awt.*;
 
 class SpecialCharListCellRenderer extends JPanel implements ListCellRenderer
 {
@@ -28,7 +23,8 @@ class SpecialCharListCellRenderer extends JPanel implements ListCellRenderer
 //        add(right);
     }
 
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasCellFocus)
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                                                  boolean hasCellFocus)
     {
         if (isSelected)
             {
@@ -48,14 +44,14 @@ class SpecialCharListCellRenderer extends JPanel implements ListCellRenderer
             mnemonic.setForeground(Color.BLACK);
 //            right.setForeground(Color.BLACK);
             }
-        
+
         TozeCharMap tozeCharMap = (TozeCharMap) value;
         tozeChar.setFont(TozeFontMap.getFont(16));
         tozeChar.setText(tozeCharMap.getTozeChar());
         setToolTipText(tozeCharMap.getDescription());
         mnemonic.setText(tozeCharMap.getMnemonic());
 //        right.setText(tozeCharMap.getDescription());
-        
+
         return this;
     }
 }

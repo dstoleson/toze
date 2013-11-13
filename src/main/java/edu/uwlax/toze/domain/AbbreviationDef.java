@@ -1,7 +1,5 @@
 package edu.uwlax.toze.domain;
 
-import edu.uwlax.toze.objectz.TozeToken;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -9,48 +7,55 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "abbreviationDef")
 @XmlType(propOrder =
                  {
-                    "name",
-                    "expression"
+                         "name",
+                         "expression"
                  })
 public class AbbreviationDef extends SpecObject
 {
     private String name;
     private String expression;
-
     private Specification specification;
     private ClassDef classDef;
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getExpression() {
+    public String getExpression()
+    {
         return expression;
     }
 
-    public void setExpression(String expression) {
+    public void setExpression(String expression)
+    {
         this.expression = expression;
     }
 
     @XmlTransient
-    public Specification getSpecification() {
+    public Specification getSpecification()
+    {
         return specification;
     }
 
-    public void setSpecification(Specification specification) {
+    public void setSpecification(Specification specification)
+    {
         this.specification = specification;
     }
 
     @XmlTransient
-    public ClassDef getClassDef() {
+    public ClassDef getClassDef()
+    {
         return classDef;
     }
 
-    public void setClassDef(ClassDef classDef) {
+    public void setClassDef(ClassDef classDef)
+    {
         this.classDef = classDef;
     }
 

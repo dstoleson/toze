@@ -31,9 +31,9 @@ public class TozeParserBase
             {
             return tokenAt(m_longest);
             }
-        
+
         return null;
-    }    
+    }
 
 
     public int getCurrent()
@@ -77,7 +77,7 @@ public class TozeParserBase
     public TozeToken nextToken()
     {
         while ((m_current < m_tokens.size())
-               && (((TozeToken) m_tokens.get(m_current)).m_id == TozeTokenizer.TOKEN_EOL))
+                && (((TozeToken) m_tokens.get(m_current)).m_id == TozeTokenizer.TOKEN_EOL))
             {
             m_current++;
             }
@@ -95,7 +95,7 @@ public class TozeParserBase
     public TozeToken peek()
     {
         while ((m_current < m_tokens.size())
-               && (((TozeToken) m_tokens.get(m_current)).m_id == TozeTokenizer.TOKEN_EOL))
+                && (((TozeToken) m_tokens.get(m_current)).m_id == TozeTokenizer.TOKEN_EOL))
             {
             m_current++;
             }

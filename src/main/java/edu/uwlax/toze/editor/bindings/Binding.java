@@ -15,20 +15,21 @@ public class Binding<T, V>
      * The source or model object that provides the values
      */
     private final T source;
-    
+
     /**
      * The source property to update with new values
      */
     private final String property;
-    
+
     public Binding(T source, String property)
     {
         this.source = source;
         this.property = property;
     }
-    
+
     /**
      * Set the value on the source object.
+     *
      * @param value The value to set on the source object.
      */
     public void setValue(V value)
@@ -53,11 +54,11 @@ public class Binding<T, V>
             }
         catch (InvocationTargetException e)
             {
-            System.out.println("Problem calling method for: " + ((source != null) ? source.getClass() : null));            
+            System.out.println("Problem calling method for: " + ((source != null) ? source.getClass() : null));
             }
         catch (IllegalAccessException e)
             {
-            System.out.println("Problem calling method for: " + ((source != null) ? source.getClass() : null));                        
+            System.out.println("Problem calling method for: " + ((source != null) ? source.getClass() : null));
             }
         catch (IntrospectionException e)
             {

@@ -2,6 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
+import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.persist.SpecificationReader;
 import edu.uwlax.toze.persist.SpecificationWriter;
 import edu.uwlax.toze.persist.TozeJaxbContext;
@@ -17,7 +18,6 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
  * navigator on the left, a tabbed specification editor on the right, a tool
  * palette on the bottom left under the navigator, and a status console on the
  * bottom right under the specification editor.
- *
+ * <p/>
  * //TODO Possibly break UI components into own classes to simplify and
  * for re-use possibilities.
  *
@@ -44,9 +44,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     private JTree specificationTree;
     private JList specialCharsList;
     private JList errorsList;
-    private HashMap<Specification, List>specificationErrors;
+    private HashMap<Specification, List> specificationErrors;
 
-//    private ErrorListController errorListController;
+    //    private ErrorListController errorListController;
     private final HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
@@ -171,7 +171,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 newSpecification();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -184,7 +185,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 openSpecification();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -197,18 +199,24 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 saveSpecification();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("fileMenu.saveAsSpecification.title"));
         menuItem.setMnemonic(KeyEvent.VK_A);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
+        menuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)
+        );
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
                 saveAsSpecification();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -228,17 +236,36 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         menuItem = new JMenuItem();
         menuItem.setText("Export as JPEG...");
         menuItem.setMnemonic(KeyEvent.VK_E);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        menuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)
+        );
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
-                exportSpecification();
+                exportSpecificationAsJpeg();
             }
-        });
+        }
+        );
 
         fileMenu.add(menuItem);
 
+        menuItem = new JMenuItem();
+        menuItem.setText("Export as LaTeX...");
+        menuItem.setMnemonic(KeyEvent.VK_X);
+        menuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)
+        );
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                exportSpecificationAsLatex();
+            }
+        }
+        );
+
+        fileMenu.add(menuItem);
         menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("fileMenu.closeSpecification.title"));
         menuItem.addActionListener(new ActionListener()
@@ -247,7 +274,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 closeSpecification();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -261,7 +289,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 quit();
             }
-        });
+        }
+        );
         fileMenu.add(menuItem);
 
         menuBar.add(fileMenu);
@@ -279,7 +308,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 cut();
             }
-        });
+        }
+        );
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("editMenu.copy.title"));
@@ -292,7 +322,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 copy();
             }
-        });
+        }
+        );
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("editMenu.paste.title"));
@@ -305,25 +336,26 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 paste();
             }
-        });
+        }
+        );
         editMenu.add(menuItem);
 
         menuBar.add(editMenu);
 
         JMenu specificationMenu = new JMenu(uiBundle.getString("specificationMenu.title"));
 
-        menuItem = new JMenuItem();
-        menuItem.setText(uiBundle.getString("specificationMenu.check.title"));
-        menuItem.setMnemonic(KeyEvent.VK_K);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
-        menuItem.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                checkSpecification();
-            }
-        });
-        specificationMenu.add(menuItem);
+//        menuItem = new JMenuItem();
+//        menuItem.setText(uiBundle.getString("specificationMenu.check.title"));
+//        menuItem.setMnemonic(KeyEvent.VK_K);
+//        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            public void actionPerformed(ActionEvent event)
+//            {
+//                checkSpecification();
+//            }
+//        });
+//        specificationMenu.add(menuItem);
 
         menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
@@ -335,7 +367,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addAbbreviation(specController.getSpecification());
             }
-        });
+        }
+        );
         specificationMenu.add(menuItem);
 
         JMenu addAxiomaticDefMenu = new JMenu();
@@ -351,7 +384,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addAxiomaticType(specController.getSpecification(), true);
             }
-        });
+        }
+        );
 
         addAxiomaticDefMenu.add(menuItem);
 
@@ -365,7 +399,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addAxiomaticType(specController.getSpecification(), false);
             }
-        });
+        }
+        );
         addAxiomaticDefMenu.add(menuItem);
 
         specificationMenu.add(addAxiomaticDefMenu);
@@ -380,7 +415,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addBasicType(specController.getSpecification());
             }
-        });
+        }
+        );
         specificationMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -393,7 +429,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addClass();
             }
-        });
+        }
+        );
         specificationMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -406,7 +443,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addFreeType(specController.getSpecification());
             }
-        });
+        }
+        );
         specificationMenu.add(menuItem);
 
         JMenu addGenericDefMenu = new JMenu();
@@ -422,7 +460,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
 //                specController.addGenericType(specController.getSpecification(), true);
             }
-        });
+        }
+        );
         addGenericDefMenu.add(menuItem);
 
         menuItem = new JMenuItem();
@@ -435,7 +474,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
 //                specController.addGenericType(specController.getSpecification(), false);
             }
-        });
+        }
+        );
         addGenericDefMenu.add(menuItem);
 
         specificationMenu.add(addGenericDefMenu);
@@ -494,7 +534,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 SpecificationController specController = currentSpecificationController();
                 specController.addSpecificationPredicate();
             }
-        });
+        }
+        );
         specificationMenu.add(menuItem);
 
         menuBar.add(specificationMenu);
@@ -508,13 +549,17 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)));
+                        .addGroup(layout.createSequentialGroup()
+                                          .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+                        )
+        );
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)));
+                        .addGroup(layout.createSequentialGroup()
+                                          .addComponent(editorSplitPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                        )
+        );
 
         pack();
     }
@@ -577,7 +622,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             catch (Exception e)
                 {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(),
+                                              "File Error", JOptionPane.WARNING_MESSAGE
+                );
                 }
             }
     }
@@ -598,7 +645,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         JScrollPane specScroller = new JScrollPane();
         specScroller.getViewport().add(specView, null);
         panel.add(specScroller, null);
-        panel.setLayout(new GridLayout(1,1));
+        panel.setLayout(new GridLayout(1, 1));
         panel.add(specScroller);
 
         specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
@@ -609,13 +656,12 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         tabControllers.put(tabIndex, controller);
 
         controller.addObserver(this);
-        checkSpecification();
+        controller.parseSpecification();
     }
 
     private void saveSpecification()
     {
-        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-        SpecificationController specController = tabControllers.get(selectedTabIndex);
+        SpecificationController specController = currentSpecificationController();
         Specification specification = specController.getSpecificationDocument().getSpecification();
         File specificationFile = specController.getSpecificationDocument().getFile();
 
@@ -637,29 +683,57 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         if (fileDialog.getFile() != null)
             {
             File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
-            int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-            SpecificationController specController = tabControllers.get(selectedTabIndex);
+            SpecificationController specController = currentSpecificationController();
             specController.getSpecificationDocument().setFile(specificationFile);
             Specification specification = specController.getSpecificationDocument().getSpecification();
 
             writeSpecificationToFile(specification, specificationFile);
 
             // make the tab title the new file name
+            int selectedTabIndex = specificationTabPanel.getSelectedIndex();
             specificationTabPanel.setTitleAt(selectedTabIndex, specificationFile.getName());
             }
     }
 
-    private void exportSpecification()
+    private void exportSpecificationAsLatex()
     {
         String filename = "";
         FileDialog fd = new FileDialog(this, "Export as JPEG", FileDialog.SAVE);
         fd.show();
+
         if (fd.getFile() != null)
             {
-            filename          = fd.getDirectory() + fd.getFile();
+            filename = fd.getDirectory() + fd.getFile();
+            Specification specification = currentSpecificationController().getSpecification();
+
+            String latex = TozeLatexExporter.getLatex(specification);
+
+            try
+                {
+                File latexFile = new File(filename);
+                FileWriter writer = new FileWriter(latexFile);
+                writer.write(latex);
+                writer.close();
+                }
+            catch (IOException e)
+                {
+                e.printStackTrace();
+                }
+            }
+    }
+
+    private void exportSpecificationAsJpeg()
+    {
+        String filename = "";
+        FileDialog fd = new FileDialog(this, "Export as JPEG", FileDialog.SAVE);
+        fd.show();
+
+        if (fd.getFile() != null)
+            {
+            filename = fd.getDirectory() + fd.getFile();
             SpecificationView specificationView = currentSpecificationController().getSpecificationView();
-            Dimension     d   = specificationView.getSize();
-            BufferedImage img = (BufferedImage)specificationView.createImage(d.width, d.height);
+            Dimension d = specificationView.getSize();
+            BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
             specificationView.paint(img.getGraphics());
             try
                 {
@@ -683,13 +757,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
     private void printSpecification()
     {
-        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-        SpecificationController specController = tabControllers.get(selectedTabIndex);
+        SpecificationController specController = currentSpecificationController();
         SpecificationView specificationView = specController.getSpecificationView();
+        Dimension d = specificationView.getSize();
 
         List<Integer> pageBreaks = calcPageBreaks(specificationView);
-        Dimension d = specificationView.getSize();
-        BufferedImage img = (BufferedImage)specificationView.createImage(d.width, d.height);
+
+        BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
         specificationView.paint(img.getGraphics());
 
         PrintUtilities.printImage(img, pageBreaks);
@@ -741,7 +815,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     {
         Rectangle b = c.getBounds();
 
-        System.out.println(c.getClass().getSimpleName() + "--> x: " + c.getX() + ", y: " + c.getY() + ", w: " + c.getWidth() + ", h: " + c.getHeight());
+        System.out.println(
+                c.getClass().getSimpleName() + "--> x: " + c.getX() + ", y: " + c.getY() + ", w: " + c.getWidth() + ", h: " + c.getHeight()
+        );
     }
 
     private void writeSpecificationToFile(Specification specification, File specificationFile)
@@ -756,7 +832,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         catch (Exception e)
             {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error",
+                                          JOptionPane.WARNING_MESSAGE
+            );
             }
 
     }
@@ -774,7 +852,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             List<TreePath> treePathList = Arrays.asList(selectedPaths);
 
             // @TODO List the specifications being closed
-            int state = JOptionPane.showConfirmDialog(this, "Close the selected specifications?", "Confirm Close", JOptionPane.YES_NO_OPTION);
+            int state = JOptionPane.showConfirmDialog(this, "Close the selected specifications?", "Confirm Close",
+                                                      JOptionPane.YES_NO_OPTION
+            );
 
             if (state == JOptionPane.YES_OPTION)
                 {
@@ -796,14 +876,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
     private void checkSpecification()
     {
-        SpecificationController specController = tabControllers.get(Integer.valueOf(specificationTabPanel.getSelectedIndex()));
+        SpecificationController specController = currentSpecificationController();
         specController.parseSpecification();
     }
 
     public void insertSymbol(String symbol)
     {
-        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-        SpecificationController selectedController = tabControllers.get(selectedTabIndex);
+        SpecificationController selectedController = currentSpecificationController();
 
         selectedController.insertSymbol(symbol);
     }
@@ -823,14 +902,15 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
             {
                 new TozeEditor().setVisible(true);
             }
-        });
+        }
+        );
     }
 
     public void update(Observable o, Object arg)
     {
         if (o instanceof SpecificationController)
             {
-            SpecificationController specificationController = (SpecificationController)o;
+            SpecificationController specificationController = (SpecificationController) o;
             List errors = (List) arg;
             specificationErrors.put(specificationController.getSpecification(), errors);
 
@@ -858,18 +938,15 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 if (e.getClickCount() == 2)
                     {
                     int index = specialCharsList.locationToIndex(e.getPoint());
-                    TozeCharMap charMap = (TozeCharMap)specialCharsList.getModel().getElementAt(index);
+                    TozeCharMap charMap = (TozeCharMap) specialCharsList.getModel().getElementAt(index);
                     TozeEditor.this.insertSymbol(charMap.getTozeChar());
                     }
                 }
             else if (e.getSource() == errorsList)
                 {
-                int tabIndex = specificationTabPanel.getSelectedIndex();
-                SpecificationController specificationController = tabControllers.get(tabIndex);
-
-                // TODO: need to update how errors in text areas are displayed.
-//                TozeTextArea textArea = specificationController.highlightError((SpecObjectPropertyError)errorsList.getSelectedValue());
-//                textArea.scrollRectToVisible(textArea.getBounds());
+                TozeToken errorToken = (TozeToken) errorsList.getSelectedValue();
+                SpecificationController specificationController = currentSpecificationController();
+                specificationController.selectError(errorToken);
                 }
         }
     }
@@ -880,7 +957,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        SpecificationController selectedController = tabControllers.get(specificationTabPanel.getSelectedIndex());
+        SpecificationController selectedController = currentSpecificationController();
 
         if (selectedController != null)
             {
@@ -892,7 +969,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 }
             else
                 {
-                errorsList.setListData((Object[])null);
+                errorsList.setListData((Object[]) null);
                 }
             }
     }

@@ -5,12 +5,12 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.editor.bindings.Binding;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 /**
- *
  * @author dhs
  */
 public class SpecDocumentListener implements DocumentListener
@@ -25,10 +25,10 @@ public class SpecDocumentListener implements DocumentListener
     private void update(DocumentEvent event)
     {
         System.out.println("Enter: update(DocumentEvent)");
-        
+
         if (binding != null)
             {
-            try 
+            try
                 {
                 String text = event.getDocument().getText(0, event.getDocument().getLength());
                 binding.setValue(text);
@@ -36,11 +36,11 @@ public class SpecDocumentListener implements DocumentListener
             catch (BadLocationException e)
                 {
                 // ???
-                }            
-            }        
+                }
+            }
         System.out.println("Exit: update(DocumentEvent)");
     }
-    
+
     public void insertUpdate(DocumentEvent event)
     {
         update(event);

@@ -1,6 +1,7 @@
 package edu.uwlax.toze.objectz;
 
-import java.util.*;
+import java.util.Stack;
+import java.util.TreeMap;
 
 public class TozeParser extends TozeParserBase
 {
@@ -350,7 +351,7 @@ public class TozeParser extends TozeParserBase
                 {
                 node.m_list.add(pnode);
                 if (!peek(TozeTokenizer.TOKEN_SEMICOLON)
-                    && !this.atEndOfLine())
+                        && !this.atEndOfLine())
                     {
                     return node;
                     }
@@ -465,7 +466,7 @@ public class TozeParser extends TozeParserBase
             }
         Ast.AstOperationExpression node = null;
         Ast.AstOperationExpression rnode = parse_OperationExpression1();
-        
+
         while (rnode != node)
             {
             if (rnode == null)
@@ -488,11 +489,11 @@ public class TozeParser extends TozeParserBase
         Ast.AstOperationExpressionBinary node;
 
         if (peek(TozeTokenizer.TOKEN_LAND)
-            || peek(TozeTokenizer.TOKEN_FCMP)
-            || peek(TozeTokenizer.TOKEN_BOX)
-            || peek(TozeTokenizer.TOKEN_DOT)
-            || peek(TozeTokenizer.TOKEN_DPIPE)
-            || peek(TozeTokenizer.TOKEN_DPIPEBANG))
+                || peek(TozeTokenizer.TOKEN_FCMP)
+                || peek(TozeTokenizer.TOKEN_BOX)
+                || peek(TozeTokenizer.TOKEN_DOT)
+                || peek(TozeTokenizer.TOKEN_DPIPE)
+                || peek(TozeTokenizer.TOKEN_DPIPEBANG))
             {
             node = m_ast.new AstOperationExpressionBinary();
             node.m_token = nextToken();
@@ -584,15 +585,15 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
+        {
+        next(TozeTokenizer.TOKEN_LPAREN);
+        Ast.AstOperationExpression node = parse_OperationExpression();
+        next(TozeTokenizer.TOKEN_RPAREN);
+        if (ok())
             {
-            next(TozeTokenizer.TOKEN_LPAREN);
-            Ast.AstOperationExpression node = parse_OperationExpression();
-            next(TozeTokenizer.TOKEN_RPAREN);
-            if (ok())
-                {
-                return node;
-                }
+            return node;
             }
+        }
 
         reset(at);
         Ast.AstExpression enode = parse_Expression();
@@ -689,7 +690,7 @@ public class TozeParser extends TozeParserBase
             }
         Ast.AstExpression node = null;
         Ast.AstExpression rnode = parse_Expression1();
-        
+
         while (rnode != node)
             {
             if (rnode == null)
@@ -782,7 +783,7 @@ public class TozeParser extends TozeParserBase
             }
         Ast.AstExpression node = null;
         Ast.AstExpression rnode = parse_Expression2();
-        
+
         while (rnode != node)
             {
             if (rnode == null)
@@ -807,9 +808,9 @@ public class TozeParser extends TozeParserBase
             {
             return null;
             }
-        
+
         Ast.AstInfixFunctionNameX node = parse_InfixFunctionNameX();
-        
+
         if (node != null)
             {
             if (!shouldInfixFunctionContinue(node.m_infixFunctionName.m_token.m_id))
@@ -847,7 +848,7 @@ public class TozeParser extends TozeParserBase
 
         reset(at);
         if (peek(TozeTokenizer.TOKEN_PSET)
-            || peek(TozeTokenizer.TOKEN_FSET))
+                || peek(TozeTokenizer.TOKEN_FSET))
             {
             Ast.AstPowerX pnode = m_ast.new AstPowerX();
             pnode.m_token = nextToken();
@@ -890,15 +891,15 @@ public class TozeParser extends TozeParserBase
 
         reset(at);
         if (peek(TozeTokenizer.TOKEN_DOM)
-            || peek(TozeTokenizer.TOKEN_RAN)
-            || peek(TozeTokenizer.TOKEN_REV)
-            || peek(TozeTokenizer.TOKEN_HEAD)
-            || peek(TozeTokenizer.TOKEN_LAST)
-            || peek(TozeTokenizer.TOKEN_TAIL)
-            || peek(TozeTokenizer.TOKEN_FRONT)
-            || peek(TozeTokenizer.TOKEN_FIRST)
-            || peek(TozeTokenizer.TOKEN_SECOND)
-            || peek(TozeTokenizer.TOKEN_HASH))
+                || peek(TozeTokenizer.TOKEN_RAN)
+                || peek(TozeTokenizer.TOKEN_REV)
+                || peek(TozeTokenizer.TOKEN_HEAD)
+                || peek(TozeTokenizer.TOKEN_LAST)
+                || peek(TozeTokenizer.TOKEN_TAIL)
+                || peek(TozeTokenizer.TOKEN_FRONT)
+                || peek(TozeTokenizer.TOKEN_FIRST)
+                || peek(TozeTokenizer.TOKEN_SECOND)
+                || peek(TozeTokenizer.TOKEN_HASH))
             {
             Ast.AstBuiltInFunctionX fnode = m_ast.new AstBuiltInFunctionX();
             fnode.m_token = nextToken();
@@ -1000,10 +1001,10 @@ public class TozeParser extends TozeParserBase
             {
             return null;
             }
-        
+
         Ast.AstExpression node = null;
         Ast.AstExpression rnode = parse_Expression4();
-        
+
         while (rnode != node)
             {
             if (rnode == null)
@@ -1179,13 +1180,13 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
+        {
+        Ast.AstSetExpressionX snode = parse_SetExpression();
+        if (ok())
             {
-            Ast.AstSetExpressionX snode = parse_SetExpression();
-            if (ok())
-                {
-                return snode;
-                }
+            return snode;
             }
+        }
 
         reset(at);
         if (next(TozeTokenizer.TOKEN_LPAREN))
@@ -1344,7 +1345,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-//   public Ast.AstExpression parse_PredicateExpression()
+    //   public Ast.AstExpression parse_PredicateExpression()
 //   {
 //      int at = m_current;
 //      if (!ok()) return null;
@@ -1493,10 +1494,10 @@ public class TozeParser extends TozeParserBase
 
         reset(at);
         if (peek(TozeTokenizer.TOKEN_NAT)
-            || peek(TozeTokenizer.TOKEN_NATONE)
-            || peek(TozeTokenizer.TOKEN_INTEGER)
-            || peek(TozeTokenizer.TOKEN_BOOL)
-            || peek(TozeTokenizer.TOKEN_REAL))
+                || peek(TozeTokenizer.TOKEN_NATONE)
+                || peek(TozeTokenizer.TOKEN_INTEGER)
+                || peek(TozeTokenizer.TOKEN_BOOL)
+                || peek(TozeTokenizer.TOKEN_REAL))
             {
             Ast.AstSetExpressionX3 node = m_ast.new AstSetExpressionX3();
             node.m_token = nextToken();
@@ -1608,10 +1609,10 @@ public class TozeParser extends TozeParserBase
             {
             return null;
             }
-        
+
         Ast.AstPredicate pnode = null;
         Ast.AstPredicate rpnode = parse_Predicate1();
-        
+
         while (rpnode != pnode)
             {
             if (rpnode == null)
@@ -1789,7 +1790,7 @@ public class TozeParser extends TozeParserBase
 
         reset(at);
         if (peek(TozeTokenizer.TOKEN_TRUE)
-            || peek(TozeTokenizer.TOKEN_FALSE))
+                || peek(TozeTokenizer.TOKEN_FALSE))
             {
             Ast.AstTrueFalseP node = m_ast.new AstTrueFalseP();
             node.m_token = nextToken();
@@ -1902,7 +1903,7 @@ public class TozeParser extends TozeParserBase
 
         Ast.AstSchemaExpression node = null;
         Ast.AstSchemaExpression rnode = parse_SchemaExpression1();
-        
+
         while (rnode != node)
             {
             if (rnode == null)
@@ -2434,7 +2435,7 @@ public class TozeParser extends TozeParserBase
                 {
                 node.m_decls.add(dnode);
                 if (!peek(TozeTokenizer.TOKEN_SEMICOLON)
-                    && !this.atEndOfLine())
+                        && !this.atEndOfLine())
                     {
                     return node;
                     }
@@ -2856,19 +2857,19 @@ public class TozeParser extends TozeParserBase
         // InfixRelationName : InfixRelationSymbol Decoration
 
         if (peek(TozeTokenizer.TOKEN_NEQ)
-            || peek(TozeTokenizer.TOKEN_NEM)
-            || peek(TozeTokenizer.TOKEN_PSUBS)
-            || peek(TozeTokenizer.TOKEN_SUBS)
-            || peek(TozeTokenizer.TOKEN_LESSTHAN)
-            || peek(TozeTokenizer.TOKEN_LEQ)
-            || peek(TozeTokenizer.TOKEN_GEQ)
-            || peek(TozeTokenizer.TOKEN_GREATERTHAN)
-            || peek(TozeTokenizer.TOKEN_PREFIX)
-            || peek(TozeTokenizer.TOKEN_SUFFIX)
-            || peek(TozeTokenizer.TOKEN_BAGMEMBERSHIP)
-            || peek(TozeTokenizer.TOKEN_SQUAREIMAGEOREQUAL)
-            || peek(TozeTokenizer.TOKEN_INSEQ)
-            || peek(TozeTokenizer.TOKEN_PARTITIONS))
+                || peek(TozeTokenizer.TOKEN_NEM)
+                || peek(TozeTokenizer.TOKEN_PSUBS)
+                || peek(TozeTokenizer.TOKEN_SUBS)
+                || peek(TozeTokenizer.TOKEN_LESSTHAN)
+                || peek(TozeTokenizer.TOKEN_LEQ)
+                || peek(TozeTokenizer.TOKEN_GEQ)
+                || peek(TozeTokenizer.TOKEN_GREATERTHAN)
+                || peek(TozeTokenizer.TOKEN_PREFIX)
+                || peek(TozeTokenizer.TOKEN_SUFFIX)
+                || peek(TozeTokenizer.TOKEN_BAGMEMBERSHIP)
+                || peek(TozeTokenizer.TOKEN_SQUAREIMAGEOREQUAL)
+                || peek(TozeTokenizer.TOKEN_INSEQ)
+                || peek(TozeTokenizer.TOKEN_PARTITIONS))
             {
             node.m_token = nextToken();
             node.m_decoration = parse_Decorations();
@@ -2894,9 +2895,9 @@ public class TozeParser extends TozeParserBase
         // InfixGenericName : InfixGenericSymbol Decoration
 
         if (peek(TozeTokenizer.TOKEN_TILDE)
-            || peek(TozeTokenizer.TOKEN_INV)
-            || peek(TozeTokenizer.TOKEN_TCL)
-            || peek(TozeTokenizer.TOKEN_RTCL))
+                || peek(TozeTokenizer.TOKEN_INV)
+                || peek(TozeTokenizer.TOKEN_TCL)
+                || peek(TozeTokenizer.TOKEN_RTCL))
             {
             node.m_token = nextToken();
             node.m_decoration = parse_Decorations();
@@ -2935,15 +2936,15 @@ public class TozeParser extends TozeParserBase
         // InfixGenericName : InfixGenericSymbol Decoration
 
         if (peek(TozeTokenizer.TOKEN_REL)
-            || peek(TozeTokenizer.TOKEN_PFUN)
-            || peek(TozeTokenizer.TOKEN_TFUN)
-            || peek(TozeTokenizer.TOKEN_PINJ)
-            || peek(TozeTokenizer.TOKEN_TINJ)
-            || peek(TozeTokenizer.TOKEN_PSUR)
-            || peek(TozeTokenizer.TOKEN_TSUR)
-            || peek(TozeTokenizer.TOKEN_BIJ)
-            || peek(TozeTokenizer.TOKEN_FFUN)
-            || peek(TozeTokenizer.TOKEN_FINJ))
+                || peek(TozeTokenizer.TOKEN_PFUN)
+                || peek(TozeTokenizer.TOKEN_TFUN)
+                || peek(TozeTokenizer.TOKEN_PINJ)
+                || peek(TozeTokenizer.TOKEN_TINJ)
+                || peek(TozeTokenizer.TOKEN_PSUR)
+                || peek(TozeTokenizer.TOKEN_TSUR)
+                || peek(TozeTokenizer.TOKEN_BIJ)
+                || peek(TozeTokenizer.TOKEN_FFUN)
+                || peek(TozeTokenizer.TOKEN_FINJ))
             {
             node.m_token = nextToken();
             node.m_decoration = parse_Decorations();
@@ -2982,31 +2983,31 @@ public class TozeParser extends TozeParserBase
         // InfixFunctionName : InfixFunctionSymbol Decoration
 
         if (peek(TozeTokenizer.TOKEN_UPTO)
-            || peek(TozeTokenizer.TOKEN_MAP)
-            || peek(TozeTokenizer.TOKEN_PLUS)
-            || peek(TozeTokenizer.TOKEN_MINUS)
-            || peek(TozeTokenizer.TOKEN_UNI)
-            || peek(TozeTokenizer.TOKEN_BSLASH)
-            || peek(TozeTokenizer.TOKEN_SETMINUS)
-            || peek(TozeTokenizer.TOKEN_CAT)
-            || peek(TozeTokenizer.TOKEN_DCAT)
-            || peek(TozeTokenizer.TOKEN_UPLUS)
-            || peek(TozeTokenizer.TOKEN_TIMES)
-            || //peek(TozeTokenizer.TOKEN_FSLASH)   ||
+                || peek(TozeTokenizer.TOKEN_MAP)
+                || peek(TozeTokenizer.TOKEN_PLUS)
+                || peek(TozeTokenizer.TOKEN_MINUS)
+                || peek(TozeTokenizer.TOKEN_UNI)
+                || peek(TozeTokenizer.TOKEN_BSLASH)
+                || peek(TozeTokenizer.TOKEN_SETMINUS)
+                || peek(TozeTokenizer.TOKEN_CAT)
+                || peek(TozeTokenizer.TOKEN_DCAT)
+                || peek(TozeTokenizer.TOKEN_UPLUS)
+                || peek(TozeTokenizer.TOKEN_TIMES)
+                || //peek(TozeTokenizer.TOKEN_FSLASH)   ||
                 peek(TozeTokenizer.TOKEN_DIV)
-            || peek(TozeTokenizer.TOKEN_MOD)
-            || peek(TozeTokenizer.TOKEN_INT)
-            || peek(TozeTokenizer.TOKEN_FCMP)
-            || peek(TozeTokenizer.TOKEN_CIRC)
-            || peek(TozeTokenizer.TOKEN_PROJECT)
-            || peek(TozeTokenizer.TOKEN_EXTRACT)
-            || peek(TozeTokenizer.TOKEN_FOVR)
-            || //peek(TozeTokenizer.TOKEN_OTIMES) ||
+                || peek(TozeTokenizer.TOKEN_MOD)
+                || peek(TozeTokenizer.TOKEN_INT)
+                || peek(TozeTokenizer.TOKEN_FCMP)
+                || peek(TozeTokenizer.TOKEN_CIRC)
+                || peek(TozeTokenizer.TOKEN_PROJECT)
+                || peek(TozeTokenizer.TOKEN_EXTRACT)
+                || peek(TozeTokenizer.TOKEN_FOVR)
+                || //peek(TozeTokenizer.TOKEN_OTIMES) ||
                 peek(TozeTokenizer.TOKEN_DRES)
-            || peek(TozeTokenizer.TOKEN_RRES)
-            || peek(TozeTokenizer.TOKEN_DSUB)
-            || peek(TozeTokenizer.TOKEN_RSUB)
-            || (peek(TozeTokenizer.TOKEN_HASH) && !preceededByNewline()))
+                || peek(TozeTokenizer.TOKEN_RRES)
+                || peek(TozeTokenizer.TOKEN_DSUB)
+                || peek(TozeTokenizer.TOKEN_RSUB)
+                || (peek(TozeTokenizer.TOKEN_HASH) && !preceededByNewline()))
             {
             node.m_token = nextToken();
             node.m_decoration = parse_Decorations();
@@ -3044,12 +3045,12 @@ public class TozeParser extends TozeParserBase
         // PrefixGenericName : PrefixGenericSymbol Decoration
 
         if (peek(TozeTokenizer.TOKEN_PSETONE)
-            || peek(TozeTokenizer.TOKEN_FSETONE)
-            || peek(TozeTokenizer.TOKEN_ID)
-            || peek(TozeTokenizer.TOKEN_SEQ)
-            || peek(TozeTokenizer.TOKEN_SEQONE)
-            || peek(TozeTokenizer.TOKEN_ISEQ)
-            || peek(TozeTokenizer.TOKEN_BAG))
+                || peek(TozeTokenizer.TOKEN_FSETONE)
+                || peek(TozeTokenizer.TOKEN_ID)
+                || peek(TozeTokenizer.TOKEN_SEQ)
+                || peek(TozeTokenizer.TOKEN_SEQONE)
+                || peek(TozeTokenizer.TOKEN_ISEQ)
+                || peek(TozeTokenizer.TOKEN_BAG))
             {
             Ast.AstPrefixGenericName node = m_ast.new AstPrefixGenericName();
             node.m_token = nextToken();

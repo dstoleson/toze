@@ -41,6 +41,12 @@ public class DeltaListView extends ParagraphView implements Placement
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(operation, deltaListText, "deltaList");
+    }
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();

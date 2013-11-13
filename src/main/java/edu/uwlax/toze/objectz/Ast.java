@@ -6,14 +6,19 @@ package edu.uwlax.toze.objectz;
  *
  * This file contains all of the classes that represent nodes in the AST.
  */
+
 import edu.uwlax.toze.editor.TozeFontMap;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Ast
 {
     static private Set<String> errors = new HashSet<String>();
     static private String m_strAst = "";
-    
+
     static public Set<String> getErrors()
     {
         return new HashSet<String>(errors);
@@ -28,7 +33,7 @@ public class Ast
     {
         errors.clear();
     }
-    
+
     public class AstBase
     {
         TozeToken m_token = null;
@@ -180,7 +185,7 @@ public class Ast
                     }
                 iterations++;
                 if (!m_stable.m_undefinedSymbolOccurred
-                    && !m_stable.m_undefinedTypeOccurred)
+                        && !m_stable.m_undefinedTypeOccurred)
                     {
                     break;
                     }
@@ -853,7 +858,8 @@ public class Ast
             if (!added)
                 {
                 m_className.reportTypeError(className + " is already added as a class",
-                                            m_className.m_token);
+                                            m_className.m_token
+                );
                 }
 
             for (i = 0; i < m_inheritedClasses.size(); i++)
@@ -1139,8 +1145,10 @@ public class Ast
                     AstDeclarationName name = (AstDeclarationName) m_declarationNameList.m_declarationNameList.get(i);
                     if (!stable.addVisible(name.getName()))
                         {
-                        reportTypeError(name.getName() + " is not a valid member and cannot be included in the visiblity list",
-                                        name.m_token);
+                        reportTypeError(
+                                name.getName() + " is not a valid member and cannot be included in the visiblity list",
+                                name.m_token
+                        );
                         }
                     }
                 }
@@ -1176,18 +1184,21 @@ public class Ast
             if (type == null)
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
-                                     m_className.m_token);
+                                     m_className.m_token
+                );
                 return;
                 }
             if (type.getType() != AstType.TYPE_SET)
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
-                                     m_className.m_token);
+                                     m_className.m_token
+                );
                 }
             if (type.getSetType().getType() != AstType.TYPE_CLASS)
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
-                                     m_className.m_token);
+                                     m_className.m_token
+                );
                 return;
                 }
             int numParams = 0;
@@ -1197,8 +1208,10 @@ public class Ast
                 }
             if (numParams != type.getSetType().m_numClassFormalParamList)
                 {
-                reportTypeError("The number of actual parameters for an inherited class must match the number of formal parameters in the definition.",
-                                m_className.m_token);
+                reportTypeError(
+                        "The number of actual parameters for an inherited class must match the number of formal parameters in the definition.",
+                        m_className.m_token
+                );
                 }
             m_stable.add(m_className.getName(), type.getSetType().m_classMembers);
 
@@ -1538,7 +1551,8 @@ public class Ast
                     if (type == null)
                         {
                         id.reportTypeError(id.getName() + " is not defined",
-                                           id.m_token);
+                                           id.m_token
+                        );
                         }
                     }
                 }
@@ -1579,7 +1593,8 @@ public class Ast
         public void checkType()
         {
             reportTypeError(m_variableName.getName() + " is already defined",
-                            m_variableName.m_token);
+                            m_variableName.m_token
+            );
         }
     }
 
@@ -1655,7 +1670,8 @@ public class Ast
                 String msg = name + " has already been defined as part of another type.";
                 TozeToken token = m_identifier.m_token;
                 this.reportTypeError(msg,
-                                     token);
+                                     token
+                );
                 }
         }
     }
@@ -1708,7 +1724,8 @@ public class Ast
             if (setType == null)
                 {
                 reportTypeError("Expressions used in declarations must result in a set",
-                                m_token);
+                                m_token
+                );
                 return;
                 }
             m_declarationNameList.checkType(m_stable, type.getSetType());
@@ -1767,7 +1784,8 @@ public class Ast
             if (!added)
                 {
                 this.reportTypeError(m_schemaName.getName() + " is already defined as a schema.",
-                                     m_schemaName.m_token);
+                                     m_schemaName.m_token
+                );
                 }
         }
 
@@ -1841,13 +1859,15 @@ public class Ast
             if (type == null)
                 {
                 reportTypeError("The schema " + m_schemaName.getName() + " does not exist",
-                                m_schemaName.m_token);
+                                m_schemaName.m_token
+                );
                 return;
                 }
             if (!type.isSchemaDef())
                 {
                 reportTypeError(m_schemaName.getName() + " is not a schema name",
-                                m_schemaName.m_token);
+                                m_schemaName.m_token
+                );
                 return;
                 }
 
@@ -1988,7 +2008,8 @@ public class Ast
         public void checkType()
         {
             reportTypeError(m_token.m_value + " is already defined",
-                            m_token);
+                            m_token
+            );
         }
     }
 
@@ -2015,7 +2036,8 @@ public class Ast
                 if (!stable.add(name, type))
                     {
                     reportTypeError(name + " is already defined",
-                                    ((AstDeclarationName) m_declarationNameList.get(i)).getToken());
+                                    ((AstDeclarationName) m_declarationNameList.get(i)).getToken()
+                    );
                     }
                 }
         }
@@ -2300,7 +2322,8 @@ public class Ast
         public void checkType()
         {
             reportTypeError(m_identifier.getName() + " is already defined",
-                            m_identifier.m_token);
+                            m_identifier.m_token
+            );
         }
     }
 
@@ -2517,7 +2540,8 @@ public class Ast
                     if (type == null)
                         {
                         reportTypeError(id.getName() + " is not defined for this operation",
-                                        id.m_token);
+                                        id.m_token
+                        );
                         }
                     }
                 }
@@ -2541,13 +2565,15 @@ public class Ast
             if (type == null)
                 {
                 reportTypeError("The operation " + m_identifier.getName() + " does not exist",
-                                m_identifier.m_token);
+                                m_identifier.m_token
+                );
                 return new AstType();
                 }
             if (!type.isOperation())
                 {
                 reportTypeError(m_identifier.getName() + " is not an operation name",
-                                m_identifier.m_token);
+                                m_identifier.m_token
+                );
                 return new AstType();
                 }
 
@@ -2576,7 +2602,8 @@ public class Ast
             if (type.getType() != AstType.TYPE_BOOL)
                 {
                 reportTypeError("Predicates must evaluate to a boolean value",
-                                m_token);
+                                m_token
+                );
                 }
         }
     }
@@ -2934,7 +2961,7 @@ public class Ast
             AstType t2 = m_expressionR.getType();
 
             if ((t1.isUndefined())
-                || (t2.isUndefined()))
+                    || (t2.isUndefined()))
                 {
                 return new AstType(AstType.TYPE_BOOL);
                 }
@@ -2946,12 +2973,14 @@ public class Ast
                     if (!t2.isSet())
                         {
                         reportTypeError("Right side of " + getName() + " must be a set",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     if (!t1.isEqual(t2.m_setType))
                         {
                         reportTypeError("Element is not the same type as the set for " + getName(),
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     break;
                 case TozeTokenizer.TOKEN_PSUBS:
@@ -2959,7 +2988,8 @@ public class Ast
                     if (!t1.isEqual(t2))
                         {
                         reportTypeError("Both sides of " + getName() + " must be sets of the same type",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     break;
                 case TozeTokenizer.TOKEN_EQUAL:
@@ -2967,7 +2997,8 @@ public class Ast
                     if (!t1.isCompatible(t2))
                         {
                         reportTypeError("Both sides of " + getName() + " must be the same type",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     break;
                 case TozeTokenizer.TOKEN_LESSTHAN:
@@ -2977,7 +3008,8 @@ public class Ast
                     if ((!t1.isANumber() || !t2.isANumber()))
                         {
                         reportTypeError("Both sides of " + getName() + " must be numbers",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     break;
                 case TozeTokenizer.TOKEN_PREFIX:
@@ -2986,17 +3018,20 @@ public class Ast
                     if (!t2.isSequence())
                         {
                         reportTypeError("Right side of " + getName() + " must be a sequence",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     if (!t1.isSequence())
                         {
                         reportTypeError("Left side of " + getName() + " must be a sequence",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     if (!t1.isEqual(t2))
                         {
                         reportTypeError("Both sequences of " + getName() + " must be of the same type",
-                                        r.m_infixRelationName.m_token);
+                                        r.m_infixRelationName.m_token
+                        );
                         }
                     return new AstType(AstType.TYPE_BOOL);
                 case TozeTokenizer.TOKEN_BAGMEMBERSHIP:
@@ -3051,7 +3086,8 @@ public class Ast
             if (!type.isSet())
                 {
                 reportTypeError("Expression for " + m_prefixRelationName.getName() + " must evaluate to a set",
-                                m_expression.m_token);
+                                m_expression.m_token
+                );
                 }
         }
 
@@ -3396,14 +3432,15 @@ public class Ast
             AstType typeL = m_expressionL.getType();
             AstType typeR = m_expressionR.getType();
             if ((typeL.isUndefined())
-                || (typeR.isUndefined()))
+                    || (typeR.isUndefined()))
                 {
                 return new AstType();
                 }
             if (!typeL.isCompatible(typeR))
                 {
                 reportTypeError("Type mismatch",
-                                m_token);
+                                m_token
+                );
                 }
             return typeL.resultantType(typeR);
         }
@@ -3441,14 +3478,16 @@ public class Ast
             AstType t1 = m_then.getType();
             AstType t2 = m_else.getType();
             if ((t1.isUndefined())
-                || (t2.isUndefined()))
+                    || (t2.isUndefined()))
                 {
                 return new AstType();
                 }
             if (!t1.isCompatible(t2))
                 {
-                reportTypeError("The expression used for the then clause is a different type than the one used for the else clause",
-                                m_then.m_token);
+                reportTypeError(
+                        "The expression used for the then clause is a different type than the one used for the else clause",
+                        m_then.m_token
+                );
                 }
             return t1.resultantType(t2);
         }
@@ -3467,7 +3506,7 @@ public class Ast
             AstType typeL = m_expressionL.getType();
             AstType typeR = m_expressionR.getType();
             if ((typeL.isUndefined())
-                || (typeR.isUndefined()))
+                    || (typeR.isUndefined()))
                 {
                 return new AstType();
                 }
@@ -3476,7 +3515,8 @@ public class Ast
             if ((typeL == null) || (typeR == null))
                 {
                 reportTypeError("Both expressions of a cross-product must evaluate to a set",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
             AstType result = new AstType(AstType.TYPE_SET);
@@ -3506,14 +3546,15 @@ public class Ast
             AstType typeL = m_expressionL.getType();
             AstType typeR = m_expressionR.getType();
             if ((typeL.isUndefined())
-                || (typeR.isUndefined()))
+                    || (typeR.isUndefined()))
                 {
                 return new AstType();
                 }
             if ((!typeL.isSet() || !typeR.isSet()))
                 {
                 reportTypeError("Both sides of an infix generic operator must be sets",
-                                m_infixGenericName.m_token);
+                                m_infixGenericName.m_token
+                );
                 return new AstType();
                 }
             AstType type = new AstType(AstType.TYPE_SET);
@@ -3545,7 +3586,7 @@ public class Ast
             AstType typeR = m_expressionR.getType();
 
             if ((typeL.isUndefined())
-                || (typeR.isUndefined()))
+                    || (typeR.isUndefined()))
                 {
                 return new AstType();
                 }
@@ -3558,51 +3599,55 @@ public class Ast
                 return type;
                 }
             if ((tid == TozeTokenizer.TOKEN_PLUS)
-                || (tid == TozeTokenizer.TOKEN_MINUS)
-                || (tid == TozeTokenizer.TOKEN_DIV)
-                || (tid == TozeTokenizer.TOKEN_MOD)
-                || (tid == TozeTokenizer.TOKEN_FSLASH)
-                || (tid == TozeTokenizer.TOKEN_TIMES))
+                    || (tid == TozeTokenizer.TOKEN_MINUS)
+                    || (tid == TozeTokenizer.TOKEN_DIV)
+                    || (tid == TozeTokenizer.TOKEN_MOD)
+                    || (tid == TozeTokenizer.TOKEN_FSLASH)
+                    || (tid == TozeTokenizer.TOKEN_TIMES))
                 {
                 AstType rtype = typeL.resultantType(typeR);
                 if (!rtype.isANumber())
                     {
                     reportTypeError("The expressions for the " + tname + " operator must be numbers",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return rtype;
                 }
 
             if ((tid == TozeTokenizer.TOKEN_UNI)
-                || (tid == TozeTokenizer.TOKEN_SETMINUS)
-                || (tid == TozeTokenizer.TOKEN_INT)
-                || (tid == TozeTokenizer.TOKEN_BSLASH))
+                    || (tid == TozeTokenizer.TOKEN_SETMINUS)
+                    || (tid == TozeTokenizer.TOKEN_INT)
+                    || (tid == TozeTokenizer.TOKEN_BSLASH))
                 {
                 if (!typeL.isSet() || !typeR.isSet())
                     {
                     reportTypeError("Expressions for the " + tname + " operator must be sets",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 if (!typeL.isEqual(typeR))
                     {
                     reportTypeError("Sets must be the same type for the operator " + tname,
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return typeL;
                 }
 
             if ((tid == TozeTokenizer.TOKEN_CAT)
-                || (tid == TozeTokenizer.TOKEN_DCAT)
-                || (tid == TozeTokenizer.TOKEN_PREFIX)
-                || (tid == TozeTokenizer.TOKEN_SUFFIX))
+                    || (tid == TozeTokenizer.TOKEN_DCAT)
+                    || (tid == TozeTokenizer.TOKEN_PREFIX)
+                    || (tid == TozeTokenizer.TOKEN_SUFFIX))
                 {
                 if (!typeL.isSequence() || !typeR.isSequence())
                     {
                     reportTypeError("Expressions for the " + tname + " operator must be sequences",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return typeL;
@@ -3611,10 +3656,11 @@ public class Ast
             if (tid == TozeTokenizer.TOKEN_UPTO)
                 {
                 if (!typeL.isANumber()
-                    || !typeR.isANumber())
+                        || !typeR.isANumber())
                     {
                     reportTypeError("Expressions for " + tname + " must be numbers",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 AstType type = new AstType(AstType.TYPE_SET);
@@ -3623,38 +3669,42 @@ public class Ast
                 }
 
             if ((tid == TozeTokenizer.TOKEN_FOVR)
-                || (tid == TozeTokenizer.TOKEN_FCMP)
-                || (tid == TozeTokenizer.TOKEN_CIRC))
+                    || (tid == TozeTokenizer.TOKEN_FCMP)
+                    || (tid == TozeTokenizer.TOKEN_CIRC))
                 {
                 if (!typeL.isRelation()
-                    || !typeR.isRelation())
+                        || !typeR.isRelation())
                     {
                     reportTypeError("Expressions for " + tname + " must be relations",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 if (!typeL.isEqual(typeR))
                     {
                     reportTypeError("Relations used in " + tname + " must be of the same type",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return typeL;
                 }
 
             if ((tid == TozeTokenizer.TOKEN_DRES)
-                || (tid == TozeTokenizer.TOKEN_DSUB))
+                    || (tid == TozeTokenizer.TOKEN_DSUB))
                 {
                 if (!typeL.isSet())
                     {
                     reportTypeError("Left-hand argument to " + tname + " must be a set",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (!typeR.isRelation())
                     {
                     reportTypeError("Right-hand argument to " + tname + " must be a relation",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (bad)
@@ -3664,25 +3714,28 @@ public class Ast
                 if (!((AstType) typeR.getSetType().m_tupleTypes.get(0)).isEqual(typeL.getSetType()))
                     {
                     reportTypeError("Type of set must be the same as the domain type of the range",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return typeR;
                 }
 
             if ((tid == TozeTokenizer.TOKEN_RRES)
-                || (tid == TozeTokenizer.TOKEN_RSUB))
+                    || (tid == TozeTokenizer.TOKEN_RSUB))
                 {
                 if (!typeR.isSet())
                     {
                     reportTypeError("Right-hand argument to " + tname + " must be a set",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (!typeL.isRelation())
                     {
                     reportTypeError("Left-hand argument to " + tname + " must be a relation",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (bad)
@@ -3692,7 +3745,8 @@ public class Ast
                 if (!((AstType) typeL.getSetType().m_tupleTypes.get(1)).isEqual(typeR.getSetType()))
                     {
                     reportTypeError("Type of set must be the same as the range type of the relation",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return typeL;
@@ -3703,13 +3757,15 @@ public class Ast
                 if (!typeL.isSequence())
                     {
                     reportTypeError("Left-hand expression for a projection must be a sequence",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (!typeR.isSet())
                     {
                     reportTypeError("Right-hand expression for a projection must be a set",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 if (bad)
@@ -3721,7 +3777,8 @@ public class Ast
                 if (!tl.isCompatible(tr))
                     {
                     reportTypeError("Type of set must be the same as the sequence type.",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     }
                 return typeL;
                 }
@@ -3731,7 +3788,8 @@ public class Ast
                 if (!typeL.isSet())
                     {
                     reportTypeError("Left-hand expression must be a set",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
                 else
@@ -3740,10 +3798,14 @@ public class Ast
                 if (!typeR.isSequence())
                     {
                     reportTypeError("Right-hand expression for a projection must be a sequence",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     bad = true;
                     }
-                if (bad) return new AstType();
+                if (bad)
+                    {
+                    return new AstType();
+                    }
                 AstType tl = typeL.getSetType();
             /*
              * Check that the set contains natural numbers.
@@ -3751,7 +3813,8 @@ public class Ast
                 if (!tl.isANumber())
                     {
                     reportTypeError("The set must contain numbers",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     }
                 return typeR;
                 }
@@ -3761,13 +3824,15 @@ public class Ast
                 if (!typeL.isBag())
                     {
                     reportTypeError("Left-hand expression for '#' must be a bag",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 if (!((AstType) typeL.getSetType().m_tupleTypes.get(0)).isEqual(typeR))
                     {
                     reportTypeError("Right-hand expression for '#' must be the same type as contained in the bag",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 return new AstType(AstType.TYPE_NATURAL);
@@ -3776,17 +3841,19 @@ public class Ast
             if (tid == TozeTokenizer.TOKEN_UPLUS)
                 {
                 if (!typeL.isBag()
-                    || !typeR.isBag())
+                        || !typeR.isBag())
                     {
                     reportTypeError("Expressions for bag union must be bags",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     return new AstType();
                     }
 
                 if (!typeL.isEqual(typeR))
                     {
                     reportTypeError("Both sides of bag union must be the same type",
-                                    m_infixFunctionName.m_token);
+                                    m_infixFunctionName.m_token
+                    );
                     }
                 }
 
@@ -3819,7 +3886,8 @@ public class Ast
             if (ttype.getSetType() == null)
                 {
                 reportTypeError("Power set must be applied to a set",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
             AstType type = new AstType(AstType.TYPE_SET);
@@ -3886,7 +3954,8 @@ public class Ast
                     rtype.m_setType = new AstType(AstType.TYPE_SEQUENCE);
                     rtype.m_setType.m_setType = new AstType(AstType.TYPE_TUPLE);
                     rtype.m_setType.m_setType.newTuple(new AstType(AstType.TYPE_NATURAL1),
-                                                       t);
+                                                       t
+                    );
                     rtype.m_setType.m_setType.m_tupleIsSeq = true;
                     return rtype;
                 case TozeTokenizer.TOKEN_BAG:
@@ -3905,7 +3974,8 @@ public class Ast
                     rtype.m_setType = new AstType(AstType.TYPE_BAG);
                     rtype.m_setType.m_setType = new AstType(AstType.TYPE_TUPLE);
                     rtype.m_setType.m_setType.newTuple(t,
-                                                       new AstType(AstType.TYPE_NATURAL1));
+                                                       new AstType(AstType.TYPE_NATURAL1)
+                    );
                     rtype.m_setType.m_setType.m_tupleIsSeq = true;
                     return rtype;
                 }
@@ -3934,7 +4004,8 @@ public class Ast
             if (!t.isANumber())
                 {
                 reportTypeError("The expression for - must be a number",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
             return t;
@@ -3967,7 +4038,7 @@ public class Ast
             AstType typeM = m_expression0.getType();
 
             if ((typeL.isUndefined())
-                || (typeM.isUndefined()))
+                    || (typeM.isUndefined()))
                 {
                 return new AstType();
                 }
@@ -3975,13 +4046,15 @@ public class Ast
             if (!typeL.isRelation())
                 {
                 reportTypeError("Left-hand expression to the image operator must be a relation",
-                                m_token);
+                                m_token
+                );
                 bad = true;
                 }
             if (!typeM.isSet())
                 {
                 reportTypeError("Inside expression of the image operator must be a set",
-                                m_token);
+                                m_token
+                );
                 bad = true;
                 }
             if (bad)
@@ -3990,8 +4063,10 @@ public class Ast
                 }
             if (!typeM.getSetType().isEqual((AstType) typeL.getSetType().m_tupleTypes.get(0)))
                 {
-                reportTypeError("The type of the inside set expression must the the same type as the domain type of the relation for the image operator",
-                                m_token);
+                reportTypeError(
+                        "The type of the inside set expression must the the same type as the domain type of the relation for the image operator",
+                        m_token
+                );
                 return new AstType();
                 }
             AstType type = new AstType(AstType.TYPE_SET);
@@ -4075,7 +4150,8 @@ public class Ast
             if (type.getType() != AstType.TYPE_SET)
                 {
                 reportTypeError("Expression used in distributed union must be a set of sets.",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
 
@@ -4099,7 +4175,8 @@ public class Ast
                     if (!type1.isCompatible(type2))
                         {
                         reportTypeError("All sets used in a distributed union must be of the same type.",
-                                        m_token);
+                                        m_token
+                        );
                         return new AstType();
                         }
                     }
@@ -4110,7 +4187,8 @@ public class Ast
                 if (type.getSetType().getType() != AstType.TYPE_SET)
                     {
                     reportTypeError("Expression used in distributed union must be a set of sets.",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
 
@@ -4144,7 +4222,8 @@ public class Ast
             if (type.getType() != AstType.TYPE_SET)
                 {
                 reportTypeError("Expression used in distributed intersection must be a set of sets.",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
 
@@ -4168,7 +4247,8 @@ public class Ast
                     if (!type1.isCompatible(type2))
                         {
                         reportTypeError("All sets used in a distributed intersection must be of the same type.",
-                                        m_token);
+                                        m_token
+                        );
                         return new AstType();
                         }
                     }
@@ -4179,7 +4259,8 @@ public class Ast
                 if (type.getSetType().getType() != AstType.TYPE_SET)
                     {
                     reportTypeError("Expression used in distributed intersection must be a set of sets.",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
 
@@ -4271,21 +4352,25 @@ public class Ast
             AstType typeR = m_expressionR.getType();
 
             if ((typeL.isUndefined())
-                || (typeR.isUndefined()))
+                    || (typeR.isUndefined()))
                 {
                 return new AstType();
                 }
 
             if (!typeL.isSet() || !typeR.isSet())
                 {
-                reportTypeError("Expressions for the " + Character.toString(TozeFontMap.CHAR_CUP) + " operator must be sets",
-                                m_token);
+                reportTypeError(
+                        "Expressions for the " + Character.toString(TozeFontMap.CHAR_CUP) + " operator must be sets",
+                        m_token
+                );
                 return new AstType();
                 }
             if (!typeL.isEqual(typeR))
                 {
-                reportTypeError("Sets must be the same type for the operator " + Character.toString(TozeFontMap.CHAR_CUP),
-                                m_token);
+                reportTypeError(
+                        "Sets must be the same type for the operator " + Character.toString(TozeFontMap.CHAR_CUP),
+                        m_token
+                );
                 return new AstType();
                 }
             return typeL;
@@ -4362,7 +4447,8 @@ public class Ast
                     if (!ttype.isEqual(stype))
                         {
                         reportTypeError("All expressions of a bag must be of the same type",
-                                        m_token);
+                                        m_token
+                        );
                         }
                     }
                 }
@@ -4375,7 +4461,8 @@ public class Ast
             AstType rtype = new AstType(AstType.TYPE_BAG);
             rtype.m_setType = new AstType(AstType.TYPE_TUPLE);
             rtype.m_setType.newTuple(stype,
-                                     new AstType(AstType.TYPE_NATURAL1));
+                                     new AstType(AstType.TYPE_NATURAL1)
+            );
             rtype.m_setType.m_tupleIsSeq = false;
             return rtype;
         }
@@ -4421,26 +4508,30 @@ public class Ast
             if (ctype == null)
                 {
                 reportTypeError("Undefined class variable",
-                                m_expression.m_token);
+                                m_expression.m_token
+                );
                 return new AstType();
                 }
             if (ctype.getType() != AstType.TYPE_CLASS)
                 {
                 reportTypeError("Member access must be from a class type",
-                                m_expression.m_token);
+                                m_expression.m_token
+                );
                 return new AstType();
                 }
             AstType type = ctype.getClassMembers().getTypeVisible(m_variableName.getName());
             if (type == null)
                 {
                 reportTypeError("The member " + m_variableName.getName() + " is not visible",
-                                m_variableName.m_token);
+                                m_variableName.m_token
+                );
                 return new AstType();
                 }
             if (type.isUndefined())
                 {
                 reportTypeError("The member " + m_variableName.getName() + " is undefined",
-                                m_variableName.m_token);
+                                m_variableName.m_token
+                );
                 return new AstType();
                 }
             return type;
@@ -4461,28 +4552,32 @@ public class Ast
                 }
 
             if ((m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_TILDE)
-                || (m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_INV))
+                    || (m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_INV))
                 {
                 if (!type.isRelation())
                     {
                     reportTypeError("The argument to '~' must be a relation",
-                                    m_postfixFunctionName.m_token);
+                                    m_postfixFunctionName.m_token
+                    );
                     return new AstType();
                     }
 
                 AstType rtype = new AstType(AstType.TYPE_SET);
                 rtype.m_setType = new AstType(AstType.TYPE_TUPLE);
                 rtype.m_setType.newTuple((AstType) type.m_setType.m_tupleTypes.get(1),
-                                         (AstType) type.m_setType.m_tupleTypes.get(0));
+                                         (AstType) type.m_setType.m_tupleTypes.get(0)
+                );
                 return rtype;
                 }
             if ((m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_TCL)
-                || (m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_RTCL))
+                    || (m_postfixFunctionName.m_token.m_id == TozeTokenizer.TOKEN_RTCL))
                 {
                 if (!type.isRelation())
                     {
-                    reportTypeError("The argument to '" + m_postfixFunctionName.m_token.m_value + "' must be a relation",
-                                    m_postfixFunctionName.m_token);
+                    reportTypeError(
+                            "The argument to '" + m_postfixFunctionName.m_token.m_value + "' must be a relation",
+                            m_postfixFunctionName.m_token
+                    );
                     return new AstType();
                     }
                 }
@@ -4618,13 +4713,15 @@ public class Ast
                 if (type == null)
                     {
                     reportTypeError(getName() + " is undefined",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (type.isUndefined())
                     {
                     reportTypeError(getName() + " is undefined",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 }
@@ -4875,7 +4972,8 @@ public class Ast
                     if (!ttype.isEqual(stype))
                         {
                         reportTypeError("All expressions of a sequence must be of the same type",
-                                        m_token);
+                                        m_token
+                        );
                         }
                     }
                 }
@@ -4888,7 +4986,8 @@ public class Ast
             AstType rtype = new AstType(AstType.TYPE_SEQUENCE);
             rtype.m_setType = new AstType(AstType.TYPE_TUPLE);
             rtype.m_setType.newTuple(new AstType(AstType.TYPE_NATURAL1),
-                                     stype);
+                                     stype
+            );
             rtype.m_setType.m_tupleIsSeq = true;
             return rtype;
         }
@@ -4910,19 +5009,22 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SET)
                     {
                     reportTypeError("The argument to the function 'dom' must be a set of tuples",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (type.getSetType().getType() != AstType.TYPE_TUPLE)
                     {
                     reportTypeError("The argument to the function 'dom' must be a set of tuples",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (type.getSetType().m_tupleTypes.size() != 2)
                     {
                     reportTypeError("The argument to the function 'dom' must be a tuple of size 2",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 AstType rtype = new AstType(AstType.TYPE_SET);
@@ -4935,19 +5037,22 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SET)
                     {
                     reportTypeError("The argument to the function 'ran' must be a set of tuples",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (type.getSetType().getType() != AstType.TYPE_TUPLE)
                     {
                     reportTypeError("The argument to the function 'ran' must be a set of tuples",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (type.getSetType().m_tupleTypes.size() != 2)
                     {
                     reportTypeError("The argument to the function 'ran' must be a tuple of size 2",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 AstType rtype = new AstType(AstType.TYPE_SET);
@@ -4960,7 +5065,8 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SEQUENCE)
                     {
                     reportTypeError("The argument to the function 'rev' must be a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 return type;
@@ -4971,7 +5077,8 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SEQUENCE)
                     {
                     reportTypeError("The argument to the function 'head' must be a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 return (AstType) type.getSetType().m_tupleTypes.get(1);
@@ -4983,7 +5090,8 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SEQUENCE)
                     {
                     reportTypeError("The argument to the function 'last' must be a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 return (AstType) type.getSetType().m_tupleTypes.get(1);
@@ -4995,7 +5103,8 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SEQUENCE)
                     {
                     reportTypeError("The argument to the function 'tail' must be a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 return type;
@@ -5006,20 +5115,22 @@ public class Ast
                 if (type.getType() != AstType.TYPE_SEQUENCE)
                     {
                     reportTypeError("The argument to the function 'front' must be a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 return type;
                 }
 
             if ((m_token.m_id == TozeTokenizer.TOKEN_FIRST)
-                || (m_token.m_id == TozeTokenizer.TOKEN_SECOND))
+                    || (m_token.m_id == TozeTokenizer.TOKEN_SECOND))
                 {
                 if ((type.getType() != AstType.TYPE_TUPLE)
-                    || (type.m_tupleTypes.size() != 2))
+                        || (type.m_tupleTypes.size() != 2))
                     {
                     reportTypeError("The argument to " + m_token.m_value + " must be a tuple of size 2",
-                                    m_token);
+                                    m_token
+                    );
                     return new AstType();
                     }
                 if (m_token.m_id == TozeTokenizer.TOKEN_FIRST)
@@ -5034,7 +5145,8 @@ public class Ast
                 if (!type.isSet() && !type.isSequence())
                     {
                     reportTypeError("Argument to '#' must be either a set or a sequence",
-                                    m_token);
+                                    m_token
+                    );
                     }
                 return new AstType(AstType.TYPE_NATURAL);
                 }
@@ -5067,7 +5179,7 @@ public class Ast
             AstType ptype = m_pexpression.getType();
 
             if ((ftype.isUndefined())
-                || (ptype.isUndefined()))
+                    || (ptype.isUndefined()))
                 {
                 return new AstType();
                 }
@@ -5083,28 +5195,32 @@ public class Ast
                 if (!ptype.isANumber())
                     {
                     reportTypeError("Subscript to a sequence must be a number",
-                                    m_token);
+                                    m_token
+                    );
                     }
                 return (AstType) ftype.getSetType().m_tupleTypes.get(1);
                 }
 
             if ((ftype.getType() != AstType.TYPE_SET)
-                && (ftype.getType() != AstType.TYPE_SEQUENCE))
+                    && (ftype.getType() != AstType.TYPE_SEQUENCE))
                 {
                 reportTypeError("Expression used as a function must evaluate to a set of a tuple",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
             if (ftype.getSetType().getType() != AstType.TYPE_TUPLE)
                 {
                 reportTypeError("Expression used as a function must evaluate to a tuple",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
             if (ftype.getSetType().m_tupleTypes.size() < 2)
                 {
                 reportTypeError("The tuple must be a binary relation",
-                                m_token);
+                                m_token
+                );
                 return new AstType();
                 }
 
@@ -5114,7 +5230,8 @@ public class Ast
                 if ((ptype.m_tupleTypes.size() + 1) != ftype.m_setType.m_tupleTypes.size())
                     {
                     reportTypeError("Number of parameters for the function do not match definition.",
-                                    m_token);
+                                    m_token
+                    );
                     }
                 int i;
                 for (i = 0; i < ptype.m_tupleTypes.size(); i++)
@@ -5124,7 +5241,8 @@ public class Ast
                     if (!t1.isCompatible(t2))
                         {
                         reportTypeError("Parameter " + (i + 1) + " does not match definition.",
-                                        m_token);
+                                        m_token
+                        );
                         }
                     }
                 }
@@ -5133,7 +5251,8 @@ public class Ast
                 if (!ptype.isEqual((AstType) ftype.getSetType().m_tupleTypes.get(0)))
                     {
                     reportTypeError("Parameter types do not match function parameters",
-                                    m_token);
+                                    m_token
+                    );
                     }
                 }
 

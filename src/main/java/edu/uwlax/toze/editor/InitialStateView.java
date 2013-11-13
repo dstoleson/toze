@@ -10,11 +10,11 @@ public class InitialStateView extends ParagraphView
     static private final int InitLineMargin = 5;
     static private final int InitSpace = 5;
     static private final int StateContentOffset = 10;
-//    static private final int StateLineMargin = 5;
+    //    static private final int StateLineMargin = 5;
 //    static private final int StateExtraLine = 10;
     //
     static private final String m_init = "Init";
-//    static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
+    //    static private final String m_pre = "Init " + TozeFontMap.CHAR_DEFS + " [";
 //    static private final String m_post = "]";
     //
     private final InitialState initialState;
@@ -49,6 +49,12 @@ public class InitialStateView extends ParagraphView
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(initialState, predicateText, "predicate");
+    }
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();
@@ -63,7 +69,7 @@ public class InitialStateView extends ParagraphView
         y += VMargin;
 
         // @TODO - no longer necessary?  see SpecificationParserTest for more comments
-        
+
 //        if (m_type == 2)
 //            {
 //            d = m_predicate.getPreferredSize();
@@ -71,10 +77,10 @@ public class InitialStateView extends ParagraphView
 //            }
 //        else
 //            {
-            y += InterVMargin + fm.getHeight();
-            d = predicateText.getPreferredSize();
-            predicateText.setBounds(x + StateContentOffset, y, d.width, d.height);
-            y += d.height + InterVMargin;
+        y += InterVMargin + fm.getHeight();
+        d = predicateText.getPreferredSize();
+        predicateText.setBounds(x + StateContentOffset, y, d.width, d.height);
+        y += d.height + InterVMargin;
 // type == 2           }
     }
 
@@ -101,14 +107,14 @@ public class InitialStateView extends ParagraphView
 //            }
 //        else
 //            {
-            height += InterVMargin;
-            d = predicateText.getPreferredSize();
-            if ((d.width + StateContentOffset) > width)
-                {
-                width = d.width + StateContentOffset;
-                }
-            width += fm.stringWidth("INIT");
-            height += d.height + InterVMargin + fm.getHeight();
+        height += InterVMargin;
+        d = predicateText.getPreferredSize();
+        if ((d.width + StateContentOffset) > width)
+            {
+            width = d.width + StateContentOffset;
+            }
+        width += fm.stringWidth("INIT");
+        height += d.height + InterVMargin + fm.getHeight();
 // type == 2           }
 
         width += insets.left + insets.right;
@@ -145,22 +151,26 @@ public class InitialStateView extends ParagraphView
 //            }
 //        else
 //            {
-            g.drawLine(HMargin,
-                       VMargin + fm.getHeight() - InitLineMargin,
-                       HMargin + InitOffset,
-                       VMargin + fm.getHeight() - InitLineMargin);
-            g.drawString(m_init,
-                         HMargin + InitOffset + InitSpace,
-                         VMargin + (fm.getHeight() - fm.getDescent()));
-            g.drawLine(HMargin + InitOffset + InitSpace + fm.stringWidth(m_init) + InitSpace,
-                       VMargin + fm.getHeight() - InitLineMargin,
-                       cd.width - 1 - HMargin,
-                       VMargin + fm.getHeight() - InitLineMargin);
-            g.drawLine(HMargin,
-                       VMargin + fm.getHeight() - InitLineMargin,
-                       HMargin,
-                       cd.height - 1 - VMargin);
-            g.drawLine(HMargin, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
+        g.drawLine(HMargin,
+                   VMargin + fm.getHeight() - InitLineMargin,
+                   HMargin + InitOffset,
+                   VMargin + fm.getHeight() - InitLineMargin
+        );
+        g.drawString(m_init,
+                     HMargin + InitOffset + InitSpace,
+                     VMargin + (fm.getHeight() - fm.getDescent())
+        );
+        g.drawLine(HMargin + InitOffset + InitSpace + fm.stringWidth(m_init) + InitSpace,
+                   VMargin + fm.getHeight() - InitLineMargin,
+                   cd.width - 1 - HMargin,
+                   VMargin + fm.getHeight() - InitLineMargin
+        );
+        g.drawLine(HMargin,
+                   VMargin + fm.getHeight() - InitLineMargin,
+                   HMargin,
+                   cd.height - 1 - VMargin
+        );
+        g.drawLine(HMargin, cd.height - 1 - VMargin, cd.width - 1 - HMargin, cd.height - 1 - VMargin);
 // type == 2           }
     }
 }

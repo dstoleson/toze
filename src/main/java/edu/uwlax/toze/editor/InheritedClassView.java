@@ -38,6 +38,12 @@ public class InheritedClassView extends ParagraphView implements Placement
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(inheritedClass, inheritedClassText, "name");
+    }
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();
@@ -57,7 +63,7 @@ public class InheritedClassView extends ParagraphView implements Placement
     public Dimension getPreferredSize()
     {
         Dimension newDim = null;
-        
+
         if (inheritedClassText != null)
             {
             Dimension d = inheritedClassText.getPreferredSize();
@@ -65,7 +71,7 @@ public class InheritedClassView extends ParagraphView implements Placement
             int height = d.height + VMargin * 2;
             newDim = new Dimension(width, height);
             }
-        
+
         return newDim;
     }
 

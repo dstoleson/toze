@@ -3,7 +3,6 @@ package edu.uwlax.toze.objectz;
 import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.editor.SpecificationSection;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -18,7 +17,7 @@ public class TozeSpecificationChecker extends TozeParser
 //    private HashMap<TozeToken, SpecObjectPropertyPair> errors = new HashMap<TozeToken, SpecObjectPropertyPair>();     x
 
     public void check(Specification toze)
-    {        
+    {
         // @TODO Need to way to map the errors to the place in the document
         // There needs to be a map of some unique id to an element in the document
         // the same unique id must be used to map to the view(s)
@@ -201,7 +200,9 @@ public class TozeSpecificationChecker extends TozeParser
 //                if (type == 1)
 //                    {
                 // TODO use classDef or (as stated) classDef.initialState ?
-                parse_guiPredicateList(classDef.getInitialState(), "predicate", classDef.getInitialState().getPredicate());
+                parse_guiPredicateList(classDef.getInitialState(), "predicate",
+                                       classDef.getInitialState().getPredicate()
+                );
 //                    }
 //                else
 //                    {
@@ -211,7 +212,7 @@ public class TozeSpecificationChecker extends TozeParser
                 }
 
             for (Operation operation : classDef.getOperationList())
-                {                
+                {
                 start(SpecificationSection.Operation);
 
                 parse_guiOperationName(operation, "name", operation.getName());
@@ -234,9 +235,9 @@ public class TozeSpecificationChecker extends TozeParser
 //                        parse_guiPredicate(operation, "predicate", operation.getPredicate());
 //                        }
 //                    else
-                        {
-                        parse_guiPredicateList(operation, "predicate", operation.getPredicate());
-                        }
+                    {
+                    parse_guiPredicateList(operation, "predicate", operation.getPredicate());
+                    }
                     }
 
                 if (operation.getOperationExpression() != null)
@@ -255,7 +256,7 @@ public class TozeSpecificationChecker extends TozeParser
             Ast.AstSpec astSpec = getSpec();
             astSpec.populateTypeTable(null);
             astSpec.populateSymbolTable(null);
-            
+
             if (!Ast.hasErrors())
                 {
 // TODO:  temporarily suspend type checking
@@ -268,106 +269,106 @@ public class TozeSpecificationChecker extends TozeParser
     {
         return new HashSet<String>(Ast.getErrors());
     }
-    
+
     private void preParse(String text)
     {
         reset();
-        tokenize(text);        
+        tokenize(text);
     }
 
-    private void postParse(SpecObject o, String property)
+    private void postParse(SpecObject o, String property, String text)
     {
         TozeToken t = getParseResult();
-        handleError(t, o, property);
+        handleError(t, o, property, text);
     }
 
 //    private void postParse(SpecObject o)
 //    {
 //        postParse(o, null);
 //    }
-    
+
     private void parse_guiAbbreviation(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Abbreviation();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiExpression(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Expression();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiBasicTypeDefinition(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nIdentifier();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiBranch(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nBranch();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiClassHeader(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_ClassHeader();
-        postParse(o, property);
+        postParse(o, property, text);
     }
-    
+
     private void parse_guiDeclaration(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Declaration();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiFormalParametersWoBrackets(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_FormalParametersWoBrackets();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiFormalParameters(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_FormalParameters();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiIdentifier(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Identifier();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiInheritedClass(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_nInheritedClass();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiOperationExpression(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_OperationExpression();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiPredicate(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Predicate();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
 //    private void parse_guiSchemaExpression(SpecObject o, String text)
@@ -395,14 +396,14 @@ public class TozeSpecificationChecker extends TozeParser
     {
         preParse(text);
         result = parse_DeclarationNameList();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiOperationName(SpecObject o, String property, String text)
     {
         preParse(text);
         result = parse_Identifier();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
 //    private void parse_guiDeltaList(SpecObject o, String text)
@@ -416,7 +417,7 @@ public class TozeSpecificationChecker extends TozeParser
     {
         preParse(text);
         result = parse_DeclarationNameList();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
     private void parse_guiPredicateList(SpecObject o, String property, String text)
@@ -428,7 +429,7 @@ public class TozeSpecificationChecker extends TozeParser
 
         preParse(text);
         result = parse_PredicateList();
-        postParse(o, property);
+        postParse(o, property, text);
     }
 
 
@@ -436,43 +437,43 @@ public class TozeSpecificationChecker extends TozeParser
     {
         switch (specSection)
             {
-            case Specification :
+            case Specification:
                 m_nodes.push(m_ast.new AstSpec());
                 break;
-            case AbbreviationDefinition :
+            case AbbreviationDefinition:
                 m_nodes.push(m_ast.new AstAbbreviationDefinition());
                 break;
-            case AxiomaticDefinition :
+            case AxiomaticDefinition:
                 m_nodes.push(m_ast.new AstAxiomaticDefinition());
                 break;
-            case BasicTypeDefinition :
+            case BasicTypeDefinition:
                 m_nodes.push(m_ast.new AstBasicTypeDefinition());
                 break;
-            case Class :
+            case Class:
                 m_nodes.push(m_ast.new AstClass());
                 break;
-            case ClassName :
+            case ClassName:
                 m_nodes.push(m_ast.new AstClassHeader());
                 break;
-            case DeltaList :
+            case DeltaList:
                 m_nodes.push(m_ast.new AstDeltaList());
                 break;
-            case FreeTypeDefinition :
+            case FreeTypeDefinition:
                 m_nodes.push(m_ast.new AstFreeTypeDefinition());
                 break;
-            case GenericDefinition :
+            case GenericDefinition:
                 m_nodes.push(m_ast.new AstGenericDefinition());
                 break;
-            case InheritedClasses :
+            case InheritedClasses:
                 m_nodes.push(m_ast.new AstInheritedClass());
                 break;
-            case InitState :
+            case InitState:
                 m_nodes.push(m_ast.new AstInitialState());
                 break;
-            case Operation :
+            case Operation:
                 m_nodes.push(m_ast.new AstOperation());
                 break;
-            case Predicate :
+            case Predicate:
                 m_nodes.push(m_ast.new AstPredicatePara());
                 break;
 //            case Schema1 :
@@ -481,10 +482,10 @@ public class TozeSpecificationChecker extends TozeParser
 //            case Schema2 :
 //                m_nodes.push(m_ast.new AstSchema2());
 //                break;
-            case State :
+            case State:
                 m_nodes.push(m_ast.new AstState());
                 break;
-            case VisibilityList :
+            case VisibilityList:
                 m_nodes.push(m_ast.new AstVisibilityList());
                 break;
             default:
@@ -513,11 +514,12 @@ public class TozeSpecificationChecker extends TozeParser
             }
         return null;
     }
-    
-    private void handleError(TozeToken t, SpecObject o, String property)
+
+    private void handleError(TozeToken t, SpecObject o, String property, String text)
     {
         if (t != null)
             {
+            t.setDescription(text);
             o.setErrorForProperty(property, t);
             }
         else

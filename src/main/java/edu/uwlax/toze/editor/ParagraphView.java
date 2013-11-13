@@ -2,14 +2,14 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.SpecObject;
 import edu.uwlax.toze.editor.bindings.Binding;
+import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public abstract class ParagraphView extends JPanel implements Placement
 {
@@ -23,6 +23,8 @@ public abstract class ParagraphView extends JPanel implements Placement
 
     protected SpecificationController specController;
 
+    private HashMap<String, TozeTextArea> textByProperty;
+
     private ParagraphView()
     {
     }
@@ -31,8 +33,8 @@ public abstract class ParagraphView extends JPanel implements Placement
     {
         this.specController = specController;
         addMouseListener(new ParagraphViewMouseAdapter());
-//        addKeyListener(specController.getKeyAdapter());
-//        addMouseListener(specController.getMouseAdapter());
+
+        textByProperty = new HashMap<String, TozeTextArea>();
     }
 
     @Override
@@ -66,6 +68,35 @@ public abstract class ParagraphView extends JPanel implements Placement
             }
         setFont(TozeFontMap.getFont());
         super.paintComponent(g);
+        updateErrors();
+    }
+
+    public TozeTextArea findTextAreaForError(SpecObject specObject, TozeToken tozeToken)
+    {
+        String property = specObject.getPropertyForError(tozeToken);
+        TozeTextArea foundTextArea = textByProperty.get(property);
+
+        if (foundTextArea == null)
+            {
+            Component[] children = this.getComponents();
+            java.util.List<Component> childList = Arrays.asList(children);
+
+            for (Component component : childList)
+                {
+                if (component instanceof ParagraphView)
+                    {
+                    foundTextArea = ((ParagraphView) component).findTextAreaForError(specObject, tozeToken);
+
+                    if (foundTextArea != null)
+                        {
+                        break;
+                        }
+                    }
+                }
+            }
+
+        return foundTextArea;
+
     }
 
     private class ParagraphViewMouseAdapter extends MouseAdapter
@@ -106,11 +137,11 @@ public abstract class ParagraphView extends JPanel implements Placement
      * Call requestRebuild() after adding / removing components
      * from a ParagraphView.  It will call rebuild() in the subclass
      * if needed and ignoreRebuild is false.
-     *
+     * <p/>
      * Each subclass that implements adding / removing views should call
      * requestRebuild() every time a view is added or removed to update
      * the UI accordingly.
-     *
+     * <p/>
      * See setIgnoreRebuild() for optimization when adding / removing a lot
      * of views.
      */
@@ -143,24 +174,33 @@ public abstract class ParagraphView extends JPanel implements Placement
     protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
     {
         TozeTextArea text = new TozeTextArea(value);
+        textByProperty.put(property, text);
         text.setIgnoresEnter(ignoresEnter);
-        addDocumentListener(text, modelObject, property);
+        text.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
+        text.addKeyListener(specController.getKeyAdapter());
+
         return text;
     }
 
-    /**
-     * Helper method to easily add a document listener / binding to a text
-     * field.
-     *
-     * @param textArea The TextArea adding the listener
-     * @param obj      The model object containing the value
-     * @param property The property of the model object containing the value
-     */
-    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    protected void notNullUpdateError(SpecObject specObject, TozeTextArea textArea, String property)
     {
-        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-//        textArea.addKeyListener(specController.getKeyAdapter());
+        if (textArea != null)
+            {
+            textArea.clearAllErrors();
+            }
+
+        if (specObject != null)
+            {
+            TozeToken error = specObject.getErrorForProperty(property);
+
+            if (error != null)
+                {
+                textArea.addError(error.m_lineNum, error.m_pos);
+                }
+            }
     }
+
+    protected abstract void updateErrors();
 
     public abstract SpecObject getSpecObject();
 }

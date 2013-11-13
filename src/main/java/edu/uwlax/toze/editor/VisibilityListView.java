@@ -40,6 +40,13 @@ public class VisibilityListView extends ParagraphView implements Placement
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(classDef, visibilityListText, "visibilityList");
+    }
+
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();
@@ -87,6 +94,8 @@ public class VisibilityListView extends ParagraphView implements Placement
         Dimension cd = visibilityListText.getPreferredSize();
         g.drawString(BasicTypePre, xoffset, yoffset + ystring);
         int numLines = visibilityListText.getLineCount();
-        g.drawString(BasicTypePost, xoffset + fm.stringWidth(BasicTypePre) + cd.width, yoffset + ystring + (fm.getHeight() * (numLines - 1)));
+        g.drawString(BasicTypePost, xoffset + fm.stringWidth(BasicTypePre) + cd.width,
+                     yoffset + ystring + (fm.getHeight() * (numLines - 1))
+        );
     }
 }

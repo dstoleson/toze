@@ -1,6 +1,7 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.domain.*;
+
 import javax.xml.bind.Marshaller;
 
 public class SpecificationMarshallerListener extends Marshaller.Listener
@@ -70,7 +71,7 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
             operation.setDeltaList(CharToXMLTransformer.transform(operation.getDeltaList()));
             operation.setDeclaration(CharToXMLTransformer.transform(operation.getDeclaration()));
             operation.setPredicate(CharToXMLTransformer.transform(operation.getPredicate()));
-            operation.setOperationExpression(CharToXMLTransformer.transform(operation.getOperationExpression()));            
+            operation.setOperationExpression(CharToXMLTransformer.transform(operation.getOperationExpression()));
             }
 //        else if (source instanceof SchemaDef)
 //            {
@@ -89,5 +90,5 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
             }
         System.out.println("source = " + source);
     }
-    
+
 }

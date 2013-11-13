@@ -5,7 +5,6 @@ import edu.uwlax.toze.domain.Operation;
 import java.awt.*;
 
 /**
- *
  * @author dhs
  */
 public class OperationView extends ParagraphView
@@ -128,7 +127,8 @@ public class OperationView extends ParagraphView
             if (deltaListView != null)
                 {
                 d = deltaListView.getPreferredSize();
-                deltaListView.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaListPre), y, d.width, d.height);
+                deltaListView.setBounds(x + OperationContentOffset + fm.stringWidth(DeltaListPre), y, d.width, d.height
+                );
                 y += d.height + InterVMargin;
                 }
 
@@ -250,6 +250,15 @@ public class OperationView extends ParagraphView
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(operation, operationExpressionText, "operationExpression");
+        notNullUpdateError(operation, operationNameText, "name");
+        notNullUpdateError(operation, declarationText, "declaration");
+        notNullUpdateError(operation, predicateText, "predicate");
+    }
+
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -276,11 +285,13 @@ public class OperationView extends ParagraphView
             g.drawLine(xoffset,
                        yoffset,
                        xoffset + OperationName,
-                       yoffset);
+                       yoffset
+            );
             g.drawLine(xoffset + OperationName + OperationHeaderSpace + d.width + OperationHeaderSpace,
                        yoffset,
                        cd.width - 1 - HMargin,
-                       yoffset);
+                       yoffset
+            );
 
             declsHeight += InterVMargin;
 
@@ -288,8 +299,8 @@ public class OperationView extends ParagraphView
                 {
                 d = deltaListView.getPreferredSize();
                 declsHeight += d.height;
-    //            g.drawString(DeltaListPre, xoffset + OperationContentOffset, yoffset + declsHeight);
-    //            g.drawString(DeltaListPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaListPre) + d.width, yoffset + declsHeight);
+                //            g.drawString(DeltaListPre, xoffset + OperationContentOffset, yoffset + declsHeight);
+                //            g.drawString(DeltaListPost, xoffset + OperationContentOffset + fm.stringWidth(DeltaListPre) + d.width, yoffset + declsHeight);
                 declsHeight += InterVMargin;
                 }
 

@@ -1,15 +1,14 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.*;
-
-import edu.uwlax.toze.editor.bindings.Binding;
 import edu.uwlax.toze.objectz.TozeSpecificationChecker;
+import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.List;
+import java.util.Observable;
 
 /**
  *
@@ -31,7 +30,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Create a controller for the given specification model and view.
      *
-     * @param specificationDocument     The specification to display.
+     * @param specificationDocument The specification to display.
      *
      * @throws IllegalArgumentException specification and specificationView must
      *                                  not be null
@@ -116,7 +115,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param operation
      */
     public void removeDeltaList(Operation operation)
@@ -133,7 +131,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add a Declaration to an Operation
      *
-     * @param operation   The Operation to add the Declaration
+     * @param operation The Operation to add the Declaration
      */
     public void addDeclaration(Operation operation)
     {
@@ -147,7 +145,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param operation
      */
     public void removeDeclaration(Operation operation)
@@ -164,7 +161,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add an InitialState to a ClassDef
      *
-     * @param classDef     The ClassDef to add the InitialState
+     * @param classDef The ClassDef to add the InitialState
      */
     public void addInitialState(ClassDef classDef)
     {
@@ -180,7 +177,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param classDef
      */
     public void removeInitialState(ClassDef classDef)
@@ -197,7 +193,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add a State to a ClassDef
      *
-     * @param classDef The ClassDef to add the State
+     * @param classDef  The ClassDef to add the State
      * @param stateType Which state type is to be presented, All, No Predicate, No Declaration or Bracketed
      */
     public void addState(ClassDef classDef, StateType stateType)
@@ -208,14 +204,14 @@ public class SpecificationController extends Observable implements FocusListener
 
         switch (stateType)
             {
-            case All :
+            case All:
                 state.setDeclaration("New Declaration");
                 state.setPredicate("New Predicate");
                 break;
-            case NoPredicate :
+            case NoPredicate:
                 state.setDeclaration("New Declaration");
                 break;
-            case NoDeclaration :
+            case NoDeclaration:
                 state.setPredicate("New Predicate");
                 break;
             case Bracket:
@@ -245,7 +241,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add an OperationExpression to an Operation
      *
-     * @param operation           The Operation to add the OperationExpression
+     * @param operation The Operation to add the OperationExpression
      */
     public void addOperationExpression(Operation operation)
     {
@@ -260,6 +256,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     /**
      * Remove the expression from the given operation
+     *
      * @param operation Operation from which to remove its expression
      */
     public void removeOperationExpression(Operation operation)
@@ -274,7 +271,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param operation
      */
     public void addOperationPredicate(Operation operation)
@@ -290,6 +286,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     /**
      * Remove the predicate from the given operation
+     *
      * @param operation Operation from which to remove its predicate
      */
     public void removeOperationPredicate(Operation operation)
@@ -348,7 +345,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
             axiomaticDef.setClassDef(classDef);
             classDef.addAxiomaticDef(axiomaticDef);
             }
@@ -417,7 +414,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
             abbreviationDef.setClassDef(classDef);
             classDef.addAbbreviationDef(abbreviationDef);
             }
@@ -428,7 +425,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param abbreviationDef
      */
     public void removeAbbreviation(AbbreviationDef abbreviationDef)
@@ -467,7 +463,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
             basicTypeDef.setClassDef(classDef);
             classDef.addBasicTypeDef(basicTypeDef);
             }
@@ -514,7 +510,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
             freeTypeDef.setClassDef(classDef);
             classDef.addFreeTypeDef(freeTypeDef);
             }
@@ -544,7 +540,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param genericDef
      * @param hasPredicate
      */
@@ -557,7 +552,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param genericDef
      */
     public void removeGenericType(GenericDef genericDef)
@@ -596,7 +590,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add a VisibiliityList to a ClassDef
      *
-     * @param classDef       The ClassDef to add the VisibilityList
+     * @param classDef The ClassDef to add the VisibilityList
      */
     public void addVisibilityList(ClassDef classDef)
     {
@@ -623,7 +617,7 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      * Add an InheritedClass to a ClassDef
      *
-     * @param classDef       The ClassDef to add the InheritedClass
+     * @param classDef The ClassDef to add the InheritedClass
      */
     public void addInheritedClass(ClassDef classDef)
     {
@@ -639,7 +633,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param classDef
      */
     public void removeInheritedClass(ClassDef classDef)
@@ -657,7 +650,7 @@ public class SpecificationController extends Observable implements FocusListener
      * An Operation is added to the given ClassDef at the given index.  If the Operation is null a new Operation is created given
      * the OperationType.  If Operation is not null that Operation is added to the ClassDef, OperationType is ignored.
      *
-     * @param classDef A ClassDef to add the Operation to
+     * @param classDef      A ClassDef to add the Operation to
      * @param operationType used when operation is null to determine the default type of operation to create, use null
      *                      when passing a non-null value for operation
      */
@@ -697,7 +690,6 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
      * @param operation
      */
     public void removeOperation(Operation operation)
@@ -712,22 +704,9 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.repaint();
     }
 
-//    // should create a loop and pass a block to each object
-//    private void unhighlightErrors()
-//    {
-//        for (Object view : viewToObjectMap.keySet())
-//            {
-//            if (view instanceof TozeTextArea)
-//                {
-//                ((TozeTextArea)view).setHighlighted(false);
-//                }
-//            }
-//    }
-
     private void resetErrors()
     {
         specification.clearErrors();
-        specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
     }
@@ -747,15 +726,10 @@ public class SpecificationController extends Observable implements FocusListener
         setChanged();
         notifyObservers(errors);
 
-        specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
     }
 
-    private void runActiveParser()
-    {
-        parseSpecification();
-    }
 
 //    /**
 //     * Builds a TozeTextArea that is bound to the modelObject by the specified property.
@@ -795,18 +769,18 @@ public class SpecificationController extends Observable implements FocusListener
     @Override
     public void focusGained(FocusEvent e)
     {
-        currentTextArea = (TozeTextArea)e.getSource();
+        currentTextArea = (TozeTextArea) e.getSource();
     }
 
     @Override
     public void focusLost(FocusEvent e)
     {
-        currentTextArea = (TozeTextArea)e.getSource();
+        currentTextArea = (TozeTextArea) e.getSource();
     }
 
 //    public TozeTextArea highlightError(SpecObjectPropertyError error)
 //    {
-        // TODO: flag the error in the domain object?
+    // TODO: flag the error in the domain object?
 //        unhighlightErrors();
 //        System.out.println("error = " + error);
 //        TozeTextArea textArea = (TozeTextArea)componentForObjectOfType(error.getObject(), error.getProperty(), TozeTextArea.class);
@@ -824,7 +798,7 @@ public class SpecificationController extends Observable implements FocusListener
     {
         if (object instanceof AxiomaticDef)
             {
-            AxiomaticDef axiomaticDef = (AxiomaticDef)object;
+            AxiomaticDef axiomaticDef = (AxiomaticDef) object;
             List<AxiomaticDef> axiomaticDefList = null;
 
             if (axiomaticDef.getClassDef() != null)
@@ -845,7 +819,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof AbbreviationDef)
             {
-            AbbreviationDef abbreviationDef = (AbbreviationDef)object;
+            AbbreviationDef abbreviationDef = (AbbreviationDef) object;
 
             List<AbbreviationDef> abbreviationDefList = null;
 
@@ -867,7 +841,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof BasicTypeDef)
             {
-            BasicTypeDef basicTypeDef = (BasicTypeDef)object;
+            BasicTypeDef basicTypeDef = (BasicTypeDef) object;
 
             List<BasicTypeDef> basicTypeDefList = null;
 
@@ -889,7 +863,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof FreeTypeDef)
             {
-            FreeTypeDef freeTypeDef = (FreeTypeDef)object;
+            FreeTypeDef freeTypeDef = (FreeTypeDef) object;
 
             List<FreeTypeDef> freeTypeDefList = null;
 
@@ -911,7 +885,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof ClassDef)
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
 
             List<ClassDef> classDefList = specification.getClassDefList();
 
@@ -924,7 +898,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof Operation)
             {
-            Operation operation = (Operation)object;
+            Operation operation = (Operation) object;
 
             List<Operation> operationList = operation.getClassDef().getOperationList();
 
@@ -945,7 +919,7 @@ public class SpecificationController extends Observable implements FocusListener
     {
         if (object instanceof AxiomaticDef)
             {
-            AxiomaticDef axiomaticDef = (AxiomaticDef)object;
+            AxiomaticDef axiomaticDef = (AxiomaticDef) object;
 
             List<AxiomaticDef> axiomaticDefList = null;
 
@@ -969,7 +943,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof AbbreviationDef)
             {
-            AbbreviationDef abbreviationDef = (AbbreviationDef)object;
+            AbbreviationDef abbreviationDef = (AbbreviationDef) object;
 
             List<AbbreviationDef> abbreviationDefList = null;
 
@@ -993,7 +967,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof BasicTypeDef)
             {
-            BasicTypeDef basicTypeDef = (BasicTypeDef)object;
+            BasicTypeDef basicTypeDef = (BasicTypeDef) object;
 
             List<BasicTypeDef> basicTypeDefList = null;
 
@@ -1017,7 +991,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof FreeTypeDef)
             {
-            FreeTypeDef freeTypeDef = (FreeTypeDef)object;
+            FreeTypeDef freeTypeDef = (FreeTypeDef) object;
 
             List<FreeTypeDef> freeTypeDefList = null;
 
@@ -1041,7 +1015,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof ClassDef)
             {
-            ClassDef classDef = (ClassDef)object;
+            ClassDef classDef = (ClassDef) object;
 
             int size = specification.getClassDefList().size();
             int index = specification.getClassDefList().indexOf(object);
@@ -1055,7 +1029,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (object instanceof Operation)
             {
-            Operation operation = (Operation)object;
+            Operation operation = (Operation) object;
             List<Operation> operationList = operation.getClassDef().getOperationList();
             int size = operationList.size();
             int index = operationList.indexOf(operation);
@@ -1080,65 +1054,65 @@ public class SpecificationController extends Observable implements FocusListener
         cachedObject = selectedObject;
 
         if (selectedObject instanceof AbbreviationDef)
-        {
-            removeAbbreviation((AbbreviationDef)selectedObject);
-        }
+            {
+            removeAbbreviation((AbbreviationDef) selectedObject);
+            }
         else if (selectedObject instanceof AxiomaticDef)
-        {
-            removeAxiomaticType((AxiomaticDef)selectedObject);
-        }
+            {
+            removeAxiomaticType((AxiomaticDef) selectedObject);
+            }
         else if (selectedObject instanceof BasicTypeDef)
-        {
-            removeBasicType((BasicTypeDef)selectedObject);
-        }
+            {
+            removeBasicType((BasicTypeDef) selectedObject);
+            }
         else if (selectedObject instanceof ClassDef)
-        {
-            ClassDef classDef = (ClassDef)selectedObject;
+            {
+            ClassDef classDef = (ClassDef) selectedObject;
 
             if (selectedView instanceof ClassView)
-            {
+                {
                 removeClass(classDef);
-            }
+                }
             else if (selectedView instanceof VisibilityListView)
-            {
+                {
                 removeVisibilityList(classDef);
+                }
             }
-        }
         else if (selectedObject instanceof FreeTypeDef)
-        {
-            removeFreeType((FreeTypeDef)selectedObject);
-        }
+            {
+            removeFreeType((FreeTypeDef) selectedObject);
+            }
         else if (selectedObject instanceof GenericDef)
-        {
-            removeGenericType((GenericDef)selectedObject);
-        }
+            {
+            removeGenericType((GenericDef) selectedObject);
+            }
         else if (selectedObject instanceof InheritedClass)
-        {
-            removeInheritedClass(((InheritedClass)selectedObject).getClassDef());
-        }
+            {
+            removeInheritedClass(((InheritedClass) selectedObject).getClassDef());
+            }
         else if (selectedObject instanceof InitialState)
-        {
-            ClassDef classDef = ((InitialState)selectedObject).getClassDef();
+            {
+            ClassDef classDef = ((InitialState) selectedObject).getClassDef();
             removeInitialState(classDef);
-        }
+            }
         else if (selectedObject instanceof Operation)
-        {
-            Operation operation = (Operation)selectedObject;
+            {
+            Operation operation = (Operation) selectedObject;
 
             if (selectedView instanceof OperationView)
-            {
+                {
                 removeOperation(operation);
-            }
+                }
             else if (selectedView instanceof DeltaListView)
-            {
+                {
                 removeDeltaList(operation);
+                }
             }
-        }
         else if (selectedObject instanceof State)
-        {
-            ClassDef classDef = ((State)selectedObject).getClassDef();
+            {
+            ClassDef classDef = ((State) selectedObject).getClassDef();
             removeState(classDef);
-        }
+            }
 
         selectedObject = null;
         selectedView = null;
@@ -1155,7 +1129,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         try
             {
-            cachedObject = (SpecObject)selectedObject.clone();
+            cachedObject = (SpecObject) selectedObject.clone();
             }
         catch (CloneNotSupportedException e)
             {
@@ -1176,17 +1150,17 @@ public class SpecificationController extends Observable implements FocusListener
         if (cachedObject instanceof AbbreviationDef)
             {
 
-            AbbreviationDef abbreviationDef = (AbbreviationDef)cachedObject;
+            AbbreviationDef abbreviationDef = (AbbreviationDef) cachedObject;
 
             if (selectedObject == specification)
                 {
                 abbreviationDef.setSpecification(specification);
-                specification.getAbbreviationDefList().add((AbbreviationDef)cachedObject);
+                specification.getAbbreviationDefList().add((AbbreviationDef) cachedObject);
                 specification.setAbbreviationDefList(specification.getAbbreviationDefList());
                 }
             else
                 {
-                ClassDef classDef = (ClassDef)selectedObject;
+                ClassDef classDef = (ClassDef) selectedObject;
                 abbreviationDef.setClassDef(classDef);
                 classDef.getAbbreviationDefList().add(abbreviationDef);
                 classDef.setAbbreviationDefList(classDef.getAbbreviationDefList());
@@ -1194,7 +1168,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof AxiomaticDef)
             {
-            AxiomaticDef axiomaticDef = (AxiomaticDef)cachedObject;
+            AxiomaticDef axiomaticDef = (AxiomaticDef) cachedObject;
 
             if (selectedObject == specification)
                 {
@@ -1204,7 +1178,7 @@ public class SpecificationController extends Observable implements FocusListener
                 }
             else
                 {
-                ClassDef classDef = (ClassDef)selectedObject;
+                ClassDef classDef = (ClassDef) selectedObject;
                 axiomaticDef.setClassDef(classDef);
                 classDef.getAxiomaticDefList().add(axiomaticDef);
                 classDef.setAxiomaticDefList(classDef.getAxiomaticDefList());
@@ -1212,7 +1186,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof BasicTypeDef)
             {
-            BasicTypeDef basicTypeDef = (BasicTypeDef)cachedObject;
+            BasicTypeDef basicTypeDef = (BasicTypeDef) cachedObject;
 
             if (selectedObject == specification)
                 {
@@ -1222,7 +1196,7 @@ public class SpecificationController extends Observable implements FocusListener
                 }
             else
                 {
-                ClassDef classDef = (ClassDef)selectedObject;
+                ClassDef classDef = (ClassDef) selectedObject;
                 basicTypeDef.setClassDef(classDef);
                 classDef.getBasicTypeDefList().add(basicTypeDef);
                 classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
@@ -1230,11 +1204,11 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof ClassDef)
             {
-            specification.getClassDefList().add((ClassDef)cachedObject);
+            specification.getClassDefList().add((ClassDef) cachedObject);
             }
         else if (cachedObject instanceof FreeTypeDef)
             {
-            BasicTypeDef basicTypeDef = (BasicTypeDef)cachedObject;
+            BasicTypeDef basicTypeDef = (BasicTypeDef) cachedObject;
 
             if (selectedObject == specification)
                 {
@@ -1244,7 +1218,7 @@ public class SpecificationController extends Observable implements FocusListener
                 }
             else
                 {
-                ClassDef classDef = (ClassDef)selectedObject;
+                ClassDef classDef = (ClassDef) selectedObject;
                 basicTypeDef.setClassDef(classDef);
                 classDef.getBasicTypeDefList().add(basicTypeDef);
                 classDef.setBasicTypeDefList(classDef.getBasicTypeDefList());
@@ -1252,7 +1226,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof GenericDef)
             {
-            GenericDef genericDef = (GenericDef)cachedObject;
+            GenericDef genericDef = (GenericDef) cachedObject;
 
             if (selectedObject == specification)
                 {
@@ -1263,20 +1237,20 @@ public class SpecificationController extends Observable implements FocusListener
             }
         else if (cachedObject instanceof InheritedClass)
             {
-            ((ClassDef)selectedObject).setInheritedClass((InheritedClass)cachedObject);
+            ((ClassDef) selectedObject).setInheritedClass((InheritedClass) cachedObject);
             }
         else if (cachedObject instanceof InitialState)
             {
-            ((ClassDef)selectedObject).setInitialState((InitialState)cachedObject);
+            ((ClassDef) selectedObject).setInitialState((InitialState) cachedObject);
             }
         else if (cachedObject instanceof Operation)
             {
-            ((ClassDef)selectedObject).getOperationList().add((Operation)cachedObject);
-            ((ClassDef)selectedObject).setOperationList(((ClassDef)selectedObject).getOperationList());
+            ((ClassDef) selectedObject).getOperationList().add((Operation) cachedObject);
+            ((ClassDef) selectedObject).setOperationList(((ClassDef) selectedObject).getOperationList());
             }
         else if (cachedObject instanceof State)
             {
-            ((ClassDef)selectedObject).setState((State)cachedObject);
+            ((ClassDef) selectedObject).setState((State) cachedObject);
             }
 
         specificationView.requestRebuild();
@@ -1292,6 +1266,23 @@ public class SpecificationController extends Observable implements FocusListener
             }
     }
 
+    public void selectError(TozeToken errorToken)
+    {
+        SpecObject objectWithError = specification.findObjectWithError(errorToken);
+
+        TozeTextArea textArea = null;
+
+        if (objectWithError != null)
+            {
+            textArea = specificationView.findTextAreaForError(objectWithError, errorToken);
+            }
+
+        if (textArea != null)
+            {
+            textArea.scrollRectToVisible(textArea.getBounds());
+            }
+    }
+
 
     // Get Keystroke events
     private class ControllerKeyAdapter extends KeyAdapter
@@ -1304,7 +1295,7 @@ public class SpecificationController extends Observable implements FocusListener
 
             try
                 {
-                runActiveParser();
+                parseSpecification();
                 }
             catch (Throwable t)
                 {
@@ -1327,12 +1318,12 @@ public class SpecificationController extends Observable implements FocusListener
 
                 if (clickedComponent instanceof ParagraphView)
                     {
-                    SpecObject specObject = ((ParagraphView)clickedComponent).getSpecObject();
+                    SpecObject specObject = ((ParagraphView) clickedComponent).getSpecObject();
 
                     JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specObject, SpecificationController.this);
                     popupMenu.show(clickedComponent, e.getX(), e.getY());
                     }
-                else if (clickedComponent instanceof  SpecificationView)
+                else if (clickedComponent instanceof SpecificationView)
                     {
                     JPopupMenu popupMenu = PopUpMenuBuilder.buildPopup(specification, SpecificationController.this);
                     popupMenu.show(clickedComponent, e.getX(), e.getY());
@@ -1353,7 +1344,7 @@ public class SpecificationController extends Observable implements FocusListener
 
                 if (clickedComponent instanceof ParagraphView)
                     {
-                    selectedView = (ParagraphView)clickedComponent;
+                    selectedView = (ParagraphView) clickedComponent;
                     selectedView.setSelected(true);
                     }
                 }

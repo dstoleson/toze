@@ -40,6 +40,12 @@ public class BasicTypeView extends ParagraphView
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(basicTypeDef, nameText, "name");
+    }
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();

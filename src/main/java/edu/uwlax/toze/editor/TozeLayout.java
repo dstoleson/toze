@@ -1,10 +1,6 @@
 package edu.uwlax.toze.editor;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.LayoutManager;
+import java.awt.*;
 
 
 /*
@@ -24,9 +20,9 @@ public class TozeLayout implements LayoutManager
     {
         Insets insets = parent.getInsets();
         int maxWidth = parent.getWidth()
-                       - (insets.left + insets.right);
+                - (insets.left + insets.right);
         int maxHeight = parent.getHeight()
-                        - (insets.top + insets.bottom);
+                - (insets.top + insets.bottom);
         int nComps = parent.getComponentCount();
         int previousWidth = 0, previousHeight = 0;
         int x = insets.left, y = insets.top;

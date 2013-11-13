@@ -1,5 +1,7 @@
 package edu.uwlax.toze.domain;
 
+import edu.uwlax.toze.objectz.TozeToken;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -10,16 +12,16 @@ import java.util.List;
 @XmlRootElement(name = "classDef")
 @XmlType(propOrder =
                  {
-                    "name",
-                    "visibilityList",
-                    "inheritedClass",
-                    "basicTypeDefList",
-                    "axiomaticDefList",
-                    "abbreviationDefList",
-                    "freeTypeDefList",
-                    "state",
-                    "initialState",
-                    "operationList"
+                         "name",
+                         "visibilityList",
+                         "inheritedClass",
+                         "basicTypeDefList",
+                         "axiomaticDefList",
+                         "abbreviationDefList",
+                         "freeTypeDefList",
+                         "state",
+                         "initialState",
+                         "operationList"
                  })
 public class ClassDef extends SpecObject
 {
@@ -203,6 +205,40 @@ public class ClassDef extends SpecObject
     }
 
     @Override
+    public List<TozeToken> getErrors()
+    {
+        List<TozeToken> errorList = super.getErrors();
+
+        errorList.addAll(notNullGetErrors(inheritedClass));
+        errorList.addAll(notNullGetErrors(initialState));
+        errorList.addAll(notNullGetErrors(state));
+
+        for (BasicTypeDef basicTypeDef : basicTypeDefList)
+            {
+            errorList.addAll(basicTypeDef.getErrors());
+            }
+        for (AxiomaticDef axiomaticDef : axiomaticDefList)
+            {
+            errorList.addAll(axiomaticDef.getErrors());
+            }
+        for (AbbreviationDef abbreviationDef : abbreviationDefList)
+            {
+            errorList.addAll(abbreviationDef.getErrors());
+            }
+        for (FreeTypeDef freeTypeDef : freeTypeDefList)
+            {
+            errorList.addAll(freeTypeDef.getErrors());
+            }
+        for (Operation operation : operationList)
+            {
+            errorList.addAll(operation.getErrors());
+            }
+
+        return errorList;
+
+    }
+
+    @Override
     public void clearErrors()
     {
         super.clearErrors();
@@ -211,17 +247,17 @@ public class ClassDef extends SpecObject
         notNullClearErrors(initialState);
         notNullClearErrors(state);
 
-        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
+        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
             {
-            abbreviationDef.clearErrors();
+            basicTypeDef.clearErrors();
             }
         for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
             {
             axiomaticDef.clearErrors();
             }
-        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
+        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
             {
-            basicTypeDef.clearErrors();
+            abbreviationDef.clearErrors();
             }
         for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
             {

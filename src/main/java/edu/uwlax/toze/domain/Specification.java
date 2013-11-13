@@ -6,19 +6,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 @XmlRootElement(name = "TOZE")
 @XmlType(propOrder =
                  {
-        "basicTypeDefList",
-        "axiomaticDefList",
-        "genericDefList",
-        "abbreviationDefList",
-        "freeTypeDefList",
-        "classDefList",
-        "predicate"
+                         "basicTypeDefList",
+                         "axiomaticDefList",
+                         "genericDefList",
+                         "abbreviationDefList",
+                         "freeTypeDefList",
+                         "classDefList",
+                         "predicate"
                  })
 public class Specification extends SpecObject
 {
@@ -180,6 +180,10 @@ public class Specification extends SpecObject
             {
             errorList.addAll(axiomaticDef.getErrors());
             }
+        for (GenericDef genericDef : genericDefList)
+            {
+            errorList.addAll(genericDef.getErrors());
+            }
         for (AbbreviationDef abbreviationDef : abbreviationDefList)
             {
             errorList.addAll(abbreviationDef.getErrors());
@@ -187,10 +191,6 @@ public class Specification extends SpecObject
         for (FreeTypeDef freeTypeDef : freeTypeDefList)
             {
             errorList.addAll(freeTypeDef.getErrors());
-            }
-        for (GenericDef genericDef : genericDefList)
-            {
-            errorList.addAll(genericDef.getErrors());
             }
         for (ClassDef classDef : classDefList)
             {
@@ -229,5 +229,50 @@ public class Specification extends SpecObject
             {
             classDef.clearErrors();
             }
+    }
+
+    private SpecObject findObjectWithError(TozeToken errorToken, List specObjectList)
+    {
+        SpecObject objectWithError = null;
+
+        Iterator iterator = specObjectList.iterator();
+        while (objectWithError == null && iterator.hasNext())
+            {
+            SpecObject specObject = (SpecObject) iterator.next();
+            if (specObject.getErrors().contains(errorToken))
+                {
+                objectWithError = specObject;
+                }
+            }
+
+        return objectWithError;
+    }
+
+    public SpecObject findObjectWithError(TozeToken errorToken)
+    {
+        SpecObject objectWithError = findObjectWithError(errorToken, basicTypeDefList);
+
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, axiomaticDefList);
+            }
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, abbreviationDefList);
+            }
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, freeTypeDefList);
+            }
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, genericDefList);
+            }
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, classDefList);
+            }
+
+        return objectWithError;
     }
 }

@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlType(propOrder =
                  {
-                    "name"
+                         "name"
                  })
 public class InheritedClass extends SpecObject
 {

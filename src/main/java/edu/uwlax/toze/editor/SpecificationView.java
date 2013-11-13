@@ -2,15 +2,13 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.editor.bindings.Binding;
+import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class SpecificationView extends JPanel
@@ -139,5 +137,26 @@ public class SpecificationView extends JPanel
         view.addMouseListener(mouseAdapter);
         view.addKeyListener(keyAdapter);
         add(view);
+    }
+
+    public TozeTextArea findTextAreaForError(SpecObject specObject, TozeToken tozeToken)
+    {
+        TozeTextArea foundTextArea = null;
+        Component[] children = this.getComponents();
+        List<Component> childList = Arrays.asList(children);
+
+        for (Component component : childList)
+            {
+            if (component instanceof ParagraphView)
+                {
+                foundTextArea = ((ParagraphView) component).findTextAreaForError(specObject, tozeToken);
+
+                if (foundTextArea != null)
+                    {
+                    break;
+                    }
+                }
+            }
+        return foundTextArea;
     }
 }

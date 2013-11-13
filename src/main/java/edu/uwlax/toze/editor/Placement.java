@@ -8,5 +8,5 @@ package edu.uwlax.toze.editor;
 
 public interface Placement
 {
-   public void layout();
+    public void layout();
 }

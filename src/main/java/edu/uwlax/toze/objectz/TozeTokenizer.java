@@ -1,8 +1,11 @@
 package edu.uwlax.toze.objectz;
 
 import edu.uwlax.toze.editor.TozeFontMap;
-import java.io.*;
-import java.util.*;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Stack;
+import java.util.TreeMap;
 
 public class TozeTokenizer
 {
@@ -593,12 +596,12 @@ public class TozeTokenizer
          * Word
          */
         else if (((char) c >= 'a' && (char) c <= 'z')
-                 || ((char) c >= 'A' && (char) c <= 'Z'))
+                || ((char) c >= 'A' && (char) c <= 'Z'))
             {
             while (((char) c >= 'a' && (char) c <= 'z')
-                   || ((char) c >= 'A' && (char) c <= 'Z')
-                   || ((char) c >= '0' && (char) c <= '9')
-                   || ((char) c == '_'))
+                    || ((char) c >= 'A' && (char) c <= 'Z')
+                    || ((char) c >= '0' && (char) c <= '9')
+                    || ((char) c == '_'))
                 {
                 addChar(c);
                 c = pop();
@@ -639,7 +642,7 @@ public class TozeTokenizer
         else if (Character.isDigit((char) c))
             {
             while (Character.isDigit((char) c)
-                   || c == '.')
+                    || c == '.')
                 {
                 if (c == '.')
                     {

@@ -26,7 +26,7 @@ public class PopUpMenuBuilder
 
         if (object instanceof SpecObject)
             {
-            final SpecObject specObject = (SpecObject)object;
+            final SpecObject specObject = (SpecObject) object;
 
             moveUp.addActionListener(new ActionListener()
             {
@@ -35,7 +35,8 @@ public class PopUpMenuBuilder
                 {
                     controller.moveUp(specObject);
                 }
-            });
+            }
+            );
 
             moveDown.addActionListener(new ActionListener()
             {
@@ -44,7 +45,8 @@ public class PopUpMenuBuilder
                 {
                     controller.moveDown(specObject);
                 }
-            });
+            }
+            );
 
             popupMenu.add(moveUp);
             popupMenu.add(moveDown);
@@ -81,11 +83,11 @@ public class PopUpMenuBuilder
             }
         else if (object instanceof FreeTypeDef)
             {
-            popupMenu = buildFreeTypePopup(popupMenu, (FreeTypeDef) object, controller);            
+            popupMenu = buildFreeTypePopup(popupMenu, (FreeTypeDef) object, controller);
             }
         else if (object instanceof GenericDef)
             {
-            popupMenu = buildGenericPopup(popupMenu, (GenericDef) object, controller);            
+            popupMenu = buildGenericPopup(popupMenu, (GenericDef) object, controller);
             }
 //        else if (object instanceof InheritedClass)
 //            {
@@ -106,13 +108,14 @@ public class PopUpMenuBuilder
         popupMenu.setName(title);
         JMenuItem menuItem = new TitleMenuItem(title);
         popupMenu.add(menuItem);
-        popupMenu.add(new JSeparator());        
+        popupMenu.add(new JSeparator());
     }
-    
-    static private JPopupMenu buildAbbreviationPopup(JPopupMenu popupMenu, final AbbreviationDef abbreviationDef, final SpecificationController controller)
+
+    static private JPopupMenu buildAbbreviationPopup(JPopupMenu popupMenu, final AbbreviationDef abbreviationDef,
+                                                     final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("abbreviationPopupMenu.title"));
-        
+
         JMenuItem menuItem = new JMenuItem(uiBundle.getString("abbreviationPopupMenu.deleteAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
@@ -120,13 +123,15 @@ public class PopUpMenuBuilder
             {
                 controller.removeAbbreviation(abbreviationDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-    static private JPopupMenu buildAxiomaticPopup(JPopupMenu popupMenu, final AxiomaticDef axiomaticDef, final SpecificationController controller)
+    static private JPopupMenu buildAxiomaticPopup(JPopupMenu popupMenu, final AxiomaticDef axiomaticDef,
+                                                  final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("axiomaticPopupMenu.title"));
 
@@ -138,7 +143,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeAxiomaticType(axiomaticDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("axiomaticPopupMenu.addPredicate.title"));
@@ -150,7 +156,8 @@ public class PopUpMenuBuilder
             {
                 controller.addAxiomaticPredicate(axiomaticDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("axiomaticPopupMenu.removePredicate.title"));
@@ -162,16 +169,18 @@ public class PopUpMenuBuilder
             {
                 controller.removeAxiomaticPredicate(axiomaticDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-    static private JPopupMenu buildBasicTypePopup(JPopupMenu popupMenu, final BasicTypeDef basicTypeDef, final SpecificationController controller)
+    static private JPopupMenu buildBasicTypePopup(JPopupMenu popupMenu, final BasicTypeDef basicTypeDef,
+                                                  final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("basicTypePopupMenu.title"));
-        
+
         JMenuItem menuItem = new JMenuItem(uiBundle.getString("basicTypePopupMenu.deleteBasicTypeDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
@@ -179,16 +188,18 @@ public class PopUpMenuBuilder
             {
                 controller.removeBasicType(basicTypeDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-    static private JPopupMenu buildDeltaListPopup(JPopupMenu popupMenu, final Operation operation, final SpecificationController controller)
+    static private JPopupMenu buildDeltaListPopup(JPopupMenu popupMenu, final Operation operation,
+                                                  final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("deltaListPopupMenu.title"));
-        
+
         JMenuItem menuItem = new JMenuItem(uiBundle.getString("deltaListPopupMenu.deleteDeltaList.title"));
         menuItem.addActionListener(new ActionListener()
         {
@@ -196,13 +207,15 @@ public class PopUpMenuBuilder
             {
                 controller.removeDeltaList(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-        static private JPopupMenu buildFreeTypePopup(JPopupMenu popupMenu, final FreeTypeDef freeTypeDef, final SpecificationController controller)
+    static private JPopupMenu buildFreeTypePopup(JPopupMenu popupMenu, final FreeTypeDef freeTypeDef,
+                                                 final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("freeTypePopupMenu.title"));
 
@@ -213,13 +226,15 @@ public class PopUpMenuBuilder
             {
                 controller.removeFreeType(freeTypeDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-    static private JPopupMenu buildGenericPopup(JPopupMenu popupMenu, final GenericDef genericDef, final SpecificationController controller)
+    static private JPopupMenu buildGenericPopup(JPopupMenu popupMenu, final GenericDef genericDef,
+                                                final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("genericTypePopupMenu.title"));
 
@@ -230,7 +245,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeGenericType(genericDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
@@ -253,7 +269,8 @@ public class PopUpMenuBuilder
 //        return popupMenu;
 //    }
 
-    static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final Specification toze, final SpecificationController controller)
+    static private JPopupMenu buildSpecificationPopup(JPopupMenu popupMenu, final Specification toze,
+                                                      final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("specificationMenu.title"));
         JMenuItem menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
@@ -263,30 +280,36 @@ public class PopUpMenuBuilder
             {
                 controller.addAbbreviation(toze);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         //AXIOMATIC DEFINITION
         JMenu axiomaticMenu = new JMenu(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.title"));
 
-        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withPredicate.title"));
+        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withPredicate.title")
+        );
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 controller.addAxiomaticType(toze, true);
             }
-        });
+        }
+        );
         axiomaticMenu.add(menuItem);
 
-        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withoutPredicate.title"));
+        menuItem = new JMenuItem(
+                uiBundle.getString("specificationMenu.addAxiomaticDefinitionMenu.withoutPredicate.title")
+        );
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 controller.addAxiomaticType(toze, false);
             }
-        });
+        }
+        );
         axiomaticMenu.add(menuItem);
         popupMenu.add(axiomaticMenu);
 
@@ -297,7 +320,8 @@ public class PopUpMenuBuilder
             {
                 controller.addBasicType(toze);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addClass.title"));
@@ -307,7 +331,8 @@ public class PopUpMenuBuilder
             {
                 controller.addClass();
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addFreeTypeDef.title"));
@@ -317,7 +342,8 @@ public class PopUpMenuBuilder
             {
                 controller.addFreeType(toze);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         // GENERIC DEFINITION
@@ -330,17 +356,21 @@ public class PopUpMenuBuilder
             {
                 controller.addGenericType(null, true);
             }
-        });
+        }
+        );
         genericMenu.add(menuItem);
 
-        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withoutPredicate.title"));
+        menuItem = new JMenuItem(
+                uiBundle.getString("specificationMenu.addGenericDefinitionMenu.withoutPredicate.title")
+        );
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 controller.addGenericType(null, false);
             }
-        });
+        }
+        );
         genericMenu.add(menuItem);
         popupMenu.add(genericMenu);
 
@@ -352,7 +382,8 @@ public class PopUpMenuBuilder
             {
                 controller.addSpecificationPredicate();
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("specificationMenu.deletePredicate.title"));
@@ -363,13 +394,15 @@ public class PopUpMenuBuilder
             {
                 controller.removeSpecificationPredicate();
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;
     }
 
-    static private JPopupMenu buildClassPopup(JPopupMenu popupMenu, final ClassDef classDef, final SpecificationController controller)
+    static private JPopupMenu buildClassPopup(JPopupMenu popupMenu, final ClassDef classDef,
+                                              final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("classPopupMenu.title"));
 
@@ -381,7 +414,8 @@ public class PopUpMenuBuilder
             {
                 controller.addVisibilityList(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteVisibilityList.title"));
@@ -392,7 +426,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeVisibilityList(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addInheritedClass.title"));
@@ -403,7 +438,8 @@ public class PopUpMenuBuilder
             {
                 controller.addInheritedClass(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.deleteInheritedClass.title"));
@@ -414,7 +450,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeInheritedClass(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAbbreviationDef.title"));
@@ -424,7 +461,8 @@ public class PopUpMenuBuilder
             {
                 controller.addAbbreviation(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         //AXIOMATIC DEFINITION
@@ -437,17 +475,20 @@ public class PopUpMenuBuilder
             {
                 controller.addAxiomaticType(classDef, true);
             }
-        });
+        }
+        );
         axiomaticMenu.add(menuItem);
 
-        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAxiomaticDefinitionMenu.withoutPredicate.title"));
+        menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addAxiomaticDefinitionMenu.withoutPredicate.title")
+        );
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 controller.addAxiomaticType(classDef, false);
             }
-        });
+        }
+        );
         axiomaticMenu.add(menuItem);
         popupMenu.add(axiomaticMenu);
 
@@ -458,7 +499,8 @@ public class PopUpMenuBuilder
             {
                 controller.addBasicType(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addFreeTypeDef.title"));
@@ -468,7 +510,8 @@ public class PopUpMenuBuilder
             {
                 controller.addFreeType(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         // STATE
@@ -481,7 +524,8 @@ public class PopUpMenuBuilder
             {
                 controller.addState(classDef, All);
             }
-        });
+        }
+        );
         stateMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withBrackets.title"));
@@ -491,7 +535,8 @@ public class PopUpMenuBuilder
             {
                 controller.addState(classDef, Bracket);
             }
-        });
+        }
+        );
         stateMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withoutPredicate.title"));
@@ -501,7 +546,8 @@ public class PopUpMenuBuilder
             {
                 controller.addState(classDef, NoPredicate);
             }
-        });
+        }
+        );
         stateMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.withoutDeclaration.title"));
@@ -511,7 +557,8 @@ public class PopUpMenuBuilder
             {
                 controller.addState(classDef, NoDeclaration);
             }
-        });
+        }
+        );
         stateMenu.add(menuItem);
         popupMenu.add(stateMenu);
 
@@ -523,7 +570,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeState(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         // INITIAL STATE
@@ -537,7 +585,8 @@ public class PopUpMenuBuilder
                 // TODO need additional parameter for = and not-equal
                 controller.addInitialState(classDef);
             }
-        });
+        }
+        );
         initStateMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addInitialStateMenu.initialStateEquals.title"));
@@ -548,7 +597,8 @@ public class PopUpMenuBuilder
                 // TODO need additional parameter for = and not-equal
                 controller.addInitialState(classDef);
             }
-        });
+        }
+        );
         initStateMenu.add(menuItem);
         popupMenu.add(initStateMenu);
 
@@ -560,7 +610,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeInitialState(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         JMenu operationMenu = new JMenu(uiBundle.getString("classPopupMenu.addOperationMenu.title"));
@@ -572,7 +623,8 @@ public class PopUpMenuBuilder
             {
                 controller.addOperation(classDef, OperationType.All);
             }
-        });
+        }
+        );
         operationMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withoutPredicate.title"));
@@ -582,7 +634,8 @@ public class PopUpMenuBuilder
             {
                 controller.addOperation(classDef, OperationType.NoPredicate);
             }
-        });
+        }
+        );
         operationMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withoutDeclaration.title"));
@@ -592,7 +645,8 @@ public class PopUpMenuBuilder
             {
                 controller.addOperation(classDef, OperationType.NoDeclaration);
             }
-        });
+        }
+        );
         operationMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addOperationMenu.withExpression.title"));
@@ -602,7 +656,8 @@ public class PopUpMenuBuilder
             {
                 controller.addOperation(classDef, OperationType.Expression);
             }
-        });
+        }
+        );
         operationMenu.add(menuItem);
         popupMenu.add(operationMenu);
 
@@ -613,7 +668,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeClass(classDef);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         // add the class subparagraphs
@@ -622,7 +678,8 @@ public class PopUpMenuBuilder
         return popupMenu;
     }
 
-    static private JPopupMenu buildOperationPopup(JPopupMenu popupMenu, final Operation operation, final SpecificationController controller)
+    static private JPopupMenu buildOperationPopup(JPopupMenu popupMenu, final Operation operation,
+                                                  final SpecificationController controller)
     {
         addTitle(popupMenu, uiBundle.getString("operationMenu.title"));
 
@@ -634,7 +691,8 @@ public class PopUpMenuBuilder
             {
                 controller.addDeltaList(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteDeltaList.title"));
@@ -645,7 +703,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeDeltaList(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.addDeclaration.title"));
@@ -656,7 +715,8 @@ public class PopUpMenuBuilder
             {
                 controller.addDeclaration(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteDeclaration.title"));
@@ -667,7 +727,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeDeclaration(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.addPredicate.title"));
@@ -678,7 +739,8 @@ public class PopUpMenuBuilder
             {
                 controller.addOperationPredicate(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.deletePredicate.title"));
@@ -689,7 +751,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeOperationPredicate(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         menuItem = new JMenuItem(uiBundle.getString("operationMenu.deleteOperation.title"));
@@ -699,7 +762,8 @@ public class PopUpMenuBuilder
             {
                 controller.removeOperation(operation);
             }
-        });
+        }
+        );
         popupMenu.add(menuItem);
 
         return popupMenu;

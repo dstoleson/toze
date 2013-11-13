@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "initialState")
 @XmlType(propOrder =
                  {
-                    "predicate"
+                         "predicate"
                  })
 public class InitialState extends SpecObject
 {

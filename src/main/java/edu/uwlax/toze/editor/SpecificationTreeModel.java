@@ -1,6 +1,7 @@
 package edu.uwlax.toze.editor;
 
-import edu.uwlax.toze.domain.*;
+import edu.uwlax.toze.domain.ClassDef;
+import edu.uwlax.toze.domain.Specification;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -51,7 +52,9 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
         if (userObject == specificationDocuments)
             {
-            node = new SpecificationNode(specificationDocuments.get(index).getFile().getName(), specificationDocuments.get(index));
+            node = new SpecificationNode(specificationDocuments.get(index).getFile().getName(),
+                                         specificationDocuments.get(index)
+            );
             }
         else if (parent instanceof SpecificationNode)
             {
@@ -100,14 +103,14 @@ public class SpecificationTreeModel extends DefaultTreeModel
             {
             return ((ClassNode) object).getClassDef().getOperationList().isEmpty();
             }
-        
+
         // Do this last because all the nodes are DefaultMutableTreNode
         // but more specific
         if (object instanceof DefaultMutableTreeNode)
             {
-            return !(((DefaultMutableTreeNode)object).getUserObject() == specificationDocuments);
+            return !(((DefaultMutableTreeNode) object).getUserObject() == specificationDocuments);
             }
-        
+
         return true;
     }
 

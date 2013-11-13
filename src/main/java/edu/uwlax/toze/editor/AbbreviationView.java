@@ -2,14 +2,7 @@ package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.AbbreviationDef;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.event.KeyAdapter;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.*;
 
 public class AbbreviationView extends ParagraphView
 {
@@ -51,6 +44,12 @@ public class AbbreviationView extends ParagraphView
             }
     }
 
+    @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(abbreviationDef, nameText, "name");
+        notNullUpdateError(abbreviationDef, expressionText, "expression");
+    }
 
     @Override
     public void doLayout()

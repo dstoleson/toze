@@ -9,14 +9,14 @@ public class SpecificationDocument
     private File file;
     private final Specification specification;
     private boolean edited;
-    
+
     public SpecificationDocument(File file, Specification specification)
     {
         this.file = file;
         this.specification = specification;
         edited = false;
     }
-    
+
     public File getFile()
     {
         return file;

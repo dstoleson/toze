@@ -47,6 +47,13 @@ public class FreeTypeView extends ParagraphView implements Placement
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(freeTypeDef, declarationText, "declaration");
+        notNullUpdateError(freeTypeDef, predicateText, "predicate");
+    }
+
+    @Override
     public void doLayout()
     {
         Insets insets = getInsets();

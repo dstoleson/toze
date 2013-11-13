@@ -5,8 +5,9 @@ package edu.uwlax.toze.editor;
  * The first item in a popup menu is the title. This make this menu
  * item appear differently than the other ones.
  */
-import java.awt.*;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class TitleMenuItem extends JMenuItem
 {

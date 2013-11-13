@@ -1,6 +1,6 @@
 package edu.uwlax.toze.editor;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class TozeFontMap
 {
-    public static final char CHAR_EXTRACT         = 141;
+    public static final char CHAR_EXTRACT = 141;
     public static final char CHAR_SUPER_MINUS_1 = 160;
     public static final char CHAR_POWER = 161;
     public static final char CHAR_FINSET = 162;
@@ -94,7 +94,7 @@ public class TozeFontMap
     static public Font getFont(float size)
     {
         Font foundFont = null;
-        
+
         if (font == null)
             {
             try
@@ -107,7 +107,7 @@ public class TozeFontMap
                 System.out.println(e.toString());
                 }
             }
-        
+
         foundFont = sizeToFont.get(size);
 
         if (foundFont != null)
@@ -123,7 +123,7 @@ public class TozeFontMap
 
         foundFont = font.deriveFont(at);
         sizeToFont.put(size, foundFont);
-    
+
         return foundFont;
     }
 

@@ -26,7 +26,6 @@ public class TozeTextArea extends JTextArea
     private String m_orig = null;
 
     /**
-     *
      * @param s
      */
     public TozeTextArea(String s)
@@ -36,7 +35,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param ignoresEnter
      */
     public void setIgnoresEnter(boolean ignoresEnter)
@@ -50,7 +48,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -80,7 +77,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param e
      */
     @Override
@@ -155,7 +151,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param e
      */
     @Override
@@ -167,7 +162,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param g
      */
     @Override
@@ -235,7 +229,8 @@ public class TozeTextArea extends JTextArea
                     }
                 g.drawString(tmp.substring(pos),
                              fm.stringWidth(tmp.substring(0, pos)),
-                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
+                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent())
+                );
                 }
 
             g.setColor(c);
@@ -298,7 +293,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @return
      */
     private TozeReader getReader()
@@ -326,7 +320,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param line
      * @param pos
      */
@@ -347,7 +340,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param id
      * @param msg
      * @param token
@@ -360,7 +352,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @param id
      */
     public void setFocusIfHas(String id)
@@ -410,7 +401,6 @@ public class TozeTextArea extends JTextArea
     }
 
     /**
-     *
      * @return
      */
     public String toString()
@@ -427,7 +417,6 @@ public class TozeTextArea extends JTextArea
         public String m_ret = null;
 
         /**
-         *
          * @param r
          */
         public TozeReader(Reader r)
@@ -443,7 +432,6 @@ public class TozeTextArea extends JTextArea
         }
 
         /**
-         *
          * @return
          */
         public boolean hasMoreLines()
@@ -452,7 +440,6 @@ public class TozeTextArea extends JTextArea
         }
 
         /**
-         *
          * @return
          */
         public String nextLine()
@@ -487,7 +474,6 @@ public class TozeTextArea extends JTextArea
         final int m_pos;
 
         /**
-         *
          * @param line
          * @param pos
          */

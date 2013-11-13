@@ -10,17 +10,22 @@ public class TozeCharMap
     private String description;
 
     static final private List<TozeCharMap> allChars;
-    
+
     static
         {
         allChars = new ArrayList<TozeCharMap>();
-        
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SUPER_MINUS_1), "%sminus1%", "-1 Super Script"));
+
+        allChars.add(
+                new TozeCharMap(Character.toString(TozeFontMap.CHAR_SUPER_MINUS_1), "%sminus1%", "-1 Super Script")
+        );
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_POWER), "%pset%", "Power Set"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_FINSET), "%fset%", "Finite Set"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NAT), "%nat%", "Natural Numbers"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NAT) + 
-                                        Character.toString(TozeFontMap.CHAR_SUB_1), "%natone%", "Natural Numbers + 1"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NAT) +
+                                             Character.toString(TozeFontMap.CHAR_SUB_1), "%natone%",
+                                     "Natural Numbers + 1"
+        )
+        );
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NUM), "%integer%", "Integer Numbers"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_R), "%real%", "Real Numbers"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SUB_1), "%sub1%", "Subscript 1"));
@@ -62,7 +67,9 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_DCAT), "%dcat%", "DCAT"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_PROJECT), "%project%", "Project"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_UPLUS), "%uplus%", "UPLUS"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SUBSETEQPLUS), "%subseteqplus%", "SUBSETEQPLUS"));
+        allChars.add(
+                new TozeCharMap(Character.toString(TozeFontMap.CHAR_SUBSETEQPLUS), "%subseteqplus%", "SUBSETEQPLUS")
+        );
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_LANGLE), "%lseq%", "Left Sequence"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RANGLE), "%rseq%", "Right Sequence"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_LBAG), "%lbag%", "Left Bag"));
@@ -71,7 +78,8 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RIMG), "%rimg%", "Right Image"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_FORALL), "%all%", "For All"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_EXISTS), "%exi%", "There Exists"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SPOT), "%dot%, %suchthat%", "Dot / Such That"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_SPOT), "%dot%, %suchthat%", "Dot / Such That")
+        );
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NOT), "%lnot%", "Not"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_AND), "%land%", "And"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_OR), "%lor%", "Or"));
@@ -97,7 +105,7 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RHARPOON), "%rharpoon%", "Right Harpoon"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_EXTRACT), "%extract%", "Extract"));
         }
-    
+
     public TozeCharMap(String tozeChar, String mnemonic, String description)
     {
         this.tozeChar = tozeChar;
@@ -119,14 +127,14 @@ public class TozeCharMap
     {
         return description;
     }
-    
-    
+
+
     @Override
     public String toString()
     {
         return tozeChar + " " + mnemonic + " " + description;
     }
-    
+
     static public List<TozeCharMap> getAllChars()
     {
         return allChars;

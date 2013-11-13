@@ -1,11 +1,14 @@
 package edu.uwlax.toze.persist;
 
 import edu.uwlax.toze.domain.Specification;
+import org.junit.Test;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import static org.junit.Assert.*;
-import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Read a sample toze file, load it using the SpecificationBuilder, check it for

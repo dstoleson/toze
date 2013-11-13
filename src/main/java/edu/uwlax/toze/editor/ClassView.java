@@ -5,7 +5,7 @@ import edu.uwlax.toze.domain.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -145,6 +145,12 @@ public class ClassView extends ParagraphView
     }
 
     @Override
+    protected void updateErrors()
+    {
+        notNullUpdateError(classDef, classNameText, "name");
+    }
+
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -163,11 +169,13 @@ public class ClassView extends ParagraphView
         g.drawLine(xoffset,
                    yoffset + cnd.height - ClassNameLineMargin,
                    xoffset + ClassNameOffset,
-                   yoffset + cnd.height - ClassNameLineMargin);
+                   yoffset + cnd.height - ClassNameLineMargin
+        );
         g.drawLine(xoffset + ClassNameOffset + ClassNameSpace + cnd.width + ClassNameSpace,
                    yoffset + cnd.height - ClassNameLineMargin,
                    d.width - 1 - HMargin,
-                   yoffset + cnd.height - ClassNameLineMargin);
+                   yoffset + cnd.height - ClassNameLineMargin
+        );
         g.drawLine(xoffset, yoffset + cnd.height - ClassNameLineMargin, xoffset, d.height - 1 - VMargin);
         g.drawLine(xoffset, d.height - 1 - VMargin, d.width - 1 - HMargin, d.height - 1 - VMargin);
         yoffset += cnd.height + InterVMargin;

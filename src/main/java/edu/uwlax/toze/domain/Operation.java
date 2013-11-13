@@ -7,11 +7,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "operation")
 @XmlType(propOrder =
                  {
-                    "name",
-                    "deltaList",
-                    "declaration",
-                    "predicate",
-                    "operationExpression"
+                         "name",
+                         "deltaList",
+                         "declaration",
+                         "predicate",
+                         "operationExpression"
                  })
 public class Operation extends SpecObject
 {
