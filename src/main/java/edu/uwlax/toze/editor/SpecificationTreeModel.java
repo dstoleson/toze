@@ -1,6 +1,8 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.ClassDef;
+import edu.uwlax.toze.domain.Operation;
+import edu.uwlax.toze.domain.SpecObject;
 import edu.uwlax.toze.domain.Specification;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -65,7 +67,8 @@ public class SpecificationTreeModel extends DefaultTreeModel
         else if (parent instanceof ClassNode)
             {
             ClassDef classDef = ((ClassNode) parent).getClassDef();
-            node = new DefaultMutableTreeNode(classDef.getOperationList().get(index).getName());
+            Operation operation = classDef.getOperationList().get(index);
+            node = new OperationNode(classDef.getOperationList().get(index).getName(), operation);
             }
 
         return node;
@@ -103,6 +106,10 @@ public class SpecificationTreeModel extends DefaultTreeModel
             {
             return ((ClassNode) object).getClassDef().getOperationList().isEmpty();
             }
+        if (object instanceof OperationNode)
+            {
+            return true;
+            }
 
         // Do this last because all the nodes are DefaultMutableTreNode
         // but more specific
@@ -120,7 +127,12 @@ public class SpecificationTreeModel extends DefaultTreeModel
         reload();
     }
 
-    public class SpecificationNode extends DefaultMutableTreeNode
+    public interface SpecObjectNode
+    {
+        public SpecObject getSpecObject();
+    }
+
+    public class SpecificationNode extends DefaultMutableTreeNode implements SpecObjectNode
     {
         private final SpecificationDocument specificationDocument;
 
@@ -134,9 +146,15 @@ public class SpecificationTreeModel extends DefaultTreeModel
         {
             return specificationDocument;
         }
+
+        @Override
+        public SpecObject getSpecObject()
+        {
+            return specificationDocument.getSpecification();
+        }
     }
 
-    class ClassNode extends DefaultMutableTreeNode
+    class ClassNode extends DefaultMutableTreeNode implements SpecObjectNode
     {
         private final ClassDef classDef;
 
@@ -162,6 +180,35 @@ public class SpecificationTreeModel extends DefaultTreeModel
                 }
 
             return operationCount;
+        }
+
+        @Override
+        public SpecObject getSpecObject()
+        {
+            return getClassDef();
+        }
+
+    }
+
+    class OperationNode extends DefaultMutableTreeNode implements SpecObjectNode
+    {
+        private final Operation operation;
+
+        public OperationNode(Object userObject, Operation operation)
+        {
+            super(userObject);
+            this.operation = operation;
+        }
+
+        public Operation getOperation()
+        {
+            return operation;
+        }
+
+        @Override
+        public SpecObject getSpecObject()
+        {
+            return getOperation();
         }
     }
 }

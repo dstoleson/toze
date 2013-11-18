@@ -6,10 +6,11 @@ import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
+//import java.awt.*;
 
 public abstract class ParagraphView extends JPanel implements Placement
 {
@@ -32,15 +33,15 @@ public abstract class ParagraphView extends JPanel implements Placement
     public ParagraphView(SpecificationController specController)
     {
         this.specController = specController;
-        addMouseListener(new ParagraphViewMouseAdapter());
-
         textByProperty = new HashMap<String, TozeTextArea>();
     }
 
     @Override
     public void paintComponent(Graphics g)
     {
-        if (mouseInView)
+        // keep everything in a view and subviews
+        // the same color
+        if (selected)
             {
             this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
             }
@@ -49,23 +50,7 @@ public abstract class ParagraphView extends JPanel implements Placement
             this.setBorder(null);
             }
 
-        // keep everything in a view and subviews
-        // the same color
-        if (selected)
-            {
-            setBackground(Color.LIGHT_GRAY);
-            }
-        else
-            {
-            if (getParent() != null)
-                {
-                setBackground(getParent().getBackground());
-                }
-            else
-                {
-                setBackground(Color.WHITE);
-                }
-            }
+        setBackground(Color.WHITE);
         setFont(TozeFontMap.getFont());
         super.paintComponent(g);
         updateErrors();
@@ -79,7 +64,7 @@ public abstract class ParagraphView extends JPanel implements Placement
         if (foundTextArea == null)
             {
             Component[] children = this.getComponents();
-            java.util.List<Component> childList = Arrays.asList(children);
+            List<Component> childList = Arrays.asList(children);
 
             for (Component component : childList)
                 {
@@ -99,23 +84,33 @@ public abstract class ParagraphView extends JPanel implements Placement
 
     }
 
-    private class ParagraphViewMouseAdapter extends MouseAdapter
+    public ParagraphView findParagraphViewForSpecObject(SpecObject specObject)
     {
-        @Override
-        public void mouseEntered(MouseEvent e)
-        {
-//            super.mouseEntered(e);
-            mouseInView = true;
-            ParagraphView.this.repaint();
-        }
+        ParagraphView foundParagraphView = null;
 
-        @Override
-        public void mouseExited(MouseEvent e)
-        {
-//            super.mouseExited(e);
-            mouseInView = false;
-            ParagraphView.this.repaint();
-        }
+        if (this.getSpecObject() == specObject)
+            {
+            foundParagraphView = this;
+            }
+        else
+            {
+            Component[] children = this.getComponents();
+            List<Component> childList = Arrays.asList(children);
+
+            for(Component component : childList)
+                {
+                if (component instanceof ParagraphView)
+                    {
+                    foundParagraphView = ((ParagraphView) component).findParagraphViewForSpecObject(specObject);
+
+                    if (foundParagraphView != null)
+                        {
+                        break;
+                        }
+                    }
+                }
+            }
+        return foundParagraphView;
     }
 
     /**
@@ -163,7 +158,14 @@ public abstract class ParagraphView extends JPanel implements Placement
 
     public void setSelected(boolean selected)
     {
-        this.selected = selected;
+        if (isSelectable())
+            {
+            this.selected = selected;
+            }
+        else
+            {
+            this.selected = false;
+            }
     }
 
     public boolean isSelected()
@@ -176,9 +178,10 @@ public abstract class ParagraphView extends JPanel implements Placement
         TozeTextArea text = new TozeTextArea(value);
         textByProperty.put(property, text);
         text.setIgnoresEnter(ignoresEnter);
-        text.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
-        text.addKeyListener(specController.getKeyAdapter());
-
+        SpecDocumentListener specDocumentListener = new SpecDocumentListener(new Binding(modelObject, property));
+        text.getDocument().addDocumentListener(specDocumentListener);
+        specDocumentListener.addObserver(specController);
+        text.addFocusListener(specController);
         return text;
     }
 
@@ -203,4 +206,9 @@ public abstract class ParagraphView extends JPanel implements Placement
     protected abstract void updateErrors();
 
     public abstract SpecObject getSpecObject();
+
+    public boolean isSelectable()
+    {
+        return true;
+    }
 }

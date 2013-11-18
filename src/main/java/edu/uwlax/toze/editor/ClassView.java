@@ -3,7 +3,6 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.domain.*;
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +46,8 @@ public class ClassView extends ParagraphView
         freeTypeViews = new ArrayList<FreeTypeView>();
         operationViews = new ArrayList<OperationView>();
 
-        this.specController = specController;
-        MouseAdapter mouseAdapter = specController.getMouseAdapter();
-        KeyAdapter keyAdapter = specController.getKeyAdapter();
-
+        MouseAdapter mouseAdapter = this.specController.getMouseAdapter();
         addMouseListener(mouseAdapter);
-        addKeyListener(keyAdapter);
 
         requestRebuild();
     }
@@ -70,6 +65,8 @@ public class ClassView extends ParagraphView
 
     private void addView(ParagraphView view, List views)
     {
+        view.addMouseListener(this.specController.getMouseAdapter());
+
         add(view);
 
         if (views != null)
@@ -95,17 +92,17 @@ public class ClassView extends ParagraphView
         if (classDef.getVisibilityList() != null)
             {
             visibilityListView = new VisibilityListView(classDef, specController);
-            add(visibilityListView);
+            addView(visibilityListView);
             }
         if (classDef.getState() != null)
             {
             stateView = new StateView(classDef.getState(), specController);
-            add(stateView);
+            addView(stateView);
             }
         if (classDef.getInheritedClass() != null)
             {
             inheritedClassView = new InheritedClassView(classDef.getInheritedClass(), specController);
-            add(inheritedClassView);
+            addView(inheritedClassView);
             }
         if (classDef.getInitialState() != null)
             {

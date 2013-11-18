@@ -1,5 +1,6 @@
 package edu.uwlax.toze.editor;
 
+import edu.uwlax.toze.domain.SpecObject;
 import edu.uwlax.toze.domain.Specification;
 import edu.uwlax.toze.editor.SpecificationTreeModel.SpecificationNode;
 import edu.uwlax.toze.objectz.TozeToken;
@@ -11,6 +12,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -33,7 +36,7 @@ import java.util.List;
  *
  * @author David Stoleson
  */
-public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeListener
+public class TozeEditor extends javax.swing.JFrame implements Observer
 {
     private static int untitledCount = 1;
 
@@ -94,9 +97,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
 
         JScrollPane specificationTreeScrollPane = new JScrollPane();
         specificationTree = new JTree();
+        specificationTree.addTreeSelectionListener(new EditorTreeSelectionListener());
 
         specificationTabPanel = new JTabbedPane();
-        specificationTabPanel.addChangeListener(this);
+        specificationTabPanel.addChangeListener(new EditorTabbedPaneListener());
         JTabbedPane paletteTabPanel = new JTabbedPane();
 
         JScrollPane specialCharsScrollPane = new JScrollPane();
@@ -734,13 +738,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                         if (classChild instanceof ParagraphView)
                             {
                             pageBreaks.add(classChild.getY() + classChild.getHeight() + classHeightOffset);
-                            printComponent(classChild);
                             }
                         }
                     }
 
                 pageBreaks.add(specChild.getY() + specChild.getHeight());
-                printComponent(specChild);
                 }
             }
 
@@ -749,15 +751,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         System.out.println("pageBreaks: " + pageBreaks);
 
         return pageBreaks;
-    }
-
-    private void printComponent(Component c)
-    {
-        Rectangle b = c.getBounds();
-
-        System.out.println(
-                c.getClass().getSimpleName() + "--> x: " + c.getX() + ", y: " + c.getY() + ", w: " + c.getWidth() + ", h: " + c.getHeight()
-        );
     }
 
     private void writeSpecificationToFile(Specification specification, File specificationFile)
@@ -814,6 +807,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
                 }
             }
     }
+
 
     public void insertSymbol(String symbol)
     {
@@ -911,17 +905,78 @@ public class TozeEditor extends javax.swing.JFrame implements Observer, ChangeLi
         }
     }
 
+
     /**
      * Implement JTabbedPane ChangeListener interface
      */
-    @Override
-    public void stateChanged(ChangeEvent e)
+    private class EditorTabbedPaneListener implements ChangeListener
     {
-        SpecificationController specificationController = currentSpecificationController();
+        @Override
+        public void stateChanged(ChangeEvent e)
+        {
+            SpecificationController specificationController = currentSpecificationController();
 
-        if (specificationController != null)
-            {
-            updateErrors(specificationController.getSpecification().getErrors());
-            }
+            if (specificationController != null)
+                {
+                updateErrors(specificationController.getSpecification().getErrors());
+                }
+        }
+    }
+
+    private class EditorTreeSelectionListener implements TreeSelectionListener
+    {
+        @Override
+        public void valueChanged(TreeSelectionEvent e)
+        {
+            // get the selected tree path
+            TreePath treePath = e.getPath();
+
+            // if a new docoument is selected, need to switch the tabs
+            SpecificationDocument documentToSelect = null;
+
+            // get the selected object node (might be the same as the specification document node)
+            Object selectedObject = treePath.getLastPathComponent();
+
+            if (selectedObject instanceof SpecificationNode)
+                {
+                documentToSelect = ((SpecificationNode) selectedObject).getSpecificationDocument();
+                }
+
+            // get the specification document node
+            SpecificationNode selectedRoot = (SpecificationNode)treePath.getPathComponent(1);
+            SpecificationDocument currentSpecificationDocument = currentSpecificationController().getSpecificationDocument();
+
+            if (selectedRoot.getSpecificationDocument() != currentSpecificationDocument)
+                {
+                documentToSelect = selectedRoot.getSpecificationDocument();
+                }
+
+            if (documentToSelect != null)
+                {
+                // determine which tab belongs to the specification
+                // based on the file name (same as the tab title)
+                // and switch to that tab
+                int numTabs = specificationTabPanel.getTabCount();
+                int tabIndex = -1;
+
+                for (int i = 0; i < numTabs; i++)
+                    {
+                    if (specificationTabPanel.getTitleAt(i).equals(documentToSelect.getFile().getName()))
+                        {
+                        tabIndex = i;
+                        break;
+                        }
+                    }
+                if (tabIndex > -1)
+                    {
+                    specificationTabPanel.setSelectedIndex(tabIndex);
+                    }
+                }
+
+            // highlight and move to the selected object
+            // in the currently display specification
+            SpecObject specObject = ((SpecificationTreeModel.SpecObjectNode)selectedObject).getSpecObject();
+            currentSpecificationController().selectParagraph(specObject);
+        }
     }
 }

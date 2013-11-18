@@ -34,12 +34,6 @@ public class OperationView extends ParagraphView
         setLayout(new ParaLayout(this));
         this.operation = operation;
 
-//        mouseAdapter = specController.getMouseAdapter();
-//        keyAdapter = specController.getKeyAdapter();
-//
-//        addMouseListener(mouseAdapter);
-//        addKeyListener(keyAdapter);
-
         requestRebuild();
     }
 
@@ -51,8 +45,7 @@ public class OperationView extends ParagraphView
 
     private void addView(ParagraphView view)
     {
-//        view.addMouseListener(mouseAdapter);
-//        view.addKeyListener(keyAdapter);
+        view.addMouseListener(specController.getMouseAdapter());
         add(view);
     }
 

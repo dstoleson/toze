@@ -6,7 +6,6 @@ import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +16,6 @@ public class SpecificationView extends JPanel
 
     private final SpecificationController specController;
     private final MouseAdapter mouseAdapter;
-    private final KeyAdapter keyAdapter;
 
     public SpecificationView(Specification specification, SpecificationController specController)
     {
@@ -26,10 +24,6 @@ public class SpecificationView extends JPanel
         this.specification = specification;
         this.specController = specController;
         mouseAdapter = specController.getMouseAdapter();
-        keyAdapter = specController.getKeyAdapter();
-
-//        addMouseListener(mouseAdapter);
-//        addKeyListener(keyAdapter);
 
         requestRebuild();
     }
@@ -45,8 +39,6 @@ public class SpecificationView extends JPanel
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
-//        text.addMouseListener(mouseAdapter);
-//        text.addFocusListener(specController);
 
         return text;
     }
@@ -56,10 +48,15 @@ public class SpecificationView extends JPanel
         return buildTextArea(modelObject, value, property, true);
     }
 
-    private void addDocumentListener(TozeTextArea textArea, Object obj, String property)
+    private void addDocumentListener(TozeTextArea textArea, SpecObject modelObject, String property)
     {
-        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(obj, property)));
-//        textArea.addKeyListener(keyAdapter);
+        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
+
+        SpecDocumentListener specDocumentListener = new SpecDocumentListener(new Binding(modelObject, property));
+        textArea.getDocument().addDocumentListener(specDocumentListener);
+        specDocumentListener.addObserver(specController);
+//        textArea.addKeyListener(specController.getKeyAdapter());
+        textArea.addFocusListener(specController);
     }
 
     protected void rebuild()
@@ -135,8 +132,29 @@ public class SpecificationView extends JPanel
     private void addView(ParagraphView view)
     {
         view.addMouseListener(mouseAdapter);
-        view.addKeyListener(keyAdapter);
         add(view);
+    }
+
+    public ParagraphView findParagraphViewForSpecObject(SpecObject specObject)
+    {
+        ParagraphView foundParagraphView = null;
+        Component[] children = this.getComponents();
+        List<Component> childList = Arrays.asList(children);
+
+        for (Component component : childList)
+            {
+            if (component instanceof ParagraphView)
+                {
+                foundParagraphView = ((ParagraphView) component).findParagraphViewForSpecObject(specObject);
+
+                if (foundParagraphView != null)
+                    {
+                    break;
+                    }
+                }
+            }
+
+        return foundParagraphView;
     }
 
     public TozeTextArea findTextAreaForError(SpecObject specObject, TozeToken tozeToken)

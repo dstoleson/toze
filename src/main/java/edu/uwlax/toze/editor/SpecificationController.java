@@ -9,11 +9,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  */
-public class SpecificationController extends Observable implements FocusListener
+public class SpecificationController extends Observable implements FocusListener, Observer
 {
     static private SpecObject cachedObject = null;
 
@@ -22,7 +23,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     private SpecificationView specificationView;
     private final ControllerMouseAdapter mouseAdapter;
-    private final ControllerKeyAdapter keyAdapter;
+//    private final ControllerKeyAdapter keyAdapter;
     private TozeTextArea currentTextArea = null;
     private SpecObject selectedObject;
     private ParagraphView selectedView;
@@ -41,7 +42,7 @@ public class SpecificationController extends Observable implements FocusListener
         this.specificationDocument = specificationDocument;
         this.specification = specificationDocument.getSpecification();
         this.mouseAdapter = new ControllerMouseAdapter();
-        this.keyAdapter = new ControllerKeyAdapter();
+//        this.keyAdapter = new ControllerKeyAdapter();
 
         // create a map of the UI views to the model objects
         // they represent
@@ -63,11 +64,6 @@ public class SpecificationController extends Observable implements FocusListener
     public MouseAdapter getMouseAdapter()
     {
         return mouseAdapter;
-    }
-
-    public KeyAdapter getKeyAdapter()
-    {
-        return keyAdapter;
     }
 
     /**
@@ -739,16 +735,45 @@ public class SpecificationController extends Observable implements FocusListener
             }
     }
 
+    /**
+     * Update the view that is selected (highlighted) in the specification view.
+     * @param newSelectedView The view to be selected and whose specObject will also be selected.
+     */
+    private void updateSelectedView(ParagraphView newSelectedView)
+    {
+        if (selectedView != null)
+            {
+            selectedView.setSelected(false);
+            }
+
+        selectedView = null;
+        selectedObject = null;
+
+        if (newSelectedView != null)
+            {
+            selectedView = newSelectedView;
+            selectedView.setSelected(true);
+            selectedObject = selectedView.getSpecObject();
+            }
+
+        specificationView.revalidate();
+        specificationView.repaint();
+    }
+
     @Override
     public void focusGained(FocusEvent e)
     {
         currentTextArea = (TozeTextArea) e.getSource();
+        ParagraphView newSelectedView = (ParagraphView)currentTextArea.getParent();
+        updateSelectedView(newSelectedView);
     }
 
     @Override
     public void focusLost(FocusEvent e)
     {
         currentTextArea = (TozeTextArea) e.getSource();
+        ParagraphView newSelectedView = (ParagraphView)currentTextArea.getParent();
+        updateSelectedView(newSelectedView);
     }
 
     public void moveUp(SpecObject object)
@@ -1309,31 +1334,52 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (textArea != null)
             {
-            textArea.scrollRectToVisible(textArea.getBounds());
+            // scroll the top of the selected text area
+            textArea.scrollRectToVisible(new Rectangle(textArea.getSize()));
+            ((JComponent)textArea.getParent()).scrollRectToVisible(textArea.getBounds());
             }
     }
 
-
-    // Get Keystroke events
-    private class ControllerKeyAdapter extends KeyAdapter
+    public void selectParagraph(SpecObject specObject)
     {
-        @Override
-        public void keyTyped(KeyEvent e)
-        {
-            // TODO need to figure out timing of keyTyped and when the document updates happen
-            super.keyTyped(e);
+        ParagraphView viewToBeSelected = null;
 
-            try
-                {
-                parseSpecification();
-                }
-            catch (Throwable t)
-                {
-                System.out.println("Caught exception while parsing: " + t);
-                t.printStackTrace();
-                }
-        }
+        if (specObject != specification)
+            {
+            viewToBeSelected = specificationView.findParagraphViewForSpecObject(specObject);
+            }
+
+        updateSelectedView(viewToBeSelected);
+
+        if (viewToBeSelected != null)
+            {
+            // scroll the top of the selected view
+            viewToBeSelected.scrollRectToVisible(new Rectangle(viewToBeSelected.getSize()));
+            ((JComponent)viewToBeSelected.getParent()).scrollRectToVisible(viewToBeSelected.getBounds());
+            }
     }
+
+    /**
+     * Get notifications from typing in text fields, from the
+     * SpecDocumentListener
+     *
+     * @param o
+     * @param arg
+     */
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        try
+            {
+            parseSpecification();
+            }
+        catch (Throwable t)
+            {
+            System.out.println("Caught exception while parsing: " + t);
+            t.printStackTrace();
+            }
+    }
+
 
     // Get Mouse events
     private class ControllerMouseAdapter extends MouseAdapter
@@ -1362,21 +1408,12 @@ public class SpecificationController extends Observable implements FocusListener
 
             else if (MouseEvent.BUTTON1 == e.getButton())
                 {
-                // left click
-                if (selectedView != null)
-                    {
-                    selectedView.setSelected(false);
-                    }
-
-                selectedView = null;
-
                 Component clickedComponent = e.getComponent();
 
                 if (clickedComponent instanceof ParagraphView)
                     {
-                    selectedView = (ParagraphView) clickedComponent;
-                    selectedView.setSelected(true);
-                    selectedObject = selectedView.getSpecObject();
+                    ParagraphView newSelectedView = (ParagraphView) clickedComponent;
+                    updateSelectedView(newSelectedView);
                     }
                 }
             super.mouseClicked(e);

@@ -9,11 +9,12 @@ import edu.uwlax.toze.editor.bindings.Binding;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import java.util.Observable;
 
 /**
  * @author dhs
  */
-public class SpecDocumentListener implements DocumentListener
+public class SpecDocumentListener extends Observable implements DocumentListener
 {
     private final Binding binding;
 
@@ -38,6 +39,8 @@ public class SpecDocumentListener implements DocumentListener
                 // ???
                 }
             }
+        this.setChanged();
+        notifyObservers();
         System.out.println("Exit: update(DocumentEvent)");
     }
 
