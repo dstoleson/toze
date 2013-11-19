@@ -874,7 +874,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         if (o instanceof SpecificationController)
             {
-            updateErrors(((SpecificationController)o).getSpecification().getErrors());
+//            updateErrors(((SpecificationController)o).getSpecification().getErrors());
+            updateErrors((List<TozeToken>)arg);
             }
     }
 
