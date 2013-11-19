@@ -715,9 +715,7 @@ public class SpecificationController extends Observable implements FocusListener
         parser.check(specification);
 
         List errors = specification.getErrors();
-
-// TODO:  need to figure out how to make a type error similar to a syntax error for the list / highlighting, etc.
-//        errors.addAll(parser.getTypeErrors());
+        errors.addAll(parser.getTypeErrors());
 
         setChanged();
         notifyObservers(errors);
