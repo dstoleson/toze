@@ -14,35 +14,49 @@ import java.util.Map;
  */
 public abstract class SpecObject implements Cloneable
 {
-    private final HashMap<String, TozeToken> errors;
+    private final HashMap<String, List<TozeToken>> errors;
 
     public SpecObject()
     {
-        errors = new HashMap<String, TozeToken>();
+        errors = new HashMap<String, List<TozeToken>>();
     }
 
     public void setErrorForProperty(String property, TozeToken error)
     {
-        errors.put(property, error);
+        List<TozeToken> errorList = errors.get(property);
+        if (errorList == null)
+            {
+            errorList = new ArrayList<TozeToken>();
+            }
+        errorList.add(error);
+
+        errors.put(property, errorList);
     }
 
     public String getPropertyForError(TozeToken error)
     {
         String property = null;
 
-        for (Map.Entry<String, TozeToken> entry : errors.entrySet())
+        for (Map.Entry<String, List<TozeToken>> entry : errors.entrySet())
             {
-            TozeToken entryToken = entry.getValue();
-            if (entryToken == error)
+            List<TozeToken> entryTokenList = entry.getValue();
+            for (TozeToken errorToken : entryTokenList)
                 {
-                property = entry.getKey();
+                if (errorToken == error)
+                    {
+                    property = entry.getKey();
+                    break;
+                    }
+                }
+            if (property != null)
+                {
                 break;
                 }
             }
         return property;
     }
 
-    public TozeToken getErrorForProperty(String property)
+    public List<TozeToken> getErrorsForProperty(String property)
     {
         return errors.get(property);
     }
@@ -50,7 +64,11 @@ public abstract class SpecObject implements Cloneable
     public List<TozeToken> getErrors()
     {
         ArrayList<TozeToken> errorList = new ArrayList<TozeToken>();
-        errorList.addAll(errors.values());
+
+        for (Map.Entry<String, List<TozeToken>> entry : errors.entrySet())
+            {
+            errorList.addAll(entry.getValue());
+            }
 
         return errorList;
     }

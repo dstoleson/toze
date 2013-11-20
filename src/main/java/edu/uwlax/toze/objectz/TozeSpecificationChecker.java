@@ -3,7 +3,6 @@ package edu.uwlax.toze.objectz;
 import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.editor.SpecificationSection;
 
-import java.util.List;
 import java.util.Stack;
 
 public class TozeSpecificationChecker extends TozeParser
@@ -204,11 +203,6 @@ public class TozeSpecificationChecker extends TozeParser
             }
     }
 
-    public List<TozeToken> getTypeErrors()
-    {
-        return Ast.getErrors();
-    }
-
     private void preParse(String text)
     {
         reset();
@@ -224,84 +218,84 @@ public class TozeSpecificationChecker extends TozeParser
     private void parse_guiAbbreviation(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Abbreviation(o);
+        result = parse_Abbreviation(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiExpression(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Expression(o);
+        result = parse_Expression(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiBasicTypeDefinition(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_nIdentifier(o);
+        result = parse_nIdentifier(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiBranch(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_nBranch(o);
+        result = parse_nBranch(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiClassHeader(ClassDef classDef, String property, String text)
     {
         preParse(text);
-        result = parse_ClassHeader(classDef);
+        result = parse_ClassHeader(classDef, property);
         postParse(classDef, property, text);
     }
 
     private void parse_guiDeclaration(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Declaration(o);
+        result = parse_Declaration(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiFormalParametersWoBrackets(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_FormalParametersWoBrackets(o);
+        result = parse_FormalParametersWoBrackets(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiFormalParameters(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_FormalParameters(o);
+        result = parse_FormalParameters(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiIdentifier(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Identifier(o);
+        result = parse_Identifier(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiInheritedClass(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_nInheritedClass((InheritedClass)o);
+        result = parse_nInheritedClass((InheritedClass)o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiOperationExpression(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_OperationExpression((Operation)o);
+        result = parse_OperationExpression((Operation)o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiPredicate(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Predicate(o);
+        result = parse_Predicate(o, property);
         postParse(o, property, text);
     }
 
@@ -329,14 +323,14 @@ public class TozeSpecificationChecker extends TozeParser
     private void parse_guiState(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_DeclarationNameList(o);
+        result = parse_DeclarationNameList(o, property);
         postParse(o, property, text);
     }
 
     private void parse_guiOperationName(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_Identifier(o);
+        result = parse_Identifier(o, property);
         postParse(o, property, text);
     }
 
@@ -350,7 +344,7 @@ public class TozeSpecificationChecker extends TozeParser
     private void parse_guiDeclarationNameList(SpecObject o, String property, String text)
     {
         preParse(text);
-        result = parse_DeclarationNameList(o);
+        result = parse_DeclarationNameList(o, property);
         postParse(o, property, text);
     }
 
@@ -362,7 +356,7 @@ public class TozeSpecificationChecker extends TozeParser
             }
 
         preParse(text);
-        result = parse_PredicateList(o);
+        result = parse_PredicateList(o, property);
         postParse(o, property, text);
     }
 
@@ -454,6 +448,7 @@ public class TozeSpecificationChecker extends TozeParser
         if (t != null)
             {
             t.setDescription(text);
+            t.setErrorType(ErrorType.SyntaxError);
             o.setErrorForProperty(property, t);
             }
         else

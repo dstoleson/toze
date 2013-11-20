@@ -167,34 +167,40 @@ public class Specification extends SpecObject
         this.predicate = predicate;
     }
 
+    private List<TozeToken> getErrorsInList(List list)
+    {
+        List<TozeToken> errorList = new ArrayList<TozeToken>();
+        List<SpecObject> specObjectList = list;
+
+        for (SpecObject specObject : specObjectList)
+            {
+            errorList.addAll(specObject.getErrors());
+            }
+
+        return errorList;
+    }
+
     @Override
     public List<TozeToken> getErrors()
     {
         List<TozeToken> errorList = super.getErrors();
+        errorList.addAll(getErrorsInList(basicTypeDefList));
+        errorList.addAll(getErrorsInList(axiomaticDefList));
+        errorList.addAll(getErrorsInList(genericDefList));
+        errorList.addAll(getErrorsInList(abbreviationDefList));
+        errorList.addAll(getErrorsInList(freeTypeDefList));
 
-        for (BasicTypeDef basicTypeDef : basicTypeDefList)
-            {
-            errorList.addAll(basicTypeDef.getErrors());
-            }
-        for (AxiomaticDef axiomaticDef : axiomaticDefList)
-            {
-            errorList.addAll(axiomaticDef.getErrors());
-            }
-        for (GenericDef genericDef : genericDefList)
-            {
-            errorList.addAll(genericDef.getErrors());
-            }
-        for (AbbreviationDef abbreviationDef : abbreviationDefList)
-            {
-            errorList.addAll(abbreviationDef.getErrors());
-            }
-        for (FreeTypeDef freeTypeDef : freeTypeDefList)
-            {
-            errorList.addAll(freeTypeDef.getErrors());
-            }
         for (ClassDef classDef : classDefList)
             {
             errorList.addAll(classDef.getErrors());
+            errorList.addAll(notNullGetErrors(classDef.getInheritedClass()));
+            errorList.addAll(notNullGetErrors(classDef.getState()));
+            errorList.addAll(notNullGetErrors(classDef.getInitialState()));
+            errorList.addAll(getErrorsInList(classDef.getBasicTypeDefList()));
+            errorList.addAll(getErrorsInList(classDef.getAxiomaticDefList()));
+            errorList.addAll(getErrorsInList(classDef.getAbbreviationDefList()));
+            errorList.addAll(getErrorsInList(classDef.getFreeTypeDefList()));
+            errorList.addAll(getErrorsInList(classDef.getOperationList()));
             }
 
         return errorList;
@@ -250,8 +256,12 @@ public class Specification extends SpecObject
 
     public SpecObject findObjectWithError(TozeToken errorToken)
     {
-        SpecObject objectWithError = findObjectWithError(errorToken, basicTypeDefList);
+        SpecObject objectWithError = findObjectWithError(errorToken, super.getErrors());
 
+        if (objectWithError == null)
+            {
+            objectWithError = findObjectWithError(errorToken, basicTypeDefList);
+            }
         if (objectWithError == null)
             {
             objectWithError = findObjectWithError(errorToken, axiomaticDefList);
@@ -271,6 +281,19 @@ public class Specification extends SpecObject
         if (objectWithError == null)
             {
             objectWithError = findObjectWithError(errorToken, classDefList);
+            }
+        if (objectWithError == null)
+            {
+            for (ClassDef classDef : classDefList)
+                {
+                List<Operation> operationList = classDef.getOperationList();
+                objectWithError = findObjectWithError(errorToken, operationList);
+
+                if (objectWithError != null)
+                    {
+                    break;
+                    }
+                }
             }
 
         return objectWithError;

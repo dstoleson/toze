@@ -105,7 +105,7 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LBRACKET))
             {
             Ast.AstBasicTypeDefinition node = m_ast.new AstBasicTypeDefinition(basicTypeDef);
-            Ast.AstIdentifier inode = parse_Identifier(basicTypeDef);
+            Ast.AstIdentifier inode = parse_Identifier(basicTypeDef, "name");
             if (ok())
                 {
                 while (true)
@@ -115,7 +115,7 @@ public class TozeParser extends TozeParserBase
                         {
                         break;
                         }
-                    inode = parse_Identifier(basicTypeDef);
+                    inode = parse_Identifier(basicTypeDef, "name");
                     }
                 next(TozeTokenizer.TOKEN_RBRACKET);
                 if (ok())
@@ -128,7 +128,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstVector parse_nIdentifier(SpecObject specObject)
+    public Ast.AstVector parse_nIdentifier(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -137,7 +137,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstVector node = m_ast.new AstVector();
-        Ast.AstIdentifier inode = parse_Identifier(specObject);
+        Ast.AstIdentifier inode = parse_Identifier(specObject, property);
         if (ok())
             {
             while (true)
@@ -149,7 +149,7 @@ public class TozeParser extends TozeParserBase
                     }
                 next(TozeTokenizer.TOKEN_COMMA);
                 int tat = m_current;
-                inode = parse_Identifier(specObject);
+                inode = parse_Identifier(specObject, property);
                 if (!ok())
                     {
                     reset(tat);
@@ -165,7 +165,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstVector parse_nBranch(SpecObject specObject)
+    public Ast.AstVector parse_nBranch(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -174,7 +174,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstVector node = m_ast.new AstVector();
-        Ast.AstBranch bnode = parse_Branch(specObject);
+        Ast.AstBranch bnode = parse_Branch(specObject, property);
         if (ok())
             {
             while (true)
@@ -186,7 +186,7 @@ public class TozeParser extends TozeParserBase
                     }
                 next(TozeTokenizer.TOKEN_PIPE);
                 int tat = m_current;
-                bnode = parse_Branch(specObject);
+                bnode = parse_Branch(specObject, property);
                 if (!ok())
                     {
                     reset(tat);
@@ -204,7 +204,7 @@ public class TozeParser extends TozeParserBase
 
     // This one is manufactured from the classname [formalparameters] part of
     // a class paragraph.
-    public Ast.AstClassHeader parse_ClassHeader(ClassDef classDef)
+    public Ast.AstClassHeader parse_ClassHeader(ClassDef classDef, String property)
     {
         int at = m_current;
         if (!ok())
@@ -218,7 +218,7 @@ public class TozeParser extends TozeParserBase
             Ast.AstClassHeader node = m_ast.new AstClassHeader(classDef);
             node.m_className = nnode;
             int tat = m_current;
-            node.m_formalParameters = parse_FormalParameters(classDef);
+            node.m_formalParameters = parse_FormalParameters(classDef, property);
             if (!ok())
                 {
                 reset(tat);
@@ -229,7 +229,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstVector parse_nInheritedClass(InheritedClass inheritedClass)
+    public Ast.AstVector parse_nInheritedClass(InheritedClass inheritedClass, String property)
     {
         int at = m_current;
         if (!ok())
@@ -238,14 +238,14 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstVector node = m_ast.new AstVector();
-        Ast.AstInheritedClass inode = parse_InheritedClass(inheritedClass);
+        Ast.AstInheritedClass inode = parse_InheritedClass(inheritedClass, property);
         if (ok())
             {
             while (true)
                 {
                 node.m_list.add(inode);
                 int tat = m_current;
-                inode = parse_InheritedClass(inheritedClass);
+                inode = parse_InheritedClass(inheritedClass, property);
                 if (!ok())
                     {
                     reset(tat);
@@ -261,7 +261,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstAbbreviation parse_Abbreviation(SpecObject specObject)
+    public Ast.AstAbbreviation parse_Abbreviation(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -269,13 +269,13 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstIdentifier inode = parse_Identifier(specObject);
+        Ast.AstIdentifier inode = parse_Identifier(specObject, property);
         if (ok())
             {
             Ast.AstAbbreviation3 node = m_ast.new AstAbbreviation3();
             node.m_identifier1 = inode;
             node.m_infixGenericName = parse_InfixGenericName();
-            node.m_identifier2 = parse_Identifier(specObject);
+            node.m_identifier2 = parse_Identifier(specObject, property);
             if (ok())
                 {
                 return node;
@@ -283,13 +283,13 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstVariableName vnode = parse_VariableName(specObject);
+        Ast.AstVariableName vnode = parse_VariableName(specObject, property);
         if (ok())
             {
-            Ast.AstAbbreviation1 node = m_ast.new AstAbbreviation1(specObject);
+            Ast.AstAbbreviation1 node = m_ast.new AstAbbreviation1(specObject, property);
             node.m_variableName = vnode;
             int tat = m_current;
-            node.m_formalParameters = parse_FormalParameters(specObject);
+            node.m_formalParameters = parse_FormalParameters(specObject, property);
             if (!ok())
                 {
                 reset(tat);
@@ -303,7 +303,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstAbbreviation2 node = m_ast.new AstAbbreviation2();
             node.m_prefixGenericName = gnode;
-            node.m_identifier = parse_Identifier(specObject);
+            node.m_identifier = parse_Identifier(specObject, property);
             if (ok())
                 {
                 return node;
@@ -313,7 +313,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstSchemaHeader parse_SchemaHeader(SpecObject specObject)
+    public Ast.AstSchemaHeader parse_SchemaHeader(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -322,14 +322,14 @@ public class TozeParser extends TozeParserBase
             }
         int tat;
 
-        Ast.AstSchemaHeader node = m_ast.new AstSchemaHeader(specObject);
+        Ast.AstSchemaHeader node = m_ast.new AstSchemaHeader(specObject, property);
         node.m_schemaName = parse_SchemaName();
         if (!ok())
             {
             return null;
             }
         tat = m_current;
-        node.m_formalParameters = parse_FormalParameters(specObject);
+        node.m_formalParameters = parse_FormalParameters(specObject, property);
         if (!ok())
             {
             reset(tat);
@@ -337,7 +337,7 @@ public class TozeParser extends TozeParserBase
         return node;
     }
 
-    public Ast.AstVector parse_PredicateList(SpecObject specObject)
+    public Ast.AstVector parse_PredicateList(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -346,7 +346,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstVector node = m_ast.new AstVector();
-        Ast.AstPredicate pnode = parse_Predicate(specObject);
+        Ast.AstPredicate pnode = parse_Predicate(specObject, property);
         if (ok())
             {
             while (true)
@@ -366,7 +366,7 @@ public class TozeParser extends TozeParserBase
                     return node;
                     }
                 int tat = m_current;
-                pnode = parse_Predicate(specObject);
+                pnode = parse_Predicate(specObject, property);
                 if (!ok())
                     {
                     reset(tat);
@@ -385,7 +385,7 @@ public class TozeParser extends TozeParserBase
     /*
      * OperationExpression
      */
-    public Ast.AstOperationExpression parse_OperationExpression(Operation operation)
+    public Ast.AstOperationExpression parse_OperationExpression(Operation operation, String property)
     {
         int at = m_current;
         if (!ok())
@@ -397,14 +397,14 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstAndO node = m_ast.new AstAndO();
-            node.m_declaration = parse_Declaration(operation);
+            node.m_declaration = parse_Declaration(operation, "declaration");
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(operation);
+                node.m_predicate = parse_Predicate(operation, "predicate");
                 }
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_operationExpression = parse_OperationExpression(operation);
+            node.m_operationExpression = parse_OperationExpression(operation, property);
             if (ok())
                 {
                 return node;
@@ -416,14 +416,14 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstBoxO node = m_ast.new AstBoxO();
-            node.m_declaration = parse_Declaration(operation);
+            node.m_declaration = parse_Declaration(operation, "declaration");
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(operation);
+                node.m_predicate = parse_Predicate(operation, "predicate");
                 }
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_operationExpression = parse_OperationExpression(operation);
+            node.m_operationExpression = parse_OperationExpression(operation, property);
             if (ok())
                 {
                 return node;
@@ -435,14 +435,14 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstCompO node = m_ast.new AstCompO();
-            node.m_declaration = parse_Declaration(operation);
+            node.m_declaration = parse_Declaration(operation, "declaration");
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(operation);
+                node.m_predicate = parse_Predicate(operation, "predicate");
                 }
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_operationExpression = parse_OperationExpression(operation);
+            node.m_operationExpression = parse_OperationExpression(operation, property);
             if (ok())
                 {
                 return node;
@@ -450,7 +450,7 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstOperationExpression node = parse_rrOperationExpression1(operation);
+        Ast.AstOperationExpression node = parse_rrOperationExpression1(operation, property);
         if (ok())
             {
             return node;
@@ -459,7 +459,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstOperationExpression parse_rrOperationExpression1(Operation operation)
+    public Ast.AstOperationExpression parse_rrOperationExpression1(Operation operation, String property)
     {
         int at = m_current;
         if (!ok())
@@ -467,7 +467,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
         Ast.AstOperationExpression node = null;
-        Ast.AstOperationExpression rnode = parse_OperationExpression1(operation);
+        Ast.AstOperationExpression rnode = parse_OperationExpression1(operation, property);
 
         while (rnode != node)
             {
@@ -476,12 +476,12 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             node = rnode;
-            rnode = parse_restrrOperationExpression1(node, operation);
+            rnode = parse_restrrOperationExpression1(node, operation, property);
             }
         return rnode;
     }
 
-    public Ast.AstOperationExpression parse_restrrOperationExpression1(Ast.AstOperationExpression inode, Operation operation)
+    public Ast.AstOperationExpression parse_restrrOperationExpression1(Ast.AstOperationExpression inode, Operation operation, String property)
     {
         int at = m_current;
         if (!ok())
@@ -500,7 +500,7 @@ public class TozeParser extends TozeParserBase
             node = m_ast.new AstOperationExpressionBinary();
             node.m_token = nextToken();
             node.m_expressionL = inode;
-            node.m_expressionR = parse_OperationExpression1(operation);
+            node.m_expressionR = parse_OperationExpression1(operation, property);
             if (ok())
                 {
                 return node;
@@ -512,7 +512,7 @@ public class TozeParser extends TozeParserBase
             node = m_ast.new AstOperationExpressionBinary();
             next(TozeTokenizer.TOKEN_BSLASH);
             next(TozeTokenizer.TOKEN_LPAREN);
-            parse_nIdentifier(operation);
+            parse_nIdentifier(operation, property);
             next(TozeTokenizer.TOKEN_RPAREN);
             if (ok())
                 {
@@ -524,7 +524,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstOperationExpression parse_OperationExpression1(Operation operation)
+    public Ast.AstOperationExpression parse_OperationExpression1(Operation operation, String property)
     {
         int at = m_current;
         if (!ok())
@@ -536,9 +536,9 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstOperationExpression1 node = m_ast.new AstOperationExpression1(operation);
-            node.m_deltaList = parse_DeltaList(operation);
+            node.m_deltaList = parse_DeltaList(operation, "deltaList");
             int tat = m_current;
-            node.m_declaration = parse_Declaration(operation);
+            node.m_declaration = parse_Declaration(operation, "declaration");
             if (!ok())
                 {
                 reset(tat);
@@ -546,7 +546,7 @@ public class TozeParser extends TozeParserBase
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(operation);
+                node.m_predicate = parse_Predicate(operation, "predicate");
                 }
             next(TozeTokenizer.TOKEN_RBRACKET);
             if (ok())
@@ -560,11 +560,11 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstOperationExpression1 node = m_ast.new AstOperationExpression1(operation);
-            node.m_declaration = parse_Declaration(operation);
+            node.m_declaration = parse_Declaration(operation, "declaration");
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(operation);
+                node.m_predicate = parse_Predicate(operation, "predicate");
                 }
             next(TozeTokenizer.TOKEN_RBRACKET);
             if (ok())
@@ -578,7 +578,7 @@ public class TozeParser extends TozeParserBase
         if (ok())
             {
             Ast.AstOperationExpression1 node = m_ast.new AstOperationExpression1(operation);
-            node.m_predicate = parse_Predicate(operation);
+            node.m_predicate = parse_Predicate(operation, "predicate");
             next(TozeTokenizer.TOKEN_RBRACKET);
             if (ok())
                 {
@@ -589,7 +589,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         {
         next(TozeTokenizer.TOKEN_LPAREN);
-        Ast.AstOperationExpression node = parse_OperationExpression(operation);
+        Ast.AstOperationExpression node = parse_OperationExpression(operation, property);
         next(TozeTokenizer.TOKEN_RPAREN);
         if (ok())
             {
@@ -598,7 +598,7 @@ public class TozeParser extends TozeParserBase
         }
 
         reset(at);
-        Ast.AstExpression enode = parse_Expression(operation);
+        Ast.AstExpression enode = parse_Expression(operation, property);
         if (ok())
             {
             /*
@@ -615,13 +615,13 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstIdentifier inode = parse_Identifier(operation);
+        Ast.AstIdentifier inode = parse_Identifier(operation, property);
         if (ok())
             {
             Ast.AstOperationReference node = m_ast.new AstOperationReference(operation);
             node.m_identifier = inode;
             int tat = m_current;
-            node.m_renameList = parse_RenameList(operation);
+            node.m_renameList = parse_RenameList(operation, property);
             if (!ok())
                 {
                 reset(tat);
@@ -638,7 +638,7 @@ public class TozeParser extends TozeParserBase
     /*
      * Expression
      */
-    public Ast.AstExpression parse_Expression(SpecObject specObject)
+    public Ast.AstExpression parse_Expression(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -653,14 +653,14 @@ public class TozeParser extends TozeParserBase
 
         if (peek(TozeTokenizer.TOKEN_IF))
             {
-            Ast.AstIfThenElseX node = m_ast.new AstIfThenElseX(specObject);
+            Ast.AstIfThenElseX node = m_ast.new AstIfThenElseX(specObject, property);
 
             next(TozeTokenizer.TOKEN_IF);
-            node.m_predicate = parse_Predicate(specObject);
+            node.m_predicate = parse_Predicate(specObject, property);
             next(TozeTokenizer.TOKEN_THEN);
-            node.m_then = parse_Expression(specObject);
+            node.m_then = parse_Expression(specObject, property);
             next(TozeTokenizer.TOKEN_ELSE);
-            node.m_else = parse_Expression(specObject);
+            node.m_else = parse_Expression(specObject, property);
 
             if (ok())
                 {
@@ -672,7 +672,7 @@ public class TozeParser extends TozeParserBase
         // Expression : Expression1
 
         reset(at);
-        Ast.AstExpression node = parse_rrExpression1(specObject);
+        Ast.AstExpression node = parse_rrExpression1(specObject, property);
         if (ok())
             {
             m_opScope.pop();
@@ -683,7 +683,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstExpression parse_rrExpression1(SpecObject specObject)
+    public Ast.AstExpression parse_rrExpression1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -691,7 +691,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
         Ast.AstExpression node = null;
-        Ast.AstExpression rnode = parse_Expression1(specObject);
+        Ast.AstExpression rnode = parse_Expression1(specObject, property);
 
         while (rnode != node)
             {
@@ -700,12 +700,12 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             node = rnode;
-            rnode = parse_restrrExpression1(node, specObject);
+            rnode = parse_restrrExpression1(node, specObject, property);
             }
         return rnode;
     }
 
-    public Ast.AstExpression parse_restrrExpression1(Ast.AstExpression inode, SpecObject specObject)
+    public Ast.AstExpression parse_restrrExpression1(Ast.AstExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -716,11 +716,11 @@ public class TozeParser extends TozeParserBase
 
         // restrrExpression1 : InfixGenericName rrExpresison1
 
-        node = parse_InfixGenericNameX(specObject);
+        node = parse_InfixGenericNameX(specObject, property);
         if (node != null)
             {
             node.m_expressionL = inode;
-            node.m_expressionR = parse_rrExpression1(specObject);
+            node.m_expressionR = parse_rrExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -732,7 +732,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_Expression1(SpecObject specObject)
+    public Ast.AstExpression parse_Expression1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -741,8 +741,8 @@ public class TozeParser extends TozeParserBase
             }
         Ast.AstExpression node;
 
-        node = parse_rrExpression2(specObject);
-        node = parse_optExpression1(node, specObject);
+        node = parse_rrExpression2(specObject, property);
+        node = parse_optExpression1(node, specObject, property);
         if (ok())
             {
             return node;
@@ -751,7 +751,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstExpression parse_optExpression1(Ast.AstExpression inode, SpecObject specObject)
+    public Ast.AstExpression parse_optExpression1(Ast.AstExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -761,11 +761,11 @@ public class TozeParser extends TozeParserBase
 
         if (peek(TozeTokenizer.TOKEN_PROD))
             {
-            Ast.AstCrossProductX node = m_ast.new AstCrossProductX(specObject);
+            Ast.AstCrossProductX node = m_ast.new AstCrossProductX(specObject, property);
             node.m_token = nextToken();
             node.m_expressionL = inode;
-            node.m_expressionR = parse_rrExpression2(specObject);
-            node.m_expressionR = parse_optExpression1(node.m_expressionR, specObject);
+            node.m_expressionR = parse_rrExpression2(specObject, property);
+            node.m_expressionR = parse_optExpression1(node.m_expressionR, specObject, property);
             if (ok())
                 {
                 return node;
@@ -776,7 +776,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_rrExpression2(SpecObject specObject)
+    public Ast.AstExpression parse_rrExpression2(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -784,7 +784,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
         Ast.AstExpression node = null;
-        Ast.AstExpression rnode = parse_Expression2(specObject);
+        Ast.AstExpression rnode = parse_Expression2(specObject, property);
 
         while (rnode != node)
             {
@@ -793,7 +793,7 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             node = rnode;
-            rnode = parse_restrrExpression2(node, specObject);
+            rnode = parse_restrrExpression2(node, specObject, property);
             }
         if (ok())
             {
@@ -803,7 +803,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstExpression parse_restrrExpression2(Ast.AstExpression inode, SpecObject specObject)
+    public Ast.AstExpression parse_restrrExpression2(Ast.AstExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -811,7 +811,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstInfixFunctionNameX node = parse_InfixFunctionNameX(specObject);
+        Ast.AstInfixFunctionNameX node = parse_InfixFunctionNameX(specObject, property);
 
         if (node != null)
             {
@@ -821,7 +821,7 @@ public class TozeParser extends TozeParserBase
                 return inode;
                 }
             node.m_expressionL = inode;
-            node.m_expressionR = parse_rrExpression2(specObject);
+            node.m_expressionR = parse_rrExpression2(specObject, property);
             if (m_lastOpOrder.size() > 0)
                 {
                 m_lastOpOrder.pop();
@@ -836,7 +836,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_Expression2(SpecObject specObject)
+    public Ast.AstExpression parse_Expression2(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -852,9 +852,9 @@ public class TozeParser extends TozeParserBase
         if (peek(TozeTokenizer.TOKEN_PSET)
                 || peek(TozeTokenizer.TOKEN_FSET))
             {
-            Ast.AstPowerX pnode = m_ast.new AstPowerX(specObject);
+            Ast.AstPowerX pnode = m_ast.new AstPowerX(specObject, property);
             pnode.m_token = nextToken();
-            pnode.m_expression = parse_Expression4(specObject);
+            pnode.m_expression = parse_Expression4(specObject, property);
             if (ok())
                 {
                 return pnode;
@@ -864,10 +864,10 @@ public class TozeParser extends TozeParserBase
         // Expression2 : PrefixGenericName Expression4
 
         reset(at);
-        Ast.AstPrefixGenericNameX gnode = parse_PrefixGenericNameX(specObject);
+        Ast.AstPrefixGenericNameX gnode = parse_PrefixGenericNameX(specObject, property);
         if (gnode != null)
             {
-            gnode.m_expression = parse_Expression4(specObject);
+            gnode.m_expression = parse_Expression4(specObject, property);
             if (ok())
                 {
                 return gnode;
@@ -879,10 +879,10 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (peek(TozeTokenizer.TOKEN_MINUS))
             {
-            Ast.AstHyphenX hnode = m_ast.new AstHyphenX(specObject);
+            Ast.AstHyphenX hnode = m_ast.new AstHyphenX(specObject, property);
             hnode.m_token = nextToken();
             hnode.m_decoration = parse_Decorations();
-            hnode.m_expression = parse_Expression4(specObject);
+            hnode.m_expression = parse_Expression4(specObject, property);
             if (ok())
                 {
                 return hnode;
@@ -903,9 +903,9 @@ public class TozeParser extends TozeParserBase
                 || peek(TozeTokenizer.TOKEN_SECOND)
                 || peek(TozeTokenizer.TOKEN_HASH))
             {
-            Ast.AstBuiltInFunctionX fnode = m_ast.new AstBuiltInFunctionX(specObject);
+            Ast.AstBuiltInFunctionX fnode = m_ast.new AstBuiltInFunctionX(specObject, property);
             fnode.m_token = nextToken();
-            fnode.m_expression = parse_rrExpression4(specObject);
+            fnode.m_expression = parse_rrExpression4(specObject, property);
             if (ok())
                 {
                 return fnode;
@@ -915,13 +915,13 @@ public class TozeParser extends TozeParserBase
         // Expression2 : Expression4 (| Expression0 |) Decoration
 
         reset(at);
-        node = parse_rrExpression4(specObject);
+        node = parse_rrExpression4(specObject, property);
         if (peek(TozeTokenizer.TOKEN_LIMG))
             {
-            Ast.AstImageX inode = m_ast.new AstImageX(specObject);
+            Ast.AstImageX inode = m_ast.new AstImageX(specObject, property);
             inode.m_expression1 = node;
             next(TozeTokenizer.TOKEN_LIMG);
-            inode.m_expression0 = parse_Expression0(specObject);
+            inode.m_expression0 = parse_Expression0(specObject, property);
             next(TozeTokenizer.TOKEN_RIMG);
             inode.m_decoration = parse_Decorations();
             if (ok())
@@ -933,7 +933,7 @@ public class TozeParser extends TozeParserBase
         // Expression2 : Expression3
 
         reset(at);
-        Ast.AstExpression tnode = parse_rrExpression3(specObject);
+        Ast.AstExpression tnode = parse_rrExpression3(specObject, property);
         if (ok())
             {
             return tnode;
@@ -942,7 +942,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstExpression parse_rrExpression3(SpecObject specObject)
+    public Ast.AstExpression parse_rrExpression3(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -952,7 +952,7 @@ public class TozeParser extends TozeParserBase
         Ast.AstExpression node;
 
         // rrExpression3 : Expression4 restrrExpression3
-        node = parse_rrExpression4(specObject);
+        node = parse_rrExpression4(specObject, property);
         node = parse_restrrExpression3(node);
 
         return node;
@@ -985,7 +985,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_Expression3(SpecObject specObject)
+    public Ast.AstExpression parse_Expression3(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -993,10 +993,10 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        return parse_rrExpression4(specObject);
+        return parse_rrExpression4(specObject, property);
     }
 
-    public Ast.AstExpression parse_rrExpression4(SpecObject specObject)
+    public Ast.AstExpression parse_rrExpression4(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1005,7 +1005,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstExpression node = null;
-        Ast.AstExpression rnode = parse_Expression4(specObject);
+        Ast.AstExpression rnode = parse_Expression4(specObject, property);
 
         while (rnode != node)
             {
@@ -1014,7 +1014,7 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             node = rnode;
-            rnode = parse_restrrExpression4(node, specObject);
+            rnode = parse_restrrExpression4(node, specObject, property);
             }
         if (ok())
             {
@@ -1024,7 +1024,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstExpression parse_restrrExpression4(Ast.AstExpression inode, SpecObject specObject)
+    public Ast.AstExpression parse_restrrExpression4(Ast.AstExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1041,11 +1041,11 @@ public class TozeParser extends TozeParserBase
 
         if (peek(TozeTokenizer.TOKEN_UNI))
             {
-            Ast.AstUnionX unode = m_ast.new AstUnionX(specObject);
+            Ast.AstUnionX unode = m_ast.new AstUnionX(specObject, property);
             unode.m_expressionL = inode;
             next(TozeTokenizer.TOKEN_UNI);
-            unode.m_expressionR = parse_Expression4(specObject);
-            unode.m_expressionR = parse_optrestrrExpression4(unode.m_expressionR, specObject);
+            unode.m_expressionR = parse_Expression4(specObject, property);
+            unode.m_expressionR = parse_optrestrrExpression4(unode.m_expressionR, specObject, property);
             if (ok())
                 {
                 return unode;
@@ -1055,7 +1055,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (peek(TozeTokenizer.TOKEN_COPYRIGHT))
             {
-            Ast.AstCopyrightX cnode = m_ast.new AstCopyrightX(specObject);
+            Ast.AstCopyrightX cnode = m_ast.new AstCopyrightX(specObject, property);
             next(TozeTokenizer.TOKEN_COPYRIGHT);
             cnode.m_expression = inode;
             return cnode;
@@ -1064,10 +1064,10 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (peek(TozeTokenizer.TOKEN_PERIOD))
             {
-            Ast.AstMemberX mnode = m_ast.new AstMemberX(specObject);
+            Ast.AstMemberX mnode = m_ast.new AstMemberX(specObject, property);
             next(TozeTokenizer.TOKEN_PERIOD);
             mnode.m_expression = inode;
-            mnode.m_variableName = parse_VariableName(specObject);
+            mnode.m_variableName = parse_VariableName(specObject, property);
             if (ok())
                 {
                 return mnode;
@@ -1079,14 +1079,14 @@ public class TozeParser extends TozeParserBase
             {
             next(TozeTokenizer.TOKEN_LPAREN);
             // new
-            Ast.AstExpressionListX node = m_ast.new AstExpressionListX(specObject);
-            Ast.AstExpression enode = parse_Expression(specObject);
+            Ast.AstExpressionListX node = m_ast.new AstExpressionListX(specObject, property);
+            Ast.AstExpression enode = parse_Expression(specObject, property);
             int tat = m_current;
             next(TozeTokenizer.TOKEN_COMMA);
             node.m_expressions.add(enode);
             while (ok())
                 {
-                enode = parse_Expression(specObject);
+                enode = parse_Expression(specObject, property);
                 node.m_expressions.add(enode);
                 if (peek(TozeTokenizer.TOKEN_RPAREN))
                     {
@@ -1101,7 +1101,7 @@ public class TozeParser extends TozeParserBase
                 }
 
             //Ast.AstExpression lnode = parse_Expression3();
-            Ast.AstFunctionX fnode = m_ast.new AstFunctionX(specObject);
+            Ast.AstFunctionX fnode = m_ast.new AstFunctionX(specObject, property);
             fnode.m_fexpression = inode;
             //fnode.m_pexpression = lnode;
             fnode.m_pexpression = node;
@@ -1116,7 +1116,7 @@ public class TozeParser extends TozeParserBase
         Ast.AstPostfixFunctionName pnode = parse_PostfixFunctionName();
         if (ok())
             {
-            Ast.AstPostfixFunctionNameX node = m_ast.new AstPostfixFunctionNameX(specObject);
+            Ast.AstPostfixFunctionNameX node = m_ast.new AstPostfixFunctionNameX(specObject, property);
             node.m_postfixFunctionName = pnode;
             node.m_expression = inode;
             if (ok())
@@ -1129,7 +1129,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_optrestrrExpression4(Ast.AstExpression inode, SpecObject specObject)
+    public Ast.AstExpression parse_optrestrrExpression4(Ast.AstExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1137,7 +1137,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstExpression node = parse_restrrExpression4(inode, specObject);
+        Ast.AstExpression node = parse_restrrExpression4(inode, specObject, property);
         if (ok())
             {
             return node;
@@ -1147,7 +1147,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstExpression parse_Expression4(SpecObject specObject)
+    public Ast.AstExpression parse_Expression4(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1158,7 +1158,7 @@ public class TozeParser extends TozeParserBase
 
         if (next(TozeTokenizer.TOKEN_WORD, tf))
             {
-            Ast.AstVSCX mnode = m_ast.new AstVSCX(specObject);
+            Ast.AstVSCX mnode = m_ast.new AstVSCX(specObject, property);
             mnode.m_token = tf.t;
             int tat = m_current;
             mnode.m_decorations = parse_Decorations();
@@ -1167,13 +1167,13 @@ public class TozeParser extends TozeParserBase
                 reset(tat);
                 }
             tat = m_current;
-            mnode.m_actualParameters = parse_ActualParameters(specObject);
+            mnode.m_actualParameters = parse_ActualParameters(specObject, property);
             if (!ok())
                 {
                 reset(tat);
                 }
             tat = m_current;
-            mnode.m_renameList = parse_RenameList(specObject);
+            mnode.m_renameList = parse_RenameList(specObject, property);
             if (!ok())
                 {
                 reset(tat);
@@ -1183,7 +1183,7 @@ public class TozeParser extends TozeParserBase
 
         reset(at);
         {
-        Ast.AstSetExpressionX snode = parse_SetExpression(specObject);
+        Ast.AstSetExpressionX snode = parse_SetExpression(specObject, property);
         if (ok())
             {
             return snode;
@@ -1194,14 +1194,14 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LPAREN))
             {
             int tat;
-            Ast.AstExpressionListX node = m_ast.new AstExpressionListX(specObject);
-            Ast.AstExpression enode = parse_Expression(specObject);
+            Ast.AstExpressionListX node = m_ast.new AstExpressionListX(specObject, property);
+            Ast.AstExpression enode = parse_Expression(specObject, property);
             tat = m_current;
             next(TozeTokenizer.TOKEN_COMMA);
             node.m_expressions.add(enode);
             while (ok())
                 {
-                enode = parse_Expression(specObject);
+                enode = parse_Expression(specObject, property);
                 node.m_expressions.add(enode);
                 if (peek(TozeTokenizer.TOKEN_RPAREN))
                     {
@@ -1224,7 +1224,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_SELF))
             {
-            Ast.AstSelfX snode = m_ast.new AstSelfX(specObject);
+            Ast.AstSelfX snode = m_ast.new AstSelfX(specObject, property);
             next(TozeTokenizer.TOKEN_SELF);
             return snode;
             }
@@ -1232,7 +1232,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_NUMBER, tf))
             {
-            Ast.AstNumberX nnode = m_ast.new AstNumberX(specObject);
+            Ast.AstNumberX nnode = m_ast.new AstNumberX(specObject, property);
             nnode.m_token = tf.t;
             return nnode;
             }
@@ -1240,8 +1240,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_DARROW, tf))
             {
-            Ast.AstDownArrowX pnode = m_ast.new AstDownArrowX(specObject);
-            pnode.m_expression = parse_Expression4(specObject);
+            Ast.AstDownArrowX pnode = m_ast.new AstDownArrowX(specObject, property);
+            pnode.m_expression = parse_Expression4(specObject, property);
             if (ok())
                 {
                 return pnode;
@@ -1251,7 +1251,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LPAREN))
             {
-            Ast.AstExpression enode = parse_Expression0(specObject);
+            Ast.AstExpression enode = parse_Expression0(specObject, property);
             next(TozeTokenizer.TOKEN_RPAREN);
             if (ok())
                 {
@@ -1262,7 +1262,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LSEQ))
             {
-            Ast.AstSequenceX snode = m_ast.new AstSequenceX(specObject);
+            Ast.AstSequenceX snode = m_ast.new AstSequenceX(specObject, property);
             while (ok())
                 {
                 if (peek(TozeTokenizer.TOKEN_RSEQ))
@@ -1270,7 +1270,7 @@ public class TozeParser extends TozeParserBase
                     next(TozeTokenizer.TOKEN_RSEQ);
                     break;
                     }
-                Ast.AstExpression enode = parse_Expression(specObject);
+                Ast.AstExpression enode = parse_Expression(specObject, property);
                 if (ok())
                     {
                     snode.m_expressions.add(enode);
@@ -1291,7 +1291,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LBAG))
             {
-            Ast.AstBagX snode = m_ast.new AstBagX(specObject);
+            Ast.AstBagX snode = m_ast.new AstBagX(specObject, property);
             while (ok())
                 {
                 if (peek(TozeTokenizer.TOKEN_RBAG))
@@ -1299,7 +1299,7 @@ public class TozeParser extends TozeParserBase
                     next(TozeTokenizer.TOKEN_RBAG);
                     break;
                     }
-                Ast.AstExpression enode = parse_Expression(specObject);
+                Ast.AstExpression enode = parse_Expression(specObject, property);
                 if (ok())
                     {
                     snode.m_expressions.add(enode);
@@ -1320,8 +1320,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_BIGCUP))
             {
-            Ast.AstDistUnionX node = m_ast.new AstDistUnionX(specObject);
-            node.m_expression = parse_Expression(specObject);
+            Ast.AstDistUnionX node = m_ast.new AstDistUnionX(specObject, property);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1331,8 +1331,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_BIGCAP))
             {
-            Ast.AstDistIntersectionX node = m_ast.new AstDistIntersectionX(specObject);
-            node.m_expression = parse_Expression(specObject);
+            Ast.AstDistIntersectionX node = m_ast.new AstDistIntersectionX(specObject, property);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1358,7 +1358,7 @@ public class TozeParser extends TozeParserBase
 //      
 //      return null;
 //   }
-    public Ast.AstExpression parse_Expression0(SpecObject specObject)
+    public Ast.AstExpression parse_Expression0(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1369,10 +1369,10 @@ public class TozeParser extends TozeParserBase
 
         if (next(TozeTokenizer.TOKEN_LAMBDA))
             {
-            Ast.AstLambdaX node = m_ast.new AstLambdaX(specObject);
-            node.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstLambdaX node = m_ast.new AstLambdaX(specObject, property);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_expression = parse_Expression(specObject);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1382,10 +1382,10 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_MU))
             {
-            Ast.AstMuX node = m_ast.new AstMuX(specObject);
-            node.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstMuX node = m_ast.new AstMuX(specObject, property);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_expression = parse_Expression(specObject);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1395,8 +1395,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LET))
             {
-            Ast.AstLetX node = m_ast.new AstLetX(specObject);
-            Ast.AstLetDefinition lnode = parse_LetDefinition(specObject);
+            Ast.AstLetX node = m_ast.new AstLetX(specObject, property);
+            Ast.AstLetDefinition lnode = parse_LetDefinition(specObject, property);
             if (ok())
                 {
                 while (true)
@@ -1408,7 +1408,7 @@ public class TozeParser extends TozeParserBase
                         break;
                         }
                     next(TozeTokenizer.TOKEN_SEMICOLON);
-                    lnode = parse_LetDefinition(specObject);
+                    lnode = parse_LetDefinition(specObject, property);
                     if (!ok())
                         {
                         reset(tat);
@@ -1416,7 +1416,7 @@ public class TozeParser extends TozeParserBase
                         }
                     }
                 next(TozeTokenizer.TOKEN_DOT);
-                node.m_expression = parse_Expression(specObject);
+                node.m_expression = parse_Expression(specObject, property);
                 if (ok())
                     {
                     return node;
@@ -1425,10 +1425,10 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        return parse_Expression(specObject);
+        return parse_Expression(specObject, property);
     }
 
-    public Ast.AstSetExpressionX parse_SetExpression(SpecObject specObject)
+    public Ast.AstSetExpressionX parse_SetExpression(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1440,7 +1440,7 @@ public class TozeParser extends TozeParserBase
         // SetExpression : { Expression,...,Expression }
         if (next(TozeTokenizer.TOKEN_LBRACE))
             {
-            Ast.AstSetExpressionX1 node = m_ast.new AstSetExpressionX1(specObject);
+            Ast.AstSetExpressionX1 node = m_ast.new AstSetExpressionX1(specObject, property);
 
             // This checks for an empty set case
             if (peek(TozeTokenizer.TOKEN_RBRACE))
@@ -1449,7 +1449,7 @@ public class TozeParser extends TozeParserBase
                 return node;
                 }
 
-            Ast.AstExpression enode = parse_Expression(specObject);
+            Ast.AstExpression enode = parse_Expression(specObject, property);
             if (ok())
                 {
                 while (true)
@@ -1461,7 +1461,7 @@ public class TozeParser extends TozeParserBase
                         return node;
                         }
                     next(TozeTokenizer.TOKEN_COMMA);
-                    enode = parse_Expression(specObject);
+                    enode = parse_Expression(specObject, property);
                     if (!ok())
                         {
                         break;
@@ -1475,13 +1475,13 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LBRACE))
             {
             int tat;
-            Ast.AstSetExpressionX2 node = m_ast.new AstSetExpressionX2(specObject);
-            node.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstSetExpressionX2 node = m_ast.new AstSetExpressionX2(specObject, property);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             tat = m_current;
             next(TozeTokenizer.TOKEN_DOT);
             if (ok())
                 {
-                node.m_expression = parse_Expression(specObject);
+                node.m_expression = parse_Expression(specObject, property);
                 }
             else
                 {
@@ -1501,7 +1501,7 @@ public class TozeParser extends TozeParserBase
                 || peek(TozeTokenizer.TOKEN_BOOL)
                 || peek(TozeTokenizer.TOKEN_REAL))
             {
-            Ast.AstSetExpressionX3 node = m_ast.new AstSetExpressionX3(specObject);
+            Ast.AstSetExpressionX3 node = m_ast.new AstSetExpressionX3(specObject, property);
             node.m_token = nextToken();
             return node;
             }
@@ -1510,7 +1510,7 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_EMPTYSET))
             {
-            Ast.AstSetExpressionX1 node = m_ast.new AstSetExpressionX1(specObject);
+            Ast.AstSetExpressionX1 node = m_ast.new AstSetExpressionX1(specObject, property);
             return node;
             }
 
@@ -1521,7 +1521,7 @@ public class TozeParser extends TozeParserBase
     /*
      * Predicate
      */
-    public Ast.AstPredicate parse_Predicate(SpecObject specObject)
+    public Ast.AstPredicate parse_Predicate(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1532,10 +1532,10 @@ public class TozeParser extends TozeParserBase
 
         if (next(TozeTokenizer.TOKEN_ALL))
             {
-            Ast.AstForAllP anode = m_ast.new AstForAllP(specObject);
-            anode.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstForAllP anode = m_ast.new AstForAllP(specObject, property);
+            anode.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            anode.m_predicate = parse_Predicate(specObject);
+            anode.m_predicate = parse_Predicate(specObject, property);
             if (ok())
                 {
                 return anode;
@@ -1545,10 +1545,10 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_EXI))
             {
-            Ast.AstThereExistsP enode = m_ast.new AstThereExistsP(specObject);
-            enode.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstThereExistsP enode = m_ast.new AstThereExistsP(specObject, property);
+            enode.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            enode.m_predicate = parse_Predicate(specObject);
+            enode.m_predicate = parse_Predicate(specObject, property);
             if (ok())
                 {
                 return enode;
@@ -1558,10 +1558,10 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_EXIONE))
             {
-            Ast.AstThereExists1P enode = m_ast.new AstThereExists1P(specObject);
-            enode.m_schemaText = parse_SchemaText(specObject);
+            Ast.AstThereExists1P enode = m_ast.new AstThereExists1P(specObject, property);
+            enode.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            enode.m_predicate = parse_Predicate(specObject);
+            enode.m_predicate = parse_Predicate(specObject, property);
             if (ok())
                 {
                 return enode;
@@ -1571,8 +1571,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LET))
             {
-            Ast.AstLetP node = m_ast.new AstLetP(specObject);
-            Ast.AstLetDefinition lnode = parse_LetDefinition(specObject);
+            Ast.AstLetP node = m_ast.new AstLetP(specObject, property);
+            Ast.AstLetDefinition lnode = parse_LetDefinition(specObject, property);
             if (ok())
                 {
                 while (true)
@@ -1584,7 +1584,7 @@ public class TozeParser extends TozeParserBase
                         break;
                         }
                     next(TozeTokenizer.TOKEN_SEMICOLON);
-                    lnode = parse_LetDefinition(specObject);
+                    lnode = parse_LetDefinition(specObject, property);
                     if (!ok())
                         {
                         reset(tat);
@@ -1592,7 +1592,7 @@ public class TozeParser extends TozeParserBase
                         }
                     }
                 next(TozeTokenizer.TOKEN_DOT);
-                node.m_predicate = parse_Predicate(specObject);
+                node.m_predicate = parse_Predicate(specObject, property);
                 if (ok())
                     {
                     return node;
@@ -1601,10 +1601,10 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        return parse_rrPredicate1(specObject);
+        return parse_rrPredicate1(specObject, property);
     }
 
-    public Ast.AstPredicate parse_rrPredicate1(SpecObject specObject)
+    public Ast.AstPredicate parse_rrPredicate1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1613,7 +1613,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstPredicate pnode = null;
-        Ast.AstPredicate rpnode = parse_Predicate1(specObject);
+        Ast.AstPredicate rpnode = parse_Predicate1(specObject, property);
 
         while (rpnode != pnode)
             {
@@ -1622,7 +1622,7 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             pnode = rpnode;
-            rpnode = parse_restrrPredicate1(pnode, specObject);
+            rpnode = parse_restrrPredicate1(pnode, specObject, property);
             }
         if (ok())
             {
@@ -1631,7 +1631,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstPredicate parse_restrrPredicate1(Ast.AstPredicate inode, SpecObject specObject)
+    public Ast.AstPredicate parse_restrrPredicate1(Ast.AstPredicate inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1641,9 +1641,9 @@ public class TozeParser extends TozeParserBase
 
         if (next(TozeTokenizer.TOKEN_LAND))
             {
-            Ast.AstAndP anode = m_ast.new AstAndP(specObject);
+            Ast.AstAndP anode = m_ast.new AstAndP(specObject, property);
             anode.m_predicateL = inode;
-            anode.m_predicateR = parse_rrPredicate1(specObject);
+            anode.m_predicateR = parse_rrPredicate1(specObject, property);
             if (ok())
                 {
                 return anode;
@@ -1653,9 +1653,9 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LOR))
             {
-            Ast.AstOrP onode = m_ast.new AstOrP(specObject);
+            Ast.AstOrP onode = m_ast.new AstOrP(specObject, property);
             onode.m_predicateL = inode;
-            onode.m_predicateR = parse_rrPredicate1(specObject);
+            onode.m_predicateR = parse_rrPredicate1(specObject, property);
             if (ok())
                 {
                 return onode;
@@ -1665,9 +1665,9 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_IMP))
             {
-            Ast.AstImpliesP onode = m_ast.new AstImpliesP(specObject);
+            Ast.AstImpliesP onode = m_ast.new AstImpliesP(specObject, property);
             onode.m_predicateL = inode;
-            onode.m_predicateR = parse_rrPredicate1(specObject);
+            onode.m_predicateR = parse_rrPredicate1(specObject, property);
             if (ok())
                 {
                 return onode;
@@ -1677,9 +1677,9 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_IFF))
             {
-            Ast.AstBiimpliesP onode = m_ast.new AstBiimpliesP(specObject);
+            Ast.AstBiimpliesP onode = m_ast.new AstBiimpliesP(specObject, property);
             onode.m_predicateL = inode;
-            onode.m_predicateR = parse_rrPredicate1(specObject);
+            onode.m_predicateR = parse_rrPredicate1(specObject, property);
             if (ok())
                 {
                 return onode;
@@ -1690,7 +1690,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstPredicate parse_Predicate1(SpecObject specObject)
+    public Ast.AstPredicate parse_Predicate1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1701,11 +1701,11 @@ public class TozeParser extends TozeParserBase
 
         // Predicate1 : Expression Relation...Relation Expression
 
-        Ast.AstExpression enode = parse_Expression(specObject);
+        Ast.AstExpression enode = parse_Expression(specObject, property);
         if (enode != null)
             {
             Ast.AstRelation rnode;
-            Ast.AstRelationsP node = m_ast.new AstRelationsP(specObject);
+            Ast.AstRelationsP node = m_ast.new AstRelationsP(specObject, property);
             node.m_expressionL = enode;
             rnode = parse_Relation();
             if (rnode != null)
@@ -1721,7 +1721,7 @@ public class TozeParser extends TozeParserBase
                         break;
                         }
                     }
-                node.m_expressionR = parse_Expression(specObject);
+                node.m_expressionR = parse_Expression(specObject, property);
                 if (ok())
                     {
                     return node;
@@ -1732,10 +1732,10 @@ public class TozeParser extends TozeParserBase
         // Predicate1 : Expression.INIT
 
         reset(at);
-        enode = parse_Expression(specObject);
+        enode = parse_Expression(specObject, property);
         if (ok())
             {
-            Ast.AstInitP node = m_ast.new AstInitP(specObject);
+            Ast.AstInitP node = m_ast.new AstInitP(specObject, property);
             node.m_expression = enode;
             next(TozeTokenizer.TOKEN_DOTINIT);
             if (ok())
@@ -1745,17 +1745,17 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstPredicateExpression node = m_ast.new AstPredicateExpression(specObject);
-        node.m_expression = parse_Expression(specObject);
+        Ast.AstPredicateExpression node = m_ast.new AstPredicateExpression(specObject, property);
+        node.m_expression = parse_Expression(specObject, property);
         if (ok())
             {
             return node;
             }
 
-        return parse_Predicate1sub1(at, specObject);
+        return parse_Predicate1sub1(at, specObject, property);
     }
 
-    public Ast.AstPredicate parse_Predicate1sub1(int at, SpecObject specObject)
+    public Ast.AstPredicate parse_Predicate1sub1(int at, SpecObject specObject, String property)
     {
         int tat;
 
@@ -1765,9 +1765,9 @@ public class TozeParser extends TozeParserBase
         Ast.AstPrefixRelationName rnode = parse_PrefixRelationName();
         if (rnode != null)
             {
-            Ast.AstPrefixRelationNameP node = m_ast.new AstPrefixRelationNameP(specObject);
+            Ast.AstPrefixRelationNameP node = m_ast.new AstPrefixRelationNameP(specObject, property);
             node.m_prefixRelationName = rnode;
-            node.m_expression = parse_Expression(specObject);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1779,8 +1779,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_PRE))
             {
-            Ast.AstPreP node = m_ast.new AstPreP(specObject);
-            node.m_schemaReference = parse_SchemaReference(specObject);
+            Ast.AstPreP node = m_ast.new AstPreP(specObject, property);
+            node.m_schemaReference = parse_SchemaReference(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1794,7 +1794,7 @@ public class TozeParser extends TozeParserBase
         if (peek(TozeTokenizer.TOKEN_TRUE)
                 || peek(TozeTokenizer.TOKEN_FALSE))
             {
-            Ast.AstTrueFalseP node = m_ast.new AstTrueFalseP(specObject);
+            Ast.AstTrueFalseP node = m_ast.new AstTrueFalseP(specObject, property);
             node.m_token = nextToken();
             return node;
             }
@@ -1804,8 +1804,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LNOT))
             {
-            Ast.AstNotP node = m_ast.new AstNotP(specObject);
-            node.m_predicate = parse_Predicate(specObject);
+            Ast.AstNotP node = m_ast.new AstNotP(specObject, property);
+            node.m_predicate = parse_Predicate(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1817,8 +1817,8 @@ public class TozeParser extends TozeParserBase
         reset(at);
         if (next(TozeTokenizer.TOKEN_LPAREN))
             {
-            Ast.AstParenP node = m_ast.new AstParenP(specObject);
-            node.m_predicate = parse_Predicate(specObject);
+            Ast.AstParenP node = m_ast.new AstParenP(specObject, property);
+            node.m_predicate = parse_Predicate(specObject, property);
             next(TozeTokenizer.TOKEN_RPAREN);
             if (ok())
                 {
@@ -1829,10 +1829,10 @@ public class TozeParser extends TozeParserBase
         // Predicate1 : SchemaReference
 
         reset(at);
-        Ast.AstSchemaReference snode = parse_SchemaReference(specObject);
+        Ast.AstSchemaReference snode = parse_SchemaReference(specObject, property);
         if (ok())
             {
-            Ast.AstSchemaReferenceP node = m_ast.new AstSchemaReferenceP(specObject);
+            Ast.AstSchemaReferenceP node = m_ast.new AstSchemaReferenceP(specObject, property);
             node.m_schemaReference = snode;
             return node;
             }
@@ -1843,7 +1843,7 @@ public class TozeParser extends TozeParserBase
     /*
      * Schema Expressions
      */
-    public Ast.AstSchemaExpression parse_SchemaExpression(SpecObject specObject)
+    public Ast.AstSchemaExpression parse_SchemaExpression(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1855,9 +1855,9 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_ALL))
             {
             Ast.AstForAllS node = m_ast.new AstForAllS();
-            node.m_schemaText = parse_SchemaText(specObject);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_schemaExpression = parse_SchemaExpression(specObject);
+            node.m_schemaExpression = parse_SchemaExpression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1868,9 +1868,9 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_EXI))
             {
             Ast.AstThereExistsS node = m_ast.new AstThereExistsS();
-            node.m_schemaText = parse_SchemaText(specObject);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_schemaExpression = parse_SchemaExpression(specObject);
+            node.m_schemaExpression = parse_SchemaExpression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1881,20 +1881,20 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_EXIONE))
             {
             Ast.AstThereExistsS node = m_ast.new AstThereExistsS();
-            node.m_schemaText = parse_SchemaText(specObject);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_DOT);
-            node.m_schemaExpression = parse_SchemaExpression(specObject);
+            node.m_schemaExpression = parse_SchemaExpression(specObject, property);
             if (ok())
                 {
                 return node;
                 }
             }
 
-        Ast.AstSchemaExpression node = parse_rrSchemaExpression1(specObject);
+        Ast.AstSchemaExpression node = parse_rrSchemaExpression1(specObject, property);
         return node;
     }
 
-    public Ast.AstSchemaExpression parse_rrSchemaExpression1(SpecObject specObject)
+    public Ast.AstSchemaExpression parse_rrSchemaExpression1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1904,7 +1904,7 @@ public class TozeParser extends TozeParserBase
         int tat;
 
         Ast.AstSchemaExpression node = null;
-        Ast.AstSchemaExpression rnode = parse_SchemaExpression1(specObject);
+        Ast.AstSchemaExpression rnode = parse_SchemaExpression1(specObject, property);
 
         while (rnode != node)
             {
@@ -1913,12 +1913,12 @@ public class TozeParser extends TozeParserBase
                 break;
                 }
             node = rnode;
-            rnode = parse_restrrSchemaExpression1(node, specObject);
+            rnode = parse_restrrSchemaExpression1(node, specObject, property);
             }
         return rnode;
     }
 
-    public Ast.AstSchemaExpression parse_restrrSchemaExpression1(Ast.AstSchemaExpression inode, SpecObject specObject)
+    public Ast.AstSchemaExpression parse_restrrSchemaExpression1(Ast.AstSchemaExpression inode, SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -1931,7 +1931,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstAndS node = m_ast.new AstAndS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1943,7 +1943,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstOrS node = m_ast.new AstOrS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1955,7 +1955,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstImpliesS node = m_ast.new AstImpliesS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1967,7 +1967,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstBiimpliesS node = m_ast.new AstBiimpliesS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1979,7 +1979,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstProjS node = m_ast.new AstProjS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -1992,7 +1992,7 @@ public class TozeParser extends TozeParserBase
             Ast.AstBslashS node = m_ast.new AstBslashS();
             node.m_schemaExpression = inode;
             next(TozeTokenizer.TOKEN_LPAREN);
-            node.m_declarationNameList = parse_DeclarationNameList(specObject);
+            node.m_declarationNameList = parse_DeclarationNameList(specObject, property);
             next(TozeTokenizer.TOKEN_RPAREN);
             if (ok())
                 {
@@ -2005,7 +2005,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstCompS node = m_ast.new AstCompS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2017,7 +2017,7 @@ public class TozeParser extends TozeParserBase
             {
             Ast.AstMgtS node = m_ast.new AstMgtS();
             node.m_schemaExpressionL = inode;
-            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpressionR = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2028,7 +2028,7 @@ public class TozeParser extends TozeParserBase
         return inode;
     }
 
-    public Ast.AstSchemaExpression parse_SchemaExpression1(SpecObject specObject)
+    public Ast.AstSchemaExpression parse_SchemaExpression1(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2040,7 +2040,7 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LBRACKET))
             {
             Ast.AstSchemaTextS node = m_ast.new AstSchemaTextS();
-            node.m_schemaText = parse_SchemaText(specObject);
+            node.m_schemaText = parse_SchemaText(specObject, property);
             next(TozeTokenizer.TOKEN_RBRACKET);
             if (ok())
                 {
@@ -2049,7 +2049,7 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstSchemaReference snode = parse_SchemaReference(specObject);
+        Ast.AstSchemaReference snode = parse_SchemaReference(specObject, property);
         if (ok())
             {
             Ast.AstSchemaReferenceS node = m_ast.new AstSchemaReferenceS();
@@ -2061,7 +2061,7 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LNOT))
             {
             Ast.AstNotS node = m_ast.new AstNotS();
-            node.m_schemaExpression = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpression = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2072,7 +2072,7 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_PRE))
             {
             Ast.AstPreS node = m_ast.new AstPreS();
-            node.m_schemaExpression = parse_rrSchemaExpression1(specObject);
+            node.m_schemaExpression = parse_rrSchemaExpression1(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2083,7 +2083,7 @@ public class TozeParser extends TozeParserBase
         if (next(TozeTokenizer.TOKEN_LPAREN))
             {
             Ast.AstParenS node = m_ast.new AstParenS();
-            node.m_schemaExpression = parse_SchemaExpression(specObject);
+            node.m_schemaExpression = parse_SchemaExpression(specObject, property);
             next(TozeTokenizer.TOKEN_RPAREN);
             if (ok())
                 {
@@ -2097,7 +2097,7 @@ public class TozeParser extends TozeParserBase
     /*
      *
      */
-    public Ast.AstVariableName parse_VariableName(SpecObject specObject)
+    public Ast.AstVariableName parse_VariableName(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2106,7 +2106,7 @@ public class TozeParser extends TozeParserBase
             }
 
         Ast.AstIdentifier inode;
-        inode = parse_Identifier(specObject);
+        inode = parse_Identifier(specObject, property);
         if (inode != null)
             {
             Ast.AstVariableName1 v1node = m_ast.new AstVariableName1();
@@ -2135,7 +2135,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstIdentifier parse_Identifier(SpecObject specObject)
+    public Ast.AstIdentifier parse_Identifier(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2146,7 +2146,7 @@ public class TozeParser extends TozeParserBase
 
         if (next(TozeTokenizer.TOKEN_WORD, tr))
             {
-            Ast.AstIdentifier inode = m_ast.new AstIdentifier(specObject);
+            Ast.AstIdentifier inode = m_ast.new AstIdentifier(specObject, property);
             inode.m_token = tr.t;
             inode.m_decorations = parse_Decorations();
             if (ok())
@@ -2247,12 +2247,12 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstDeltaList parse_DeltaList(Operation operation)
+    public Ast.AstDeltaList parse_DeltaList(Operation operation, String property)
     {
         Ast.AstDeltaList node = m_ast.new AstDeltaList(operation);
         next(TozeTokenizer.TOKEN_DELTA);
         next(TozeTokenizer.TOKEN_LPAREN);
-        node.m_declarationNameList = parse_DeclarationNameList(operation);
+        node.m_declarationNameList = parse_DeclarationNameList(operation, property);
         next(TozeTokenizer.TOKEN_RPAREN);
         if (ok())
             {
@@ -2261,7 +2261,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstActualParameters parse_ActualParameters(SpecObject specObject)
+    public Ast.AstActualParameters parse_ActualParameters(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2278,7 +2278,7 @@ public class TozeParser extends TozeParserBase
 
             while (true)
                 {
-                enode = parse_Expression(specObject);
+                enode = parse_Expression(specObject, property);
                 if (!ok())
                     {
                     break;
@@ -2300,7 +2300,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstRenameList parse_RenameList(SpecObject specObject)
+    public Ast.AstRenameList parse_RenameList(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2317,7 +2317,7 @@ public class TozeParser extends TozeParserBase
 
             while (true)
                 {
-                inode = parse_RenameItem(specObject);
+                inode = parse_RenameItem(specObject, property);
                 if (!ok())
                     {
                     break;
@@ -2339,7 +2339,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstFormalParameters parse_FormalParametersWoBrackets(SpecObject specObject)
+    public Ast.AstFormalParameters parse_FormalParametersWoBrackets(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2352,7 +2352,7 @@ public class TozeParser extends TozeParserBase
 
         while (true)
             {
-            inode = parse_Identifier(specObject);
+            inode = parse_Identifier(specObject, property);
             if (!ok())
                 {
                 break;
@@ -2372,7 +2372,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstFormalParameters parse_FormalParameters(SpecObject specObject)
+    public Ast.AstFormalParameters parse_FormalParameters(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2385,7 +2385,7 @@ public class TozeParser extends TozeParserBase
             Ast.AstFormalParameters node;
             next(TozeTokenizer.TOKEN_LBRACKET);
 
-            node = parse_FormalParametersWoBrackets(specObject);
+            node = parse_FormalParametersWoBrackets(specObject, property);
 
             next(TozeTokenizer.TOKEN_RBRACKET);
             if (ok())
@@ -2397,7 +2397,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstRenameItem parse_RenameItem(SpecObject specObject)
+    public Ast.AstRenameItem parse_RenameItem(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2405,13 +2405,13 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstDeclarationName decl = parse_DeclarationName(specObject);
+        Ast.AstDeclarationName decl = parse_DeclarationName(specObject, property);
         if (decl != null)
             {
             Ast.AstRenameItem node = m_ast.new AstRenameItem();
             node.m_declarationName1 = decl;
             next(TozeTokenizer.TOKEN_FSLASH);
-            node.m_declarationName2 = parse_DeclarationName(specObject);
+            node.m_declarationName2 = parse_DeclarationName(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2421,7 +2421,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstDeclaration parse_Declaration(SpecObject specObject)
+    public Ast.AstDeclaration parse_Declaration(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2429,7 +2429,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstBasicDeclaration dnode = parse_BasicDeclaration(specObject);
+        Ast.AstBasicDeclaration dnode = parse_BasicDeclaration(specObject, property);
         if (dnode != null)
             {
             Ast.AstDeclaration node = m_ast.new AstDeclaration();
@@ -2449,7 +2449,7 @@ public class TozeParser extends TozeParserBase
                     {
                     return node;
                     }
-                dnode = parse_BasicDeclaration(specObject);
+                dnode = parse_BasicDeclaration(specObject, property);
                 if (dnode == null)
                     {
                     break;
@@ -2460,7 +2460,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstBasicDeclaration parse_BasicDeclaration(SpecObject specObject)
+    public Ast.AstBasicDeclaration parse_BasicDeclaration(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2468,15 +2468,15 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstDeclarationNameList nnode = parse_DeclarationNameList(specObject);
+        Ast.AstDeclarationNameList nnode = parse_DeclarationNameList(specObject, property);
         if (nnode != null)
             {
-            Ast.AstBasicDeclaration1 node = m_ast.new AstBasicDeclaration1(specObject);
+            Ast.AstBasicDeclaration1 node = m_ast.new AstBasicDeclaration1(specObject, property);
             node.m_declarationNameList = nnode;
             if (peek(TozeTokenizer.TOKEN_COLON))
                 {
                 node.m_token = nextToken();
-                node.m_expression = parse_Expression(specObject);
+                node.m_expression = parse_Expression(specObject, property);
                 if (ok())
                     {
                     return node;
@@ -2485,7 +2485,7 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstSchemaReference snode = parse_SchemaReference(specObject);
+        Ast.AstSchemaReference snode = parse_SchemaReference(specObject, property);
         if (snode != null)
             {
             Ast.AstBasicDeclaration2 node = m_ast.new AstBasicDeclaration2();
@@ -2499,7 +2499,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstDeclarationNameList parse_DeclarationNameList(SpecObject specObject)
+    public Ast.AstDeclarationNameList parse_DeclarationNameList(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2507,10 +2507,10 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstDeclarationName dnode = parse_DeclarationName(specObject);
+        Ast.AstDeclarationName dnode = parse_DeclarationName(specObject, property);
         if (dnode != null)
             {
-            Ast.AstDeclarationNameList node = m_ast.new AstDeclarationNameList(specObject);
+            Ast.AstDeclarationNameList node = m_ast.new AstDeclarationNameList(specObject, property);
             while (true)
                 {
                 node.m_declarationNameList.add(dnode);
@@ -2519,7 +2519,7 @@ public class TozeParser extends TozeParserBase
                     return node;
                     }
                 next(TozeTokenizer.TOKEN_COMMA);
-                dnode = parse_DeclarationName(specObject);
+                dnode = parse_DeclarationName(specObject, property);
                 if (dnode == null)
                     {
                     break;
@@ -2529,7 +2529,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstDeclarationName parse_DeclarationName(SpecObject specObject)
+    public Ast.AstDeclarationName parse_DeclarationName(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2537,7 +2537,7 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstIdentifier inode = parse_Identifier(specObject);
+        Ast.AstIdentifier inode = parse_Identifier(specObject, property);
         if (inode != null)
             {
             Ast.AstDeclarationName1 d1node = m_ast.new AstDeclarationName1();
@@ -2557,7 +2557,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstSchemaText parse_SchemaText(SpecObject specObject)
+    public Ast.AstSchemaText parse_SchemaText(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2566,7 +2566,7 @@ public class TozeParser extends TozeParserBase
             }
 
         // SchemaText : Declaration 
-        Ast.AstDeclaration dnode = parse_Declaration(specObject);
+        Ast.AstDeclaration dnode = parse_Declaration(specObject, property);
         if (ok())
             {
             Ast.AstSchemaText node = m_ast.new AstSchemaText();
@@ -2574,7 +2574,7 @@ public class TozeParser extends TozeParserBase
             if (peek(TozeTokenizer.TOKEN_PIPE))
                 {
                 next(TozeTokenizer.TOKEN_PIPE);
-                node.m_predicate = parse_Predicate(specObject);
+                node.m_predicate = parse_Predicate(specObject, property);
                 }
             if (ok())
                 {
@@ -2585,7 +2585,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstSchemaReference parse_SchemaReference(SpecObject specObject)
+    public Ast.AstSchemaReference parse_SchemaReference(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2596,7 +2596,7 @@ public class TozeParser extends TozeParserBase
         Ast.AstSchemaName snode = parse_SchemaName();
         if (snode != null)
             {
-            Ast.AstSchemaReference node = m_ast.new AstSchemaReference(specObject);
+            Ast.AstSchemaReference node = m_ast.new AstSchemaReference(specObject, property);
             node.m_schemaName = snode;
             int tat = m_current;
             node.m_decorations = parse_Decorations();
@@ -2605,13 +2605,13 @@ public class TozeParser extends TozeParserBase
                 reset(tat);
                 }
             tat = m_current;
-            node.m_actualParameters = parse_ActualParameters(specObject);
+            node.m_actualParameters = parse_ActualParameters(specObject, property);
             if (!ok())
                 {
                 reset(tat);
                 }
             tat = m_current;
-            node.m_renameList = parse_RenameList(specObject);
+            node.m_renameList = parse_RenameList(specObject, property);
             if (!ok())
                 {
                 reset(tat);
@@ -2641,7 +2641,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstLetDefinition parse_LetDefinition(SpecObject specObject)
+    public Ast.AstLetDefinition parse_LetDefinition(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2649,13 +2649,13 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstVariableName nnode = parse_VariableName(specObject);
+        Ast.AstVariableName nnode = parse_VariableName(specObject, property);
         if (nnode != null)
             {
             Ast.AstLetDefinition node = m_ast.new AstLetDefinition();
             next(TozeTokenizer.TOKEN_DEFS);
             node.m_variableName = nnode;
-            node.m_expression = parse_Expression(specObject);
+            node.m_expression = parse_Expression(specObject, property);
             if (ok())
                 {
                 return node;
@@ -2758,7 +2758,7 @@ public class TozeParser extends TozeParserBase
         return node;
     }
 
-    public Ast.AstBranch parse_Branch(SpecObject specObject)
+    public Ast.AstBranch parse_Branch(SpecObject specObject, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2766,13 +2766,13 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
-        Ast.AstVariableName vnode = parse_VariableName(specObject);
+        Ast.AstVariableName vnode = parse_VariableName(specObject, property);
         if (ok())
             {
             Ast.AstBranch2 node = m_ast.new AstBranch2();
             node.m_variableName = vnode;
             next(TozeTokenizer.TOKEN_DLABRACKET);
-            node.m_expression = parse_Expression(specObject);
+            node.m_expression = parse_Expression(specObject, property);
             next(TozeTokenizer.TOKEN_DRABRACKET);
             if (ok())
                 {
@@ -2781,10 +2781,10 @@ public class TozeParser extends TozeParserBase
             }
 
         reset(at);
-        Ast.AstIdentifier inode = parse_Identifier(specObject);
+        Ast.AstIdentifier inode = parse_Identifier(specObject, property);
         if (ok())
             {
-            Ast.AstBranch1 node = m_ast.new AstBranch1(specObject);
+            Ast.AstBranch1 node = m_ast.new AstBranch1(specObject, property);
             node.m_identifier = inode;
             if (ok())
                 {
@@ -2814,7 +2814,7 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstInheritedClass parse_InheritedClass(InheritedClass inheritedClass)
+    public Ast.AstInheritedClass parse_InheritedClass(InheritedClass inheritedClass, String property)
     {
         int at = m_current;
         if (!ok())
@@ -2830,13 +2830,13 @@ public class TozeParser extends TozeParserBase
             return null;
             }
         tat = m_current;
-        node.m_actualParameters = parse_ActualParameters(inheritedClass);
+        node.m_actualParameters = parse_ActualParameters(inheritedClass, property);
         if (!ok())
             {
             reset(tat);
             }
         tat = m_current;
-        node.m_renameList = parse_RenameList(inheritedClass);
+        node.m_renameList = parse_RenameList(inheritedClass, property);
         if (!ok())
             {
             reset(tat);
@@ -2913,12 +2913,12 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstInfixGenericNameX parse_InfixGenericNameX(SpecObject specObject)
+    public Ast.AstInfixGenericNameX parse_InfixGenericNameX(SpecObject specObject, String property)
     {
         Ast.AstInfixGenericName node = parse_InfixGenericName();
         if (node != null)
             {
-            Ast.AstInfixGenericNameX xnode = m_ast.new AstInfixGenericNameX(specObject);
+            Ast.AstInfixGenericNameX xnode = m_ast.new AstInfixGenericNameX(specObject, property);
             xnode.m_infixGenericName = node;
             return xnode;
             }
@@ -2960,12 +2960,12 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstInfixFunctionNameX parse_InfixFunctionNameX(SpecObject specObject)
+    public Ast.AstInfixFunctionNameX parse_InfixFunctionNameX(SpecObject specObject, String property)
     {
         Ast.AstInfixFunctionName node = parse_InfixFunctionName();
         if (node != null)
             {
-            Ast.AstInfixFunctionNameX xnode = m_ast.new AstInfixFunctionNameX(specObject);
+            Ast.AstInfixFunctionNameX xnode = m_ast.new AstInfixFunctionNameX(specObject, property);
             xnode.m_infixFunctionName = node;
             return xnode;
             }
@@ -3023,12 +3023,12 @@ public class TozeParser extends TozeParserBase
         return null;
     }
 
-    public Ast.AstPrefixGenericNameX parse_PrefixGenericNameX(SpecObject specObject)
+    public Ast.AstPrefixGenericNameX parse_PrefixGenericNameX(SpecObject specObject, String property)
     {
         Ast.AstPrefixGenericName node = parse_PrefixGenericName();
         if (node != null)
             {
-            Ast.AstPrefixGenericNameX xnode = m_ast.new AstPrefixGenericNameX(specObject);
+            Ast.AstPrefixGenericNameX xnode = m_ast.new AstPrefixGenericNameX(specObject, property);
             xnode.m_prefixGenericName = node;
             return xnode;
             }

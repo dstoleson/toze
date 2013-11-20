@@ -39,26 +39,20 @@ public class Ast
         AstSymbolTable m_stable = null;
 
         public void reportTypeError(String msg,
-                                    TozeToken token, SpecObject specObject)
+                                    TozeToken token, SpecObject specObject, String property)
         {
-            String tokenMsg = msg;
-
             if (specObject != null)
                 {
-                token.setDescription(specObject.getClass().getName() + ": " + msg);
+                token.setErrorType(ErrorType.TypeError);
+                token.setDescription(specObject.getClass().getSimpleName() + "->" + property + ": " + msg);
                 }
-            else
-                {
-                token.setDescription(msg);
-                }
+//            else
+//                {
+//                token.setDescription(msg);
+//                }
+            specObject.setErrorForProperty(property, token);
             errors.add(token);
         }
-
-//        public void reportTypeError(String msg,
-//                                    TozeToken token)
-//        {
-//            reportTypeError(msg, token, null);
-//        }
 
         public void printSpaces(int l)
         {
@@ -903,7 +897,8 @@ public class Ast
                 {
                 m_className.reportTypeError(className + " is already added as a class",
                                             m_className.m_token,
-                                            this.classDef
+                                            this.classDef,
+                                            "name"
                                             );
                 }
 
@@ -1212,7 +1207,8 @@ public class Ast
                         reportTypeError(
                                 name.getName() + " is not a valid member and cannot be included in the visiblity list",
                                 name.m_token,
-                                this.classDef
+                                this.classDef,
+                                "visibilityList"
                                 );
                         }
                     }
@@ -1257,7 +1253,8 @@ public class Ast
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
                                      m_className.m_token,
-                                     this.inheritedClass
+                                     this.inheritedClass,
+                                     "name"
                 );
                 return;
                 }
@@ -1265,14 +1262,16 @@ public class Ast
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
                                      m_className.m_token,
-                                     this.inheritedClass
+                                     this.inheritedClass,
+                                     "name"
                 );
                 }
             if (type.getSetType().getType() != AstType.TYPE_CLASS)
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",
                                      m_className.m_token,
-                                     this.inheritedClass
+                                     this.inheritedClass,
+                                     "name"
                 );
                 return;
                 }
@@ -1286,7 +1285,8 @@ public class Ast
                 reportTypeError(
                         "The number of actual parameters for an inherited class must match the number of formal parameters in the definition.",
                         m_className.m_token,
-                        this.inheritedClass
+                        this.inheritedClass,
+                        "name"
                 );
                 }
             m_stable.add(m_className.getName(), type.getSetType().m_classMembers);
@@ -1647,7 +1647,8 @@ public class Ast
                         {
                         id.reportTypeError(id.getName() + " is not defined",
                                            id.m_token,
-                                           this.operation
+                                           this.operation,
+                                           "deltaList"
                         );
                         }
                     }
@@ -1669,12 +1670,14 @@ public class Ast
     public class AstAbbreviation1 extends AstAbbreviation
     {
         SpecObject specObject;
+        String property;
         AstVariableName m_variableName;
         AstFormalParameters m_formalParameters;
 
-        AstAbbreviation1(SpecObject specObject)
+        AstAbbreviation1(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public void print(int l)
@@ -1696,7 +1699,8 @@ public class Ast
         {
             reportTypeError(m_variableName.getName() + " is already defined",
                             m_variableName.m_token,
-                            specObject
+                            specObject,
+                            property
             );
         }
     }
@@ -1750,11 +1754,14 @@ public class Ast
     public class AstBranch1 extends AstBranch
     {
         SpecObject specObject;
+        String property;
+
         AstIdentifier m_identifier;
 
-        public AstBranch1(SpecObject specObject)
+        public AstBranch1(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
         public void print(int l)
         {
@@ -1779,7 +1786,8 @@ public class Ast
                 TozeToken token = m_identifier.m_token;
                 this.reportTypeError(msg,
                                      token,
-                                     specObject
+                                     specObject,
+                                     property
                 );
                 }
         }
@@ -1801,11 +1809,12 @@ public class Ast
     public class AstBasicDeclaration1 extends AstBasicDeclaration
     {
         SpecObject specObject;
+        String property;
 
         AstDeclarationNameList m_declarationNameList;
         AstExpression m_expression;
 
-        public AstBasicDeclaration1(SpecObject specObject)
+        public AstBasicDeclaration1(SpecObject specObject, String property)
         {
             this.specObject = specObject;
         }
@@ -1841,7 +1850,8 @@ public class Ast
                 {
                 reportTypeError("Expressions used in declarations must result in a set",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return;
                 }
@@ -1882,14 +1892,16 @@ public class Ast
     public class AstSchemaHeader extends AstBase
     {
         SpecObject specObject;
+        String property;
 
         AstSchemaName m_schemaName;
         AstFormalParameters m_formalParameters;
         boolean added = false;
 
-        public AstSchemaHeader(SpecObject specObject)
+        public AstSchemaHeader(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -1909,7 +1921,8 @@ public class Ast
                 {
                 this.reportTypeError(m_schemaName.getName() + " is already defined as a schema.",
                                      m_schemaName.m_token,
-                                     specObject
+                                     specObject,
+                                     property
                 );
                 }
         }
@@ -1956,13 +1969,14 @@ public class Ast
     public class AstSchemaReference extends AstBase
     {
         SpecObject specObject;
+        String property;
 
         AstSchemaName m_schemaName;
         AstDecorations m_decorations;
         AstActualParameters m_actualParameters;
         AstRenameList m_renameList;
 
-        public AstSchemaReference(SpecObject specObject)
+        public AstSchemaReference(SpecObject specObject, String property)
         {
             this.specObject = specObject;
         }
@@ -1992,7 +2006,8 @@ public class Ast
                 {
                 reportTypeError("The schema " + m_schemaName.getName() + " does not exist",
                                 m_schemaName.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return;
                 }
@@ -2000,7 +2015,8 @@ public class Ast
                 {
                 reportTypeError(m_schemaName.getName() + " is not a schema name",
                                 m_schemaName.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return;
                 }
@@ -2120,11 +2136,14 @@ public class Ast
     public class AstIdentifier extends AstBase
     {
         SpecObject specObject;
+        String property;
+
         AstDecorations m_decorations;
 
-        public AstIdentifier(SpecObject specObject)
+        public AstIdentifier(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public String getName()
@@ -2149,7 +2168,8 @@ public class Ast
         {
             reportTypeError(m_token.m_value + " is already defined",
                             m_token,
-                            specObject
+                            specObject,
+                            property
             );
         }
     }
@@ -2157,11 +2177,14 @@ public class Ast
     public class AstDeclarationNameList extends AstBase
     {
         SpecObject specObject;
+        String property;
+
         List m_declarationNameList = new ArrayList();
 
-        public AstDeclarationNameList(SpecObject specObject)
+        public AstDeclarationNameList(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public void print(int l)
@@ -2184,7 +2207,8 @@ public class Ast
                     {
                     reportTypeError(name + " is already defined",
                                     ((AstDeclarationName) m_declarationNameList.get(i)).getToken(),
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 }
@@ -2477,7 +2501,8 @@ public class Ast
         {
             reportTypeError(m_identifier.getName() + " is already defined",
                             m_identifier.m_token,
-                            operation
+                            operation,
+                            "name"
             );
         }
     }
@@ -2709,7 +2734,8 @@ public class Ast
                         {
                         reportTypeError(id.getName() + " is not defined for this operation",
                                         id.m_token,
-                                        operation
+                                        operation,
+                                        "declaration"
                         );
                         }
                     }
@@ -2741,7 +2767,8 @@ public class Ast
                 {
                 reportTypeError("The operation " + m_identifier.getName() + " does not exist",
                                 m_identifier.m_token,
-                                operation
+                                operation,
+                                "name"
                 );
                 return new AstType();
                 }
@@ -2749,7 +2776,8 @@ public class Ast
                 {
                 reportTypeError(m_identifier.getName() + " is not an operation name",
                                 m_identifier.m_token,
-                                operation
+                                operation,
+                                "name"
                 );
                 return new AstType();
                 }
@@ -2774,10 +2802,12 @@ public class Ast
     public class AstPredicate extends AstBase
     {
         SpecObject specObject;
+        String property;
 
-        public AstPredicate(SpecObject specObject)
+        public AstPredicate(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public void checkType()
@@ -2787,7 +2817,8 @@ public class Ast
                 {
                 reportTypeError("Predicates must evaluate to a boolean value",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 }
         }
@@ -2797,9 +2828,9 @@ public class Ast
     {
         AstExpression m_expression;
 
-        public AstPredicateExpression(SpecObject specObject)
+        public AstPredicateExpression(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -2825,9 +2856,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstPredicate m_predicate;
 
-        public AstForAllP(SpecObject specObject)
+        public AstForAllP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -2869,9 +2900,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstPredicate m_predicate;
 
-        public AstThereExistsP(SpecObject specObject)
+        public AstThereExistsP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -2913,9 +2944,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstPredicate m_predicate;
 
-        public AstThereExists1P(SpecObject specObject)
+        public AstThereExists1P(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -2957,9 +2988,9 @@ public class Ast
         List m_lets = new ArrayList();
         AstPredicate m_predicate;
 
-        public AstLetP(SpecObject specObject)
+        public AstLetP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -2996,9 +3027,9 @@ public class Ast
         AstPredicate m_predicateL;
         AstPredicate m_predicateR;
 
-        public AstAndP(SpecObject specObject)
+        public AstAndP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3034,9 +3065,9 @@ public class Ast
         AstPredicate m_predicateL;
         AstPredicate m_predicateR;
 
-        public AstOrP(SpecObject specObject)
+        public AstOrP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3072,9 +3103,9 @@ public class Ast
         AstPredicate m_predicateL;
         AstPredicate m_predicateR;
 
-        public AstImpliesP(SpecObject specObject)
+        public AstImpliesP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3110,9 +3141,9 @@ public class Ast
         AstPredicate m_predicateL;
         AstPredicate m_predicateR;
 
-        public AstBiimpliesP(SpecObject specObject)
+        public AstBiimpliesP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3149,9 +3180,9 @@ public class Ast
         AstExpression m_expressionL;
         AstExpression m_expressionR;
 
-        public AstRelationsP(SpecObject specObject)
+        public AstRelationsP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3209,14 +3240,16 @@ public class Ast
                         {
                         reportTypeError("Right side of " + getName() + " must be a set",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     if (!t1.isEqual(t2.m_setType))
                         {
                         reportTypeError("Element is not the same type as the set for " + getName(),
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     break;
@@ -3226,7 +3259,8 @@ public class Ast
                         {
                         reportTypeError("Both sides of " + getName() + " must be sets of the same type",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     break;
@@ -3236,7 +3270,8 @@ public class Ast
                         {
                         reportTypeError("Both sides of " + getName() + " must be the same type",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     break;
@@ -3248,7 +3283,8 @@ public class Ast
                         {
                         reportTypeError("Both sides of " + getName() + " must be numbers",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     break;
@@ -3259,21 +3295,24 @@ public class Ast
                         {
                         reportTypeError("Right side of " + getName() + " must be a sequence",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     if (!t1.isSequence())
                         {
                         reportTypeError("Left side of " + getName() + " must be a sequence",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     if (!t1.isEqual(t2))
                         {
                         reportTypeError("Both sequences of " + getName() + " must be of the same type",
                                         r.m_infixRelationName.m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     return new AstType(AstType.TYPE_BOOL);
@@ -3312,9 +3351,9 @@ public class Ast
         AstPrefixRelationName m_prefixRelationName;
         AstExpression m_expression;
 
-        public AstPrefixRelationNameP(SpecObject specObject)
+        public AstPrefixRelationNameP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -3335,7 +3374,8 @@ public class Ast
                 {
                 reportTypeError("Expression for " + m_prefixRelationName.getName() + " must evaluate to a set",
                                 m_expression.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 }
         }
@@ -3351,9 +3391,9 @@ public class Ast
     {
         AstSchemaReference m_schemaReference;
 
-        public AstSchemaReferenceP(SpecObject specObject)
+        public AstSchemaReferenceP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -3361,9 +3401,9 @@ public class Ast
     {
         AstSchemaReference m_schemaReference;
 
-        public AstPreP(SpecObject specObject)
+        public AstPreP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -3371,9 +3411,9 @@ public class Ast
     {
         AstExpression m_expression;
 
-        public AstInitP(SpecObject specObject)
+        public AstInitP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -3396,9 +3436,9 @@ public class Ast
 
     public class AstTrueFalseP extends AstPredicate
     {
-        public AstTrueFalseP(SpecObject specObject)
+        public AstTrueFalseP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public AstType getType()
@@ -3416,9 +3456,9 @@ public class Ast
     {
         AstPredicate m_predicate;
 
-        public AstNotP(SpecObject specObject)
+        public AstNotP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -3443,9 +3483,9 @@ public class Ast
     {
         AstPredicate m_predicate;
 
-        public AstParenP(SpecObject specObject)
+        public AstParenP(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -3677,10 +3717,12 @@ public class Ast
     public class AstExpression extends AstBase
     {
         SpecObject specObject;
+        String property;
 
-        public AstExpression(SpecObject specObject)
+        public AstExpression(SpecObject specObject, String property)
         {
             this.specObject = specObject;
+            this.property = property;
         }
 
         public void checkType()
@@ -3694,9 +3736,9 @@ public class Ast
         AstExpression m_expressionL;
         AstExpression m_expressionR;
 
-        public AstBinaryOpX(SpecObject specObject)
+        public AstBinaryOpX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3731,7 +3773,8 @@ public class Ast
                 {
                 reportTypeError("Type mismatch",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 }
             return typeL.resultantType(typeR);
@@ -3744,9 +3787,9 @@ public class Ast
         AstExpression m_then;
         AstExpression m_else;
 
-        public AstIfThenElseX(SpecObject specObject)
+        public AstIfThenElseX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3784,7 +3827,8 @@ public class Ast
                 reportTypeError(
                         "The expression used for the then clause is a different type than the one used for the else clause",
                         m_then.m_token,
-                        specObject
+                        specObject,
+                        property
                 );
                 }
             return t1.resultantType(t2);
@@ -3793,9 +3837,9 @@ public class Ast
 
     public class AstCrossProductX extends AstBinaryOpX
     {
-        public AstCrossProductX(SpecObject specObject)
+        public AstCrossProductX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3819,7 +3863,8 @@ public class Ast
                 {
                 reportTypeError("Both expressions of a cross-product must evaluate to a set",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -3834,9 +3879,9 @@ public class Ast
     {
         AstInfixGenericName m_infixGenericName = new AstInfixGenericName();
 
-        public AstInfixGenericNameX(SpecObject specObject)
+        public AstInfixGenericNameX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3863,7 +3908,8 @@ public class Ast
                 {
                 reportTypeError("Both sides of an infix generic operator must be sets",
                                 m_infixGenericName.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -3879,9 +3925,9 @@ public class Ast
     {
         AstInfixFunctionName m_infixFunctionName = new AstInfixFunctionName();
 
-        public AstInfixFunctionNameX(SpecObject specObject)
+        public AstInfixFunctionNameX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -3925,7 +3971,8 @@ public class Ast
                     {
                     reportTypeError("The expressions for the " + tname + " operator must be numbers",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -3941,7 +3988,8 @@ public class Ast
                     {
                     reportTypeError("Expressions for the " + tname + " operator must be sets",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -3949,7 +3997,8 @@ public class Ast
                     {
                     reportTypeError("Sets must be the same type for the operator " + tname,
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -3965,7 +4014,8 @@ public class Ast
                     {
                     reportTypeError("Expressions for the " + tname + " operator must be sequences",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -3979,7 +4029,8 @@ public class Ast
                     {
                     reportTypeError("Expressions for " + tname + " must be numbers",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -3997,7 +4048,8 @@ public class Ast
                     {
                     reportTypeError("Expressions for " + tname + " must be relations",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4005,7 +4057,8 @@ public class Ast
                     {
                     reportTypeError("Relations used in " + tname + " must be of the same type",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4019,7 +4072,8 @@ public class Ast
                     {
                     reportTypeError("Left-hand argument to " + tname + " must be a set",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4027,7 +4081,8 @@ public class Ast
                     {
                     reportTypeError("Right-hand argument to " + tname + " must be a relation",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4039,7 +4094,8 @@ public class Ast
                     {
                     reportTypeError("Type of set must be the same as the domain type of the range",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4053,7 +4109,8 @@ public class Ast
                     {
                     reportTypeError("Right-hand argument to " + tname + " must be a set",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4061,7 +4118,8 @@ public class Ast
                     {
                     reportTypeError("Left-hand argument to " + tname + " must be a relation",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4073,7 +4131,8 @@ public class Ast
                     {
                     reportTypeError("Type of set must be the same as the range type of the relation",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4086,7 +4145,8 @@ public class Ast
                     {
                     reportTypeError("Left-hand expression for a projection must be a sequence",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4094,7 +4154,8 @@ public class Ast
                     {
                     reportTypeError("Right-hand expression for a projection must be a set",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4108,7 +4169,8 @@ public class Ast
                     {
                     reportTypeError("Type of set must be the same as the sequence type.",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 return typeL;
@@ -4120,7 +4182,8 @@ public class Ast
                     {
                     reportTypeError("Left-hand expression must be a set",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4131,7 +4194,8 @@ public class Ast
                     {
                     reportTypeError("Right-hand expression for a projection must be a sequence",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     bad = true;
                     }
@@ -4147,7 +4211,8 @@ public class Ast
                     {
                     reportTypeError("The set must contain numbers",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 return typeR;
@@ -4159,7 +4224,8 @@ public class Ast
                     {
                     reportTypeError("Left-hand expression for '#' must be a bag",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4167,7 +4233,8 @@ public class Ast
                     {
                     reportTypeError("Right-hand expression for '#' must be the same type as contained in the bag",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4181,7 +4248,8 @@ public class Ast
                     {
                     reportTypeError("Expressions for bag union must be bags",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4190,7 +4258,8 @@ public class Ast
                     {
                     reportTypeError("Both sides of bag union must be the same type",
                                     m_infixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 }
@@ -4203,9 +4272,9 @@ public class Ast
     {
         AstExpression m_expression;
 
-        public AstPowerX(SpecObject specObject)
+        public AstPowerX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4230,7 +4299,8 @@ public class Ast
                 {
                 reportTypeError("Power set must be applied to a set",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4244,9 +4314,9 @@ public class Ast
     {
         AstExpression m_expression;
 
-        public AstUnaryOpX(SpecObject specObject)
+        public AstUnaryOpX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -4276,9 +4346,9 @@ public class Ast
     {
         AstPrefixGenericName m_prefixGenericName = new AstPrefixGenericName();
 
-        public AstPrefixGenericNameX(SpecObject specObject)
+        public AstPrefixGenericNameX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -4341,9 +4411,9 @@ public class Ast
     {
         AstDecorations m_decoration;
 
-        public AstHyphenX(SpecObject specObject)
+        public AstHyphenX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4364,7 +4434,8 @@ public class Ast
                 {
                 reportTypeError("The expression for - must be a number",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4378,9 +4449,9 @@ public class Ast
         AstExpression m_expression0;
         AstDecorations m_decoration;
 
-        public AstImageX(SpecObject specObject)
+        public AstImageX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4412,7 +4483,8 @@ public class Ast
                 {
                 reportTypeError("Left-hand expression to the image operator must be a relation",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 bad = true;
                 }
@@ -4420,7 +4492,8 @@ public class Ast
                 {
                 reportTypeError("Inside expression of the image operator must be a set",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 bad = true;
                 }
@@ -4433,7 +4506,8 @@ public class Ast
                 reportTypeError(
                         "The type of the inside set expression must the the same type as the domain type of the relation for the image operator",
                         m_token,
-                        specObject
+                        specObject,
+                        property
                 );
                 return new AstType();
                 }
@@ -4447,9 +4521,9 @@ public class Ast
     {
         List m_expressions = new ArrayList();
 
-        public AstExpressionListX(SpecObject specObject)
+        public AstExpressionListX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4502,9 +4576,9 @@ public class Ast
     {
         AstExpression m_expression = null;
 
-        public AstDistUnionX(SpecObject specObject)
+        public AstDistUnionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4529,7 +4603,8 @@ public class Ast
                 {
                 reportTypeError("Expression used in distributed union must be a set of sets.",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4555,7 +4630,8 @@ public class Ast
                         {
                         reportTypeError("All sets used in a distributed union must be of the same type.",
                                         m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         return new AstType();
                         }
@@ -4568,7 +4644,8 @@ public class Ast
                     {
                     reportTypeError("Expression used in distributed union must be a set of sets.",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4582,9 +4659,9 @@ public class Ast
     {
         AstExpression m_expression = null;
 
-        public AstDistIntersectionX(SpecObject specObject)
+        public AstDistIntersectionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4609,7 +4686,8 @@ public class Ast
                 {
                 reportTypeError("Expression used in distributed intersection must be a set of sets.",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4635,7 +4713,8 @@ public class Ast
                         {
                         reportTypeError("All sets used in a distributed intersection must be of the same type.",
                                         m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         return new AstType();
                         }
@@ -4648,7 +4727,8 @@ public class Ast
                     {
                     reportTypeError("Expression used in distributed intersection must be a set of sets.",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -4663,25 +4743,25 @@ public class Ast
         AstVariableName m_variable;
         AstActualParameters m_actualParameters;
 
-        public AstVariableX(SpecObject specObject)
+        public AstVariableX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
     public class AstSelfX extends AstExpression
     {
-        public AstSelfX(SpecObject specObject)
+        public AstSelfX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
     public class AstNumberX extends AstExpression
     {
-        public AstNumberX(SpecObject specObject)
+        public AstNumberX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -4708,9 +4788,9 @@ public class Ast
     {
         AstSchemaReference m_schemaReference;
 
-        public AstSchemaReferenceX(SpecObject specObject)
+        public AstSchemaReferenceX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -4720,9 +4800,9 @@ public class Ast
         AstActualParameters m_actualParameters;
         AstRenameList m_renameList;
 
-        public AstClassNameX(SpecObject specObject)
+        public AstClassNameX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -4730,9 +4810,9 @@ public class Ast
     {
         AstExpression m_expression;
 
-        public AstDownArrowX(SpecObject specObject)
+        public AstDownArrowX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -4764,9 +4844,9 @@ public class Ast
             super.print(l + 1);
         }
 
-        public AstUnionX(SpecObject specObject)
+        public AstUnionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public AstType getType()
@@ -4785,7 +4865,8 @@ public class Ast
                 reportTypeError(
                         "Expressions for the " + Character.toString(TozeFontMap.CHAR_CUP) + " operator must be sets",
                         m_token,
-                        specObject
+                        specObject,
+                        property
                 );
                 return new AstType();
                 }
@@ -4794,7 +4875,8 @@ public class Ast
                 reportTypeError(
                         "Sets must be the same type for the operator " + Character.toString(TozeFontMap.CHAR_CUP),
                         m_token,
-                        specObject
+                        specObject,
+                        property
                 );
                 return new AstType();
                 }
@@ -4804,9 +4886,9 @@ public class Ast
 
     public class AstCopyrightX extends AstUnaryOpX
     {
-        public AstCopyrightX(SpecObject specObject)
+        public AstCopyrightX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -4814,9 +4896,9 @@ public class Ast
     {
         List m_expressions = new ArrayList();
 
-        public AstAngleX(SpecObject specObject)
+        public AstAngleX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -4824,9 +4906,9 @@ public class Ast
     {
         List m_expressions = new ArrayList();
 
-        public AstBagX(SpecObject specObject)
+        public AstBagX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -4887,7 +4969,8 @@ public class Ast
                         {
                         reportTypeError("All expressions of a bag must be of the same type",
                                         m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     }
@@ -4914,9 +4997,9 @@ public class Ast
         AstDecorations m_decorations;
         AstRenameList m_renameList;
 
-        public AstThetaX(SpecObject specObject)
+        public AstThetaX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -4925,9 +5008,9 @@ public class Ast
         AstExpression m_expression;
         AstVariableName m_variableName;
 
-        public AstMemberX(SpecObject specObject)
+        public AstMemberX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -4959,7 +5042,8 @@ public class Ast
                 {
                 reportTypeError("Undefined class variable",
                                 m_expression.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4967,7 +5051,8 @@ public class Ast
                 {
                 reportTypeError("Member access must be from a class type",
                                 m_expression.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4976,7 +5061,8 @@ public class Ast
                 {
                 reportTypeError("The member " + m_variableName.getName() + " is not visible",
                                 m_variableName.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4984,7 +5070,8 @@ public class Ast
                 {
                 reportTypeError("The member " + m_variableName.getName() + " is undefined",
                                 m_variableName.m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -4996,9 +5083,9 @@ public class Ast
     {
         AstPostfixFunctionName m_postfixFunctionName;
 
-        public AstPostfixFunctionNameX(SpecObject specObject)
+        public AstPostfixFunctionNameX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public AstType getType()
@@ -5017,7 +5104,8 @@ public class Ast
                     {
                     reportTypeError("The argument to '~' must be a relation",
                                     m_postfixFunctionName.m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5037,7 +5125,8 @@ public class Ast
                     reportTypeError(
                             "The argument to '" + m_postfixFunctionName.m_token.m_value + "' must be a relation",
                             m_postfixFunctionName.m_token,
-                            specObject
+                            specObject,
+                            property
                     );
                     return new AstType();
                     }
@@ -5048,9 +5137,9 @@ public class Ast
 
     public class AstParenX extends AstExpression
     {
-        public AstParenX(SpecObject specObject)
+        public AstParenX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5065,9 +5154,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstExpression m_expression;
 
-        public AstLambdaX(SpecObject specObject)
+        public AstLambdaX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5128,9 +5217,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstExpression m_expression;
 
-        public AstMuX(SpecObject specObject)
+        public AstMuX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -5139,9 +5228,9 @@ public class Ast
         List m_letDefinitions = new ArrayList();
         AstExpression m_expression;
 
-        public AstLetX(SpecObject specObject)
+        public AstLetX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -5167,9 +5256,9 @@ public class Ast
         AstActualParameters m_actualParameters;
         AstRenameList m_renameList;
 
-        public AstVSCX(SpecObject specObject)
+        public AstVSCX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5200,7 +5289,8 @@ public class Ast
                     {
                     reportTypeError(getName() + " is undefined",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5208,7 +5298,8 @@ public class Ast
                     {
                     reportTypeError(getName() + " is undefined",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5228,9 +5319,9 @@ public class Ast
 
     public class AstSetExpressionX extends AstExpression
     {
-        public AstSetExpressionX(SpecObject specObject)
+        public AstSetExpressionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
     }
 
@@ -5238,9 +5329,9 @@ public class Ast
     {
         List m_expressions = new ArrayList();
 
-        public AstSetExpressionX1(SpecObject specObject)
+        public AstSetExpressionX1(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5322,9 +5413,9 @@ public class Ast
         AstSchemaText m_schemaText;
         AstExpression m_expression;
 
-        public AstSetExpressionX2(SpecObject specObject)
+        public AstSetExpressionX2(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5385,9 +5476,9 @@ public class Ast
 
     public class AstSetExpressionX3 extends AstSetExpressionX
     {
-        public AstSetExpressionX3(SpecObject specObject)
+        public AstSetExpressionX3(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5426,9 +5517,9 @@ public class Ast
     {
         List m_expressions = new ArrayList();
 
-        public AstSequenceX(SpecObject specObject)
+        public AstSequenceX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void print(int l)
@@ -5485,7 +5576,8 @@ public class Ast
                         {
                         reportTypeError("All expressions of a sequence must be of the same type",
                                         m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     }
@@ -5508,9 +5600,9 @@ public class Ast
 
     public class AstBuiltInFunctionX extends AstUnaryOpX
     {
-        public AstBuiltInFunctionX(SpecObject specObject)
+        public AstBuiltInFunctionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public AstType getType()
@@ -5528,7 +5620,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'dom' must be a set of tuples",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5536,7 +5629,7 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'dom' must be a set of tuples",
                                     m_token,
-                                    specObject
+                                    specObject, property
                     );
                     return new AstType();
                     }
@@ -5544,7 +5637,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'dom' must be a tuple of size 2",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5559,7 +5653,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'ran' must be a set of tuples",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5567,7 +5662,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'ran' must be a set of tuples",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5575,7 +5671,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'ran' must be a tuple of size 2",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5590,7 +5687,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'rev' must be a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5603,7 +5701,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'head' must be a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5617,7 +5716,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'last' must be a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5631,7 +5731,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'tail' must be a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5644,7 +5745,8 @@ public class Ast
                     {
                     reportTypeError("The argument to the function 'front' must be a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5659,7 +5761,8 @@ public class Ast
                     {
                     reportTypeError("The argument to " + m_token.m_value + " must be a tuple of size 2",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     return new AstType();
                     }
@@ -5676,7 +5779,8 @@ public class Ast
                     {
                     reportTypeError("Argument to '#' must be either a set or a sequence",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 return new AstType(AstType.TYPE_NATURAL);
@@ -5691,9 +5795,9 @@ public class Ast
         AstExpression m_fexpression;
         AstExpression m_pexpression;
 
-        public AstFunctionX(SpecObject specObject)
+        public AstFunctionX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)
@@ -5732,7 +5836,8 @@ public class Ast
                     {
                     reportTypeError("Subscript to a sequence must be a number",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 return (AstType) ftype.getSetType().m_tupleTypes.get(1);
@@ -5743,7 +5848,8 @@ public class Ast
                 {
                 reportTypeError("Expression used as a function must evaluate to a set of a tuple",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -5751,7 +5857,8 @@ public class Ast
                 {
                 reportTypeError("Expression used as a function must evaluate to a tuple",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -5759,7 +5866,8 @@ public class Ast
                 {
                 reportTypeError("The tuple must be a binary relation",
                                 m_token,
-                                specObject
+                                specObject,
+                                property
                 );
                 return new AstType();
                 }
@@ -5771,7 +5879,8 @@ public class Ast
                     {
                     reportTypeError("Number of parameters for the function do not match definition.",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 int i;
@@ -5783,7 +5892,8 @@ public class Ast
                         {
                         reportTypeError("Parameter " + (i + 1) + " does not match definition.",
                                         m_token,
-                                        specObject
+                                        specObject,
+                                        property
                         );
                         }
                     }
@@ -5794,7 +5904,8 @@ public class Ast
                     {
                     reportTypeError("Parameter types do not match function parameters",
                                     m_token,
-                                    specObject
+                                    specObject,
+                                    property
                     );
                     }
                 }
@@ -5808,9 +5919,9 @@ public class Ast
     {
         AstPredicate m_predicate;
 
-        public AstPredicateX(SpecObject specObject)
+        public AstPredicateX(SpecObject specObject, String property)
         {
-            super(specObject);
+            super(specObject, property);
         }
 
         public void populateTypeTable(AstSymbolTable stable)

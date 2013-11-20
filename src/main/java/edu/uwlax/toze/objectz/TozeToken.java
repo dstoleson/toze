@@ -6,6 +6,7 @@ public class TozeToken
     public String m_value;
     public int m_pos;
     public int m_lineNum;
+    private ErrorType errorType;
     private String description;
 
     public TozeToken(int id, String value, int pos)
@@ -25,6 +26,16 @@ public class TozeToken
         this.m_lineNum = lineNum;
 
         this.m_pos = (pos < 0) ? 0 : pos;
+    }
+
+    public ErrorType getErrorType()
+    {
+        return errorType;
+    }
+
+    public void setErrorType(ErrorType errorType)
+    {
+        this.errorType = errorType;
     }
 
     public void setDescription(String description)

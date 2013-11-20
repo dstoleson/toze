@@ -59,10 +59,21 @@ public abstract class ParagraphView extends JPanel implements Placement
     public TozeTextArea findTextAreaForError(SpecObject specObject, TozeToken tozeToken)
     {
         String property = specObject.getPropertyForError(tozeToken);
-        TozeTextArea foundTextArea = textByProperty.get(property);
+        TozeTextArea foundTextArea = null;
 
-        if (foundTextArea == null)
+        if (specObject == this.getSpecObject())
             {
+            // if this is the same component that contains
+            // the object that has the error, get the text area
+            // corresponding to the property
+            foundTextArea = textByProperty.get(property);
+            }
+        else
+            {
+            // else keep digging
+//        if (foundTextArea == null)
+//            {
+
             Component[] children = this.getComponents();
             List<Component> childList = Arrays.asList(children);
 
@@ -194,11 +205,14 @@ public abstract class ParagraphView extends JPanel implements Placement
 
         if (specObject != null)
             {
-            TozeToken error = specObject.getErrorForProperty(property);
+            List<TozeToken> errors = specObject.getErrorsForProperty(property);
 
-            if (error != null)
+            if (errors != null)
                 {
-                textArea.addError(error.m_lineNum, error.m_pos);
+                for (TozeToken error : errors)
+                    {
+                    textArea.addError(error.m_lineNum, error.m_pos);
+                    }
                 }
             }
     }

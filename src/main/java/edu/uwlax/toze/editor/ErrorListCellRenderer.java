@@ -4,9 +4,13 @@ import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
 {
+    // TODO: put this in one place
+    static private ResourceBundle tozeBundle = ResourceBundle.getBundle("edu.uwlax.toze.editor.toze");
+
     private final JLabel errorLabel;
 
     public ErrorListCellRenderer()
@@ -37,12 +41,18 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
             errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText((String) value);
             }
-        else if (value instanceof TozeToken /* SpecObjectPropertyError */)
+        else if (value instanceof TozeToken)
             {
-            TozeToken error = (TozeToken) value; // ((SpecObjectPropertyError)value).getError();
+            TozeToken error = (TozeToken) value;
+            String errorTypeDescription = null;
+            if (error.getErrorType() != null)
+                {
+                errorTypeDescription = tozeBundle.getString(error.getErrorType().getDescriptionProperty());
+                }
+
             errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText(
-                    "Syntax Error: @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos + " -- " + error.getDescription()
+                    errorTypeDescription + ": @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos + " -- " + error.getDescription()
             );
             }
 

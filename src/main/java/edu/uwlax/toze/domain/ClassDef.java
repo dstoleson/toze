@@ -1,7 +1,5 @@
 package edu.uwlax.toze.domain;
 
-import edu.uwlax.toze.objectz.TozeToken;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -202,40 +200,6 @@ public class ClassDef extends SpecObject
     public void setSpecification(Specification specification)
     {
         this.specification = specification;
-    }
-
-    @Override
-    public List<TozeToken> getErrors()
-    {
-        List<TozeToken> errorList = super.getErrors();
-
-        errorList.addAll(notNullGetErrors(inheritedClass));
-        errorList.addAll(notNullGetErrors(initialState));
-        errorList.addAll(notNullGetErrors(state));
-
-        for (BasicTypeDef basicTypeDef : basicTypeDefList)
-            {
-            errorList.addAll(basicTypeDef.getErrors());
-            }
-        for (AxiomaticDef axiomaticDef : axiomaticDefList)
-            {
-            errorList.addAll(axiomaticDef.getErrors());
-            }
-        for (AbbreviationDef abbreviationDef : abbreviationDefList)
-            {
-            errorList.addAll(abbreviationDef.getErrors());
-            }
-        for (FreeTypeDef freeTypeDef : freeTypeDefList)
-            {
-            errorList.addAll(freeTypeDef.getErrors());
-            }
-        for (Operation operation : operationList)
-            {
-            errorList.addAll(operation.getErrors());
-            }
-
-        return errorList;
-
     }
 
     @Override

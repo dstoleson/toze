@@ -713,10 +713,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         TozeSpecificationChecker parser = new TozeSpecificationChecker();
         parser.check(specification);
-
         List errors = specification.getErrors();
-        errors.addAll(parser.getTypeErrors());
-
         setChanged();
         notifyObservers(errors);
 
@@ -930,6 +927,8 @@ public class SpecificationController extends Observable implements FocusListener
             operation.getClassDef().setOperationList(operationList);
             }
 
+        selectParagraph(object);
+
         specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
@@ -1104,6 +1103,8 @@ public class SpecificationController extends Observable implements FocusListener
 
             operation.getClassDef().setOperationList(operationList);
             }
+
+        selectParagraph(object);
 
         specificationView.requestRebuild();
         specificationView.revalidate();
@@ -1306,6 +1307,8 @@ public class SpecificationController extends Observable implements FocusListener
             ((ClassDef) selectedObject).setState((State) cachedObject);
             }
 
+        selectParagraph(cachedObject);
+
         specificationView.requestRebuild();
         specificationView.revalidate();
         specificationView.repaint();
@@ -1322,6 +1325,7 @@ public class SpecificationController extends Observable implements FocusListener
     public void selectError(TozeToken errorToken)
     {
         SpecObject objectWithError = specification.findObjectWithError(errorToken);
+//        String propertyWithError = objectWithError.getPropertyForError(errorToken);
 
         TozeTextArea textArea = null;
 
