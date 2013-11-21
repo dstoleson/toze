@@ -5056,11 +5056,34 @@ public class Ast
                 );
                 return new AstType();
                 }
-            AstType type = ctype.getClassMembers().getTypeVisible(m_variableName.getName());
+            AstType type = null;
+
+            if (m_variableName != null)
+                {
+                type = ctype.getClassMembers().getTypeVisible(m_variableName.getName());
+                }
+
             if (type == null)
                 {
-                reportTypeError("The member " + m_variableName.getName() + " is not visible",
-                                m_variableName.m_token,
+                // the variable name may be null after a class.member syntax
+                // where member is blank, handle as a null and use a unique
+                // TozeToken
+                String member = "<null>";
+                TozeToken token = null;
+
+                if (m_variableName != null)
+                    {
+                    member = m_variableName.getName();
+                    token = m_variableName.m_token;
+                    }
+
+                if (token == null)
+                    {
+                    token = new TozeToken(-1, member, -1, -1);
+                    }
+
+                reportTypeError("The member " + member + " is not visible",
+                                token,
                                 specObject,
                                 property
                 );
