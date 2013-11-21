@@ -592,6 +592,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         panel.setLayout(new GridLayout(1, 1));
         panel.add(specScroller);
 
+        controller.setScrollPane(specScroller);
+
         specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
         int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
         specificationTabPanel.setSelectedIndex(tabIndex);

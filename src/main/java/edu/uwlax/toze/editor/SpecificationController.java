@@ -22,8 +22,9 @@ public class SpecificationController extends Observable implements FocusListener
     private final Specification specification;
 
     private SpecificationView specificationView;
+    private JScrollPane scrollPane;
+
     private final ControllerMouseAdapter mouseAdapter;
-//    private final ControllerKeyAdapter keyAdapter;
     private TozeTextArea currentTextArea = null;
     private SpecObject selectedObject;
     private ParagraphView selectedView;
@@ -59,6 +60,11 @@ public class SpecificationController extends Observable implements FocusListener
     {
         this.specificationView = specificationView;
         initView();
+    }
+
+    public void setScrollPane(JScrollPane scrollPane)
+    {
+        this.scrollPane = scrollPane;
     }
 
     public MouseAdapter getMouseAdapter()
@@ -228,38 +234,6 @@ public class SpecificationController extends Observable implements FocusListener
         checkIllegalArgument(classDef, "classDef");
 
         classDef.setState(null);
-
-        specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
-    }
-
-    /**
-     * Add an OperationExpression to an Operation
-     *
-     * @param operation The Operation to add the OperationExpression
-     */
-    public void addOperationExpression(Operation operation)
-    {
-        checkIllegalArgument(operation, "operation");
-
-        operation.setOperationExpression("New Expression");
-
-        specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
-    }
-
-    /**
-     * Remove the expression from the given operation
-     *
-     * @param operation Operation from which to remove its expression
-     */
-    public void removeOperationExpression(Operation operation)
-    {
-        checkIllegalArgument(operation, "operation");
-
-        operation.setOperationExpression(null);
 
         specificationView.requestRebuild();
         specificationView.revalidate();
@@ -1333,12 +1307,14 @@ public class SpecificationController extends Observable implements FocusListener
     public void selectError(TozeToken errorToken)
     {
         SpecObject objectWithError = specification.findObjectWithError(errorToken);
-//        String propertyWithError = objectWithError.getPropertyForError(errorToken);
+        String propertyWithError = objectWithError.getPropertyForError(errorToken);
 
         TozeTextArea textArea = null;
 
         if (objectWithError != null)
             {
+            // this finds the object, should really find the text field for the property
+            // within the object
             textArea = specificationView.findTextAreaForError(objectWithError, errorToken);
             }
 
@@ -1352,21 +1328,23 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void selectParagraph(SpecObject specObject)
     {
-        ParagraphView viewToBeSelected = null;
-
         if (specObject != specification)
             {
-            viewToBeSelected = specificationView.findParagraphViewForSpecObject(specObject);
+            ParagraphView viewToBeSelected = specificationView.findParagraphViewForSpecObject(specObject);
+            updateSelectedView(viewToBeSelected);
+
+            if (viewToBeSelected != null)
+                {
+                // set the height of the rectangle the same as the height of the
+                // scroll view will always attempts to put the selected component  at the
+                // top because it tries to fit the whole rectangle in the view, unless of course
+                // there isn't enough room to scroll below the selected component
+                Rectangle selectedBounds = viewToBeSelected.getBounds();
+                selectedBounds.height = scrollPane.getViewport().getHeight();
+                ((JComponent)viewToBeSelected.getParent()).scrollRectToVisible(selectedBounds);
+                }
             }
 
-        updateSelectedView(viewToBeSelected);
-
-        if (viewToBeSelected != null)
-            {
-            // scroll the top of the selected view
-            viewToBeSelected.scrollRectToVisible(new Rectangle(viewToBeSelected.getSize()));
-            ((JComponent)viewToBeSelected.getParent()).scrollRectToVisible(viewToBeSelected.getBounds());
-            }
     }
 
     /**
