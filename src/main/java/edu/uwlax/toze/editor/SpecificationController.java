@@ -759,16 +759,24 @@ public class SpecificationController extends Observable implements FocusListener
     public void focusGained(FocusEvent e)
     {
         currentTextArea = (TozeTextArea) e.getSource();
-        ParagraphView newSelectedView = (ParagraphView)currentTextArea.getParent();
-        updateSelectedView(newSelectedView);
+        Component parent = currentTextArea.getParent();
+
+        if (parent instanceof ParagraphView)
+            {
+            updateSelectedView((ParagraphView)parent);
+            }
     }
 
     @Override
     public void focusLost(FocusEvent e)
     {
         currentTextArea = (TozeTextArea) e.getSource();
-        ParagraphView newSelectedView = (ParagraphView)currentTextArea.getParent();
-        updateSelectedView(newSelectedView);
+        Component parent = currentTextArea.getParent();
+
+        if (parent instanceof ParagraphView)
+            {
+            updateSelectedView((ParagraphView)parent);
+            }
     }
 
     public void moveUp(SpecObject object)
