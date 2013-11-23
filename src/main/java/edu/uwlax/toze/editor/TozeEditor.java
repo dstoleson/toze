@@ -229,7 +229,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
-        menuItem.setText("Export as JPEG...");
+        menuItem.setText(uiBundle.getString("fileMenu.exportJpeg.title"));
         menuItem.setMnemonic(KeyEvent.VK_E);
         menuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)
@@ -246,7 +246,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem();
-        menuItem.setText("Export as LaTeX...");
+        menuItem.setText(uiBundle.getString("fileMenu.exportLatex.title"));
         menuItem.setMnemonic(KeyEvent.VK_X);
         menuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)
@@ -534,13 +534,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private void newSpecification()
     {
         Specification specification = new Specification();
-        openSpecificationTab(specification, new File("untitled" + untitledCount++));
+        openSpecificationTab(specification, new File(uiBundle.getString("file.untitled") + untitledCount++));
 
     }
 
     private void openSpecification()
     {
-        FileDialog fileDialog = new FileDialog(this, "Open Specification", FileDialog.LOAD);
+        FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.openSpecification.title"), FileDialog.LOAD);
         fileDialog.show();
 
         if (fileDialog.getFile() != null)
@@ -581,8 +581,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 catch (Exception e)
                     {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(),
-                                                  "File Error", JOptionPane.WARNING_MESSAGE
+                    JOptionPane.showMessageDialog(this,
+                                                  uiBundle.getString("fileWarning.problemOpening.message") + ": " + specificationFile.getName(),
+                                                  uiBundle.getString("fileWarning.problemOpening.title"),
+                                                  JOptionPane.WARNING_MESSAGE
                     );
                     }
                 }
@@ -638,7 +640,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
     private void saveAsSpecification()
     {
-        FileDialog fileDialog = new FileDialog(this, "Save Specification", FileDialog.SAVE);
+        FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.saveSpecification.title"), FileDialog.SAVE);
         fileDialog.show();
 
         if (fileDialog.getFile() != null)
@@ -659,7 +661,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private void exportSpecificationAsLatex()
     {
         String filename = "";
-        FileDialog fd = new FileDialog(this, "Export as JPEG", FileDialog.SAVE);
+        FileDialog fd = new FileDialog(this, uiBundle.getString("fileDialog.exportLatex.title"), FileDialog.SAVE);
         fd.show();
 
         if (fd.getFile() != null)
@@ -686,7 +688,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private void exportSpecificationAsJpeg()
     {
         String filename = "";
-        FileDialog fd = new FileDialog(this, "Export as JPEG", FileDialog.SAVE);
+        FileDialog fd = new FileDialog(this, uiBundle.getString("fileDialog.exportJpeg.title"), FileDialog.SAVE);
         fd.show();
 
         if (fd.getFile() != null)
@@ -782,7 +784,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         catch (Exception e)
             {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Problem Saving File: " + specificationFile.getName(), "File Error",
+            JOptionPane.showMessageDialog(this,
+                                          uiBundle.getString("fileWarning.problemSaving.message") + ": " + specificationFile.getName(),
+                                          uiBundle.getString("fileWarning.problemSaving.title"),
                                           JOptionPane.WARNING_MESSAGE
             );
             }
@@ -802,7 +806,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             List<TreePath> treePathList = Arrays.asList(selectedPaths);
 
             // @TODO List the specifications being closed
-            int state = JOptionPane.showConfirmDialog(this, "Close the selected specifications?", "Confirm Close",
+            int state = JOptionPane.showConfirmDialog(this,
+                                                      uiBundle.getString("fileWarning.closeSpecification.message"),
+                                                      uiBundle.getString("fileWarning.closeSpecification.confirm"),
                                                       JOptionPane.YES_NO_OPTION
             );
 

@@ -115,6 +115,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeltaList("New Delta List");
 
         specificationView.requestRebuild();
+        selectParagraph(operation);
         parseSpecification();
     }
 
@@ -143,6 +144,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeclaration("New Declaration");
 
         specificationView.requestRebuild();
+        selectParagraph(operation);
         parseSpecification();
     }
 
@@ -171,8 +173,10 @@ public class SpecificationController extends Observable implements FocusListener
         InitialState initialState = new InitialState();
         initialState.setPredicate("New Initial State");
         classDef.setInitialState(initialState);
+        initialState.setClassDef(classDef);
 
         specificationView.requestRebuild();
+        selectParagraph(initialState);
         parseSpecification();
     }
 
@@ -217,8 +221,10 @@ public class SpecificationController extends Observable implements FocusListener
                 state.setName("New State");
             }
         classDef.setState(state);
+        state.setClassDef(classDef);
 
         specificationView.requestRebuild();
+        selectParagraph(state);
         parseSpecification();
     }
 
@@ -245,6 +251,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setPredicate("New Predicate");
 
         specificationView.requestRebuild();
+        selectParagraph(operation);
         parseSpecification();
     }
 
@@ -272,8 +279,10 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setName("New Class");
 
         specification.addClassDef(classDef);
+        classDef.setSpecification(specification);
 
         specificationView.requestRebuild();
+        selectParagraph(classDef);
         parseSpecification();
     }
 
@@ -293,6 +302,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         AxiomaticDef axiomaticDef = new AxiomaticDef();
         axiomaticDef.setDeclaration("New Axiomatic Type");
+        SpecObject parent = null;
 
         if (hasPredicate)
             {
@@ -312,6 +322,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
+        selectParagraph(object);
         parseSpecification();
     }
 
@@ -341,6 +352,7 @@ public class SpecificationController extends Observable implements FocusListener
         axiomaticDef.setPredicate("New Predicate");
 
         specificationView.requestRebuild();
+        selectParagraph(axiomaticDef);
         parseSpecification();
     }
 
@@ -377,6 +389,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
+        selectParagraph(object);
         parseSpecification();
     }
 
@@ -424,6 +437,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
+        selectParagraph(object);
         parseSpecification();
     }
 
@@ -469,6 +483,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
+        selectParagraph(object);
         parseSpecification();
     }
 
@@ -509,6 +524,7 @@ public class SpecificationController extends Observable implements FocusListener
         checkIllegalArgument(genericDef, "genericDef");
 
         specificationView.requestRebuild();
+        selectParagraph(genericDef);
         parseSpecification();
     }
 
@@ -546,6 +562,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setVisibilityList("New Visibility List");
 
         specificationView.requestRebuild();
+        selectParagraph(classDef);
         parseSpecification();
     }
 
@@ -571,8 +588,10 @@ public class SpecificationController extends Observable implements FocusListener
         InheritedClass inheritedClass = new InheritedClass();
         inheritedClass.setName("New InheritedClass");
         classDef.setInheritedClass(inheritedClass);
+        inheritedClass.setClassDef(classDef);
 
         specificationView.requestRebuild();
+        selectParagraph(inheritedClass);
         parseSpecification();
     }
 
@@ -626,8 +645,10 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         classDef.addOperation(operation);
+        operation.setClassDef(classDef);
 
         specificationView.requestRebuild();
+        selectParagraph(operation);
         parseSpecification();
     }
 
