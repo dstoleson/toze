@@ -41,15 +41,8 @@ public class Ast
         public void reportTypeError(String msg,
                                     TozeToken token, SpecObject specObject, String property)
         {
-            if (specObject != null)
-                {
-                token.setErrorType(ErrorType.TypeError);
-                token.setDescription(specObject.getClass().getSimpleName() + "->" + property + ": " + msg);
-                }
-//            else
-//                {
-//                token.setDescription(msg);
-//                }
+            token.setErrorType(ErrorType.TypeError);
+            token.setDescription(msg);
             specObject.setErrorForProperty(property, token);
             errors.add(token);
         }

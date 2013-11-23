@@ -242,33 +242,62 @@ public class ClassDef extends SpecObject
 
         for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
             {
-            clone.getAbbreviationDefList().add(abbreviationDef.clone());
+            AbbreviationDef abbreviationDefClone = abbreviationDef.clone();
+            abbreviationDefClone.setClassDef(clone);
+            clone.addAbbreviationDef(abbreviationDefClone);
             }
 
         for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
             {
-            clone.getAxiomaticDefList().add(axiomaticDef.clone());
+            AxiomaticDef axiomaticDefClone = axiomaticDef.clone();
+            axiomaticDefClone.setClassDef(clone);
+            clone.addAxiomaticDef(axiomaticDefClone);
             }
 
         for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
             {
-            clone.getBasicTypeDefList().add(basicTypeDef.clone());
+            BasicTypeDef basicTypeDefClone = basicTypeDef.clone();
+            basicTypeDefClone.setClassDef(clone);
+            clone.addBasicTypeDef(basicTypeDefClone);
             }
 
         for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
             {
-            clone.getFreeTypeDefList().add(freeTypeDef.clone());
+            FreeTypeDef freeTypeDefClone = freeTypeDef.clone();
+            freeTypeDefClone.setClassDef(clone);
+            clone.addFreeTypeDef(freeTypeDefClone);
             }
 
         for (Operation operation : this.getOperationList())
             {
-            clone.getOperationList().add(operation.clone());
+            Operation operationClone = operation.clone();
+            operationClone.setClassDef(clone);
+            clone.addOperation(operationClone);
             }
 
         clone.setName(this.getName());
-        clone.setInheritedClass(this.getInheritedClass());
-        clone.setInitialState(this.getInitialState());
-        clone.setState(this.getState());
+
+        if (this.getInheritedClass() != null)
+            {
+            InheritedClass inheritedClassClone = this.getInheritedClass().clone();
+            inheritedClassClone.setClassDef(clone);
+            clone.setInheritedClass(this.getInheritedClass().clone());
+            }
+
+        if (this.getInitialState() != null)
+            {
+            InitialState initialStateClone = this.getInitialState().clone();
+            initialStateClone.setClassDef(clone);
+            clone.setInitialState(initialStateClone);
+            }
+
+        if (this.getState() != null)
+            {
+            State stateClone = this.getState().clone();
+            stateClone.setClassDef(clone);
+            clone.setState(stateClone);
+            }
+
         clone.setVisibilityList(this.getVisibilityList());
 
         return clone;

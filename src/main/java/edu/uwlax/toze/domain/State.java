@@ -60,4 +60,17 @@ public class State extends SpecObject
     {
         this.classDef = classDef;
     }
+
+    @Override
+    public State clone() throws CloneNotSupportedException
+    {
+        super.clone();
+
+        State clone = new State();
+        clone.setName(this.getName());
+        clone.setDeclaration(this.getDeclaration());
+        clone.setPredicate(this.getPredicate());
+
+        return clone;
+    }
 }

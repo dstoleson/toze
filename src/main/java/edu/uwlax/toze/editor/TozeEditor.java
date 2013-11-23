@@ -49,7 +49,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private JList errorsList;
 
     //    private ErrorListController errorListController;
-    private final HashMap<Integer, SpecificationController> tabControllers = new HashMap<Integer, SpecificationController>();
+    private final HashMap<Component, SpecificationController> tabControllers = new HashMap<Component, SpecificationController>();
     // in the future perhaps this should be saved as a preference
     // to reload specification files that were open when the application
     // was closed.
@@ -533,8 +533,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
     private SpecificationController currentSpecificationController()
     {
-        int selectedTabIndex = specificationTabPanel.getSelectedIndex();
-        return tabControllers.get(selectedTabIndex);
+        Component tab = specificationTabPanel.getSelectedComponent();
+        return tabControllers.get(tab);
     }
 
     private void newSpecification()
@@ -596,10 +596,11 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
         int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
-        specificationTabPanel.setSelectedIndex(tabIndex);
+        Component newTab = specificationTabPanel.getComponentAt(tabIndex);
+        specificationTabPanel.setSelectedComponent(newTab);
 
         // map the tab to the controller
-        tabControllers.put(tabIndex, controller);
+        tabControllers.put(newTab, controller);
 
         controller.addObserver(this);
         controller.parseSpecification();
@@ -801,8 +802,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                         SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
                         treeModel.removeSpecification(specificationDocument);
                         int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
+                        Component tab = specificationTabPanel.getTabComponentAt(tabIndex);
                         specificationTabPanel.removeTabAt(tabIndex);
-                        tabControllers.remove(tabIndex);
+                        tabControllers.remove(tab);
                         updateErrors(null);
                         }
                     }
@@ -896,12 +898,15 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 }
             else if (e.getSource() == errorsList)
                 {
-                TozeToken errorToken = (TozeToken) errorsList.getSelectedValue();
-                SpecificationController specificationController = currentSpecificationController();
-
-                if (specificationController != null)
+                if (errorsList.getSelectedValue() instanceof TozeToken)
                     {
-                        specificationController.selectError(errorToken);
+                    TozeToken errorToken = (TozeToken) errorsList.getSelectedValue();
+                    SpecificationController specificationController = currentSpecificationController();
+
+                    if (specificationController != null)
+                        {
+                            specificationController.selectError(errorToken);
+                        }
                     }
                 }
         }
@@ -946,7 +951,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
             // get the specification document node
             SpecificationNode selectedRoot = (SpecificationNode)treePath.getPathComponent(1);
-            SpecificationDocument currentSpecificationDocument = currentSpecificationController().getSpecificationDocument();
+            SpecificationController currentController = currentSpecificationController();
+            SpecificationDocument currentSpecificationDocument = currentController.getSpecificationDocument();
 
             if (selectedRoot.getSpecificationDocument() != currentSpecificationDocument)
                 {

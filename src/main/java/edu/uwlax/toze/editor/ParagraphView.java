@@ -200,7 +200,7 @@ public abstract class ParagraphView extends JPanel implements Placement
     {
         if (textArea != null)
             {
-            textArea.clearAllErrors();
+            textArea.clearErrors();
             }
 
         if (specObject != null)
@@ -209,10 +209,7 @@ public abstract class ParagraphView extends JPanel implements Placement
 
             if (errors != null)
                 {
-                for (TozeToken error : errors)
-                    {
-                    textArea.addError(error.m_lineNum, error.m_pos);
-                    }
+                textArea.addErrors(errors);
                 }
             }
     }

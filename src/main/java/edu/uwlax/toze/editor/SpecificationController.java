@@ -6,7 +6,10 @@ import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -26,8 +29,8 @@ public class SpecificationController extends Observable implements FocusListener
 
     private final ControllerMouseAdapter mouseAdapter;
     private TozeTextArea currentTextArea = null;
-    private SpecObject selectedObject;
-    private ParagraphView selectedView;
+    private SpecObject selectedObject = null;
+    private ParagraphView selectedView = null;
 
     /**
      * Create a controller for the given specification model and view.
@@ -112,8 +115,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeltaList("New Delta List");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -126,8 +128,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeltaList(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -142,8 +143,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeclaration("New Declaration");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -156,8 +156,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setDeclaration(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -174,8 +173,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setInitialState(initialState);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -188,8 +186,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setInitialState(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -222,8 +219,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setState(state);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -236,8 +232,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setState(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -250,8 +245,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setPredicate("New Predicate");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -266,8 +260,7 @@ public class SpecificationController extends Observable implements FocusListener
         operation.setPredicate(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -281,8 +274,7 @@ public class SpecificationController extends Observable implements FocusListener
         specification.addClassDef(classDef);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeClass(ClassDef classDef)
@@ -290,8 +282,7 @@ public class SpecificationController extends Observable implements FocusListener
         specification.removeClassDef(classDef);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -321,8 +312,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeAxiomaticType(AxiomaticDef axiomaticDef)
@@ -340,8 +330,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
 
@@ -352,8 +341,7 @@ public class SpecificationController extends Observable implements FocusListener
         axiomaticDef.setPredicate("New Predicate");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeAxiomaticPredicate(AxiomaticDef axiomaticDef)
@@ -363,8 +351,7 @@ public class SpecificationController extends Observable implements FocusListener
         axiomaticDef.setPredicate(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -390,8 +377,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -412,8 +398,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -439,8 +424,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeBasicType(BasicTypeDef basicTypeDef)
@@ -458,8 +442,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -486,8 +469,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeFreeType(FreeTypeDef freeTypeDef)
@@ -505,8 +487,7 @@ public class SpecificationController extends Observable implements FocusListener
             }
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -517,8 +498,7 @@ public class SpecificationController extends Observable implements FocusListener
     {
         // TODO - add generic type support
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -529,8 +509,7 @@ public class SpecificationController extends Observable implements FocusListener
         checkIllegalArgument(genericDef, "genericDef");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -541,8 +520,7 @@ public class SpecificationController extends Observable implements FocusListener
         specification.setPredicate("New Predicate");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -553,8 +531,7 @@ public class SpecificationController extends Observable implements FocusListener
         specification.setPredicate(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -569,8 +546,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setVisibilityList("New Visibility List");
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void removeVisibilityList(ClassDef classDef)
@@ -580,8 +556,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setVisibilityList(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -598,8 +573,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setInheritedClass(inheritedClass);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -612,8 +586,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setInheritedClass(null);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -655,8 +628,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.addOperation(operation);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     /**
@@ -670,8 +642,7 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.removeOperation(operation);
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     private void resetErrors()
@@ -909,11 +880,9 @@ public class SpecificationController extends Observable implements FocusListener
             operation.getClassDef().setOperationList(operationList);
             }
 
-        selectParagraph(object);
-
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        selectParagraph(object);
+        parseSpecification();
     }
 
     public void moveDown(SpecObject object)
@@ -1086,11 +1055,9 @@ public class SpecificationController extends Observable implements FocusListener
             operation.getClassDef().setOperationList(operationList);
             }
 
-        selectParagraph(object);
-
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        selectParagraph(object);
+        parseSpecification();
     }
 
     public void cut()
@@ -1164,136 +1131,195 @@ public class SpecificationController extends Observable implements FocusListener
         selectedView = null;
 
         specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+        parseSpecification();
     }
 
     public void copy()
     {
         // put selected objects into the global cache
         cachedObject = selectedObject;
-
-        try
-            {
-            cachedObject = (SpecObject) selectedObject.clone();
-            }
-        catch (CloneNotSupportedException e)
-            {
-            }
     }
 
     public void paste()
     {
-        // TODO: need to check where the paste is happening, fly a dialog
-        // if additional user action is required (no parent object, etc.)
-        SpecObject selectedObject = specification;
-
-        if (selectedView != null)
+        try
             {
-            selectedObject = selectedView.getSpecObject();
-            }
+            // clone copy / cut object before pasting (every time)
+            // so that it is unique
+            SpecObject pastedObject = (SpecObject) cachedObject.clone();
+            SpecObject targetObject = selectedObject;
 
-        if (cachedObject instanceof AbbreviationDef)
-            {
-
-            AbbreviationDef abbreviationDef = (AbbreviationDef) cachedObject;
-
-            if (selectedObject == specification)
+            if (targetObject == null)
                 {
-                abbreviationDef.setSpecification(specification);
-                specification.addAbbreviationDef((AbbreviationDef) cachedObject);
+                targetObject = specification;
                 }
-            else
-                {
-                ClassDef classDef = (ClassDef) selectedObject;
-                abbreviationDef.setClassDef(classDef);
-                classDef.addAbbreviationDef(abbreviationDef);
-                }
-            }
-        else if (cachedObject instanceof AxiomaticDef)
-            {
-            AxiomaticDef axiomaticDef = (AxiomaticDef) cachedObject;
 
-            if (selectedObject == specification)
+            if (pastedObject instanceof AbbreviationDef)
                 {
-                axiomaticDef.setSpecification(specification);
-                specification.addAxiomaticDef(axiomaticDef);
-                }
-            else
-                {
-                ClassDef classDef = (ClassDef) selectedObject;
-                axiomaticDef.setClassDef(classDef);
-                classDef.addAxiomaticDef(axiomaticDef);
-                }
-            }
-        else if (cachedObject instanceof BasicTypeDef)
-            {
-            BasicTypeDef basicTypeDef = (BasicTypeDef) cachedObject;
+                AbbreviationDef abbreviationDef = (AbbreviationDef) pastedObject;
 
-            if (selectedObject == specification)
-                {
-                basicTypeDef.setSpecification(specification);
-                specification.addBasicTypeDef(basicTypeDef);
+                if (targetObject == specification)
+                    {
+                    abbreviationDef.setSpecification(specification);
+                    specification.addAbbreviationDef((AbbreviationDef) pastedObject);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    abbreviationDef.setClassDef(classDef);
+                    classDef.addAbbreviationDef(abbreviationDef);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Abbreviation Definition.");
+                    }
                 }
-            else
+            else if (pastedObject instanceof AxiomaticDef)
                 {
-                ClassDef classDef = (ClassDef) selectedObject;
-                basicTypeDef.setClassDef(classDef);
-                classDef.addBasicTypeDef(basicTypeDef);
-                }
-            }
-        else if (cachedObject instanceof ClassDef)
-            {
-            specification.addClassDef((ClassDef) cachedObject);
-            }
-        else if (cachedObject instanceof FreeTypeDef)
-            {
-            FreeTypeDef freeTypeDef = (FreeTypeDef) cachedObject;
+                AxiomaticDef axiomaticDef = (AxiomaticDef) pastedObject;
 
-            if (selectedObject == specification)
-                {
-                freeTypeDef.setSpecification(specification);
-                specification.addFreeTypeDef(freeTypeDef);
+                if (targetObject == specification)
+                    {
+                    axiomaticDef.setSpecification(specification);
+                    specification.addAxiomaticDef(axiomaticDef);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    axiomaticDef.setClassDef(classDef);
+                    classDef.addAxiomaticDef(axiomaticDef);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Axiomatic Definition.");
+                    }
                 }
-            else
+            else if (pastedObject instanceof BasicTypeDef)
                 {
-                ClassDef classDef = (ClassDef) selectedObject;
-                freeTypeDef.setClassDef(classDef);
-                classDef.addFreeTypeDef(freeTypeDef);
-                }
-            }
-        else if (cachedObject instanceof GenericDef)
-            {
-            GenericDef genericDef = (GenericDef) cachedObject;
+                BasicTypeDef basicTypeDef = (BasicTypeDef) pastedObject;
 
-            if (selectedObject == specification)
+                if (targetObject == specification)
+                    {
+                    basicTypeDef.setSpecification(specification);
+                    specification.addBasicTypeDef(basicTypeDef);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    basicTypeDef.setClassDef(classDef);
+                    classDef.addBasicTypeDef(basicTypeDef);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Basic Type Definition.");
+                    }
+                }
+            else if (pastedObject instanceof ClassDef)
                 {
-                genericDef.setSpecification(specification);
-                specification.addGenericDef(genericDef);
+                specification.addClassDef((ClassDef) pastedObject);
                 }
+            else if (pastedObject instanceof FreeTypeDef)
+                {
+                FreeTypeDef freeTypeDef = (FreeTypeDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    freeTypeDef.setSpecification(specification);
+                    specification.addFreeTypeDef(freeTypeDef);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    freeTypeDef.setClassDef(classDef);
+                    classDef.addFreeTypeDef(freeTypeDef);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Free Type Definition.");
+                    }
+                }
+            else if (pastedObject instanceof GenericDef)
+                {
+                GenericDef genericDef = (GenericDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    genericDef.setSpecification(specification);
+                    specification.addGenericDef(genericDef);
+                    }
+                }
+            else if (pastedObject instanceof InheritedClass)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((InheritedClass)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setInheritedClass((InheritedClass) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Inherited Class.");
+                    }
+                }
+            else if (pastedObject instanceof InitialState)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((InitialState)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setInitialState((InitialState) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Initial State.");
+                    }
+                }
+            else if (pastedObject instanceof Operation)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((Operation)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).addOperation((Operation) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Operation.");
+                    }
+                }
+            else if (pastedObject instanceof State)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((State)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setState((State) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the State.");
+                    }
+                }
+
+            specificationView.requestRebuild();
+            selectParagraph(pastedObject);
+            parseSpecification();
             }
-        else if (cachedObject instanceof InheritedClass)
+        catch (CloneNotSupportedException e)
             {
-            ((ClassDef) selectedObject).setInheritedClass((InheritedClass) cachedObject);
-            }
-        else if (cachedObject instanceof InitialState)
-            {
-            ((ClassDef) selectedObject).setInitialState((InitialState) cachedObject);
-            }
-        else if (cachedObject instanceof Operation)
-            {
-            ((ClassDef) selectedObject).addOperation((Operation) cachedObject);
-            }
-        else if (cachedObject instanceof State)
-            {
-            ((ClassDef) selectedObject).setState((State) cachedObject);
+            System.out.println("Problem while pasting: " + e);
             }
 
-        selectParagraph(cachedObject);
+    }
 
-        specificationView.requestRebuild();
-        specificationView.revalidate();
-        specificationView.repaint();
+    private void flyPasteWarning(String message)
+    {
+        Object[] options = {"OK"};
+        JOptionPane.showOptionDialog(new JFrame(),
+                                     message,
+                                     "Select Paste Target",
+                                     JOptionPane.PLAIN_MESSAGE,
+                                     JOptionPane.QUESTION_MESSAGE,
+                                     null,
+                                     options,
+                                     options[0]
+        );
     }
 
     private void checkIllegalArgument(Object object, String description)
@@ -1307,7 +1333,7 @@ public class SpecificationController extends Observable implements FocusListener
     public void selectError(TozeToken errorToken)
     {
         SpecObject objectWithError = specification.findObjectWithError(errorToken);
-        String propertyWithError = objectWithError.getPropertyForError(errorToken);
+//        String propertyWithError = objectWithError.getPropertyForError(errorToken);
 
         TozeTextArea textArea = null;
 
@@ -1320,9 +1346,7 @@ public class SpecificationController extends Observable implements FocusListener
 
         if (textArea != null)
             {
-            // scroll the top of the selected text area
-            textArea.scrollRectToVisible(new Rectangle(textArea.getSize()));
-            ((JComponent)textArea.getParent()).scrollRectToVisible(textArea.getBounds());
+            scrollTo(textArea);
             }
     }
 
@@ -1335,16 +1359,24 @@ public class SpecificationController extends Observable implements FocusListener
 
             if (viewToBeSelected != null)
                 {
-                // set the height of the rectangle the same as the height of the
-                // scroll view will always attempts to put the selected component  at the
-                // top because it tries to fit the whole rectangle in the view, unless of course
-                // there isn't enough room to scroll below the selected component
-                Rectangle selectedBounds = viewToBeSelected.getBounds();
-                selectedBounds.height = scrollPane.getViewport().getHeight();
-                ((JComponent)viewToBeSelected.getParent()).scrollRectToVisible(selectedBounds);
+                scrollTo(viewToBeSelected);
                 }
             }
+        else
+            {
+            updateSelectedView(null);
+            }
+    }
 
+    private void scrollTo(Component component)
+    {
+        // setting the height of the rectangle the same as the height of the
+        // scroll view will always attempt to put the selected component at the
+        // top because it tries to fit the whole rectangle in the view, unless of course
+        // there isn't enough room to scroll below the selected component
+        Rectangle selectedBounds = component.getBounds();
+        selectedBounds.height = scrollPane.getViewport().getHeight();
+        ((JComponent)component.getParent()).scrollRectToVisible(selectedBounds);
     }
 
     /**
@@ -1402,6 +1434,10 @@ public class SpecificationController extends Observable implements FocusListener
                     {
                     ParagraphView newSelectedView = (ParagraphView) clickedComponent;
                     updateSelectedView(newSelectedView);
+                    }
+                else
+                    {
+                    updateSelectedView(null);
                     }
                 }
             super.mouseClicked(e);
