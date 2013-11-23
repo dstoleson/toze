@@ -767,8 +767,6 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         Collections.sort(pageBreaks);
 
-        System.out.println("pageBreaks: " + pageBreaks);
-
         return pageBreaks;
     }
 
