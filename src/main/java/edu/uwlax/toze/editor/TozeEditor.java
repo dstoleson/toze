@@ -38,6 +38,8 @@ import java.util.List;
  */
 public class TozeEditor extends javax.swing.JFrame implements Observer
 {
+    // keep track of untitled documents
+    // make each one unique
     private static int untitledCount = 1;
 
     private final ResourceBundle uiBundle;
@@ -48,16 +50,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private JList specialCharsList;
     private JList errorsList;
 
-    //    private ErrorListController errorListController;
+    // Maps Editor Tabs to the Controller controller the specification inside of it
     private final HashMap<Component, SpecificationController> tabControllers = new HashMap<Component, SpecificationController>();
-    // in the future perhaps this should be saved as a preference
-    // to reload specification files that were open when the application
-    // was closed.
-    // Issues:
-    // 1) What if the file no longer exists?
-    //    a) warning dialog and remove from list
-    //    b) warning dialog and find the file
-    //    c) no warning dialog but display in the list as an error
     private final SpecificationTreeModel treeModel = new SpecificationTreeModel(new DefaultMutableTreeNode("ROOT"));
 
     /**
@@ -553,22 +547,44 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             {
             File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
 
-            try
+            // see if the file is already open
+            Component tab = null;
+
+            for (Map.Entry<Component, SpecificationController> entry : tabControllers.entrySet())
                 {
-                InputStream inputStream = new FileInputStream(specificationFile);
-                SpecificationReader specReader = new SpecificationReader(inputStream);
-                Specification specification = specReader.read();
-                inputStream.close();
-
-                openSpecificationTab(specification, specificationFile);
-
+                if (specificationFile.equals(entry.getValue().getSpecificationDocument().getFile()))
+                    {
+                    tab = entry.getKey();
+                    break;
+                    }
                 }
-            catch (Exception e)
+
+
+            if (tab != null)
                 {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(),
-                                              "File Error", JOptionPane.WARNING_MESSAGE
-                );
+                // the file is already open, select the corresponding tab
+                specificationTabPanel.setSelectedComponent(tab);
+                }
+            else
+                {
+                // open the file in a new tab
+                try
+                    {
+                    InputStream inputStream = new FileInputStream(specificationFile);
+                    SpecificationReader specReader = new SpecificationReader(inputStream);
+                    Specification specification = specReader.read();
+                    inputStream.close();
+
+                    openSpecificationTab(specification, specificationFile);
+
+                    }
+                catch (Exception e)
+                    {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Problem Opening File: " + specificationFile.getName(),
+                                                  "File Error", JOptionPane.WARNING_MESSAGE
+                    );
+                    }
                 }
             }
     }
@@ -595,12 +611,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         controller.setScrollPane(specScroller);
 
         specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
-        int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
-        Component newTab = specificationTabPanel.getComponentAt(tabIndex);
-        specificationTabPanel.setSelectedComponent(newTab);
+        specificationTabPanel.setSelectedComponent(specScroller);
 
         // map the tab to the controller
-        tabControllers.put(newTab, controller);
+        tabControllers.put(specScroller, controller);
 
         controller.addObserver(this);
         controller.parseSpecification();
@@ -964,21 +978,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 // determine which tab belongs to the specification
                 // based on the file name (same as the tab title)
                 // and switch to that tab
-                int numTabs = specificationTabPanel.getTabCount();
-                int tabIndex = -1;
-
-                for (int i = 0; i < numTabs; i++)
-                    {
-                    if (specificationTabPanel.getTitleAt(i).equals(documentToSelect.getFile().getName()))
-                        {
-                        tabIndex = i;
-                        break;
-                        }
-                    }
-                if (tabIndex > -1)
-                    {
-                    specificationTabPanel.setSelectedIndex(tabIndex);
-                    }
+                int tabIndex = specificationTabPanel.indexOfTab(documentToSelect.getFile().getName());
+                specificationTabPanel.setSelectedIndex(tabIndex);
                 }
 
             // highlight and move to the selected object
