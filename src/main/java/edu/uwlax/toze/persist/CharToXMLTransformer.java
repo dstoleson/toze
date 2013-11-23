@@ -34,6 +34,8 @@ class CharToXMLTransformer
             string.append((int) source.charAt(i));
             }
 
+        // TOZE 1.0 expects a space at the end of a CDATA string
+        string.append(" ");
         return string.toString();
     }
 }

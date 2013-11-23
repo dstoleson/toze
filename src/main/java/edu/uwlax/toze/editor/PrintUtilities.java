@@ -164,8 +164,6 @@ public class PrintUtilities implements Printable
             pageBreak = tmpPageBreak;
             }
 
-        System.out.println("Using page break: " + nextPageBreakIndex + " -> " + pageBreak);
-
         if (pageBreak != 0)
             {
             // only print from the total printed height so

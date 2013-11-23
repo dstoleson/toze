@@ -25,8 +25,6 @@ public class SpecDocumentListener extends Observable implements DocumentListener
 
     private void update(DocumentEvent event)
     {
-        System.out.println("Enter: update(DocumentEvent)");
-
         if (binding != null)
             {
             try
@@ -41,7 +39,6 @@ public class SpecDocumentListener extends Observable implements DocumentListener
             }
         this.setChanged();
         notifyObservers();
-        System.out.println("Exit: update(DocumentEvent)");
     }
 
     public void insertUpdate(DocumentEvent event)

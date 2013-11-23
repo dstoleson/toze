@@ -9,10 +9,9 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
     @Override
     public void beforeMarshal(Object source)
     {
-        System.out.println("source = " + source);
         super.beforeMarshal(source);
 
-        // Transform the CDATA Escaped Chars into Java Chars
+        // Transform the Java Chars into CDATA Escaped Chars
         if (source instanceof Specification)
             {
             Specification toze = (Specification) source;
@@ -80,7 +79,6 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
             state.setPredicate(CharToXMLTransformer.transform(state.getPredicate()));
             state.setName(CharToXMLTransformer.transform(state.getName()));
             }
-        System.out.println("source = " + source);
     }
 
 }
