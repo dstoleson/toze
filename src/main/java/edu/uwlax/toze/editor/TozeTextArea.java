@@ -6,18 +6,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.awt.font.TextAttribute;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TozeTextArea extends JTextArea
 {
-    static private final Color ERROR_COLOR = new Color(255, 121, 118);
-    static private final Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
+    static private final Color ERROR_COLOR = new Color(255, 0, 0);
 
-    private boolean highlighted = false;
     private boolean ignoresEnter = true;
     private final List<TozeToken> errors = new ArrayList<TozeToken>();
     static private boolean m_anyChanged = false;
@@ -38,11 +38,6 @@ public class TozeTextArea extends JTextArea
     public void setIgnoresEnter(boolean ignoresEnter)
     {
         this.ignoresEnter = ignoresEnter;
-    }
-
-    public void setHighlighted(boolean highlighted)
-    {
-        this.highlighted = highlighted;
     }
 
     /**
@@ -167,35 +162,21 @@ public class TozeTextArea extends JTextArea
     {
         Component parent = this.getParent();
 
-        if (highlighted)
+        if (this.getParent() == null)
             {
-            setBackground(HIGHLIGHT_COLOR);
+            setBackground(Color.WHITE);
             }
         else
             {
-            if (this.getParent() == null)
-                {
-                setBackground(Color.WHITE);
-                }
-            else
-                {
-                setBackground(parent.getBackground());
-                }
+            setBackground(parent.getBackground());
             }
 
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
 
-//        if (!m_errors.isEmpty() || m_typeErrorIds.size() > 0)
-//            {
-//            setBackground(ERROR_COLOR);
-//            }
-
         super.paint(g);
 
-        Color c = g.getColor();
         TozeReader r = getReader();
-        FontMetrics fm = g.getFontMetrics();
 
         /*
          * Draw the text after the error in red.
@@ -203,8 +184,7 @@ public class TozeTextArea extends JTextArea
 
         if (!errors.isEmpty())
             {
-            g.setColor(ERROR_COLOR);
-
+            FontMetrics fm = g.getFontMetrics();
             for (TozeToken error : errors)
                 {
                 String tmp = r.nextLine();
@@ -225,69 +205,16 @@ public class TozeTextArea extends JTextArea
                     {
                     pos = 0;
                     }
-                g.drawString(tmp.substring(pos),
+                AttributedString aString = new AttributedString(tmp.substring(pos));
+                aString.addAttribute(TextAttribute.FONT, fm.getFont());
+                aString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+                aString.addAttribute(TextAttribute.FOREGROUND, ERROR_COLOR);
+                aString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_TWO_PIXEL, 0, tmp.length() - pos);
+                g.drawString(aString.getIterator(),
                              fm.stringWidth(tmp.substring(0, pos)),
-                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent())
-                );
+                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
                 }
-
-            g.setColor(c);
             }
-//
-//        if (m_typeErrorIds.size() > 0)
-//            {
-//            g.setColor(Color.BLACK);
-//
-//            int longest = 0;
-//            String tmp;
-//            TozeToken token;
-//            int numRows = 0;
-//
-//            tmp = r.nextLine();
-//            r = getReader();
-//            while (tmp != null)
-//                {
-//                numRows++;
-//                int sw = fm.stringWidth(tmp);
-//                if (sw > longest)
-//                    {
-//                    longest = sw;
-//                    }
-//                tmp = r.nextLine();
-//                }
-//
-//            String lineinfo[] = new String[numRows];
-//            int i;
-//            for (i = 0; i < lineinfo.length; i++)
-//                {
-//                lineinfo[i] = "";
-//                }
-//
-//            for (i = 0; i < m_typeErrorIds.size(); i++)
-//                {
-//                token = (TozeToken) m_tokens.get(i);
-//                if (token != null)
-//                    {
-//                    if (lineinfo[token.m_lineNum].length() > 0)
-//                        {
-//                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + ", " + (String) m_typeErrorIds.get(i);
-//                        }
-//                    else
-//                        {
-//                        lineinfo[token.m_lineNum] = lineinfo[token.m_lineNum] + (String) m_typeErrorIds.get(i);
-//                        }
-//                    }
-//                }
-//            for (i = 0; i < lineinfo.length; i++)
-//                {
-//                if (lineinfo[i].length() > 0)
-//                    {
-//                    g.drawString(lineinfo[i], longest + 20, ((fm.getHeight() * (i + 1)) - fm.getDescent()));
-//                    }
-//                }
-//
-//            g.setColor(c);
-//            }
     }
 
     /**
@@ -298,15 +225,6 @@ public class TozeTextArea extends JTextArea
         StringReader reader = new StringReader(getText());
         return new TozeReader(reader);
     }
-
-//    /**
-//     *
-//     */
-//    public void clearAllErrors()
-//    {
-//        clearErrors();
-////        clearTypeErrors();
-//    }
 
     /**
      *
@@ -326,77 +244,6 @@ public class TozeTextArea extends JTextArea
         errors.addAll(tokens);
         setToolTipText("Syntax error");
     }
-
-//    /**
-//     *
-//     */
-//    public void clearTypeErrors()
-//    {
-//        m_typeErrorIds.clear();
-//        m_tokens.clear();
-//        invalidate();
-//    }
-
-//    /**
-//     * @param id
-//     * @param msg
-//     * @param token
-//     */
-//    public void typeError(String id, String msg, TozeToken token)
-//    {
-//        m_typeErrorIds.add(id);
-//        m_tokens.add(token);
-//        this.invalidate();
-//    }
-
-//    /**
-//     * @param id
-//     */
-//    public void setFocusIfHas(String id)
-//    {
-//        int i;
-//        for (i = 0; i < m_typeErrorIds.size(); i++)
-//            {
-//            if (id.equals(m_typeErrorIds.get(i)))
-//                {
-//                this.requestFocus();
-//                TozeToken token = (TozeToken) m_tokens.get(i);
-//                if (token != null)
-//                    {
-//                    String s = getText();
-//                    int p = 0;
-//                    int r = token.m_lineNum;
-//                    int c = token.m_pos;
-//                    while (p < s.length())
-//                        {
-//                        if (s.charAt(p) == '\n')
-//                            {
-//                            r--;
-//                            //p++;
-//                            }
-//                        if (r == 0)
-//                            {
-//                            while (p < s.length())
-//                                {
-//                                if (c == 0)
-//                                    {
-//                                    break;
-//                                    }
-//                                p++;
-//                                c--;
-//                                }
-//                            break;
-//                            }
-//                        p++;
-//                        }
-//                    if (p < s.length())
-//                        {
-//                        this.setCaretPosition(p);
-//                        }
-//                    }
-//                }
-//            }
-//    }
 
     /**
      * @return
@@ -462,23 +309,4 @@ public class TozeTextArea extends JTextArea
             return m_num;
         }
     }
-
-//    /**
-//     *
-//     */
-//    private class ErrorPos
-//    {
-//        final int m_line;
-//        final int m_pos;
-//
-//        /**
-//         * @param line
-//         * @param pos
-//         */
-//        public ErrorPos(int line, int pos)
-//        {
-//            m_line = line;
-//            m_pos = pos;
-//        }
-//    }
 }
