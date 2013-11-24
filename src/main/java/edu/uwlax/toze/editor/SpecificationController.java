@@ -48,11 +48,6 @@ public class SpecificationController extends Observable implements FocusListener
         this.specification = specificationDocument.getSpecification();
         this.mouseAdapter = new ControllerMouseAdapter();
 //        this.keyAdapter = new ControllerKeyAdapter();
-
-        // create a map of the UI views to the model objects
-        // they represent
-//        viewToObjectMap = new HashMap<JComponent, SpecObjectPropertyPair>();
-
     }
 
     public SpecificationView getSpecificationView()
@@ -1582,13 +1577,16 @@ public class SpecificationController extends Observable implements FocusListener
             // this finds the object, should really find the text field for the property
             // within the object
             textArea = specificationView.findTextAreaForError(objectWithError, errorToken);
-            }
 
-        selectParagraph(objectWithError);
 
-        if (textArea != null)
-            {
-            scrollTo(textArea);
+            if (textArea != null)
+                {
+                // go to the error
+                scrollTo(textArea);
+                }
+
+            // highlight the paragraph with the error
+            selectParagraph(objectWithError);
             }
     }
 

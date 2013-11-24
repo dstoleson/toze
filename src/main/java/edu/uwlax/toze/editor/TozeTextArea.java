@@ -54,16 +54,7 @@ public class TozeTextArea extends JTextArea
          * would be invisible on the screen when there was
          * no data in the control.
          */
-
         d.width += 20;
-
-        Graphics g = getGraphics();
-        FontMetrics fm = g.getFontMetrics();
-//        if (m_typeErrorIds.size() > 0)
-//            {
-//            d.width += m_typeErrorIds.size() * fm.stringWidth("xxx");
-//            }
-
         d.height += 5;
 
         return d;

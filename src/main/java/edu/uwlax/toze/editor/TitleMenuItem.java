@@ -15,6 +15,6 @@ public class TitleMenuItem extends JMenuItem
     {
         super(title);
         setEnabled(false);
-        setBackground(new Color(0, 0, 200));
+        setBackground(new Color(185, 185, 185));
     }
 }

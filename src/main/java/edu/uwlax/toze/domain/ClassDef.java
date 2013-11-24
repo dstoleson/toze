@@ -11,10 +11,6 @@ import java.util.List;
                          "visibilityList",
                          "inheritedClass",
                          "specObjectList",
-//                         "basicTypeDefList",
-//                         "axiomaticDefList",
-//                         "abbreviationDefList",
-//                         "freeTypeDefList",
                          "state",
                          "initialState",
                          "operationList"
@@ -27,10 +23,6 @@ public class ClassDef extends SpecObject
 
     private List<SpecObject> specObjectList = new ArrayList<SpecObject>();
 
-//    private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
-//    private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
-//    private List<AbbreviationDef> abbreviationDefList = new ArrayList<AbbreviationDef>();
-//    private List<FreeTypeDef> freeTypeDefList = new ArrayList<FreeTypeDef>();
     private State state;
     private InitialState initialState;
     private List<Operation> operationList = new ArrayList<Operation>();
@@ -93,90 +85,6 @@ public class ClassDef extends SpecObject
     {
         specObjectList.remove(specObject);
     }
-
-//    @XmlElement(name = "basicTypeDef")
-//    public List<BasicTypeDef> getBasicTypeDefList()
-//    {
-//        return new ArrayList<BasicTypeDef>(basicTypeDefList);
-//    }
-//
-//    public void setBasicTypeDefList(List<BasicTypeDef> basicTypeDefList)
-//    {
-//        this.basicTypeDefList = new ArrayList<BasicTypeDef>(basicTypeDefList);
-//    }
-//
-//    public void addBasicTypeDef(final BasicTypeDef basicTypeDef)
-//    {
-//        basicTypeDefList.add(basicTypeDef);
-//    }
-//
-//    public void removeBasicTypeDef(final BasicTypeDef basicTypeDef)
-//    {
-//        basicTypeDefList.remove(basicTypeDef);
-//    }
-//
-//    @XmlElement(name = "axiomaticDef")
-//    public List<AxiomaticDef> getAxiomaticDefList()
-//    {
-//        return new ArrayList<AxiomaticDef>(axiomaticDefList);
-//    }
-//
-//    public void setAxiomaticDefList(List<AxiomaticDef> axiomaticDefList)
-//    {
-//        this.axiomaticDefList = new ArrayList<AxiomaticDef>(axiomaticDefList);
-//    }
-//
-//    public void addAxiomaticDef(final AxiomaticDef axiomaticDef)
-//    {
-//        axiomaticDefList.add(axiomaticDef);
-//    }
-//
-//    public void removeAxiomaticDef(final AxiomaticDef axiomaticDef)
-//    {
-//        axiomaticDefList.remove(axiomaticDef);
-//    }
-//
-//    @XmlElement(name = "abbreviationDef")
-//    public List<AbbreviationDef> getAbbreviationDefList()
-//    {
-//        return new ArrayList<AbbreviationDef>(abbreviationDefList);
-//    }
-//
-//    public void setAbbreviationDefList(List<AbbreviationDef> abbreviationDefList)
-//    {
-//        this.abbreviationDefList = new ArrayList<AbbreviationDef>(abbreviationDefList);
-//    }
-//
-//    public void addAbbreviationDef(final AbbreviationDef abbreviationDef)
-//    {
-//        abbreviationDefList.add(abbreviationDef);
-//    }
-//
-//    public void removeAbbreviationDef(final AbbreviationDef abbreviationDef)
-//    {
-//        abbreviationDefList.remove(abbreviationDef);
-//    }
-//
-//    @XmlElement(name = "freeTypeDef")
-//    public List<FreeTypeDef> getFreeTypeDefList()
-//    {
-//        return new ArrayList<FreeTypeDef>(freeTypeDefList);
-//    }
-//
-//    public void setFreeTypeDefList(List<FreeTypeDef> freeTypeDefList)
-//    {
-//        this.freeTypeDefList = new ArrayList<FreeTypeDef>(freeTypeDefList);
-//    }
-//
-//    public void addFreeTypeDef(final FreeTypeDef freeTypeDef)
-//    {
-//        freeTypeDefList.add(freeTypeDef);
-//    }
-//
-//    public void removeFreeTypeDef(final FreeTypeDef freeTypeDef)
-//    {
-//        freeTypeDefList.remove(freeTypeDef);
-//    }
 
     public State getState()
     {
@@ -244,23 +152,6 @@ public class ClassDef extends SpecObject
             specObject.clearErrors();
             }
 
-//        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
-//            {
-//            basicTypeDef.clearErrors();
-//            }
-//        for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
-//            {
-//            axiomaticDef.clearErrors();
-//            }
-//        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
-//            {
-//            abbreviationDef.clearErrors();
-//            }
-//        for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
-//            {
-//            freeTypeDef.clearErrors();
-//            }
-
         for (Operation operation : operationList)
             {
             operation.clearErrors();
@@ -284,34 +175,6 @@ public class ClassDef extends SpecObject
                 }
             classClone.addSpecObject(specObject.clone());
             }
-
-//        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
-//            {
-//            AbbreviationDef abbreviationDefClone = abbreviationDef.clone();
-//            abbreviationDefClone.setClassDef(classClone);
-//            classClone.addAbbreviationDef(abbreviationDefClone);
-//            }
-//
-//        for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
-//            {
-//            AxiomaticDef axiomaticDefClone = axiomaticDef.clone();
-//            axiomaticDefClone.setClassDef(classClone);
-//            classClone.addAxiomaticDef(axiomaticDefClone);
-//            }
-//
-//        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
-//            {
-//            BasicTypeDef basicTypeDefClone = basicTypeDef.clone();
-//            basicTypeDefClone.setClassDef(classClone);
-//            classClone.addBasicTypeDef(basicTypeDefClone);
-//            }
-//
-//        for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
-//            {
-//            FreeTypeDef freeTypeDefClone = freeTypeDef.clone();
-//            freeTypeDefClone.setClassDef(classClone);
-//            classClone.addFreeTypeDef(freeTypeDefClone);
-//            }
 
         for (Operation operation : operationList)
             {

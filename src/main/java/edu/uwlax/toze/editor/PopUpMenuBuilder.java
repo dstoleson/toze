@@ -20,11 +20,12 @@ public class PopUpMenuBuilder
 
     static public JPopupMenu buildPopup(final Object object, final SpecificationController controller)
     {
+
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem moveUp = new JMenuItem(uiBundle.getString("specificationMenu.moveUp.title"));
         JMenuItem moveDown = new JMenuItem(uiBundle.getString("specificationMenu.moveDown.title"));
 
-        if (object instanceof SpecObject)
+        if (!(object instanceof Specification))
             {
             final SpecObject specObject = (SpecObject) object;
 

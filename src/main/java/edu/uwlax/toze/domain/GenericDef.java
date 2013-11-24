@@ -15,7 +15,6 @@ public class GenericDef extends SpecDefinition
     private String formalParameters;
     private String declaration;
     private String predicate;
-//    private Specification specification;
 
     public String getFormalParameters()
     {
@@ -46,17 +45,6 @@ public class GenericDef extends SpecDefinition
     {
         this.predicate = predicate;
     }
-
-//    @XmlTransient
-//    public Specification getSpecification()
-//    {
-//        return specification;
-//    }
-//
-//    public void setSpecification(Specification specification)
-//    {
-//        this.specification = specification;
-//    }
 
     @Override
     public GenericDef clone() throws CloneNotSupportedException

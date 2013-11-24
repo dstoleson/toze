@@ -136,30 +136,7 @@ public class ClassView extends ParagraphView
                 addView(freeTypeView, freeTypeViews);
                 }
             }
-//        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
-//            {
-//            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef, specController);
-//            addView(axiomaticView, axiomaticViews);
-//            }
-//
-//        for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
-//            {
-//            AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef, specController);
-//            addView(abbreviationView, abbreviationViews);
-//            }
-//
-//        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-//            {
-//            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef, specController);
-//            addView(basicTypeView, basicTypeViews);
-//            }
-//
-//        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-//            {
-//            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef, specController);
-//            addView(freeTypeView, freeTypeViews);
-//            }
-//
+
         for (Operation operation : classDef.getOperationList())
             {
             OperationView operationView = new OperationView(operation, specController);

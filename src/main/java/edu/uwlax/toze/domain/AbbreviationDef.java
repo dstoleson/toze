@@ -13,8 +13,6 @@ public class AbbreviationDef extends SpecDefinition
 {
     private String name;
     private String expression;
-//    private Specification specification;
-//    private ClassDef classDef;
 
     public String getName()
     {
@@ -35,28 +33,6 @@ public class AbbreviationDef extends SpecDefinition
     {
         this.expression = expression;
     }
-
-//    @XmlTransient
-//    public Specification getSpecification()
-//    {
-//        return specification;
-//    }
-//
-//    public void setSpecification(Specification specification)
-//    {
-//        this.specification = specification;
-//    }
-//
-//    @XmlTransient
-//    public ClassDef getClassDef()
-//    {
-//        return classDef;
-//    }
-//
-//    public void setClassDef(ClassDef classDef)
-//    {
-//        this.classDef = classDef;
-//    }
 
     @Override
     public AbbreviationDef clone() throws CloneNotSupportedException

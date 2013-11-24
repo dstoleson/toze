@@ -14,9 +14,6 @@ public class AxiomaticDef extends SpecDefinition
     private String declaration;
     private String predicate;
 
-//    private Specification specification;
-//    private ClassDef classDef;
-
     public String getDeclaration()
     {
         return declaration;
@@ -36,28 +33,6 @@ public class AxiomaticDef extends SpecDefinition
     {
         this.predicate = predicate;
     }
-
-//    @XmlTransient
-//    public Specification getSpecification()
-//    {
-//        return specification;
-//    }
-//
-//    public void setSpecification(Specification specification)
-//    {
-//        this.specification = specification;
-//    }
-//
-//    @XmlTransient
-//    public ClassDef getClassDef()
-//    {
-//        return classDef;
-//    }
-//
-//    public void setClassDef(ClassDef classDef)
-//    {
-//        this.classDef = classDef;
-//    }
 
     @Override
     public AxiomaticDef clone() throws CloneNotSupportedException
