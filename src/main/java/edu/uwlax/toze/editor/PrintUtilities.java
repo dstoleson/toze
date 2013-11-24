@@ -1,10 +1,10 @@
 package edu.uwlax.toze.editor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.List;
 
@@ -37,9 +37,11 @@ public class PrintUtilities implements Printable
         return (width <= PrinterJob.getPrinterJob().defaultPage().getWidth());
     }
 
-    public static void printImage(BufferedImage img, List<Integer> pageBreaks)
+    public static void printImage(BufferedImage img, List<Integer> pageBreaks, double scale) throws PrinterException
     {
-        new PrintUtilities(img, pageBreaks).print();
+        PrintUtilities printUtilities = new PrintUtilities(img, pageBreaks);
+        printUtilities.setScale(scale);
+        printUtilities.print();
     }
 
     public PrintUtilities(BufferedImage img, List<Integer> pageBreaks)
@@ -48,44 +50,19 @@ public class PrintUtilities implements Printable
         this.pageBreaks = pageBreaks;
     }
 
-    public void print()
+    public void setScale(double scale)
     {
-        // Ask the user for the page format they prefer
-        PageFormat pageFormat = PrinterJob.getPrinterJob().pageDialog(PrinterJob.getPrinterJob().defaultPage());
+        this.scale = scale;
+    }
 
-        // check to see that the page fits
-        // it not warn user and they can print at a smaller scale
-        boolean shouldPrint = PrintUtilities.checkPageWidth(img.getWidth());
+    public void print() throws PrinterException
+    {
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        printJob.setPrintable(this);
 
-        int state = JOptionPane.YES_OPTION;
-
-        if (!shouldPrint)
+        if (printJob.printDialog())
             {
-            state = JOptionPane.showConfirmDialog(new JFrame(),
-                                                  "The specification is to wide for the page to be printed.  Would you like to scale specification (75%) to fit the page?",
-                                                  "Scale and Print", JOptionPane.OK_CANCEL_OPTION
-            );
-            if (state == JOptionPane.YES_OPTION)
-                {
-                scale = 0.75;
-                }
-            }
-
-        if (state == JOptionPane.YES_OPTION)
-            {
-            PrinterJob printJob = PrinterJob.getPrinterJob();
-            printJob.setPrintable(this, pageFormat);
-            if (printJob.printDialog())
-                {
-                try
-                    {
-                    printJob.print();
-                    }
-                catch (Throwable e)
-                    {
-                    System.out.println("Error printing: " + e);
-                    }
-                }
+            printJob.print();
             }
     }
 

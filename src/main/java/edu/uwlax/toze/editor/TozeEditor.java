@@ -21,6 +21,7 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -628,7 +629,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         Specification specification = specController.getSpecificationDocument().getSpecification();
         File specificationFile = specController.getSpecificationDocument().getFile();
 
-        if (specificationFile.getName().startsWith("untitled"))
+        if (specificationFile.getName().startsWith(uiBundle.getString("file.untitled")))
             {
             saveAsSpecification();
             }
@@ -666,7 +667,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         if (fd.getFile() != null)
             {
-            filename = fd.getDirectory() + fd.getFile();
+            filename = fd.getDirectory() + fd.getFile() + ".tex";
             Specification specification = currentSpecificationController().getSpecification();
 
             String latex = TozeLatexExporter.getLatex(specification);
@@ -693,23 +694,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         if (fd.getFile() != null)
             {
-            filename = fd.getDirectory() + fd.getFile();
+            filename = fd.getDirectory() + fd.getFile() + ".jpg";
             SpecificationView specificationView = currentSpecificationController().getSpecificationView();
             Dimension d = specificationView.getSize();
             BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
             specificationView.paint(img.getGraphics());
             try
                 {
-                File fname = new File(filename);
-                String name = fname.getName();
-                if (name.length() != 0)
-                    {
-                    if (name.indexOf(".") == -1)
-                        {
-                        filename = filename + ".jpg";
-                        }
-                    ImageIO.write(img, "jpeg", new File(filename));
-                    }
+                ImageIO.write(img, "jpeg", new File(filename));
                 }
             catch (Exception e2)
                 {
@@ -720,16 +712,68 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
     private void printSpecification()
     {
+        // assume printing will occur
+        int printPanelOption = JOptionPane.OK_OPTION;
+
+        // check to see that the page fits
+        // it not warn user and they can print at a smaller scale
         SpecificationController specController = currentSpecificationController();
         SpecificationView specificationView = specController.getSpecificationView();
         Dimension d = specificationView.getSize();
+        double scale = 1.0;
 
-        List<Integer> pageBreaks = calcPageBreaks(specificationView);
+        boolean shouldPrint = PrintUtilities.checkPageWidth(d.width);
+        String printMessage = "";
 
-        BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
-        specificationView.paint(img.getGraphics());
+        if (!shouldPrint)
+            {
+            // scale to 75% if doesn't fully fit
+            scale = 0.75;
+            printMessage = uiBundle.getString("print.warning1");
+            }
 
-        PrintUtilities.printImage(img, pageBreaks);
+        // check it again
+        shouldPrint = PrintUtilities.checkPageWidth((int)(d.getWidth() * scale));
+
+        if (!shouldPrint)
+            {
+            printMessage = uiBundle.getString("print.warning2");
+            }
+
+
+        // if it was scaled or still doesn't fit ask the user
+        if (scale != 1.0 || !shouldPrint)
+            {
+                printPanelOption = JOptionPane.showConfirmDialog(new JFrame(),
+                                                  printMessage,
+                                                  uiBundle.getString("print.title"),
+                                                  JOptionPane.OK_CANCEL_OPTION);
+            }
+
+        if (printPanelOption == JOptionPane.YES_OPTION)
+            {
+            BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
+            List<Integer> pageBreaks = calcPageBreaks(specificationView);
+            specificationView.paint(img.getGraphics());
+
+            try
+                {
+                PrintUtilities.printImage(img, pageBreaks, scale);
+                }
+            catch (PrinterException e)
+                {
+                System.out.println(e);
+                Object[] options = {uiBundle.getString("print.error.ok")};
+                JOptionPane.showOptionDialog(new JFrame(),
+                                             uiBundle.getString("print.error.message"),
+                                             uiBundle.getString("print.error.title"),
+                                             JOptionPane.PLAIN_MESSAGE,
+                                             JOptionPane.QUESTION_MESSAGE,
+                                             null,
+                                             options,
+                                             options[0]);
+                }
+            }
     }
 
     private List<Integer> calcPageBreaks(final Container c)
@@ -820,7 +864,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                         SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
                         treeModel.removeSpecification(specificationDocument);
                         int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
-                        Component tab = specificationTabPanel.getTabComponentAt(tabIndex);
+                        Component tab = specificationTabPanel.getComponentAt(tabIndex);
                         specificationTabPanel.removeTabAt(tabIndex);
                         tabControllers.remove(tab);
                         updateErrors(null);
