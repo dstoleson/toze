@@ -5,7 +5,7 @@ package edu.uwlax.toze.editor;
  * Class to handle converting tokens to LaTeX commands.
  */
 
-import edu.uwlax.toze.domain.Specification;
+import edu.uwlax.toze.domain.*;
 import edu.uwlax.toze.objectz.TozeToken;
 import edu.uwlax.toze.objectz.TozeTokenizer;
 
@@ -16,19 +16,124 @@ public class TozeLatexExporter
     String m_spec = "";
     int m_classLevel = 0;
 
-    static public String getLatex(Specification specification)
-    {
-        return "LATEX";
-    }
+    private Specification specification;
 
-    public TozeLatexExporter()
+    public TozeLatexExporter(Specification specification)
     {
+        this.specification = specification;
         m_spec = "\\documentstyle[11pt,oz]{article}\n\\begin{document}\n";
     }
 
-    @Override
-    public String toString()
+    static public String getLatex(Specification specification)
     {
+        TozeLatexExporter exporter = new TozeLatexExporter(specification);
+        return exporter.getLatex();
+    }
+
+    public String getLatex()
+    {
+        if (specification.getPredicate() != null)
+            {
+            addPredicate(specification.getPredicate());
+            }
+
+        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
+            {
+            addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
+            }
+
+        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
+            {
+            addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
+            }
+
+        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
+            {
+            addBasicTypeDefinition(basicTypeDef.getName());
+            }
+
+        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
+            {
+            addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
+            }
+
+        for (GenericDef genericDef : specification.getGenericDefList())
+            {
+            addGeneric(genericDef.getFormalParameters(),
+                       genericDef.getDeclaration(),
+                       genericDef.getPredicate());
+            }
+
+        for (ClassDef classDef : specification.getClassDefList())
+            {
+            startClass(classDef.getName());
+
+            if (classDef.getVisibilityList() != null)
+                {
+                addVisibilityList(classDef.getVisibilityList());
+                }
+
+            if (classDef.getInheritedClass() != null)
+                {
+                addInheritedClass(classDef.getInheritedClass().getName());
+                }
+
+            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+                {
+                addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
+                }
+
+            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
+                {
+                addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
+                }
+
+            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
+                {
+                addBasicTypeDefinition(basicTypeDef.getName());
+                }
+
+            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
+                {
+                addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
+                }
+
+            State state = classDef.getState();
+            if (state != null)
+                {
+                if (state.getName() != null)
+                    {
+                    addState(state.getName());
+                    }
+                else
+                    {
+                    addState(state.getDeclaration(), state.getPredicate());
+                    }
+                }
+
+            if (classDef.getInitialState() != null)
+                {
+                addInit(classDef.getInitialState().getPredicate());
+                }
+
+            for (Operation operation : classDef.getOperationList())
+                {
+                if (operation.getOperationExpression() == null)
+                    {
+                    addOperation(operation.getName(),
+                                 operation.getDeltaList(),
+                                 operation.getDeclaration(),
+                                 operation.getPredicate());
+                    }
+                else
+                    {
+//                    addOperationExpression(operation.getName(), operation.getOperationExpression());
+                    }
+                }
+
+            endClass();
+            }
+
         return m_spec + "\n\\end{document}\n";
     }
 
