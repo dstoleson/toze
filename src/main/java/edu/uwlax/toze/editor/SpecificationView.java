@@ -69,27 +69,68 @@ public class SpecificationView extends JPanel
             add(predicateText);
             }
 
-        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
+        for (SpecObject specObject : specification.getSpecObjectList())
             {
-            addView(new AxiomaticView(axiomaticDef, specController));
+            if (specObject instanceof AxiomaticDef)
+                {
+                addView(new AxiomaticView((AxiomaticDef) specObject, specController));
+                }
+
+            if (specObject instanceof AbbreviationDef)
+                {
+                addView(new AbbreviationView((AbbreviationDef) specObject, specController));
+                }
+
+            if (specObject instanceof BasicTypeDef)
+                {
+                addView(new BasicTypeView((BasicTypeDef) specObject, specController));
+                }
+
+            if (specObject instanceof FreeTypeDef)
+                {
+                addView(new FreeTypeView((FreeTypeDef) specObject, specController));
+                }
+
+            if (specObject instanceof GenericDef)
+                {
+//                addView(new GenericView((GenericDef)specObject, specController));
+                }
+
+            if (specObject instanceof ClassDef)
+                {
+                addView(new ClassView((ClassDef) specObject, specController));
+                }
             }
-        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
-            {
-            addView(new AbbreviationView(abbreviationDef, specController));
-            }
-        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
-            {
-            addView(new BasicTypeView(basicTypeDef, specController));
-            }
-        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
-            {
-            addView(new FreeTypeView(freeTypeDef, specController));
-            }
-        for (ClassDef classDef : specification.getClassDefList())
-            {
-            ClassView classView = new ClassView(classDef, specController);
-            addView(classView);
-            }
+
+//        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
+//            {
+//            addView(new AxiomaticView(axiomaticDef, specController));
+//            }
+//
+//        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
+//            {
+//            addView(new AbbreviationView(abbreviationDef, specController));
+//            }
+//
+//        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
+//            {
+//            addView(new BasicTypeView(basicTypeDef, specController));
+//            }
+//
+//        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
+//            {
+//            addView(new FreeTypeView(freeTypeDef, specController));
+//            }
+//
+//        for (GenericDef genericDef : specification.getGenericDefList())
+//            {
+////            addView(new GenericDefView(genericDef, specController));
+//            }
+//
+//        for (ClassDef classDef : specification.getClassDefList())
+//            {
+//            addView(new ClassView(classDef, specController));
+//            }
     }
 
     @Override

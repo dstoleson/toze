@@ -1,7 +1,6 @@
 package edu.uwlax.toze.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "abbreviationDef")
@@ -10,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
                          "name",
                          "expression"
                  })
-public class AbbreviationDef extends SpecObject
+public class AbbreviationDef extends SpecDefinition
 {
     private String name;
     private String expression;
-    private Specification specification;
-    private ClassDef classDef;
+//    private Specification specification;
+//    private ClassDef classDef;
 
     public String getName()
     {
@@ -37,27 +36,27 @@ public class AbbreviationDef extends SpecObject
         this.expression = expression;
     }
 
-    @XmlTransient
-    public Specification getSpecification()
-    {
-        return specification;
-    }
-
-    public void setSpecification(Specification specification)
-    {
-        this.specification = specification;
-    }
-
-    @XmlTransient
-    public ClassDef getClassDef()
-    {
-        return classDef;
-    }
-
-    public void setClassDef(ClassDef classDef)
-    {
-        this.classDef = classDef;
-    }
+//    @XmlTransient
+//    public Specification getSpecification()
+//    {
+//        return specification;
+//    }
+//
+//    public void setSpecification(Specification specification)
+//    {
+//        this.specification = specification;
+//    }
+//
+//    @XmlTransient
+//    public ClassDef getClassDef()
+//    {
+//        return classDef;
+//    }
+//
+//    public void setClassDef(ClassDef classDef)
+//    {
+//        this.classDef = classDef;
+//    }
 
     @Override
     public AbbreviationDef clone() throws CloneNotSupportedException

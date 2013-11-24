@@ -110,30 +110,56 @@ public class ClassView extends ParagraphView
             addView(initialStateView);
             }
 
-        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+        for (SpecObject specObject : classDef.getSpecObjectList())
             {
-            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef, specController);
-            addView(axiomaticView, axiomaticViews);
-            }
+            if (specObject instanceof  AxiomaticDef)
+                {
+                AxiomaticView axiomaticView = new AxiomaticView((AxiomaticDef)specObject, specController);
+                addView(axiomaticView, axiomaticViews);
+                }
 
-        for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
-            {
-            AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef, specController);
-            addView(abbreviationView, abbreviationViews);
-            }
+            if (specObject instanceof  AbbreviationDef)
+                {
+                AbbreviationView abbreviationView = new AbbreviationView((AbbreviationDef)specObject, specController);
+                addView(abbreviationView, abbreviationViews);
+                }
 
-        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-            {
-            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef, specController);
-            addView(basicTypeView, basicTypeViews);
-            }
+            if (specObject instanceof BasicTypeDef)
+                {
+                BasicTypeView basicTypeView = new BasicTypeView((BasicTypeDef)specObject, specController);
+                addView(basicTypeView, basicTypeViews);
+                }
 
-        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-            {
-            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef, specController);
-            addView(freeTypeView, freeTypeViews);
+            if (specObject instanceof  FreeTypeDef)
+                {
+                FreeTypeView freeTypeView = new FreeTypeView((FreeTypeDef)specObject, specController);
+                addView(freeTypeView, freeTypeViews);
+                }
             }
-
+//        for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+//            {
+//            AxiomaticView axiomaticView = new AxiomaticView(axiomaticDef, specController);
+//            addView(axiomaticView, axiomaticViews);
+//            }
+//
+//        for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
+//            {
+//            AbbreviationView abbreviationView = new AbbreviationView(abbreviationDef, specController);
+//            addView(abbreviationView, abbreviationViews);
+//            }
+//
+//        for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
+//            {
+//            BasicTypeView basicTypeView = new BasicTypeView(basicTypeDef, specController);
+//            addView(basicTypeView, basicTypeViews);
+//            }
+//
+//        for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
+//            {
+//            FreeTypeView freeTypeView = new FreeTypeView(freeTypeDef, specController);
+//            addView(freeTypeView, freeTypeViews);
+//            }
+//
         for (Operation operation : classDef.getOperationList())
             {
             OperationView operationView = new OperationView(operation, specController);

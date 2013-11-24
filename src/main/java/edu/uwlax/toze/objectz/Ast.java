@@ -41,10 +41,13 @@ public class Ast
         public void reportTypeError(String msg,
                                     TozeToken token, SpecObject specObject, String property)
         {
-            token.setErrorType(ErrorType.TypeError);
-            token.setDescription(msg);
-            specObject.setErrorForProperty(property, token);
-            errors.add(token);
+            if (specObject != null && token != null)
+                {
+                token.setErrorType(ErrorType.TypeError);
+                token.setDescription(msg);
+                specObject.setErrorForProperty(property, token);
+                errors.add(token);
+                }
         }
 
         public void printSpaces(int l)

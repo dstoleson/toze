@@ -1,7 +1,6 @@
 package edu.uwlax.toze.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "axiomaticDef")
@@ -10,13 +9,13 @@ import javax.xml.bind.annotation.XmlType;
                          "declaration",
                          "predicate"
                  })
-public class AxiomaticDef extends SpecObject
+public class AxiomaticDef extends SpecDefinition
 {
     private String declaration;
     private String predicate;
 
-    private Specification specification;
-    private ClassDef classDef;
+//    private Specification specification;
+//    private ClassDef classDef;
 
     public String getDeclaration()
     {
@@ -38,27 +37,27 @@ public class AxiomaticDef extends SpecObject
         this.predicate = predicate;
     }
 
-    @XmlTransient
-    public Specification getSpecification()
-    {
-        return specification;
-    }
-
-    public void setSpecification(Specification specification)
-    {
-        this.specification = specification;
-    }
-
-    @XmlTransient
-    public ClassDef getClassDef()
-    {
-        return classDef;
-    }
-
-    public void setClassDef(ClassDef classDef)
-    {
-        this.classDef = classDef;
-    }
+//    @XmlTransient
+//    public Specification getSpecification()
+//    {
+//        return specification;
+//    }
+//
+//    public void setSpecification(Specification specification)
+//    {
+//        this.specification = specification;
+//    }
+//
+//    @XmlTransient
+//    public ClassDef getClassDef()
+//    {
+//        return classDef;
+//    }
+//
+//    public void setClassDef(ClassDef classDef)
+//    {
+//        this.classDef = classDef;
+//    }
 
     @Override
     public AxiomaticDef clone() throws CloneNotSupportedException

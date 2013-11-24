@@ -19,336 +19,341 @@ public class TozeSpecificationChecker extends TozeParser
 
         start(SpecificationSection.Specification, specification);
 
-//        List<SpecObject> specObjectList = specification.getSpecObjectList();
-//
-//        for (SpecObject specObject : specObjectList)
+        for (SpecObject specObject : specification.getSpecObjectList())
+            {
+                if (specObject instanceof AxiomaticDef)
+                    {
+                    AxiomaticDef axiomaticDef = (AxiomaticDef)specObject;
+                    start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
+                    parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+                    parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
+                    end(); // axiomatic
+                    }
+                else if (specObject instanceof AbbreviationDef)
+                    {
+                    AbbreviationDef abbreviationDef = (AbbreviationDef)specObject;
+                    start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
+                    parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+                    parse_guiExpression(abbreviationDef, "expression", abbreviationDef.getExpression());
+                    end();  // abbreviation
+                    }
+                else if (specObject instanceof BasicTypeDef)
+                    {
+                    BasicTypeDef basicTypeDef = (BasicTypeDef)specObject;
+                    start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
+                    parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
+                    end(); // basic
+                    }
+                else if (specObject instanceof FreeTypeDef)
+                    {
+                    FreeTypeDef freeTypeDef = (FreeTypeDef)specObject;
+                    start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
+                    parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+                    parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
+                    end();  // free
+                    }
+                else if (specObject instanceof GenericDef)
+                    {
+                    GenericDef genericDef = (GenericDef)specObject;
+                    start(SpecificationSection.GenericDefinition, genericDef);
+
+                    if (genericDef.getFormalParameters() != null)
+                        {
+                        parse_guiFormalParametersWoBrackets(genericDef, "formalParameters", genericDef.getFormalParameters());
+                        }
+
+                    parse_guiDeclaration(genericDef, "declaration", genericDef.getDeclaration());
+
+                    if (genericDef.getPredicate() != null)
+                        {
+                        parse_guiPredicateList(genericDef, "predicate", genericDef.getPredicate());
+                        }
+                    end();  // generic
+                    }
+                else if (specObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef)specObject;
+
+                    start(SpecificationSection.Class, classDef);
+                    parse_guiClassHeader(classDef, "name", classDef.getName());
+
+                    if (classDef.getVisibilityList() != null)
+                        {
+                        start(SpecificationSection.VisibilityList, classDef);
+                        parse_guiDeclarationNameList(classDef, "visibilityList", classDef.getVisibilityList());
+                        end();  // visibility
+                        }
+
+                    if (classDef.getInheritedClass() != null)
+                        {
+                        InheritedClass inheritedClass = classDef.getInheritedClass();
+                        start(SpecificationSection.InheritedClasses, inheritedClass);
+                        parse_guiInheritedClass(inheritedClass, "name", inheritedClass.getName());
+                        end();  // inherited
+                        }
+
+                    for (SpecObject classSpecObject : classDef.getSpecObjectList())
+                        {
+                        if (classSpecObject instanceof  BasicTypeDef)
+                            {
+                            BasicTypeDef basicTypeDef = (BasicTypeDef)classSpecObject;
+                            start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
+                            parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
+                            end();  // class.basic
+                            }
+
+                        if (classSpecObject instanceof AbbreviationDef)
+                            {
+                            AbbreviationDef abbreviationDef = (AbbreviationDef)classSpecObject;
+                            start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
+                            parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+                            parse_guiAbbreviation(abbreviationDef, "expression", abbreviationDef.getExpression());
+                            end();  // class.abbreviation
+                            }
+
+                        if (classSpecObject instanceof AxiomaticDef)
+                            {
+                            AxiomaticDef axiomaticDef = (AxiomaticDef)classSpecObject;
+                            start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
+                            parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+                            parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
+                            end();  // class.axiomatic
+                            }
+
+                        if (classSpecObject instanceof FreeTypeDef)
+                            {
+                            FreeTypeDef freeTypeDef = (FreeTypeDef)classSpecObject;
+                            start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
+                            parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+                            parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
+                            end();  // class.free
+                            }
+
+                        }
+
+                    if (classDef.getState() != null)
+                        {
+                        State state = classDef.getState();
+
+                        start(SpecificationSection.State, state);
+                        if (state.getDeclaration() != null)
+                            {
+                            parse_guiDeclaration(state, "declaration", state.getDeclaration());
+                            }
+                        if (state.getPredicate() != null)
+                            {
+                            parse_guiPredicateList(state, "predicate", state.getPredicate());
+                            }
+                        if (state.getName() != null)
+                            {
+                            parse_guiState(state, "name", state.getName());
+                            }
+                        end();  // state
+                        }
+
+                    if (classDef.getInitialState() != null)
+                        {
+                        InitialState initialState = classDef.getInitialState();
+                        start(SpecificationSection.InitState, initialState);
+                        parse_guiPredicateList(initialState, "predicate",
+                                               initialState.getPredicate());
+                        end();  // initstate
+                        }
+
+                    for (Operation operation : classDef.getOperationList())
+                        {
+                        start(SpecificationSection.Operation, operation);
+
+                        parse_guiOperationName(operation, "name", operation.getName());
+
+                        if (operation.getDeltaList() != null)
+                            {
+                            parse_guiDeclarationNameList(operation, "deltaList", operation.getDeltaList());
+                            }
+
+                        if (operation.getDeclaration() != null)
+                            {
+                            parse_guiDeclaration(operation, "declaration", operation.getDeclaration());
+                            }
+
+                        if (operation.getPredicate() != null)
+                            {
+                            parse_guiPredicateList(operation, "predicate", operation.getPredicate());
+                            }
+
+                        if (operation.getOperationExpression() != null)
+                            {
+                            parse_guiOperationExpression(operation, "operationExpression", operation.getOperationExpression());
+                            }
+
+                        end(); // operation
+                        }
+                    end(); // class
+                    }
+                end(); // specification
+            }
+
+//        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
 //            {
-//                if (specObject instanceof AxiomaticDef)
-//                    {
-//                    AxiomaticDef axiomaticDef = (AxiomaticDef)specObject;
-//                    start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
-//                    parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
-//                    parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
-//                    end(); // axiomatic
-//                    }
-//                else if (specObject instanceof AbbreviationDef)
-//                    {
-//                    AbbreviationDef abbreviationDef = (AbbreviationDef)specObject;
-//                    start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
-//                    parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
-//                    parse_guiExpression(abbreviationDef, "expression", abbreviationDef.getExpression());
-//                    end();  // abbreviation
-//                    }
-//                else if (specObject instanceof BasicTypeDef)
-//                    {
-//                    BasicTypeDef basicTypeDef = (BasicTypeDef)specObject;
-//                    start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
-//                    parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
-//                    end(); // basic
-//                    }
-//                else if (specObject instanceof FreeTypeDef)
-//                    {
-//                    FreeTypeDef freeTypeDef = (FreeTypeDef)specObject;
-//                    start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
-//                    parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
-//                    parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
-//                    end();  // free
-//                    }
-//                else if (specObject instanceof GenericDef)
-//                    {
-//                    GenericDef genericDef = (GenericDef)specObject;
-//                    start(SpecificationSection.GenericDefinition, genericDef);
-//
-//                    if (genericDef.getFormalParameters() != null)
-//                        {
-//                        parse_guiFormalParametersWoBrackets(genericDef, "formalParameters", genericDef.getFormalParameters());
-//                        }
-//
-//                    parse_guiDeclaration(genericDef, "predicate", genericDef.getPredicate());
-//
-//                    if (genericDef.getPredicate() != null)
-//                        {
-//                        parse_guiPredicateList(genericDef, "predicate", genericDef.getPredicate());
-//                        }
-//                    end();  // generic
-//                    }
-//                else if (specObject instanceof ClassDef)
-//                    {
-//                    ClassDef classDef = (ClassDef)specObject;
-//
-//                    start(SpecificationSection.Class, classDef);
-//                    parse_guiClassHeader(classDef, "name", classDef.getName());
-//
-//                    if (classDef.getVisibilityList() != null)
-//                        {
-//                        start(SpecificationSection.VisibilityList, classDef);
-//                        parse_guiDeclarationNameList(classDef, "visibilityList", classDef.getVisibilityList());
-//                        end();  // visibility
-//                        }
-//
-//                    if (classDef.getInheritedClass() != null)
-//                        {
-//                        InheritedClass inheritedClass = classDef.getInheritedClass();
-//                        start(SpecificationSection.InheritedClasses, inheritedClass);
-//                        // TODO use classDef or (as stated) classDef.inheritedClass ?
-//                        parse_guiInheritedClass(inheritedClass, "name", inheritedClass.getName());
-//                        end();  // inherited
-//                        }
-//
-//                    for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-//                        {
-//                        start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
-//                        parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
-//                        end();  // class.basic
-//                        }
-//
-//                    for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
-//                        {
-//                        start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
-//                        parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
-//                        parse_guiAbbreviation(abbreviationDef, "expression", abbreviationDef.getExpression());
-//                        end();  // class.abbreviation
-//                        }
-//
-//                    for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
-//                        {
-//                        start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
-//                        parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
-//                        parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
-//                        end();  // class.axiomatic
-//                        }
-//
-//                    for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-//                        {
-//                        start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
-//                        parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
-//                        parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
-//                        end();  // class.free
-//                        }
-//
-//                    if (classDef.getState() != null)
-//                        {
-//                        State state = classDef.getState();
-//
-//                        start(SpecificationSection.State, state);
-//                        if (state.getDeclaration() != null)
-//                            {
-//                            parse_guiDeclaration(state, "declaration", state.getDeclaration());
-//                            }
-//                        if (state.getPredicate() != null)
-//                            {
-//                            parse_guiPredicateList(state, "predicate", state.getPredicate());
-//                            }
-//                        if (state.getName() != null)
-//                            {
-//                            parse_guiState(state, "name", state.getName());
-//                            }
-//                        end();  // state
-//                        }
-//
-//                    if (classDef.getInitialState() != null)
-//                        {
-//                        InitialState initialState = classDef.getInitialState();
-//                        start(SpecificationSection.InitState, initialState);
-//                        parse_guiPredicateList(initialState, "predicate",
-//                                               initialState.getPredicate());
-//                        end();  // initstate
-//                        }
-//
-//                    for (Operation operation : classDef.getOperationList())
-//                        {
-//                        start(SpecificationSection.Operation, operation);
-//
-//                        parse_guiOperationName(operation, "name", operation.getName());
-//
-//                        if (operation.getDeltaList() != null)
-//                            {
-//                            parse_guiDeclarationNameList(operation, "deltaList", operation.getDeltaList());
-//                            }
-//
-//                        if (operation.getDeclaration() != null)
-//                            {
-//                            parse_guiDeclaration(operation, "declaration", operation.getDeclaration());
-//                            }
-//
-//                        if (operation.getPredicate() != null)
-//                            {
-//                            parse_guiPredicateList(operation, "predicate", operation.getPredicate());
-//                            }
-//
-//                        if (operation.getOperationExpression() != null)
-//                            {
-//                            parse_guiOperationExpression(operation, "operationExpression", operation.getOperationExpression());
-//                            }
-//
-//                        end(); // operation
-//                        }
-//                    end(); // class
-//                    }
-//                end(); // specification
+//            start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
+//            parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+//            parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
+//            end(); // axiomatic
 //            }
-
-        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
-            {
-            start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
-            parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
-            parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
-            end(); // axiomatic
-            }
-
-        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
-            {
-            start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
-            parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
-            parse_guiExpression(abbreviationDef, "expression", abbreviationDef.getExpression());
-            end();  // abbreviation
-            }
-
-        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
-            {
-            start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
-            parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
-            end(); // basic
-            }
-
-        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
-            {
-            start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
-            parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
-            parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
-            end();  // free
-            }
-
-        for (GenericDef genericDef : specification.getGenericDefList())
-            {
-            start(SpecificationSection.GenericDefinition, genericDef);
-
-            if (genericDef.getFormalParameters() != null)
-                {
-                parse_guiFormalParametersWoBrackets(genericDef, "formalParameters", genericDef.getFormalParameters());
-                }
-
-            parse_guiDeclaration(genericDef, "predicate", genericDef.getPredicate());
-
-            if (genericDef.getPredicate() != null)
-                {
-                parse_guiPredicateList(genericDef, "predicate", genericDef.getPredicate());
-                }
-            end();  // generic
-            }
-
-        for (ClassDef classDef : specification.getClassDefList())
-            {
-            start(SpecificationSection.Class, classDef);
-            parse_guiClassHeader(classDef, "name", classDef.getName());
-
-            if (classDef.getVisibilityList() != null)
-                {
-                start(SpecificationSection.VisibilityList, classDef);
-                parse_guiDeclarationNameList(classDef, "visibilityList", classDef.getVisibilityList());
-                end();  // visibility
-                }
-
-            if (classDef.getInheritedClass() != null)
-                {
-                InheritedClass inheritedClass = classDef.getInheritedClass();
-                start(SpecificationSection.InheritedClasses, inheritedClass);
-                // TODO use classDef or (as stated) classDef.inheritedClass ?
-                parse_guiInheritedClass(inheritedClass, "name", inheritedClass.getName());
-                end();  // inherited
-                }
-
-            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
-                {
-                start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
-                parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
-                end();  // class.basic
-                }
-
-            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
-                {
-                start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
-                parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
-                parse_guiAbbreviation(abbreviationDef, "expression", abbreviationDef.getExpression());
-                end();  // class.abbreviation
-                }
-
-            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
-                {
-                start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
-                parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
-                parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
-                end();  // class.axiomatic
-                }
-
-            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-                {
-                start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
-                parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
-                parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
-                end();  // class.free
-                }
-
-            if (classDef.getState() != null)
-                {
-                State state = classDef.getState();
-
-                start(SpecificationSection.State, state);
-                if (state.getDeclaration() != null)
-                    {
-                    parse_guiDeclaration(state, "declaration", state.getDeclaration());
-                    }
-                if (state.getPredicate() != null)
-                    {
-                    parse_guiPredicateList(state, "predicate", state.getPredicate());
-                    }
-                if (state.getName() != null)
-                    {
-                    parse_guiState(state, "name", state.getName());
-                    }
-                end();  // state
-                }
-
-            if (classDef.getInitialState() != null)
-                {
-                InitialState initialState = classDef.getInitialState();
-                start(SpecificationSection.InitState, initialState);
-                parse_guiPredicateList(initialState, "predicate",
-                                       initialState.getPredicate());
-                end();  // initstate
-                }
-
-            for (Operation operation : classDef.getOperationList())
-                {
-                start(SpecificationSection.Operation, operation);
-
-                parse_guiOperationName(operation, "name", operation.getName());
-
-                if (operation.getDeltaList() != null)
-                    {
-                    parse_guiDeclarationNameList(operation, "deltaList", operation.getDeltaList());
-                    }
-
-                if (operation.getDeclaration() != null)
-                    {
-                    parse_guiDeclaration(operation, "declaration", operation.getDeclaration());
-                    }
-
-                if (operation.getPredicate() != null)
-                    {
-                    parse_guiPredicateList(operation, "predicate", operation.getPredicate());
-                    }
-
-                if (operation.getOperationExpression() != null)
-                    {
-                    parse_guiOperationExpression(operation, "operationExpression", operation.getOperationExpression());
-                    }
-
-                end(); // operation
-                }
-            end(); // class
-            }
-        end(); // specification
+//
+//        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
+//            {
+//            start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
+//            parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+//            parse_guiExpression(abbreviationDef, "expression", abbreviationDef.getExpression());
+//            end();  // abbreviation
+//            }
+//
+//        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
+//            {
+//            start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
+//            parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
+//            end(); // basic
+//            }
+//
+//        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
+//            {
+//            start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
+//            parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+//            parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
+//            end();  // free
+//            }
+//
+//        for (GenericDef genericDef : specification.getGenericDefList())
+//            {
+//            start(SpecificationSection.GenericDefinition, genericDef);
+//
+//            if (genericDef.getFormalParameters() != null)
+//                {
+//                parse_guiFormalParametersWoBrackets(genericDef, "formalParameters", genericDef.getFormalParameters());
+//                }
+//
+//            parse_guiDeclaration(genericDef, "predicate", genericDef.getPredicate());
+//
+//            if (genericDef.getPredicate() != null)
+//                {
+//                parse_guiPredicateList(genericDef, "predicate", genericDef.getPredicate());
+//                }
+//            end();  // generic
+//            }
+//
+//        for (ClassDef classDef : specification.getClassDefList())
+//            {
+//            start(SpecificationSection.Class, classDef);
+//            parse_guiClassHeader(classDef, "name", classDef.getName());
+//
+//            if (classDef.getVisibilityList() != null)
+//                {
+//                start(SpecificationSection.VisibilityList, classDef);
+//                parse_guiDeclarationNameList(classDef, "visibilityList", classDef.getVisibilityList());
+//                end();  // visibility
+//                }
+//
+//            if (classDef.getInheritedClass() != null)
+//                {
+//                InheritedClass inheritedClass = classDef.getInheritedClass();
+//                start(SpecificationSection.InheritedClasses, inheritedClass);
+//                // TODO use classDef or (as stated) classDef.inheritedClass ?
+//                parse_guiInheritedClass(inheritedClass, "name", inheritedClass.getName());
+//                end();  // inherited
+//                }
+//
+//            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
+//                {
+//                start(SpecificationSection.BasicTypeDefinition, basicTypeDef);
+//                parse_guiBasicTypeDefinition(basicTypeDef, "name", basicTypeDef.getName());
+//                end();  // class.basic
+//                }
+//
+//            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
+//                {
+//                start(SpecificationSection.AbbreviationDefinition, abbreviationDef);
+//                parse_guiAbbreviation(abbreviationDef, "name", abbreviationDef.getName());
+//                parse_guiAbbreviation(abbreviationDef, "expression", abbreviationDef.getExpression());
+//                end();  // class.abbreviation
+//                }
+//
+//            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+//                {
+//                start(SpecificationSection.AxiomaticDefinition, axiomaticDef);
+//                parse_guiDeclaration(axiomaticDef, "declaration", axiomaticDef.getDeclaration());
+//                parse_guiPredicateList(axiomaticDef, "predicate", axiomaticDef.getPredicate());
+//                end();  // class.axiomatic
+//                }
+//
+//            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
+//                {
+//                start(SpecificationSection.FreeTypeDefinition, freeTypeDef);
+//                parse_guiIdentifier(freeTypeDef, "declaration", freeTypeDef.getDeclaration());
+//                parse_guiBranch(freeTypeDef, "predicate", freeTypeDef.getPredicate());
+//                end();  // class.free
+//                }
+//
+//            if (classDef.getState() != null)
+//                {
+//                State state = classDef.getState();
+//
+//                start(SpecificationSection.State, state);
+//                if (state.getDeclaration() != null)
+//                    {
+//                    parse_guiDeclaration(state, "declaration", state.getDeclaration());
+//                    }
+//                if (state.getPredicate() != null)
+//                    {
+//                    parse_guiPredicateList(state, "predicate", state.getPredicate());
+//                    }
+//                if (state.getName() != null)
+//                    {
+//                    parse_guiState(state, "name", state.getName());
+//                    }
+//                end();  // state
+//                }
+//
+//            if (classDef.getInitialState() != null)
+//                {
+//                InitialState initialState = classDef.getInitialState();
+//                start(SpecificationSection.InitState, initialState);
+//                parse_guiPredicateList(initialState, "predicate",
+//                                       initialState.getPredicate());
+//                end();  // initstate
+//                }
+//
+//            for (Operation operation : classDef.getOperationList())
+//                {
+//                start(SpecificationSection.Operation, operation);
+//
+//                parse_guiOperationName(operation, "name", operation.getName());
+//
+//                if (operation.getDeltaList() != null)
+//                    {
+//                    parse_guiDeclarationNameList(operation, "deltaList", operation.getDeltaList());
+//                    }
+//
+//                if (operation.getDeclaration() != null)
+//                    {
+//                    parse_guiDeclaration(operation, "declaration", operation.getDeclaration());
+//                    }
+//
+//                if (operation.getPredicate() != null)
+//                    {
+//                    parse_guiPredicateList(operation, "predicate", operation.getPredicate());
+//                    }
+//
+//                if (operation.getOperationExpression() != null)
+//                    {
+//                    parse_guiOperationExpression(operation, "operationExpression", operation.getOperationExpression());
+//                    }
+//
+//                end(); // operation
+//                }
+//            end(); // class
+//            }
+//        end(); // specification
 
         if (specification.getPredicate() != null)
             {

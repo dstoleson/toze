@@ -37,103 +37,168 @@ public class TozeLatexExporter
             addPredicate(specification.getPredicate());
             }
 
-        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
+        for (SpecObject specObject : specification.getSpecObjectList())
             {
-            addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
-            }
-
-        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
-            {
-            addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
-            }
-
-        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
-            {
-            addBasicTypeDefinition(basicTypeDef.getName());
-            }
-
-        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
-            {
-            addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
-            }
-
-        for (GenericDef genericDef : specification.getGenericDefList())
-            {
-            addGeneric(genericDef.getFormalParameters(),
-                       genericDef.getDeclaration(),
-                       genericDef.getPredicate());
-            }
-
-        for (ClassDef classDef : specification.getClassDefList())
-            {
-            startClass(classDef.getName());
-
-            if (classDef.getVisibilityList() != null)
+            if (specObject instanceof  AxiomaticDef)
                 {
-                addVisibilityList(classDef.getVisibilityList());
+                addAxiomatic(((AxiomaticDef)specObject).getDeclaration(),
+                             ((AxiomaticDef)specObject).getPredicate());
                 }
 
-            if (classDef.getInheritedClass() != null)
+            if (specObject instanceof AbbreviationDef)
                 {
-                addInheritedClass(classDef.getInheritedClass().getName());
+                addAbbreviation(((AbbreviationDef)specObject).getName(),
+                                ((AbbreviationDef)specObject).getExpression());
                 }
 
-            for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+            if (specObject instanceof BasicTypeDef)
                 {
-                addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
+                addBasicTypeDefinition(((BasicTypeDef)specObject).getName());
                 }
 
-            for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
+            if (specObject instanceof FreeTypeDef)
                 {
-                addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
+                addFreeType(((FreeTypeDef)specObject).getDeclaration(),
+                            ((FreeTypeDef)specObject).getPredicate());
                 }
 
-            for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
+            if (specObject instanceof GenericDef)
                 {
-                addBasicTypeDefinition(basicTypeDef.getName());
+                addGeneric(((GenericDef)specObject).getFormalParameters(),
+                           ((GenericDef)specObject).getDeclaration(),
+                           ((GenericDef)specObject).getPredicate());
                 }
+//            }
 
-            for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
-                {
-                addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
-                }
+//        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
+//            {
+//            addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
+//            }
+//
+//        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
+//            {
+//            addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
+//            }
+//
+//        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
+//            {
+//            addBasicTypeDefinition(basicTypeDef.getName());
+//            }
+//
+//        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
+//            {
+//            addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
+//            }
+//
+//        for (GenericDef genericDef : specification.getGenericDefList())
+//            {
+//            addGeneric(genericDef.getFormalParameters(),
+//                       genericDef.getDeclaration(),
+//                       genericDef.getPredicate());
+//            }
 
-            State state = classDef.getState();
-            if (state != null)
+            if (specObject instanceof ClassDef)
                 {
-                if (state.getName() != null)
+
+//                for (ClassDef classDef : specification.getClassDefList())
+//                    {
+                ClassDef classDef = (ClassDef)specObject;
+
+                startClass(classDef.getName());
+
+                if (classDef.getVisibilityList() != null)
                     {
-                    addState(state.getName());
+                    addVisibilityList(classDef.getVisibilityList());
                     }
-                else
-                    {
-                    addState(state.getDeclaration(), state.getPredicate());
-                    }
-                }
 
-            if (classDef.getInitialState() != null)
-                {
-                addInit(classDef.getInitialState().getPredicate());
-                }
-
-            for (Operation operation : classDef.getOperationList())
-                {
-                if (operation.getOperationExpression() == null)
+                if (classDef.getInheritedClass() != null)
                     {
-                    addOperation(operation.getName(),
-                                 operation.getDeltaList(),
-                                 operation.getDeclaration(),
-                                 operation.getPredicate());
+                    addInheritedClass(classDef.getInheritedClass().getName());
                     }
-                else
-                    {
-//                    addOperationExpression(operation.getName(), operation.getOperationExpression());
-                    }
-                }
 
-            endClass();
+                for (SpecObject classSpecObject : classDef.getSpecObjectList())
+                    {
+                    if (classSpecObject instanceof  AxiomaticDef)
+                        {
+                        addAxiomatic(((AxiomaticDef)classSpecObject).getDeclaration(),
+                                     ((AxiomaticDef)classSpecObject).getPredicate());
+                        }
+
+                    if (classSpecObject instanceof AbbreviationDef)
+                        {
+                        addAbbreviation(((AbbreviationDef)classSpecObject).getName(),
+                                        ((AbbreviationDef)classSpecObject).getExpression());
+                        }
+
+                    if (classSpecObject instanceof BasicTypeDef)
+                        {
+                        addBasicTypeDefinition(((BasicTypeDef)classSpecObject).getName());
+                        }
+
+                    if (classSpecObject instanceof FreeTypeDef)
+                        {
+                        addFreeType(((FreeTypeDef)classSpecObject).getDeclaration(),
+                                    ((FreeTypeDef)classSpecObject).getPredicate());
+                        }
+
+//
+//                    for (AxiomaticDef axiomaticDef : classDef.getAxiomaticDefList())
+//                        {
+//                        addAxiomatic(axiomaticDef.getDeclaration(), axiomaticDef.getPredicate());
+//                        }
+//
+//                    for (AbbreviationDef abbreviationDef : classDef.getAbbreviationDefList())
+//                        {
+//                        addAbbreviation(abbreviationDef.getName(), abbreviationDef.getExpression());
+//                        }
+//
+//                    for (BasicTypeDef basicTypeDef : classDef.getBasicTypeDefList())
+//                        {
+//                        addBasicTypeDefinition(basicTypeDef.getName());
+//                        }
+//
+//                    for (FreeTypeDef freeTypeDef : classDef.getFreeTypeDefList())
+//                        {
+//                        addFreeType(freeTypeDef.getDeclaration(), freeTypeDef.getPredicate());
+//                        }
+                    }
+
+                State state = classDef.getState();
+                if (state != null)
+                    {
+                    if (state.getName() != null)
+                        {
+                        addState(state.getName());
+                        }
+                    else
+                        {
+                        addState(state.getDeclaration(), state.getPredicate());
+                        }
+                    }
+
+                if (classDef.getInitialState() != null)
+                    {
+                    addInit(classDef.getInitialState().getPredicate());
+                    }
+
+                for (Operation operation : classDef.getOperationList())
+                    {
+                    if (operation.getOperationExpression() == null)
+                        {
+                        addOperation(operation.getName(),
+                                     operation.getDeltaList(),
+                                     operation.getDeclaration(),
+                                     operation.getPredicate());
+                        }
+                    else
+                        {
+    //                    addOperationExpression(operation.getName(), operation.getOperationExpression());
+                        }
+                    }
+
+                endClass();
+                }
             }
-
         return m_spec + "\n\\end{document}\n";
     }
 

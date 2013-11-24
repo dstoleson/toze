@@ -99,8 +99,8 @@ public abstract class SpecObject implements Cloneable
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException
+    public SpecObject clone() throws CloneNotSupportedException
     {
-        return super.clone();
+        return this;
     }
 }
