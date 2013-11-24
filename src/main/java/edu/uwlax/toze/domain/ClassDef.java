@@ -238,68 +238,68 @@ public class ClassDef extends SpecObject
     {
         super.clone();
 
-        ClassDef clone = new ClassDef();
+        ClassDef classClone = new ClassDef();
 
         for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
             {
             AbbreviationDef abbreviationDefClone = abbreviationDef.clone();
-            abbreviationDefClone.setClassDef(clone);
-            clone.addAbbreviationDef(abbreviationDefClone);
+            abbreviationDefClone.setClassDef(classClone);
+            classClone.addAbbreviationDef(abbreviationDefClone);
             }
 
         for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
             {
             AxiomaticDef axiomaticDefClone = axiomaticDef.clone();
-            axiomaticDefClone.setClassDef(clone);
-            clone.addAxiomaticDef(axiomaticDefClone);
+            axiomaticDefClone.setClassDef(classClone);
+            classClone.addAxiomaticDef(axiomaticDefClone);
             }
 
         for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
             {
             BasicTypeDef basicTypeDefClone = basicTypeDef.clone();
-            basicTypeDefClone.setClassDef(clone);
-            clone.addBasicTypeDef(basicTypeDefClone);
+            basicTypeDefClone.setClassDef(classClone);
+            classClone.addBasicTypeDef(basicTypeDefClone);
             }
 
         for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
             {
             FreeTypeDef freeTypeDefClone = freeTypeDef.clone();
-            freeTypeDefClone.setClassDef(clone);
-            clone.addFreeTypeDef(freeTypeDefClone);
+            freeTypeDefClone.setClassDef(classClone);
+            classClone.addFreeTypeDef(freeTypeDefClone);
             }
 
         for (Operation operation : this.getOperationList())
             {
             Operation operationClone = operation.clone();
-            operationClone.setClassDef(clone);
-            clone.addOperation(operationClone);
+            operationClone.setClassDef(classClone);
+            classClone.addOperation(operationClone);
             }
 
-        clone.setName(this.getName());
+        classClone.setName(this.getName().toString());
 
         if (this.getInheritedClass() != null)
             {
             InheritedClass inheritedClassClone = this.getInheritedClass().clone();
-            inheritedClassClone.setClassDef(clone);
-            clone.setInheritedClass(this.getInheritedClass().clone());
+            inheritedClassClone.setClassDef(classClone);
+            classClone.setInheritedClass(this.getInheritedClass().clone());
             }
 
         if (this.getInitialState() != null)
             {
             InitialState initialStateClone = this.getInitialState().clone();
-            initialStateClone.setClassDef(clone);
-            clone.setInitialState(initialStateClone);
+            initialStateClone.setClassDef(classClone);
+            classClone.setInitialState(initialStateClone);
             }
 
         if (this.getState() != null)
             {
             State stateClone = this.getState().clone();
-            stateClone.setClassDef(clone);
-            clone.setState(stateClone);
+            stateClone.setClassDef(classClone);
+            classClone.setState(stateClone);
             }
 
-        clone.setVisibilityList(this.getVisibilityList());
+        classClone.setVisibilityList(this.getVisibilityList());
 
-        return clone;
+        return classClone;
     }
 }
