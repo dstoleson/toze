@@ -818,6 +818,12 @@ public class SpecificationController extends Observable implements FocusListener
      */
     private void updateSelectedView(ParagraphView newSelectedView)
     {
+        if (selectedView == newSelectedView)
+            {
+            // don't need to update anything
+            return;
+            }
+
         if (selectedView != null)
             {
             selectedView.setSelected(false);
@@ -863,6 +869,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void moveUp(SpecObject object)
     {
+
         if (object instanceof SpecDefinition || object instanceof ClassDef)
             {
             List<SpecObject> specObjectList = null;
@@ -886,9 +893,8 @@ public class SpecificationController extends Observable implements FocusListener
                 }
             else if (object instanceof ClassDef)
                 {
-                ClassDef classDef = (ClassDef)object;
-                specObjectList = classDef.getSpecObjectList();
-                target = classDef;
+                specObjectList = specification.getSpecObjectList();
+                target = specification;
                 }
 
             int index = specObjectList.indexOf(object);
@@ -907,145 +913,6 @@ public class SpecificationController extends Observable implements FocusListener
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
             }
-
-//        if (object instanceof AxiomaticDef)
-//            {
-//            AxiomaticDef axiomaticDef = (AxiomaticDef) object;
-//            List<AxiomaticDef> axiomaticDefList = null;
-//
-//            if (axiomaticDef.getClassDef() != null)
-//                {
-//                axiomaticDefList = axiomaticDef.getClassDef().getAxiomaticDefList();
-//                }
-//            else if (axiomaticDef.getSpecification() != null)
-//                {
-//                axiomaticDefList = specification.getAxiomaticDefList();
-//                }
-//
-//            int index = axiomaticDefList.indexOf(axiomaticDef);
-//
-//            if (index > 0)
-//                {
-//                Utils.listMove(axiomaticDefList, axiomaticDef, index - 1);
-//                }
-//
-//            if (axiomaticDef.getClassDef() != null)
-//                {
-//                axiomaticDef.getClassDef().setAxiomaticDefList(axiomaticDefList);
-//                }
-//            else if (axiomaticDef.getSpecification() != null)
-//                {
-//                specification.setAxiomaticDefList(axiomaticDefList);
-//                }
-//            }
-//        else if (object instanceof AbbreviationDef)
-//            {
-//            AbbreviationDef abbreviationDef = (AbbreviationDef) object;
-//
-//            List<AbbreviationDef> abbreviationDefList = null;
-//
-//            if (abbreviationDef.getClassDef() != null)
-//                {
-//                abbreviationDefList = abbreviationDef.getClassDef().getAbbreviationDefList();
-//                }
-//            else if (abbreviationDef.getSpecification() != null)
-//                {
-//                abbreviationDefList = specification.getAbbreviationDefList();
-//                }
-//
-//            int index = abbreviationDefList.indexOf(abbreviationDef);
-//
-//            if (index > 0)
-//                {
-//                Utils.listMove(abbreviationDefList, abbreviationDef, index - 1);
-//                }
-//
-//            if (abbreviationDef.getClassDef() != null)
-//                {
-//                abbreviationDef.getClassDef().setAbbreviationDefList(abbreviationDefList);
-//                }
-//            else if (abbreviationDef.getSpecification() != null)
-//                {
-//                specification.setAbbreviationDefList(abbreviationDefList);
-//                }
-//            }
-//        else if (object instanceof BasicTypeDef)
-//            {
-//            BasicTypeDef basicTypeDef = (BasicTypeDef) object;
-//
-//            List<BasicTypeDef> basicTypeDefList = null;
-//
-//            if (basicTypeDef.getClassDef() != null)
-//                {
-//                basicTypeDefList = basicTypeDef.getClassDef().getBasicTypeDefList();
-//                }
-//            else if (basicTypeDef.getSpecification() != null)
-//                {
-//                basicTypeDefList = specification.getBasicTypeDefList();
-//                }
-//
-//            int index = basicTypeDefList.indexOf(basicTypeDef);
-//
-//            if (index > 0)
-//                {
-//                Utils.listMove(basicTypeDefList, basicTypeDef, index - 1);
-//                }
-//
-//            if (basicTypeDef.getClassDef() != null)
-//                {
-//                basicTypeDef.getClassDef().setBasicTypeDefList(basicTypeDefList);
-//                }
-//            else if (basicTypeDef.getSpecification() != null)
-//                {
-//                specification.setBasicTypeDefList(basicTypeDefList);
-//                }
-//            }
-//        else if (object instanceof FreeTypeDef)
-//            {
-//            FreeTypeDef freeTypeDef = (FreeTypeDef) object;
-//
-//            List<FreeTypeDef> freeTypeDefList = null;
-//
-//            if (freeTypeDef.getClassDef() != null)
-//                {
-//                freeTypeDefList = freeTypeDef.getClassDef().getFreeTypeDefList();
-//                }
-//            else if (freeTypeDef.getSpecification() != null)
-//                {
-//                freeTypeDefList = specification.getFreeTypeDefList();
-//                }
-//
-//            int index = freeTypeDefList.indexOf(freeTypeDef);
-//
-//            if (index > 0)
-//                {
-//                Utils.listMove(freeTypeDefList, freeTypeDef, index - 1);
-//                }
-//
-//            if (freeTypeDef.getClassDef() != null)
-//                {
-//                freeTypeDef.getClassDef().setFreeTypeDefList(freeTypeDefList);
-//                }
-//            else if (freeTypeDef.getSpecification() != null)
-//                {
-//                specification.setFreeTypeDefList(freeTypeDefList);
-//                }
-//            }
-//        else if (object instanceof ClassDef)
-//            {
-//            ClassDef classDef = (ClassDef) object;
-//
-//            List<ClassDef> classDefList = specification.getClassDefList();
-//
-//            int index = classDefList.indexOf(object);
-//
-//            if (index > 0)
-//                {
-//                Utils.listMove(classDefList, classDef, index - 1);
-//                }
-//
-//            specification.setClassDefList(classDefList);
-//            }
         else if (object instanceof Operation)
             {
             Operation operation = (Operation) object;
@@ -1069,7 +936,6 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void moveDown(SpecObject object)
     {
-
         if (object instanceof SpecDefinition || object instanceof ClassDef)
             {
             List<SpecObject> specObjectList = null;
@@ -1093,9 +959,8 @@ public class SpecificationController extends Observable implements FocusListener
                 }
             else if (object instanceof ClassDef)
                 {
-                ClassDef classDef = (ClassDef)object;
-                specObjectList = classDef.getSpecObjectList();
-                target = classDef;
+                specObjectList = specification.getSpecObjectList();
+                target = specification;
                 }
 
             int size = specObjectList.size();
@@ -1116,159 +981,6 @@ public class SpecificationController extends Observable implements FocusListener
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
             }
-
-
-//        if (object instanceof AxiomaticDef)
-//            {
-//            AxiomaticDef axiomaticDef = (AxiomaticDef) object;
-//
-//            List<AxiomaticDef> axiomaticDefList = null;
-//
-//            if (axiomaticDef.getClassDef() != null)
-//                {
-//                axiomaticDefList = axiomaticDef.getClassDef().getAxiomaticDefList();
-//                }
-//            else if (axiomaticDef.getSpecification() != null)
-//                {
-//                axiomaticDefList = specification.getAxiomaticDefList();
-//                }
-//
-//            int size = axiomaticDefList.size();
-//            int index = axiomaticDefList.indexOf(axiomaticDef);
-//            int last = size - 1;
-//
-//            if (index < last)
-//                {
-//                Utils.listMove(axiomaticDefList, axiomaticDef, index + 1);
-//                }
-//
-//            if (axiomaticDef.getClassDef() != null)
-//                {
-//                axiomaticDef.getClassDef().setAxiomaticDefList(axiomaticDefList);
-//                }
-//            else if (axiomaticDef.getSpecification() != null)
-//                {
-//                specification.setAxiomaticDefList(axiomaticDefList);
-//                }
-//            }
-//        else if (object instanceof AbbreviationDef)
-//            {
-//            AbbreviationDef abbreviationDef = (AbbreviationDef) object;
-//
-//            List<AbbreviationDef> abbreviationDefList = null;
-//
-//            if (abbreviationDef.getClassDef() != null)
-//                {
-//                abbreviationDefList = abbreviationDef.getClassDef().getAbbreviationDefList();
-//                }
-//            else if (abbreviationDef.getSpecification() != null)
-//                {
-//                abbreviationDefList = specification.getAbbreviationDefList();
-//                }
-//
-//            int size = abbreviationDefList.size();
-//            int index = abbreviationDefList.indexOf(abbreviationDef);
-//            int last = size - 1;
-//
-//            if (index < last)
-//                {
-//                Utils.listMove(abbreviationDefList, abbreviationDef, index + 1);
-//                }
-//
-//            if (abbreviationDef.getClassDef() != null)
-//                {
-//                abbreviationDef.getClassDef().setAbbreviationDefList(abbreviationDefList);
-//                }
-//            else if (abbreviationDef.getSpecification() != null)
-//                {
-//                specification.setAbbreviationDefList(abbreviationDefList);
-//                }
-//            }
-//        else if (object instanceof BasicTypeDef)
-//            {
-//            BasicTypeDef basicTypeDef = (BasicTypeDef) object;
-//
-//            List<BasicTypeDef> basicTypeDefList = null;
-//
-//            if (basicTypeDef.getClassDef() != null)
-//                {
-//                basicTypeDefList = basicTypeDef.getClassDef().getBasicTypeDefList();
-//                }
-//            else if (basicTypeDef.getSpecification() != null)
-//                {
-//                basicTypeDefList = specification.getBasicTypeDefList();
-//                }
-//
-//            int size = basicTypeDefList.size();
-//            int index = basicTypeDefList.indexOf(basicTypeDef);
-//            int last = size - 1;
-//
-//            if (index < last)
-//                {
-//                Utils.listMove(basicTypeDefList, basicTypeDef, index + 1);
-//                }
-//
-//            if (basicTypeDef.getClassDef() != null)
-//                {
-//                basicTypeDef.getClassDef().setBasicTypeDefList(basicTypeDefList);
-//                }
-//            else if (basicTypeDef.getSpecification() != null)
-//                {
-//                specification.setBasicTypeDefList(basicTypeDefList);
-//                }
-//            }
-//        else if (object instanceof FreeTypeDef)
-//            {
-//            FreeTypeDef freeTypeDef = (FreeTypeDef) object;
-//
-//            List<FreeTypeDef> freeTypeDefList = null;
-//
-//            if (freeTypeDef.getClassDef() != null)
-//                {
-//                freeTypeDefList = freeTypeDef.getClassDef().getFreeTypeDefList();
-//                }
-//            else if (freeTypeDef.getSpecification() != null)
-//                {
-//                freeTypeDefList = specification.getFreeTypeDefList();
-//                }
-//
-//            int size = freeTypeDefList.size();
-//            int index = freeTypeDefList.indexOf(freeTypeDef);
-//            int last = size - 1;
-//
-//            if (index < last)
-//                {
-//                Utils.listMove(freeTypeDefList, freeTypeDef, index + 1);
-//                }
-//
-//            if (freeTypeDef.getClassDef() != null)
-//                {
-//                freeTypeDef.getClassDef().setFreeTypeDefList(freeTypeDefList);
-//                }
-//            else if (freeTypeDef.getSpecification() != null)
-//                {
-//                specification.setFreeTypeDefList(freeTypeDefList);
-//                }
-//            }
-//        else if (object instanceof ClassDef)
-//            {
-//            ClassDef classDef = (ClassDef) object;
-//
-//            int size = specification.getClassDefList().size();
-//            int index = specification.getClassDefList().indexOf(object);
-//
-//            List<ClassDef> classDefList = specification.getClassDefList();
-//
-//            int last = size - 1;
-//
-//            // only move down if not already at bottom
-//            if (index < last)
-//                {
-//                Utils.listMove(classDefList, classDef, index + 1);
-//                }
-//
-//            specification.setClassDefList(classDefList);
-//            }
         else if (object instanceof Operation)
             {
             Operation operation = (Operation) object;
