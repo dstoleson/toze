@@ -12,6 +12,7 @@ import java.util.List;
 @XmlRootElement(name = "TOZE")
 @XmlType(propOrder =
                  {
+//                         "specObjectList",
                          "basicTypeDefList",
                          "axiomaticDefList",
                          "genericDefList",
@@ -22,6 +23,17 @@ import java.util.List;
                  })
 public class Specification extends SpecObject
 {
+//    @XmlElements
+//        ({
+//        @XmlElement(name = "basicTypeDef", type=BasicTypeDef.class),
+//        @XmlElement(name = "axiomaticDef", type=AxiomaticDef.class),
+//        @XmlElement(name = "genericDef", type=GenericDef.class),
+//        @XmlElement(name = "abbreviationDef", type=AbbreviationDef.class),
+//        @XmlElement(name = "freeTypeDef", type=FreeTypeDef.class),
+//        @XmlElement(name = "classDef", type=ClassDef.class)
+//        })
+//    private List<SpecObject> specObjectList = new ArrayList<SpecObject>();
+
     private List<BasicTypeDef> basicTypeDefList = new ArrayList<BasicTypeDef>();
     private List<AxiomaticDef> axiomaticDefList = new ArrayList<AxiomaticDef>();
     private List<GenericDef> genericDefList = new ArrayList<GenericDef>();
@@ -29,6 +41,11 @@ public class Specification extends SpecObject
     private List<FreeTypeDef> freeTypeDefList = new ArrayList<FreeTypeDef>();
     private List<ClassDef> classDefList = new ArrayList<ClassDef>();
     private String predicate;
+
+//    public List<SpecObject> getSpecObjectList()
+//    {
+//        return specObjectList;
+//    }
 
     @XmlElement(name = "basicTypeDef")
     public List<BasicTypeDef> getBasicTypeDefList()
@@ -286,9 +303,33 @@ public class Specification extends SpecObject
             {
             for (ClassDef classDef : classDefList)
                 {
-                List<Operation> operationList = classDef.getOperationList();
-                objectWithError = findObjectWithError(errorToken, operationList);
+                InheritedClass inheritedClass = classDef.getInheritedClass();
 
+                if (inheritedClass != null && inheritedClass.getErrors().contains(errorToken))
+                    {
+                    objectWithError = inheritedClass;
+                    }
+                if (objectWithError == null)
+                    {
+                    State state = classDef.getState();
+                    if (state != null && state.getErrors().contains(errorToken))
+                        {
+                        objectWithError = state;
+                        }
+                    }
+                if (objectWithError == null)
+                    {
+                    InitialState initialState = classDef.getInitialState();
+                    if (initialState != null && initialState.getErrors().contains(errorToken))
+                        {
+                        objectWithError = initialState;
+                        }
+                    }
+                if (objectWithError == null)
+                    {
+                    List<Operation> operationList = classDef.getOperationList();
+                    objectWithError = findObjectWithError(errorToken, operationList);
+                    }
                 if (objectWithError != null)
                     {
                     break;
@@ -297,5 +338,59 @@ public class Specification extends SpecObject
             }
 
         return objectWithError;
+    }
+
+    @Override
+    public Specification clone() throws CloneNotSupportedException
+    {
+        super.clone();
+
+        Specification specificationClone = new Specification();
+
+        for (AbbreviationDef abbreviationDef : this.getAbbreviationDefList())
+            {
+            AbbreviationDef abbreviationDefClone = abbreviationDef.clone();
+            abbreviationDefClone.setSpecification(specificationClone);
+            specificationClone.addAbbreviationDef(abbreviationDefClone);
+            }
+
+        for (AxiomaticDef axiomaticDef : this.getAxiomaticDefList())
+            {
+            AxiomaticDef axiomaticDefClone = axiomaticDef.clone();
+            axiomaticDefClone.setSpecification(specificationClone);
+            specificationClone.addAxiomaticDef(axiomaticDefClone);
+            }
+
+        for (BasicTypeDef basicTypeDef : this.getBasicTypeDefList())
+            {
+            BasicTypeDef basicTypeDefClone = basicTypeDef.clone();
+            basicTypeDefClone.setSpecification(specificationClone);
+            specificationClone.addBasicTypeDef(basicTypeDefClone);
+            }
+
+        for (FreeTypeDef freeTypeDef : this.getFreeTypeDefList())
+            {
+            FreeTypeDef freeTypeDefClone = freeTypeDef.clone();
+            freeTypeDefClone.setSpecification(specificationClone);
+            specificationClone.addFreeTypeDef(freeTypeDefClone);
+            }
+
+        for (GenericDef genericDef : this.getGenericDefList())
+            {
+            GenericDef genericDefClone = genericDef.clone();
+            genericDefClone.setSpecification(specificationClone);
+            specificationClone.addGenericDef(genericDefClone);
+            }
+
+        for (ClassDef classDef : this.getClassDefList())
+            {
+            ClassDef classDefClone = classDef.clone();
+            classDef.setSpecification(specificationClone);
+            specificationClone.addClassDef(classDefClone);
+            }
+
+        specificationClone.setPredicate(this.getPredicate());
+
+        return specificationClone;
     }
 }
