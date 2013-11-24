@@ -205,14 +205,19 @@ public class TozeTextArea extends JTextArea
                     {
                     pos = 0;
                     }
-                AttributedString aString = new AttributedString(tmp.substring(pos));
-                aString.addAttribute(TextAttribute.FONT, fm.getFont());
-                aString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-                aString.addAttribute(TextAttribute.FOREGROUND, ERROR_COLOR);
-                aString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_TWO_PIXEL, 0, tmp.length() - pos);
-                g.drawString(aString.getIterator(),
-                             fm.stringWidth(tmp.substring(0, pos)),
-                             ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
+
+                if (tmp.substring(pos).length() != 0)
+                    {
+                    // don't bother if there is nothing to draw
+                    AttributedString aString = new AttributedString(tmp.substring(pos));
+                    aString.addAttribute(TextAttribute.FONT, fm.getFont());
+                    aString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+                    aString.addAttribute(TextAttribute.FOREGROUND, ERROR_COLOR);
+                    aString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_TWO_PIXEL, 0, tmp.length() - pos);
+                    g.drawString(aString.getIterator(),
+                                 fm.stringWidth(tmp.substring(0, pos)),
+                                 ((fm.getHeight() * (r.getLineNumber() + 1)) - fm.getDescent()));
+                    }
                 }
             }
     }
