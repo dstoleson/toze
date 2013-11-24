@@ -275,17 +275,15 @@ public class SpecificationController extends Observable implements FocusListener
         classDef.setName("New Class");
         classDef.setSpecification(specification);
 
-        specification.addSpecObject(classDef);
-
-//        if (selectedObject instanceof ClassDef)
-//            {
-//            List newList = insertAfterObject(specification.getClassDefList(), selectedObject, classDef);
-//            specification.setClassDefList(newList);
-//            }
-//        else
-//            {
-//            specification.addClassDef(classDef);
-//            }
+        if (selectedObject instanceof ClassDef)
+            {
+            List newList = insertAfterObject(specification.getSpecObjectList(), selectedObject, classDef);
+            specification.setSpecObjectList(newList);
+            }
+        else
+            {
+            specification.addSpecObject(classDef);
+            }
 
         specificationView.requestRebuild();
         selectParagraph(classDef);
@@ -295,7 +293,6 @@ public class SpecificationController extends Observable implements FocusListener
     public void removeClass(ClassDef classDef)
     {
         specification.removeSpecObject(classDef);
-//        specification.removeClassDef(classDef);
 
         specificationView.requestRebuild();
         parseSpecification();
@@ -309,7 +306,6 @@ public class SpecificationController extends Observable implements FocusListener
 
         AxiomaticDef axiomaticDef = new AxiomaticDef();
         axiomaticDef.setDeclaration("New Axiomatic Type");
-        SpecObject parent = null;
 
         if (hasPredicate)
             {
@@ -319,31 +315,29 @@ public class SpecificationController extends Observable implements FocusListener
         if (object == specification)
             {
             axiomaticDef.setSpecification(specification);
-            specification.addSpecObject(axiomaticDef);
-//            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef)selectedObject).getSpecification() != null)
-//                {
-//                List newList = insertAfterObject(specification.getAxiomaticDefList(), selectedObject, axiomaticDef);
-//                specification.setAxiomaticDefList(newList);
-//                }
-//            else
-//                {
-//                specification.addAxiomaticDef(axiomaticDef);
-//                }
+            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef)selectedObject).getSpecification() != null)
+                {
+                List newList = insertAfterObject(specification.getSpecObjectList(), selectedObject, axiomaticDef);
+                specification.setSpecObjectList(newList);
+                }
+            else
+                {
+                specification.addSpecObject(axiomaticDef);
+                }
             }
         else
             {
             ClassDef classDef = (ClassDef) object;
             axiomaticDef.setClassDef(classDef);
-            classDef.addSpecObject(axiomaticDef);
-//            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef) selectedObject).getClassDef() == classDef)
-//                {
-//                List newList = insertAfterObject(classDef.getAxiomaticDefList(), selectedObject, axiomaticDef);
-//                classDef.setAxiomaticDefList(newList);
-//                }
-//            else
-//                {
-//                classDef.addAxiomaticDef(axiomaticDef);
-//                }
+            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef) selectedObject).getClassDef() == classDef)
+                {
+                List newList = insertAfterObject(classDef.getSpecObjectList(), selectedObject, axiomaticDef);
+                classDef.setSpecObjectList(newList);
+                }
+            else
+                {
+                classDef.addSpecObject(axiomaticDef);
+                }
             }
 
 
@@ -359,13 +353,11 @@ public class SpecificationController extends Observable implements FocusListener
         if (axiomaticDef.getSpecification() != null)
             {
             specification.removeSpecObject(axiomaticDef);
-//            specification.removeAxiomaticDef(axiomaticDef);
             }
         else if (axiomaticDef.getClassDef() != null)
             {
             ClassDef classDef = axiomaticDef.getClassDef();
             classDef.removeSpecObject(axiomaticDef);
-//            classDef.removeAxiomaticDef(axiomaticDef);
             }
 
         specificationView.requestRebuild();
@@ -407,31 +399,29 @@ public class SpecificationController extends Observable implements FocusListener
         if (object == specification)
             {
             abbreviationDef.setSpecification(specification);
-            specification.addSpecObject(abbreviationDef);
-//            if (selectedObject instanceof AbbreviationDef && ((AbbreviationDef) selectedObject).getSpecification() != null)
-//                {
-//                List newList = insertAfterObject(specification.getAbbreviationDefList(), selectedObject, abbreviationDef);
-//                specification.setAbbreviationDefList(newList);
-//                }
-//            else
-//                {
-//                specification.addAbbreviationDef(abbreviationDef);
-//                }
+            if (selectedObject instanceof AbbreviationDef && ((AbbreviationDef) selectedObject).getSpecification() != null)
+                {
+                List newList = insertAfterObject(specification.getSpecObjectList(), selectedObject, abbreviationDef);
+                specification.setSpecObjectList(newList);
+                }
+            else
+                {
+                specification.addSpecObject(abbreviationDef);
+                }
             }
         else
             {
             ClassDef classDef = (ClassDef) object;
             abbreviationDef.setClassDef(classDef);
-            classDef.addSpecObject(abbreviationDef);
-//            if (selectedObject instanceof AbbreviationDef && ((AbbreviationDef) selectedObject).getClassDef() == classDef)
-//                {
-//                List newList = insertAfterObject(classDef.getAbbreviationDefList(), selectedObject, abbreviationDef);
-//                classDef.setAxiomaticDefList(newList);
-//                }
-//            else
-//                {
-//                classDef.addAbbreviationDef(abbreviationDef);
-//                }
+            if (selectedObject instanceof AbbreviationDef && ((AbbreviationDef) selectedObject).getClassDef() == classDef)
+                {
+                List newList = insertAfterObject(classDef.getSpecObjectList(), selectedObject, abbreviationDef);
+                classDef.setSpecObjectList(newList);
+                }
+            else
+                {
+                classDef.addSpecObject(abbreviationDef);
+                }
             }
 
         specificationView.requestRebuild();
@@ -449,13 +439,11 @@ public class SpecificationController extends Observable implements FocusListener
         if (abbreviationDef.getSpecification() != null)
             {
             specification.removeSpecObject(abbreviationDef);
-//            specification.removeAbbreviationDef(abbreviationDef);
             }
         else
             {
             ClassDef classDef = abbreviationDef.getClassDef();
             classDef.removeSpecObject(abbreviationDef);
-//            classDef.removeAbbreviationDef(abbreviationDef);
             }
 
         specificationView.requestRebuild();
@@ -475,32 +463,30 @@ public class SpecificationController extends Observable implements FocusListener
         if (object == specification)
             {
             basicTypeDef.setSpecification(specification);
-            specification.addSpecObject(basicTypeDef);
 
-//            if (selectedObject instanceof BasicTypeDef && ((BasicTypeDef)selectedObject).getSpecification() != null)
-//                {
-//                List newList = insertAfterObject(specification.getBasicTypeDefList(), selectedObject, basicTypeDef);
-//                specification.setBasicTypeDefList(newList);
-//                }
-//            else
-//                {
-//                specification.addBasicTypeDef(basicTypeDef);
-//                }
+            if (selectedObject instanceof BasicTypeDef && ((BasicTypeDef)selectedObject).getSpecification() != null)
+                {
+                List newList = insertAfterObject(specification.getSpecObjectList(), selectedObject, basicTypeDef);
+                specification.setSpecObjectList(newList);
+                }
+            else
+                {
+                specification.addSpecObject(basicTypeDef);
+                }
             }
         else
             {
             ClassDef classDef = (ClassDef) object;
             basicTypeDef.setClassDef(classDef);
-            classDef.addSpecObject(basicTypeDef);
-//            if (selectedObject instanceof BasicTypeDef && ((BasicTypeDef) selectedObject).getClassDef() == classDef)
-//                {
-//                List newList = insertAfterObject(classDef.getBasicTypeDefList(), selectedObject, basicTypeDef);
-//                classDef.setBasicTypeDefList(newList);
-//                }
-//            else
-//                {
-//                classDef.addBasicTypeDef(basicTypeDef);
-//                }
+            if (selectedObject instanceof BasicTypeDef && ((BasicTypeDef) selectedObject).getClassDef() == classDef)
+                {
+                List newList = insertAfterObject(classDef.getSpecObjectList(), selectedObject, basicTypeDef);
+                classDef.setSpecObjectList(newList);
+                }
+            else
+                {
+                classDef.addSpecObject(basicTypeDef);
+                }
             }
 
         specificationView.requestRebuild();
@@ -515,13 +501,11 @@ public class SpecificationController extends Observable implements FocusListener
         if (basicTypeDef.getSpecification() != null)
             {
             specification.removeSpecObject(basicTypeDef);
-//            specification.removeBasicTypeDef(basicTypeDef);
             }
         else if (basicTypeDef.getClassDef() != null)
             {
             ClassDef classDef = basicTypeDef.getClassDef();
             classDef.removeSpecObject(basicTypeDef);
-//            classDef.removeBasicTypeDef(basicTypeDef);
             }
 
         specificationView.requestRebuild();
@@ -542,31 +526,29 @@ public class SpecificationController extends Observable implements FocusListener
         if (object == specification)
             {
             freeTypeDef.setSpecification(specification);
-            specification.addSpecObject(freeTypeDef);
-//            if (selectedObject instanceof FreeTypeDef && ((FreeTypeDef)selectedObject).getSpecification() != null)
-//                {
-//                List newList = insertAfterObject(specification.getAxiomaticDefList(), selectedObject, freeTypeDef);
-//                specification.setFreeTypeDefList(newList);
-//                }
-//            else
-//                {
-//                specification.addFreeTypeDef(freeTypeDef);
-//                }
+            if (selectedObject instanceof FreeTypeDef && ((FreeTypeDef)selectedObject).getSpecification() != null)
+                {
+                List newList = insertAfterObject(specification.getSpecObjectList(), selectedObject, freeTypeDef);
+                specification.setSpecObjectList(newList);
+                }
+            else
+                {
+                specification.addSpecObject(freeTypeDef);
+                }
             }
         else
             {
             ClassDef classDef = (ClassDef) object;
             freeTypeDef.setClassDef(classDef);
-            classDef.addSpecObject(freeTypeDef);
-//            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef) selectedObject).getClassDef() == classDef)
-//                {
-//                List newList = insertAfterObject(classDef.getFreeTypeDefList(), selectedObject, freeTypeDef);
-//                classDef.setFreeTypeDefList(newList);
-//                }
-//            else
-//                {
-//                classDef.addFreeTypeDef(freeTypeDef);
-//                }
+            if (selectedObject instanceof AxiomaticDef && ((AxiomaticDef) selectedObject).getClassDef() == classDef)
+                {
+                List newList = insertAfterObject(classDef.getSpecObjectList(), selectedObject, freeTypeDef);
+                classDef.setSpecObjectList(newList);
+                }
+            else
+                {
+                classDef.addSpecObject(freeTypeDef);
+                }
             }
 
         specificationView.requestRebuild();
@@ -581,13 +563,11 @@ public class SpecificationController extends Observable implements FocusListener
         if (freeTypeDef.getSpecification() != null)
             {
             specification.removeSpecObject(freeTypeDef);
-//            specification.removeFreeTypeDef(freeTypeDef);
             }
         else if (freeTypeDef.getClassDef() != null)
             {
             ClassDef classDef = freeTypeDef.getClassDef();
             classDef.removeSpecObject(freeTypeDef);
-//            classDef.removeFreeTypeDef(freeTypeDef);
             }
 
         specificationView.requestRebuild();
@@ -1085,174 +1065,191 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void paste()
     {
-//        try
-//            {
-//            // clone copy / cut object before pasting (every time)
-//            // so that it is unique
-//            SpecObject pastedObject = (SpecObject) cachedObject.clone();
-//            SpecObject targetObject = selectedObject;
-//
-//            if (targetObject == null)
-//                {
-//                targetObject = specification;
-//                }
-//
-//            if (pastedObject instanceof AbbreviationDef)
-//                {
-//                AbbreviationDef abbreviationDef = (AbbreviationDef) pastedObject;
-//
-//                if (targetObject == specification)
-//                    {
-//                    abbreviationDef.setSpecification(specification);
-//                    specification.addAbbreviationDef((AbbreviationDef) pastedObject);
-//                    }
-//                else if (targetObject instanceof ClassDef)
-//                    {
-//                    ClassDef classDef = (ClassDef) selectedObject;
-//                    abbreviationDef.setClassDef(classDef);
-//                    classDef.addAbbreviationDef(abbreviationDef);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning(
-//                            "Please select the Specification or a Class in which to paste the Abbreviation Definition."
-//                    );
-//                    }
-//                }
-//            else if (pastedObject instanceof AxiomaticDef)
-//                {
-//                AxiomaticDef axiomaticDef = (AxiomaticDef) pastedObject;
-//
-//                if (targetObject == specification)
-//                    {
-//                    axiomaticDef.setSpecification(specification);
-//                    specification.addAxiomaticDef(axiomaticDef);
-//                    }
-//                else if (targetObject instanceof ClassDef)
-//                    {
-//                    ClassDef classDef = (ClassDef) selectedObject;
-//                    axiomaticDef.setClassDef(classDef);
-//                    classDef.addAxiomaticDef(axiomaticDef);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning(
-//                            "Please select the Specification or a Class in which to paste the Axiomatic Definition."
-//                    );
-//                    }
-//                }
-//            else if (pastedObject instanceof BasicTypeDef)
-//                {
-//                BasicTypeDef basicTypeDef = (BasicTypeDef) pastedObject;
-//
-//                if (targetObject == specification)
-//                    {
-//                    basicTypeDef.setSpecification(specification);
-//                    specification.addBasicTypeDef(basicTypeDef);
-//                    }
-//                else if (targetObject instanceof ClassDef)
-//                    {
-//                    ClassDef classDef = (ClassDef) selectedObject;
-//                    basicTypeDef.setClassDef(classDef);
-//                    classDef.addBasicTypeDef(basicTypeDef);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select the Specification or a Class in which to paste the Basic Type Definition.");
-//                    }
-//                }
-//            else if (pastedObject instanceof ClassDef)
-//                {
-//                specification.addClassDef((ClassDef) pastedObject);
-//                }
-//            else if (pastedObject instanceof FreeTypeDef)
-//                {
-//                FreeTypeDef freeTypeDef = (FreeTypeDef) pastedObject;
-//
-//                if (targetObject == specification)
-//                    {
-//                    freeTypeDef.setSpecification(specification);
-//                    specification.addFreeTypeDef(freeTypeDef);
-//                    }
-//                else if (targetObject instanceof ClassDef)
-//                    {
-//                    ClassDef classDef = (ClassDef) selectedObject;
-//                    freeTypeDef.setClassDef(classDef);
-//                    classDef.addFreeTypeDef(freeTypeDef);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select the Specification or a Class in which to paste the Free Type Definition.");
-//                    }
-//                }
-//            else if (pastedObject instanceof GenericDef)
-//                {
-//                GenericDef genericDef = (GenericDef) pastedObject;
-//
-//                if (targetObject == specification)
-//                    {
-//                    genericDef.setSpecification(specification);
-//                    specification.addGenericDef(genericDef);
-//                    }
-//                }
-//            else if (pastedObject instanceof InheritedClass)
-//                {
-//                if (targetObject instanceof ClassDef)
-//                    {
-//                    ((InheritedClass)pastedObject).setClassDef((ClassDef)targetObject);
-//                    ((ClassDef) targetObject).setInheritedClass((InheritedClass) pastedObject);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select a Class in which to paste the Inherited Class.");
-//                    }
-//                }
-//            else if (pastedObject instanceof InitialState)
-//                {
-//                if (targetObject instanceof ClassDef)
-//                    {
-//                    ((InitialState)pastedObject).setClassDef((ClassDef)targetObject);
-//                    ((ClassDef) targetObject).setInitialState((InitialState) pastedObject);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select a Class in which to paste the Initial State.");
-//                    }
-//                }
-//            else if (pastedObject instanceof Operation)
-//                {
-//                if (targetObject instanceof ClassDef)
-//                    {
-//                    ((Operation)pastedObject).setClassDef((ClassDef)targetObject);
-//                    ((ClassDef) targetObject).addOperation((Operation) pastedObject);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select a Class in which to paste the Operation.");
-//                    }
-//                }
-//            else if (pastedObject instanceof State)
-//                {
-//                if (targetObject instanceof ClassDef)
-//                    {
-//                    ((State)pastedObject).setClassDef((ClassDef)targetObject);
-//                    ((ClassDef) targetObject).setState((State) pastedObject);
-//                    }
-//                else
-//                    {
-//                    flyPasteWarning("Please select a Class in which to paste the State.");
-//                    }
-//                }
-//
-//            specificationView.requestRebuild();
-//            selectParagraph(pastedObject);
-//            parseSpecification();
-//            }
-//        catch (CloneNotSupportedException e)
-//            {
-//            System.out.println("Problem while pasting: " + e);
-//            }
-//
+        try
+            {
+            // clone copy / cut object before pasting (every time)
+            // so that it is unique
+            SpecObject pastedObject = (SpecObject) cachedObject.clone();
+            SpecObject targetObject = selectedObject;
+
+            if (targetObject == null)
+                {
+                targetObject = specification;
+                }
+
+            if (pastedObject instanceof AbbreviationDef)
+                {
+                AbbreviationDef abbreviationDef = (AbbreviationDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    abbreviationDef.setSpecification(specification);
+                    List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, abbreviationDef);
+                    specification.setSpecObjectList(newList);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    abbreviationDef.setClassDef(classDef);
+                    List<SpecObject> newList = insertAfterObject(classDef.getSpecObjectList(), targetObject, abbreviationDef);
+                    classDef.setSpecObjectList(newList);
+                    }
+                else
+                    {
+                    flyPasteWarning(
+                            "Please select the Specification or a Class in which to paste the Abbreviation Definition."
+                    );
+                    }
+                }
+            else if (pastedObject instanceof AxiomaticDef)
+                {
+                AxiomaticDef axiomaticDef = (AxiomaticDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    axiomaticDef.setSpecification(specification);
+                    List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, axiomaticDef);
+                    specification.setSpecObjectList(newList);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    axiomaticDef.setClassDef(classDef);
+                    List<SpecObject> newList = insertAfterObject(classDef.getSpecObjectList(), targetObject, axiomaticDef);
+                    classDef.setSpecObjectList(newList);
+                    }
+                else
+                    {
+                    flyPasteWarning(
+                            "Please select the Specification or a Class in which to paste the Axiomatic Definition."
+                    );
+                    }
+                }
+            else if (pastedObject instanceof BasicTypeDef)
+                {
+                BasicTypeDef basicTypeDef = (BasicTypeDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    basicTypeDef.setSpecification(specification);
+                    List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, basicTypeDef);
+                    specification.setSpecObjectList(newList);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    basicTypeDef.setClassDef(classDef);
+                    List<SpecObject> newList = insertAfterObject(classDef.getSpecObjectList(), targetObject, basicTypeDef);
+                    classDef.setSpecObjectList(newList);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Basic Type Definition.");
+                    }
+                }
+            else if (pastedObject instanceof FreeTypeDef)
+                {
+                FreeTypeDef freeTypeDef = (FreeTypeDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    freeTypeDef.setSpecification(specification);
+                    List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, freeTypeDef);
+                    specification.setSpecObjectList(newList);
+                    }
+                else if (targetObject instanceof ClassDef)
+                    {
+                    ClassDef classDef = (ClassDef) selectedObject;
+                    freeTypeDef.setClassDef(classDef);
+                    List<SpecObject> newList = insertAfterObject(classDef.getSpecObjectList(), targetObject, freeTypeDef);
+                    classDef.setSpecObjectList(newList);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select the Specification or a Class in which to paste the Free Type Definition.");
+                    }
+                }
+            else if (pastedObject instanceof GenericDef)
+                {
+                GenericDef genericDef = (GenericDef) pastedObject;
+
+                if (targetObject == specification)
+                    {
+                    genericDef.setSpecification(specification);
+                    specification.addSpecObject(genericDef);
+                    }
+                }
+            else if (pastedObject instanceof ClassDef)
+                {
+                ((ClassDef) pastedObject).setSpecification(specification);
+
+                if (targetObject instanceof ClassDef)
+                    {
+                    List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, pastedObject);
+                    specification.setSpecObjectList(newList);
+                    }
+                else
+                    {
+                    specification.addSpecObject(pastedObject);
+                    }
+                }
+            else if (pastedObject instanceof InheritedClass)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((InheritedClass)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setInheritedClass((InheritedClass) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Inherited Class.");
+                    }
+                }
+            else if (pastedObject instanceof InitialState)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((InitialState)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setInitialState((InitialState) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Initial State.");
+                    }
+                }
+            else if (pastedObject instanceof Operation)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((Operation)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).addOperation((Operation) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the Operation.");
+                    }
+                }
+            else if (pastedObject instanceof State)
+                {
+                if (targetObject instanceof ClassDef)
+                    {
+                    ((State)pastedObject).setClassDef((ClassDef)targetObject);
+                    ((ClassDef) targetObject).setState((State) pastedObject);
+                    }
+                else
+                    {
+                    flyPasteWarning("Please select a Class in which to paste the State.");
+                    }
+                }
+
+            specificationView.requestRebuild();
+            selectParagraph(pastedObject);
+            parseSpecification();
+            }
+        catch (CloneNotSupportedException e)
+            {
+            System.out.println("Problem while pasting: " + e);
+            }
     }
 
     private void flyPasteWarning(String message)
