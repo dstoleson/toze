@@ -542,51 +542,56 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     private void openSpecification()
     {
         FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.openSpecification.title"), FileDialog.LOAD);
+        fileDialog.setMultipleMode(true);
         fileDialog.show();
 
-        if (fileDialog.getFile() != null)
+        File[] selectedFiles = fileDialog.getFiles();
+
+        if (selectedFiles != null)
             {
-            File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
-
-            // see if the file is already open
-            Component tab = null;
-
-            for (Map.Entry<Component, SpecificationController> entry : tabControllers.entrySet())
+            List<File> selectedFileList = Arrays.asList(selectedFiles);
+            for (File specificationFile : selectedFileList)
                 {
-                if (specificationFile.equals(entry.getValue().getSpecificationDocument().getFile()))
+                // see if the file is already open
+                Component tab = null;
+
+                for (Map.Entry<Component, SpecificationController> entry : tabControllers.entrySet())
                     {
-                    tab = entry.getKey();
-                    break;
+                    if (specificationFile.equals(entry.getValue().getSpecificationDocument().getFile()))
+                        {
+                        tab = entry.getKey();
+                        break;
+                        }
                     }
-                }
 
 
-            if (tab != null)
-                {
-                // the file is already open, select the corresponding tab
-                specificationTabPanel.setSelectedComponent(tab);
-                }
-            else
-                {
-                // open the file in a new tab
-                try
+                if (tab != null)
                     {
-                    InputStream inputStream = new FileInputStream(specificationFile);
-                    SpecificationReader specReader = new SpecificationReader(inputStream);
-                    Specification specification = specReader.read();
-                    inputStream.close();
-
-                    openSpecificationTab(specification, specificationFile);
-
+                    // the file is already open, select the corresponding tab
+                    specificationTabPanel.setSelectedComponent(tab);
                     }
-                catch (Exception e)
+                else
                     {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(this,
-                                                  uiBundle.getString("fileWarning.problemOpening.message") + ": " + specificationFile.getName(),
-                                                  uiBundle.getString("fileWarning.problemOpening.title"),
-                                                  JOptionPane.WARNING_MESSAGE
-                    );
+                    // open the file in a new tab
+                    try
+                        {
+                        InputStream inputStream = new FileInputStream(specificationFile);
+                        SpecificationReader specReader = new SpecificationReader(inputStream);
+                        Specification specification = specReader.read();
+                        inputStream.close();
+
+                        openSpecificationTab(specification, specificationFile);
+
+                        }
+                    catch (Exception e)
+                        {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(this,
+                                                      uiBundle.getString("fileWarning.problemOpening.message") + ": " + specificationFile.getName(),
+                                                      uiBundle.getString("fileWarning.problemOpening.title"),
+                                                      JOptionPane.WARNING_MESSAGE
+                        );
+                        }
                     }
                 }
             }
@@ -605,7 +610,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         specView.requestRebuild();
 
         JPanel panel = new JPanel(false);
-        JScrollPane specScroller = new JScrollPane();
+        final JScrollPane specScroller = new JScrollPane();
         specScroller.getViewport().add(specView, null);
         panel.add(specScroller, null);
         panel.setLayout(new GridLayout(1, 1));
@@ -613,6 +618,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         controller.setScrollPane(specScroller);
 
+        // scroll to the top of the document after
+        // everything has been set up properly
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                specScroller.getVerticalScrollBar().setValue(0);
+            }
+        });
         specificationTabPanel.addTab(specificationDocument.getFile().getName(), specScroller);
         specificationTabPanel.setSelectedComponent(specScroller);
 
