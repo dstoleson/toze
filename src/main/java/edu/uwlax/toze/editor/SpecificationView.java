@@ -65,7 +65,7 @@ public class SpecificationView extends JPanel
 
         if (specification.getPredicate() != null)
             {
-            TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate");
+            TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate", false);
             add(predicateText);
             }
 
@@ -101,36 +101,6 @@ public class SpecificationView extends JPanel
                 addView(new ClassView((ClassDef) specObject, specController));
                 }
             }
-
-//        for (AxiomaticDef axiomaticDef : specification.getAxiomaticDefList())
-//            {
-//            addView(new AxiomaticView(axiomaticDef, specController));
-//            }
-//
-//        for (AbbreviationDef abbreviationDef : specification.getAbbreviationDefList())
-//            {
-//            addView(new AbbreviationView(abbreviationDef, specController));
-//            }
-//
-//        for (BasicTypeDef basicTypeDef : specification.getBasicTypeDefList())
-//            {
-//            addView(new BasicTypeView(basicTypeDef, specController));
-//            }
-//
-//        for (FreeTypeDef freeTypeDef : specification.getFreeTypeDefList())
-//            {
-//            addView(new FreeTypeView(freeTypeDef, specController));
-//            }
-//
-//        for (GenericDef genericDef : specification.getGenericDefList())
-//            {
-////            addView(new GenericDefView(genericDef, specController));
-//            }
-//
-//        for (ClassDef classDef : specification.getClassDefList())
-//            {
-//            addView(new ClassView(classDef, specController));
-//            }
     }
 
     @Override
