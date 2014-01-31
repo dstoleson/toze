@@ -1360,6 +1360,13 @@ public class SpecificationController extends Observable implements FocusListener
                 // right click
                 Component clickedComponent = e.getComponent();
 
+                // if the text area is clicked promote to the parent
+                // which will be a ParagraphView
+                if (clickedComponent instanceof TozeTextArea)
+                    {
+                    clickedComponent = clickedComponent.getParent();
+                    }
+
                 if (clickedComponent instanceof ParagraphView)
                     {
                     SpecObject specObject = ((ParagraphView) clickedComponent).getSpecObject();

@@ -33,12 +33,12 @@ public class SpecificationView extends JPanel
         this.rebuild();
     }
 
-    // TODO:  duplicate methods in ParagraphView, NOPE!!!
     protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
     {
         TozeTextArea text = new TozeTextArea(value);
         text.setIgnoresEnter(ignoresEnter);
         addDocumentListener(text, modelObject, property);
+        text.addMouseListener(specController.getMouseAdapter());
 
         return text;
     }

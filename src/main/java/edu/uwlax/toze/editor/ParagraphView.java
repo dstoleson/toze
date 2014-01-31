@@ -18,7 +18,6 @@ public abstract class ParagraphView extends JPanel implements Placement
     static final protected int VMargin = 5;
     static final protected int InterVMargin = 5;
 
-    private boolean mouseInView = false;
     private boolean ignoreRebuild = false;
     private boolean selected = false;
 
@@ -193,6 +192,8 @@ public abstract class ParagraphView extends JPanel implements Placement
         text.getDocument().addDocumentListener(specDocumentListener);
         specDocumentListener.addObserver(specController);
         text.addFocusListener(specController);
+        text.addMouseListener(specController.getMouseAdapter());
+
         return text;
     }
 
