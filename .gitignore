@@ -5,3 +5,14 @@
 *.war
 *.ear
 target
+
+# Backup files #
+*~
+**/#*#
+
+# IDE files #
+.idea
+*.iml
+
+# OS X Metadata
+.DS_Store
