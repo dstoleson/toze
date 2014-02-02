@@ -23,6 +23,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
@@ -860,13 +861,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             List<TreePath> treePathList = Arrays.asList(selectedPaths);
 
             // @TODO List the specifications being closed
-            int state = JOptionPane.showConfirmDialog(this,
+            int confirmState = JOptionPane.showConfirmDialog(this,
                                                       uiBundle.getString("fileWarning.closeSpecification.message"),
                                                       uiBundle.getString("fileWarning.closeSpecification.confirm"),
                                                       JOptionPane.YES_NO_OPTION
             );
 
-            if (state == JOptionPane.YES_OPTION)
+            if (confirmState == JOptionPane.YES_OPTION)
                 {
                 for (TreePath treePath : treePathList)
                     {
@@ -874,12 +875,31 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                         {
                         SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
                         SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
-                        treeModel.removeSpecification(specificationDocument);
-                        int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
-                        Component tab = specificationTabPanel.getComponentAt(tabIndex);
-                        specificationTabPanel.removeTabAt(tabIndex);
-                        tabControllers.remove(tab);
-                        updateErrors(null);
+
+                        // assume it should be closed
+                        boolean closeSpecification = true;
+
+                        if (specificationDocument.isEdited())
+                            {
+                            // see what the user wants to do if the file has been edited
+                            String editedMessage = MessageFormat.format(uiBundle.getString("fileWarning.closedEditedSpecification.message"),
+                                                                        specificationDocument.getFile().getName());
+                            int closeState = JOptionPane.showConfirmDialog(this,
+                                                                           editedMessage,
+                                                                           uiBundle.getString("fileWarning.closedEditedSpecification.confirm"),
+                                                                           JOptionPane.YES_NO_OPTION);
+                            closeSpecification = (closeState == JOptionPane.YES_OPTION);
+                            }
+
+                        if (closeSpecification)
+                            {
+                            treeModel.removeSpecification(specificationDocument);
+                            int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
+                            Component tab = specificationTabPanel.getComponentAt(tabIndex);
+                            specificationTabPanel.removeTabAt(tabIndex);
+                            tabControllers.remove(tab);
+                            updateErrors(null);
+                            }
                         }
                     }
                 }

@@ -771,6 +771,7 @@ public class SpecificationController extends Observable implements FocusListener
 
     public void parseSpecification()
     {
+        specificationDocument.setEdited(true);
         resetErrors();
 
         TozeSpecificationChecker parser = new TozeSpecificationChecker();
