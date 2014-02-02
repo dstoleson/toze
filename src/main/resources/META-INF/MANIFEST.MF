@@ -1,0 +1,1 @@
+Main-Class: edu.uwlax.toze.editor.TozeEditor
