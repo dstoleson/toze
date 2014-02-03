@@ -35,13 +35,13 @@
 
     <scm>
       <url>
-	scm:git:git://github.com/dstoleson/toze.git
+	scm:git:https://github.com/dstoleson/toze.git
       </url>
       <connection>
-	scm:git:git://github.com/dstoleson/toze.git
+	scm:git:https://github.com/dstoleson/toze.git
       </connection>
       <developerConnection>
-	scm:git:git://github.com/dstoleson/toze.git
+	scm:git:https://github.com/dstoleson/toze.git
       </developerConnection>
     </scm>
     <build>
