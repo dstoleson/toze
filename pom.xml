@@ -34,11 +34,14 @@
     </dependencies>
 
     <scm>
+      <url>
+	scm:git:git://github.com:dstoleson/toze.git
+      </url>
       <connection>
-	scm:git:git@git://github.com/dstoleson/toze.git
+	scm:git:git://github.com:dstoleson/toze.git
       </connection>
       <developerConnection>
-	scm:git://github.com/dstoleson/toze.git
+	scm:git:git://github.com:dstoleson/toze.git
       </developerConnection>
     </scm>
     <build>
