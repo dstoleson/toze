@@ -34,10 +34,10 @@
 
     <scm>
       <connection>
-	scm:git:http://github.com/dstoleson/toze.git
+	scm:git:https://github.com/dstoleson/toze.git
       </connection>
       <developerConnection>
-	scm:git:ssh://github.com/dstoleson/toze.git
+	scm:git:https://github.com/dstoleson/toze.git
       </developerConnection>
       <tag>toze-2.0.0</tag>
   </scm>
