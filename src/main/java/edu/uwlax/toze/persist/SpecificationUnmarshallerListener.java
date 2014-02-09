@@ -3,6 +3,7 @@ package edu.uwlax.toze.persist;
 import edu.uwlax.toze.domain.*;
 
 import javax.xml.bind.Unmarshaller;
+import java.util.ArrayList;
 
 /**
  * Listen for JAXB Unmarshaller events and override the parsing behavior.
@@ -24,7 +25,13 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
         if (target instanceof Specification)
             {
             Specification toze = (Specification) target;
-            toze.setPredicate(XMLToCharTransformer.transform(toze.getPredicate()));
+            ArrayList<String> xformedPredicateList = new ArrayList<String>();
+
+            for (String predicate : toze.getPredicateList())
+                {
+                xformedPredicateList.add(XMLToCharTransformer.transform(predicate));
+                }
+            toze.setPredicateList(xformedPredicateList);
             }
         else if (target instanceof AbbreviationDef)
             {

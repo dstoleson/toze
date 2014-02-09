@@ -602,7 +602,7 @@ public class SpecificationController extends Observable implements FocusListener
      */
     public void addSpecificationPredicate()
     {
-        specification.setPredicate("New Predicate");
+        specification.addPredicate("New Predicate");
 
         specificationView.requestRebuild();
         parseSpecification();
@@ -611,9 +611,9 @@ public class SpecificationController extends Observable implements FocusListener
     /**
      *
      */
-    public void removeSpecificationPredicate()
+    public void removeSpecificationPredicate(String predicate)
     {
-        specification.setPredicate(null);
+        specification.removePredicate(predicate);
 
         specificationView.requestRebuild();
         parseSpecification();

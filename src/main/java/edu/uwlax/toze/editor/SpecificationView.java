@@ -63,9 +63,9 @@ public class SpecificationView extends JPanel
     {
         removeAll();
 
-        if (specification.getPredicate() != null)
+        for (String predicate : specification.getPredicateList())
             {
-            TozeTextArea predicateText = buildTextArea(specification, specification.getPredicate(), "predicate", false);
+            TozeTextArea predicateText = buildTextArea(specification, predicate, "predicate", false);
             add(predicateText);
             }
 

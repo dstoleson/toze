@@ -32,9 +32,9 @@ public class TozeLatexExporter
 
     public String getLatex()
     {
-        if (specification.getPredicate() != null)
+        for (String predicate : specification.getPredicateList())
             {
-            addPredicate(specification.getPredicate());
+            addPredicate(predicate);
             }
 
         for (SpecObject specObject : specification.getSpecObjectList())

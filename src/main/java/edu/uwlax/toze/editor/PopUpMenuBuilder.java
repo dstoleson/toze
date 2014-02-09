@@ -376,7 +376,7 @@ public class PopUpMenuBuilder
         popupMenu.add(genericMenu);
 
         menuItem = new JMenuItem(uiBundle.getString("specificationMenu.addPredicate.title"));
-        menuItem.setEnabled(toze.getPredicate() == null);
+        menuItem.setEnabled(true);
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -386,18 +386,18 @@ public class PopUpMenuBuilder
         }
         );
         popupMenu.add(menuItem);
-
-        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.deletePredicate.title"));
-        menuItem.setEnabled(toze.getPredicate() != null);
-        menuItem.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                controller.removeSpecificationPredicate();
-            }
-        }
-        );
-        popupMenu.add(menuItem);
+//
+//        menuItem = new JMenuItem(uiBundle.getString("specificationMenu.deletePredicate.title"));
+//        menuItem.setEnabled(toze.getPredicate() != null);
+//        menuItem.addActionListener(new ActionListener()
+//        {
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                controller.removeSpecificationPredicate();
+//            }
+//        }
+//        );
+//        popupMenu.add(menuItem);
 
         return popupMenu;
     }

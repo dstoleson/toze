@@ -192,10 +192,10 @@ public class TozeSpecificationChecker extends TozeParser
                 end(); // specification
             }
 
-        if (specification.getPredicate() != null)
+        for (String predicate : specification.getPredicateList())
             {
             start(SpecificationSection.Predicate, specification);
-            parse_guiPredicateList(specification, "predicate", specification.getPredicate());
+            parse_guiPredicateList(specification, "predicate", predicate);
             end();  // predicate
             }
 

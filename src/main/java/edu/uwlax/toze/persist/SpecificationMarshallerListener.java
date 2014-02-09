@@ -3,6 +3,7 @@ package edu.uwlax.toze.persist;
 import edu.uwlax.toze.domain.*;
 
 import javax.xml.bind.Marshaller;
+import java.util.ArrayList;
 
 public class SpecificationMarshallerListener extends Marshaller.Listener
 {
@@ -15,7 +16,13 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
         if (source instanceof Specification)
             {
             Specification toze = (Specification) source;
-            toze.setPredicate(CharToXMLTransformer.transform(toze.getPredicate()));
+            ArrayList<String> xformedPredicateList = new ArrayList<String>();
+
+            for (String predicate : toze.getPredicateList())
+                {
+                xformedPredicateList.add(CharToXMLTransformer.transform(predicate));
+                }
+            toze.setPredicateList(xformedPredicateList);
             }
         else if (source instanceof AbbreviationDef)
             {
