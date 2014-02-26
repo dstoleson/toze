@@ -14,16 +14,14 @@ import java.util.List;
 @XmlType(propOrder =
                  {
                          "specObjectList",
-                         "predicateList"
                  })
 public class Specification extends SpecObject
 {
     private List<SpecObject> specObjectList = new ArrayList<SpecObject>();
 
-    private List<String> predicateList = new ArrayList<String>();
-
     @XmlElements
             ({
+                     @XmlElement(name = "predicate", type=Predicate.class),
                      @XmlElement(name = "basicTypeDef", type=BasicTypeDef.class),
                      @XmlElement(name = "axiomaticDef", type=AxiomaticDef.class),
                      @XmlElement(name = "genericDef", type=GenericDef.class),
@@ -65,30 +63,6 @@ public class Specification extends SpecObject
             }
 
         return classDefList;
-    }
-
-    @XmlElements
-        ({
-                 @XmlElement(name = "predicate", type=String.class)
-         })
-    public List<String> getPredicateList()
-    {
-        return predicateList;
-    }
-
-    public void setPredicateList(final List<String> predicateList)
-    {
-        this.predicateList = predicateList;
-    }
-
-    public void addPredicate(final String predicate)
-    {
-        predicateList.add(predicate);
-    }
-
-    public void removePredicate(final String predicate)
-    {
-        predicateList.remove(predicate);
     }
 
     private List<TozeToken> getErrorsInList(List list)
@@ -206,11 +180,6 @@ public class Specification extends SpecObject
         for (SpecObject specObject : specObjectList)
             {
             specificationClone.addSpecObject(specObject.clone());
-            }
-
-        for (String predicate : predicateList)
-            {
-            specificationClone.addPredicate(predicate);
             }
 
         return specificationClone;

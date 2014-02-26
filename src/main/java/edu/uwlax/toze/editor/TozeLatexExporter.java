@@ -32,13 +32,13 @@ public class TozeLatexExporter
 
     public String getLatex()
     {
-        for (String predicate : specification.getPredicateList())
-            {
-            addPredicate(predicate);
-            }
-
         for (SpecObject specObject : specification.getSpecObjectList())
             {
+            if (specObject instanceof Predicate)
+                {
+                addPredicate(((Predicate)specObject).getPredicateValue());
+                }
+
             if (specObject instanceof  AxiomaticDef)
                 {
                 addAxiomatic(((AxiomaticDef)specObject).getDeclaration(),

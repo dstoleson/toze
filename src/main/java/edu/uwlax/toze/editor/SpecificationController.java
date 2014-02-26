@@ -598,22 +598,27 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     *
+     * Add a Predicate to the Specification
      */
     public void addSpecificationPredicate()
     {
-        specification.addPredicate("New Predicate");
+        Predicate predicate = new Predicate();
+        predicate.setSpecification(this.specification);
+        predicate.setPredicateValue("New Predicate");
+        specification.addSpecObject(predicate);
 
         specificationView.requestRebuild();
         parseSpecification();
     }
 
     /**
+     * Remove the given predicate from the specification
      *
+     * @param predicate The predicate to remove from the specification
      */
-    public void removeSpecificationPredicate(String predicate)
+    public void removeSpecificationPredicate(Predicate predicate)
     {
-        specification.removePredicate(predicate);
+        specification.removeSpecObject(predicate);
 
         specificationView.requestRebuild();
         parseSpecification();
@@ -894,6 +899,18 @@ public class SpecificationController extends Observable implements FocusListener
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
             }
+        else if (object instanceof Predicate)
+            {
+            List<SpecObject> specObjectList = specification.getSpecObjectList();
+
+            int index = specObjectList.indexOf(object);
+            if (index > 0)
+                {
+                Utils.listMove(specObjectList, object, index - 1);
+                }
+
+            specification.setSpecObjectList(specObjectList);
+            }
         else if (object instanceof Operation)
             {
             Operation operation = (Operation) object;
@@ -961,6 +978,21 @@ public class SpecificationController extends Observable implements FocusListener
                 {
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
+            }
+        else if (object instanceof Predicate)
+            {
+            List<SpecObject> specObjectList = specification.getSpecObjectList();
+
+            int size = specObjectList.size();
+            int index = specObjectList.indexOf(object);
+            int last = size - 1;
+
+            if (index < last)
+                {
+                Utils.listMove(specObjectList, object, index + 1);
+                }
+
+            specification.setSpecObjectList(specObjectList);
             }
         else if (object instanceof Operation)
             {

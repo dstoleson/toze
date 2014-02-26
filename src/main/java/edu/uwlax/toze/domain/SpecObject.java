@@ -2,6 +2,7 @@ package edu.uwlax.toze.domain;
 
 import edu.uwlax.toze.objectz.TozeToken;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
  * a way to generate a UUID for each object in the specification document
  * tree.
  */
+@XmlTransient
 public abstract class SpecObject implements Cloneable
 {
     private final HashMap<String, List<TozeToken>> errors;

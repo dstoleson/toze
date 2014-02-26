@@ -21,6 +21,13 @@ public class TozeSpecificationChecker extends TozeParser
 
         for (SpecObject specObject : specification.getSpecObjectList())
             {
+                if (specObject instanceof Predicate)
+                    {
+                    Predicate predicate = (Predicate)specObject;
+                    start(SpecificationSection.Predicate, specification);
+                    parse_guiPredicateList(predicate, "predicateValue", predicate.getPredicateValue());
+                    end();  // predicate
+                    }
                 if (specObject instanceof AxiomaticDef)
                     {
                     AxiomaticDef axiomaticDef = (AxiomaticDef)specObject;
@@ -190,13 +197,6 @@ public class TozeSpecificationChecker extends TozeParser
                     end(); // class
                     }
                 end(); // specification
-            }
-
-        for (String predicate : specification.getPredicateList())
-            {
-            start(SpecificationSection.Predicate, specification);
-            parse_guiPredicateList(specification, "predicate", predicate);
-            end();  // predicate
             }
 
         if (specification.getErrors().isEmpty())

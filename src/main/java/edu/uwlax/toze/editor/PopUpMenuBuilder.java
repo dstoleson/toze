@@ -58,6 +58,10 @@ public class PopUpMenuBuilder
             {
             popupMenu = buildSpecificationPopup(popupMenu, (Specification) object, controller);
             }
+        else if (object instanceof Predicate)
+            {
+            popupMenu = buildPredicatePopup(popupMenu, (Predicate) object, controller);
+            }
         else if (object instanceof ClassDef)
             {
             popupMenu = buildClassPopup(popupMenu, (ClassDef) object, controller);
@@ -110,6 +114,25 @@ public class PopUpMenuBuilder
         JMenuItem menuItem = new TitleMenuItem(title);
         popupMenu.add(menuItem);
         popupMenu.add(new JSeparator());
+    }
+
+    static private JPopupMenu buildPredicatePopup(JPopupMenu popupMenu, final Predicate predicate,
+                                                  final SpecificationController controller)
+    {
+        addTitle(popupMenu, uiBundle.getString("predicatePopupMenu.title"));
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("predicatePopupMenu.deletePredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+            controller.removeSpecificationPredicate(predicate);
+            }
+        }
+        );
+        popupMenu.add(menuItem);
+
+        return popupMenu;
     }
 
     static private JPopupMenu buildAbbreviationPopup(JPopupMenu popupMenu, final AbbreviationDef abbreviationDef,

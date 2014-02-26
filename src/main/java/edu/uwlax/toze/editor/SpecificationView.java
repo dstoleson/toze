@@ -1,7 +1,6 @@
 package edu.uwlax.toze.editor;
 
 import edu.uwlax.toze.domain.*;
-import edu.uwlax.toze.editor.bindings.Binding;
 import edu.uwlax.toze.objectz.TozeToken;
 
 import javax.swing.*;
@@ -33,44 +32,43 @@ public class SpecificationView extends JPanel
         this.rebuild();
     }
 
-    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
-    {
-        TozeTextArea text = new TozeTextArea(value);
-        text.setIgnoresEnter(ignoresEnter);
-        addDocumentListener(text, modelObject, property);
-        text.addMouseListener(specController.getMouseAdapter());
+//    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
+//    {
+//        TozeTextArea text = new TozeTextArea(value);
+//        text.setIgnoresEnter(ignoresEnter);
+//        addDocumentListener(text, modelObject, property);
+//        text.addMouseListener(specController.getMouseAdapter());
+//
+//        return text;
+//    }
+//
+//    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
+//    {
+//        return buildTextArea(modelObject, value, property, true);
+//    }
 
-        return text;
-    }
-
-    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
-    {
-        return buildTextArea(modelObject, value, property, true);
-    }
-
-    private void addDocumentListener(TozeTextArea textArea, SpecObject modelObject, String property)
-    {
-        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
-
-        SpecDocumentListener specDocumentListener = new SpecDocumentListener(new Binding(modelObject, property));
-        textArea.getDocument().addDocumentListener(specDocumentListener);
-        specDocumentListener.addObserver(specController);
-//        textArea.addKeyListener(specController.getKeyAdapter());
-        textArea.addFocusListener(specController);
-    }
-
+//    private void addDocumentListener(TozeTextArea textArea, SpecObject modelObject, String property)
+//    {
+//        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
+//
+//        SpecDocumentListener specDocumentListener = new SpecDocumentListener(new Binding(modelObject, property));
+//        textArea.getDocument().addDocumentListener(specDocumentListener);
+//        specDocumentListener.addObserver(specController);
+////        textArea.addKeyListener(specController.getKeyAdapter());
+//        textArea.addFocusListener(specController);
+//    }
+//
     protected void rebuild()
     {
         removeAll();
 
-        for (String predicate : specification.getPredicateList())
-            {
-            TozeTextArea predicateText = buildTextArea(specification, predicate, "predicate", false);
-            add(predicateText);
-            }
-
         for (SpecObject specObject : specification.getSpecObjectList())
             {
+            if (specObject instanceof Predicate)
+                {
+                addView(new PredicateView((Predicate) specObject, specController));
+                }
+
             if (specObject instanceof AxiomaticDef)
                 {
                 addView(new AxiomaticView((AxiomaticDef) specObject, specController));

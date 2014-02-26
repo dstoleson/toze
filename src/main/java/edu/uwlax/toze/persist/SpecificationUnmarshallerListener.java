@@ -3,7 +3,6 @@ package edu.uwlax.toze.persist;
 import edu.uwlax.toze.domain.*;
 
 import javax.xml.bind.Unmarshaller;
-import java.util.ArrayList;
 
 /**
  * Listen for JAXB Unmarshaller events and override the parsing behavior.
@@ -22,16 +21,11 @@ public class SpecificationUnmarshallerListener extends Unmarshaller.Listener
         super.afterUnmarshal(target, parent);
 
         // Transform the CDATA Escaped Chars into Java Chars
-        if (target instanceof Specification)
+        if (target instanceof Predicate)
             {
-            Specification toze = (Specification) target;
-            ArrayList<String> xformedPredicateList = new ArrayList<String>();
-
-            for (String predicate : toze.getPredicateList())
-                {
-                xformedPredicateList.add(XMLToCharTransformer.transform(predicate));
-                }
-            toze.setPredicateList(xformedPredicateList);
+            Predicate predicate = (Predicate) target;
+            predicate.setPredicateValue(XMLToCharTransformer.transform(predicate.getPredicateValue()));
+            predicate.setSpecification((Specification) parent);
             }
         else if (target instanceof AbbreviationDef)
             {

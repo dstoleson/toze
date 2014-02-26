@@ -3,7 +3,6 @@ package edu.uwlax.toze.persist;
 import edu.uwlax.toze.domain.*;
 
 import javax.xml.bind.Marshaller;
-import java.util.ArrayList;
 
 public class SpecificationMarshallerListener extends Marshaller.Listener
 {
@@ -13,16 +12,10 @@ public class SpecificationMarshallerListener extends Marshaller.Listener
         super.beforeMarshal(source);
 
         // Transform the Java Chars into CDATA Escaped Chars
-        if (source instanceof Specification)
+        if (source instanceof Predicate)
             {
-            Specification toze = (Specification) source;
-            ArrayList<String> xformedPredicateList = new ArrayList<String>();
-
-            for (String predicate : toze.getPredicateList())
-                {
-                xformedPredicateList.add(CharToXMLTransformer.transform(predicate));
-                }
-            toze.setPredicateList(xformedPredicateList);
+            Predicate predicate = (Predicate) source;
+            predicate.setPredicateValue(CharToXMLTransformer.transform(predicate.getPredicateValue()));
             }
         else if (source instanceof AbbreviationDef)
             {
