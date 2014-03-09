@@ -338,7 +338,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem();
-        menuItem.setText("Increase Font Size");
+        menuItem.setText(uiBundle.getString("editMenu.font.increase"));
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK));
         menuItem.addActionListener(new ActionListener()
         {
@@ -352,7 +352,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem();
-        menuItem.setText("Decrease Font Size");
+        menuItem.setText(uiBundle.getString("editMenu.font.decrease"));
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
         menuItem.addActionListener(new ActionListener()
         {
