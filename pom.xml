@@ -1,61 +1,66 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>edu.uwlax</groupId>
-    <artifactId>toze</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
-    <packaging>jar</packaging>
+  <groupId>edu.uwlax</groupId>
+  <artifactId>toze</artifactId>
+  <version>2.0.2-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-    <name>toze</name>
+  <name>toze</name>
 
-    <inceptionYear>September 2013</inceptionYear>
-    <organization>
-      <name>University of Wisconsin - La Crosse</name>
-      <url>http://cs.uwlax.edu</url>
-    </organization>
+  <inceptionYear>September 2013</inceptionYear>
+  <organization>
+    <name>University of Wisconsin - La Crosse</name>
+    <url>http://cs.uwlax.edu</url>
+  </organization>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swing-layout</artifactId>
-            <version>1.0.3</version>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swing-layout</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+  </dependencies>
 
-    <scm>
-      <url>
-	scm:git:https://github.com/dstoleson/toze.git
-      </url>
-      <connection>
-	scm:git:https://github.com/dstoleson/toze.git
-      </connection>
-      <developerConnection>
-	scm:git:https://github.com/dstoleson/toze.git
-      </developerConnection>
-      <tag>HEAD</tag>
+  <scm>
+    <url>
+      scm:git:https://github.com/dstoleson/toze.git
+    </url>
+    <connection>
+      scm:git:https://github.com/dstoleson/toze.git
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/dstoleson/toze.git
+    </developerConnection>
+    <tag>HEAD</tag>
   </scm>
-    <build>
-        <finalName>toze</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <finalName>toze</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>
