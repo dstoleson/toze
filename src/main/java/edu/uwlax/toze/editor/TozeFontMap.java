@@ -91,6 +91,18 @@ public class TozeFontMap
     static private Font font;
     static private HashMap<Float, Font> sizeToFont = new HashMap<Float, Font>();
 
+    static private int defaultFontSize = 16;
+
+    static public void setDefaultFontSize(int newDefaultFontSize)
+    {
+        defaultFontSize = newDefaultFontSize;
+    }
+
+    static public int getDefaultFontSize()
+    {
+        return defaultFontSize;
+    }
+
     static public Font getFont(float size)
     {
         Font foundFont = null;
@@ -129,6 +141,6 @@ public class TozeFontMap
 
     static public Font getFont()
     {
-        return getFont(16.0f);
+        return getFont(defaultFontSize);
     }
 }

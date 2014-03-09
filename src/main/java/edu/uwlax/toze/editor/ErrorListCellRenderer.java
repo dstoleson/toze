@@ -11,6 +11,8 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
     // TODO: put this in one place
     static private ResourceBundle tozeBundle = ResourceBundle.getBundle("edu.uwlax.toze.editor.toze");
 
+    static private int ERROR_FONT_SIZE = 16;
+
     private final JLabel errorLabel;
 
     public ErrorListCellRenderer()
@@ -18,6 +20,7 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
         setLayout(new GridLayout(1, 1));
         errorLabel = new JLabel();
         errorLabel.setOpaque(true);
+        errorLabel.setFont(TozeFontMap.getFont(ERROR_FONT_SIZE));
         add(errorLabel);
     }
 
@@ -38,7 +41,6 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
 
         if (value instanceof String)
             {
-            errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText((String) value);
             }
         else if (value instanceof TozeToken)
@@ -50,7 +52,6 @@ public class ErrorListCellRenderer extends JPanel implements ListCellRenderer
                 errorTypeDescription = tozeBundle.getString(error.getErrorType().getDescriptionProperty());
                 }
 
-            errorLabel.setFont(TozeFontMap.getFont());
             errorLabel.setText(
                     errorTypeDescription + ": @ Line: " + error.m_lineNum + ", Pos: " + error.m_pos + " -- " + error.getDescription()
             );

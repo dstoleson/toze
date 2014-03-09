@@ -337,6 +337,34 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         );
         editMenu.add(menuItem);
 
+        menuItem = new JMenuItem();
+        menuItem.setText("Increase Font Size");
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                increaseFont();
+            }
+        }
+        );
+        editMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText("Decrease Font Size");
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                decreaseFont();
+            }
+        }
+        );
+        editMenu.add(menuItem);
+
         menuBar.add(editMenu);
 
         JMenu specificationMenu = new JMenu(uiBundle.getString("specificationMenu.title"));
@@ -912,6 +940,32 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         SpecificationController selectedController = currentSpecificationController();
 
         selectedController.insertSymbol(symbol);
+    }
+
+    public void changeFont(int amount)
+    {
+        int fontSize = TozeFontMap.getDefaultFontSize();
+
+        if (fontSize + amount >= 2)
+            {
+            TozeFontMap.setDefaultFontSize(fontSize + amount);
+            for (SpecificationController specController : tabControllers.values())
+                {
+                SpecificationView specificationView = specController.getSpecificationView();
+                specificationView.revalidate();
+                specificationView.repaint();
+                }
+            }
+    }
+
+    public void increaseFont()
+    {
+        changeFont(2);
+    }
+
+    public void decreaseFont()
+    {
+        changeFont(-2);
     }
 
     /**
