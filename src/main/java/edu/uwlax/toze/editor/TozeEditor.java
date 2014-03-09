@@ -737,7 +737,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
             {
             filename = fd.getDirectory() + fd.getFile() + ".jpg";
             SpecificationView specificationView = currentSpecificationController().getSpecificationView();
-            Dimension d = specificationView.getSize();
+            Dimension d = specificationView.getPreferredSize();
             BufferedImage img = (BufferedImage) specificationView.createImage(d.width, d.height);
             specificationView.paint(img.getGraphics());
             try
@@ -760,7 +760,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         // it not warn user and they can print at a smaller scale
         SpecificationController specController = currentSpecificationController();
         SpecificationView specificationView = specController.getSpecificationView();
-        Dimension d = specificationView.getSize();
+        Dimension d = specificationView.getPreferredSize();
+
         double scale = 1.0;
 
         boolean shouldPrint = PrintUtilities.checkPageWidth(d.width);
