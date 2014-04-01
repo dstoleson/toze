@@ -94,6 +94,10 @@ public class PopUpMenuBuilder
             {
             popupMenu = buildGenericPopup(popupMenu, (GenericDef) object, controller);
             }
+        else if (object instanceof State)
+            {
+            popupMenu = buildClassStatePopup(popupMenu, (State) object, controller);
+            }
 //        else if (object instanceof InheritedClass)
 //            {
 //            popupMenu = buildInheritedClassPopup(popupMenu, (InheritedClass) object, controller);
@@ -217,6 +221,65 @@ public class PopUpMenuBuilder
         popupMenu.add(menuItem);
 
         return popupMenu;
+    }
+
+    static private JPopupMenu buildClassStatePopup(JPopupMenu popupMenu, final State state,
+                                                   final SpecificationController controller)
+    {
+        addTitle(popupMenu, uiBundle.getString("classStatePopupMenu.title"));
+
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("classStatePopupMenu.addDeclaration.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.addClassStateDeclaration(state);
+            }
+        }
+        );
+
+        menuItem.setEnabled(state.getDeclaration() == null);
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem(uiBundle.getString("classStatePopupMenu.deleteDeclaration.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeClassStateDeclaration(state);
+            }
+        }
+        );
+
+        menuItem.setEnabled(state.getDeclaration() != null);
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem(uiBundle.getString("classStatePopupMenu.addPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.addClassStatePredicate(state);
+            }
+        }
+        );
+        menuItem.setEnabled(state.getPredicate() == null);
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem(uiBundle.getString("classStatePopupMenu.deletePredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeClassStatePredicate(state);
+            }
+        }
+        );
+        menuItem.setEnabled(state.getPredicate() != null);
+        popupMenu.add(menuItem);
+
+        return popupMenu;
+
     }
 
     static private JPopupMenu buildDeltaListPopup(JPopupMenu popupMenu, final Operation operation,
@@ -540,7 +603,7 @@ public class PopUpMenuBuilder
 
         // STATE
         JMenu stateMenu = new JMenu(uiBundle.getString("classPopupMenu.addStateMenu.title"));
-        menuItem.setEnabled(classDef.getState() == null);
+        stateMenu.setEnabled(classDef.getState() == null);
         menuItem = new JMenuItem(uiBundle.getString("classPopupMenu.addStateMenu.state.title"));
         menuItem.addActionListener(new ActionListener()
         {

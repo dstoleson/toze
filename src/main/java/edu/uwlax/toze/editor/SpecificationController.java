@@ -238,6 +238,58 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
+     * Add a declaration to a Class State
+     */
+    public void addClassStateDeclaration(State state)
+    {
+        checkIllegalArgument(state, "state");
+
+        state.setDeclaration("New Declaration");
+
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
+
+    /**
+     * Remove a declaration from a Class State
+     */
+    public void removeClassStateDeclaration(State state)
+    {
+        checkIllegalArgument(state, "state");
+
+        state.setDeclaration(null);
+
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
+
+    /**
+     * Add a declaration to a Class State
+     */
+    public void addClassStatePredicate(State state)
+    {
+        checkIllegalArgument(state, "state");
+
+        state.setPredicate("New Predicate");
+
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
+
+    /**
+     * Remove a declaration from a Class State
+     */
+    public void removeClassStatePredicate(State state)
+    {
+        checkIllegalArgument(state, "state");
+
+        state.setPredicate(null);
+
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
+
+    /**
      * @param operation
      */
     public void addOperationPredicate(Operation operation)
