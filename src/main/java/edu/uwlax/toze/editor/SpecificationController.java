@@ -627,13 +627,22 @@ public class SpecificationController extends Observable implements FocusListener
     }
 
     /**
-     * @param genericDef
      * @param hasPredicate
      */
-    public void addGenericType(GenericDef genericDef, boolean hasPredicate)
+    public void addGenericType(boolean hasPredicate)
     {
-        // TODO - add generic type support
+        GenericDef genericDef = new GenericDef();
+        genericDef.setFormalParameters("New Parameters");
+        genericDef.setDeclaration("New Declaration");
+        if (hasPredicate)
+            {
+            genericDef.setPredicate("New Predicate");
+            }
+        genericDef.setSpecification(specification);
+        specification.addSpecObject(genericDef);
+
         specificationView.requestRebuild();
+        selectParagraph(genericDef);
         parseSpecification();
     }
 
@@ -644,11 +653,29 @@ public class SpecificationController extends Observable implements FocusListener
     {
         checkIllegalArgument(genericDef, "genericDef");
 
+        specification.removeSpecObject(genericDef);
+
         specificationView.requestRebuild();
-        selectParagraph(genericDef);
         parseSpecification();
     }
 
+    public void addGenericTypePredicate(GenericDef genericDef)
+    {
+        checkIllegalArgument(genericDef, "genericDef");
+
+        genericDef.setPredicate("New Predicate");
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
+
+    public void removeGenericTypePredicate(GenericDef genericDef)
+    {
+        checkIllegalArgument(genericDef, "genericDef");
+
+        genericDef.setPredicate(null);
+        specificationView.requestRebuild();
+        parseSpecification();
+    }
     /**
      * Add a Predicate to the Specification
      */
@@ -951,7 +978,7 @@ public class SpecificationController extends Observable implements FocusListener
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
             }
-        else if (object instanceof Predicate)
+        else if (object instanceof Predicate || object instanceof GenericDef)
             {
             List<SpecObject> specObjectList = specification.getSpecObjectList();
 
@@ -1031,7 +1058,7 @@ public class SpecificationController extends Observable implements FocusListener
                 ((ClassDef)target).setSpecObjectList(specObjectList);
                 }
             }
-        else if (object instanceof Predicate)
+        else if (object instanceof Predicate || object instanceof GenericDef)
             {
             List<SpecObject> specObjectList = specification.getSpecObjectList();
 

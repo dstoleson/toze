@@ -1,6 +1,7 @@
 package edu.uwlax.toze.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "genericDef")
@@ -10,11 +11,13 @@ import javax.xml.bind.annotation.XmlType;
                          "declaration",
                          "predicate"
                  })
-public class GenericDef extends SpecDefinition
+public class GenericDef extends SpecObject
 {
     private String formalParameters;
     private String declaration;
     private String predicate;
+
+    private Specification specification;
 
     public String getFormalParameters()
     {
@@ -44,6 +47,17 @@ public class GenericDef extends SpecDefinition
     public void setPredicate(String predicate)
     {
         this.predicate = predicate;
+    }
+
+    @XmlTransient
+    public Specification getSpecification()
+    {
+        return specification;
+    }
+
+    public void setSpecification(Specification specification)
+    {
+        this.specification = specification;
     }
 
     @Override

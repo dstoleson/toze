@@ -325,7 +325,33 @@ public class PopUpMenuBuilder
     {
         addTitle(popupMenu, uiBundle.getString("genericTypePopupMenu.title"));
 
-        JMenuItem menuItem = new JMenuItem(uiBundle.getString("genericTypePopupMenu.deleteGenericType.title"));
+        JMenuItem menuItem = new JMenuItem(uiBundle.getString("genericTypePopupMenu.addPredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.addGenericTypePredicate(genericDef);
+            }
+        }
+        );
+
+        menuItem.setEnabled(genericDef.getPredicate() == null);
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem(uiBundle.getString("genericTypePopupMenu.removePredicate.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                controller.removeGenericTypePredicate(genericDef);
+            }
+        }
+        );
+
+        menuItem.setEnabled(genericDef.getPredicate() != null);
+        popupMenu.add(menuItem);
+
+        menuItem = new JMenuItem(uiBundle.getString("genericTypePopupMenu.deleteGenericType.title"));
         menuItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -441,7 +467,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addGenericType(null, true);
+                controller.addGenericType(true);
             }
         }
         );
@@ -454,7 +480,7 @@ public class PopUpMenuBuilder
         {
             public void actionPerformed(ActionEvent e)
             {
-                controller.addGenericType(null, false);
+                controller.addGenericType(false);
             }
         }
         );

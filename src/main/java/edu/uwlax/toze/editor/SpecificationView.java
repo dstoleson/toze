@@ -32,32 +32,6 @@ public class SpecificationView extends JPanel
         this.rebuild();
     }
 
-//    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property, boolean ignoresEnter)
-//    {
-//        TozeTextArea text = new TozeTextArea(value);
-//        text.setIgnoresEnter(ignoresEnter);
-//        addDocumentListener(text, modelObject, property);
-//        text.addMouseListener(specController.getMouseAdapter());
-//
-//        return text;
-//    }
-//
-//    protected TozeTextArea buildTextArea(SpecObject modelObject, String value, String property)
-//    {
-//        return buildTextArea(modelObject, value, property, true);
-//    }
-
-//    private void addDocumentListener(TozeTextArea textArea, SpecObject modelObject, String property)
-//    {
-//        textArea.getDocument().addDocumentListener(new SpecDocumentListener(new Binding(modelObject, property)));
-//
-//        SpecDocumentListener specDocumentListener = new SpecDocumentListener(new Binding(modelObject, property));
-//        textArea.getDocument().addDocumentListener(specDocumentListener);
-//        specDocumentListener.addObserver(specController);
-////        textArea.addKeyListener(specController.getKeyAdapter());
-//        textArea.addFocusListener(specController);
-//    }
-//
     protected void rebuild()
     {
         removeAll();
@@ -91,7 +65,7 @@ public class SpecificationView extends JPanel
 
             if (specObject instanceof GenericDef)
                 {
-//                addView(new GenericView((GenericDef)specObject, specController));
+                addView(new GenericView((GenericDef)specObject, specController));
                 }
 
             if (specObject instanceof ClassDef)
