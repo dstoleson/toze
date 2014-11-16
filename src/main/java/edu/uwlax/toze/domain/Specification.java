@@ -13,7 +13,7 @@ import java.util.List;
 @XmlRootElement(name = "TOZE")
 @XmlType(propOrder =
                  {
-                         "specObjectList",
+                         "specObjectList"
                  })
 public class Specification extends SpecObject
 {
@@ -31,12 +31,14 @@ public class Specification extends SpecObject
              })
     public List<SpecObject> getSpecObjectList()
     {
-        return new ArrayList<SpecObject>(specObjectList);
+        // Can't encapsulate the List because JAXB needs direct access
+        return specObjectList;
     }
 
     public void setSpecObjectList(final List<SpecObject> specObjectList)
     {
-        this.specObjectList = new ArrayList<SpecObject>(specObjectList);
+        // Can't encapsulate the List because JAXB needs direct access
+        this.specObjectList = specObjectList;
     }
 
     public void addSpecObject(final SpecObject specObject)

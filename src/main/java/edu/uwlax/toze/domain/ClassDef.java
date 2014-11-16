@@ -68,11 +68,13 @@ public class ClassDef extends SpecObject
              })
     public List<SpecObject> getSpecObjectList()
     {
-        return new ArrayList<SpecObject>(specObjectList);
+        // Can't encapsulate the List because JAXB needs direct access
+        return specObjectList;
     }
 
     public void setSpecObjectList(List<SpecObject> specObjectList)
     {
+        // Can't encapsulate the List because JAXB needs direct access
         this.specObjectList = specObjectList;
     }
 
@@ -109,12 +111,14 @@ public class ClassDef extends SpecObject
     @XmlElement(name = "operation")
     public List<Operation> getOperationList()
     {
-        return new ArrayList<Operation>(operationList);
+        // Can't encapsulate the List because JAXB needs direct access
+        return operationList;
     }
 
     public void setOperationList(List<Operation> operationList)
     {
-        this.operationList = new ArrayList<Operation>(operationList);
+        // Can't encapsulate the List because JAXB needs direct access
+        this.operationList = operationList;
     }
 
     public void addOperation(final Operation operation)
