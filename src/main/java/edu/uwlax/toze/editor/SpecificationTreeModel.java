@@ -8,8 +8,7 @@ import edu.uwlax.toze.domain.Specification;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * SpecificationTreeModel implements a model for a JTree that
@@ -17,58 +16,135 @@ import java.util.List;
  *
  * @author dhs
  */
-public class SpecificationTreeModel extends DefaultTreeModel
+public class SpecificationTreeModel extends DefaultTreeModel implements Observer
 {
+//    private DefaultMutableTreeNode specRoot;
     private List<SpecificationDocument> specificationDocuments;
 
     public SpecificationTreeModel(TreeNode tn)
     {
         super(tn);
-        initSpecifications();
-    }
-
-    private void initSpecifications()
-    {
         specificationDocuments = new ArrayList<SpecificationDocument>();
+        DefaultMutableTreeNode specRoot = new DefaultMutableTreeNode("ROOT");
+        specRoot.setUserObject(specificationDocuments);
+        setRoot(specRoot);
     }
 
     public void addSpecificationDocument(SpecificationDocument specificationDocument)
     {
         specificationDocuments.add(specificationDocument);
-        this.reload();
+        SpecificationNode specificationNode = new SpecificationNode(specificationDocument.getFile().getName(),
+                                                       specificationDocument);
+        insertNodeInto(specificationNode, (DefaultMutableTreeNode)getRoot(), ((DefaultMutableTreeNode)getRoot()).getChildCount());
+
+        for (ClassDef classDef : specificationDocument.getSpecification().getClassDefList())
+            {
+            buildClassDefNode(specificationNode, classDef, specificationDocument.getSpecification().getClassDefList().indexOf(classDef));
+            }
+    }
+
+    private void buildClassDefNode(SpecificationNode specificationNode, ClassDef classDef, int classDefIndex)
+    {
+        ClassNode classNode = new ClassNode(classDef.getName(), classDef);
+        insertNodeInto(classNode, specificationNode, classDefIndex);
+        for (Operation operation : classDef.getOperationList())
+            {
+            buildOperationNode(classNode, operation, classDef.getOperationList().indexOf(operation));
+            }
+    }
+
+    private void buildOperationNode(ClassNode classDefNode, Operation operation, int operationIndex)
+    {
+        OperationNode operationNode = new OperationNode(operation.getName(), operation);
+        insertNodeInto(operationNode, classDefNode, operationIndex);
     }
 
     @Override
-    public Object getRoot()
+    public void update(Observable o, Object arg)
     {
-        DefaultMutableTreeNode specRoot = new DefaultMutableTreeNode("ROOT");
-        specRoot.setUserObject(specificationDocuments);
-        return specRoot;
+        HashMap params = (HashMap)arg;
+
+        SpecificationController.NotificationType notification =
+                (SpecificationController.NotificationType)params.get(SpecificationController.KEY_NAME);
+
+        SpecificationDocument specificationDocument;
+        ClassDef classDef;
+        Operation operation;
+
+        SpecificationNode specificationNode;
+        ClassNode classNode;
+        OperationNode operationNode;
+
+        int specificationIndex;
+        int classIndex;
+        int operationIndex;
+
+        switch (notification)
+            {
+            case CLASS_ADDED:
+                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
+                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
+
+                specificationIndex = specificationDocuments.indexOf(specificationDocument);
+                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+                classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
+
+                buildClassDefNode(specificationNode, classDef, classIndex);
+                break;
+            case CLASS_REMOVED:
+                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
+                classIndex = (Integer)params.get(SpecificationController.KEY_OBJECT_INDEX);
+
+                specificationIndex = specificationDocuments.indexOf(specificationDocument);
+                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+                classNode = (ClassNode)specificationNode.getChildAt(classIndex);
+
+                removeNodeFromParent(classNode);
+                break;
+            case OPERATION_ADDED:
+                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
+                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
+                operation = (Operation)params.get(SpecificationController.KEY_OPERATION);
+
+                specificationIndex = specificationDocuments.indexOf(specificationDocument);
+                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+                classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
+                classNode = (ClassNode)specificationNode.getChildAt(classIndex);
+                operationIndex = classDef.getOperationList().indexOf(operation);
+
+                buildOperationNode(classNode, operation, operationIndex);
+                break;
+            case OPERATION_REMOVED:
+                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
+                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
+                operationIndex = (Integer)params.get(SpecificationController.KEY_OBJECT_INDEX);
+
+                specificationIndex = specificationDocuments.indexOf(specificationDocument);
+                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+                classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
+                classNode = (ClassNode)specificationNode.getChildAt(classIndex);
+                operationNode = (OperationNode)classNode.getChildAt(operationIndex);
+                removeNodeFromParent(operationNode);
+                break;
+            }
     }
 
     @Override
     public Object getChild(Object parent, int index)
     {
-        Object userObject = ((DefaultMutableTreeNode) parent).getUserObject();
         DefaultMutableTreeNode node = null;
 
-        if (userObject == specificationDocuments)
+        if (parent == getRoot())
             {
-            node = new SpecificationNode(specificationDocuments.get(index).getFile().getName(),
-                                         specificationDocuments.get(index)
-            );
+            node = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(index);
             }
         else if (parent instanceof SpecificationNode)
             {
-            Specification specification = ((SpecificationNode) parent).getSpecificationDocument().getSpecification();
-            ClassDef classDef = specification.getClassDefList().get(index);
-            node = new ClassNode(classDef.getName(), classDef);
+            node = (ClassNode)((SpecificationNode)parent).getChildAt(index);
             }
         else if (parent instanceof ClassNode)
             {
-            ClassDef classDef = ((ClassNode) parent).getClassDef();
-            Operation operation = classDef.getOperationList().get(index);
-            node = new OperationNode(classDef.getOperationList().get(index).getName(), operation);
+            node = (OperationNode)((ClassNode)parent).getChildAt(index);
             }
 
         return node;
@@ -77,22 +153,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
     @Override
     public int getChildCount(Object parent)
     {
-        Object userObject = ((DefaultMutableTreeNode) parent).getUserObject();
-
-        if (userObject == specificationDocuments)
-            {
-            return specificationDocuments.size();
-            }
-        else if (parent instanceof SpecificationNode)
-            {
-            return ((SpecificationNode) parent).getSpecificationDocument().getSpecification().getClassDefList().size();
-            }
-        else if (parent instanceof ClassNode)
-            {
-            return ((ClassNode) parent).getChildCount();
-            }
-
-        return 0;
+        return ((DefaultMutableTreeNode)parent).getChildCount();
     }
 
     @Override
@@ -111,7 +172,7 @@ public class SpecificationTreeModel extends DefaultTreeModel
             return true;
             }
 
-        // Do this last because all the nodes are DefaultMutableTreNode
+        // Do this last because all the nodes are DefaultMutableTreeNode
         // but more specific
         if (object instanceof DefaultMutableTreeNode)
             {
@@ -123,8 +184,10 @@ public class SpecificationTreeModel extends DefaultTreeModel
 
     public void removeSpecification(SpecificationDocument specificationDocument)
     {
+        int specIndex = specificationDocuments.indexOf(specificationDocument);
         specificationDocuments.remove(specificationDocument);
-        reload();
+        SpecificationNode specNode = (SpecificationNode)root.getChildAt(specIndex);
+        removeNodeFromParent(specNode);
     }
 
     public interface SpecObjectNode

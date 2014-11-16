@@ -10,16 +10,29 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  *
  */
 public class SpecificationController extends Observable implements FocusListener, Observer
 {
+    public enum NotificationType
+    {
+        CLASS_ADDED,
+        CLASS_REMOVED,
+        OPERATION_ADDED,
+        OPERATION_REMOVED,
+        ERRORS
+    }
+
+    static final public String KEY_NAME = "name";
+    static final public String KEY_CLASSDEF = "classDef";
+    static final public String KEY_OPERATION = "operation";
+    static final public String KEY_SPECIFICATION_DOCUMENT = "specificationDocument";
+    static final public String KEY_OBJECT_INDEX = "objectIndex";
+
     static private SpecObject cachedObject = null;
 
     private final SpecificationDocument specificationDocument;
@@ -340,14 +353,33 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.requestRebuild();
         selectParagraph(classDef);
         parseSpecification();
+
+        HashMap notification = new HashMap();
+        notification.put(KEY_NAME, NotificationType.CLASS_ADDED);
+        notification.put(KEY_CLASSDEF, classDef);
+        notification.put(KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+
+        setChanged();
+        notifyObservers(notification);
     }
 
     public void removeClass(ClassDef classDef)
     {
+        int classIndex = specification.getClassDefList().indexOf(classDef);
+
         specification.removeSpecObject(classDef);
 
         specificationView.requestRebuild();
         parseSpecification();
+
+        HashMap notification = new HashMap();
+        notification.put(KEY_NAME, NotificationType.CLASS_REMOVED);
+        notification.put(KEY_CLASSDEF, classDef);
+        notification.put(KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+        notification.put(KEY_OBJECT_INDEX, classIndex);
+
+        setChanged();
+        notifyObservers(notification);
     }
 
     /**
@@ -812,6 +844,15 @@ public class SpecificationController extends Observable implements FocusListener
         specificationView.requestRebuild();
         selectParagraph(operation);
         parseSpecification();
+
+        HashMap notification = new HashMap();
+        notification.put(KEY_NAME, NotificationType.OPERATION_ADDED);
+        notification.put(KEY_OPERATION, operation);
+        notification.put(KEY_CLASSDEF, classDef);
+        notification.put(KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+
+        setChanged();
+        notifyObservers(notification);
     }
 
     /**
@@ -821,11 +862,23 @@ public class SpecificationController extends Observable implements FocusListener
     {
         checkIllegalArgument(operation, "operation");
 
+        int operationIndex = operation.getClassDef().getOperationList().indexOf(operation);
+
         ClassDef classDef = operation.getClassDef();
         classDef.removeOperation(operation);
 
         specificationView.requestRebuild();
         parseSpecification();
+
+        HashMap notification = new HashMap();
+        notification.put(KEY_NAME, NotificationType.OPERATION_REMOVED);
+        notification.put(KEY_OPERATION, operation);
+        notification.put(KEY_CLASSDEF, classDef);
+        notification.put(KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+        notification.put(KEY_OBJECT_INDEX, operationIndex);
+
+        setChanged();
+        notifyObservers(notification);
     }
 
     /**
@@ -861,8 +914,12 @@ public class SpecificationController extends Observable implements FocusListener
         TozeSpecificationChecker parser = new TozeSpecificationChecker();
         parser.check(specification);
         List errors = specification.getErrors();
+
+        HashMap notification = new HashMap();
+        notification.put("name", NotificationType.ERRORS);
+        notification.put("value", errors);
         setChanged();
-        notifyObservers(errors);
+        notifyObservers(notification);
 
         specificationView.revalidate();
         specificationView.repaint();

@@ -661,6 +661,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         tabControllers.put(specScroller, controller);
 
         controller.addObserver(this);
+        controller.addObserver(treeModel);
         controller.parseSpecification();
     }
 
@@ -1027,7 +1028,13 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         if (o instanceof SpecificationController)
             {
-            updateErrors(((SpecificationController)o).getSpecification().getErrors());
+            SpecificationController.NotificationType notification =
+                    (SpecificationController.NotificationType)((HashMap) arg).get("name");
+            switch (notification)
+                {
+                case ERRORS:
+                    updateErrors(((SpecificationController) o).getSpecification().getErrors());
+                }
             }
     }
 
