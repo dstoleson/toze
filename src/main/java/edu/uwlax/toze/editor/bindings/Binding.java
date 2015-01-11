@@ -27,6 +27,16 @@ public class Binding<T, V>
         this.property = property;
     }
 
+    public T getSource()
+    {
+        return source;
+    }
+
+    public String getProperty()
+    {
+        return property;
+    }
+
     /**
      * Set the value on the source object.
      *

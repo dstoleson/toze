@@ -3,12 +3,14 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.domain.ClassDef;
 import edu.uwlax.toze.domain.Operation;
 import edu.uwlax.toze.domain.SpecObject;
-import edu.uwlax.toze.domain.Specification;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import java.util.*;
+
+import static edu.uwlax.toze.editor.SpecificationController.NotificationType.*;
+import static edu.uwlax.toze.editor.SpecificationController.NotificationKey.*;
 
 /**
  * SpecificationTreeModel implements a model for a JTree that
@@ -62,69 +64,79 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
     @Override
     public void update(Observable o, Object arg)
     {
-        HashMap params = (HashMap)arg;
+        final HashMap params = (HashMap)arg;
 
-        SpecificationController.NotificationType notification =
-                (SpecificationController.NotificationType)params.get(SpecificationController.KEY_NAME);
+        final SpecificationController.NotificationType notification =
+                (SpecificationController.NotificationType)params.get(KEY_NOTIFICATION_TYPE);
 
-        SpecificationDocument specificationDocument;
-        ClassDef classDef;
-        Operation operation;
+        // only process the four add/removed types this method cares about
+        // this prevents addition of other enum types breaking
+        // the code
+        if (!(  notification == CLASS_ADDED
+                || notification == CLASS_REMOVED
+                || notification == OPERATION_ADDED
+                || notification == OPERATION_REMOVED
+                || notification == CLASS_RENAMED
+                || notification == OPERATION_RENAMED))
+            {
+            return;
+            }
 
-        SpecificationNode specificationNode;
-        ClassNode classNode;
-        OperationNode operationNode;
+        final SpecificationDocument specificationDocument = (SpecificationDocument)params.get(KEY_SPECIFICATION_DOCUMENT);
+        final int specificationIndex = specificationDocuments.indexOf(specificationDocument);
+        final SpecificationNode specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
 
-        int specificationIndex;
-        int classIndex;
-        int operationIndex;
+        final ClassDef classDef = (ClassDef)params.get(KEY_CLASSDEF);
+
+        final Operation operation;
+
+        final int classIndex;
+        final int operationClassIndex;
+        final int operationIndex;
+
+        final ClassNode classNode;
+        final OperationNode operationNode;
+
 
         switch (notification)
             {
             case CLASS_ADDED:
-                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
-                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
-
-                specificationIndex = specificationDocuments.indexOf(specificationDocument);
-                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
-                classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
-
+                classIndex = (Integer)params.get(KEY_OBJECT_INDEX);
                 buildClassDefNode(specificationNode, classDef, classIndex);
                 break;
             case CLASS_REMOVED:
-                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
-                classIndex = (Integer)params.get(SpecificationController.KEY_OBJECT_INDEX);
-
-                specificationIndex = specificationDocuments.indexOf(specificationDocument);
-                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+                classIndex = (Integer)params.get(KEY_OBJECT_INDEX);
                 classNode = (ClassNode)specificationNode.getChildAt(classIndex);
-
                 removeNodeFromParent(classNode);
                 break;
-            case OPERATION_ADDED:
-                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
-                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
-                operation = (Operation)params.get(SpecificationController.KEY_OPERATION);
-
-                specificationIndex = specificationDocuments.indexOf(specificationDocument);
-                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
+            case CLASS_RENAMED:
                 classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
                 classNode = (ClassNode)specificationNode.getChildAt(classIndex);
-                operationIndex = classDef.getOperationList().indexOf(operation);
-
+                classNode.setUserObject(classDef.getName());
+                nodeChanged(classNode);
+                break;
+            case OPERATION_ADDED:
+                operation = (Operation)params.get(KEY_OPERATION);
+                operationClassIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
+                classNode = (ClassNode)specificationNode.getChildAt(operationClassIndex);
+                operationIndex = (Integer)params.get(KEY_OBJECT_INDEX);
                 buildOperationNode(classNode, operation, operationIndex);
                 break;
             case OPERATION_REMOVED:
-                specificationDocument = (SpecificationDocument)params.get(SpecificationController.KEY_SPECIFICATION_DOCUMENT);
-                classDef = (ClassDef)params.get(SpecificationController.KEY_CLASSDEF);
-                operationIndex = (Integer)params.get(SpecificationController.KEY_OBJECT_INDEX);
-
-                specificationIndex = specificationDocuments.indexOf(specificationDocument);
-                specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
-                classIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
-                classNode = (ClassNode)specificationNode.getChildAt(classIndex);
+                operationIndex = (Integer)params.get(KEY_OBJECT_INDEX);
+                operationClassIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
+                classNode = (ClassNode)specificationNode.getChildAt(operationClassIndex);
                 operationNode = (OperationNode)classNode.getChildAt(operationIndex);
                 removeNodeFromParent(operationNode);
+                break;
+            case OPERATION_RENAMED:
+                operation = (Operation)params.get(KEY_OPERATION);
+                operationClassIndex = specificationDocument.getSpecification().getClassDefList().indexOf(operation.getClassDef());
+                operationIndex = operation.getClassDef().getOperationList().indexOf(operation);
+                classNode = (ClassNode)specificationNode.getChildAt(operationClassIndex);
+                operationNode = (OperationNode)classNode.getChildAt(operationIndex);
+                operationNode.setUserObject(operation.getName());
+                nodeChanged(operationNode);
                 break;
             }
     }

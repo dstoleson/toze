@@ -27,6 +27,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
+import static edu.uwlax.toze.editor.SpecificationController.NotificationKey.*;
+
 /**
  * Main UI class for the TOZE Editor. Displays a file/specification tree
  * navigator on the left, a tabbed specification editor on the right, a tool
@@ -1029,7 +1031,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         if (o instanceof SpecificationController)
             {
             SpecificationController.NotificationType notification =
-                    (SpecificationController.NotificationType)((HashMap) arg).get("name");
+                    (SpecificationController.NotificationType)((HashMap) arg).get(KEY_NOTIFICATION_TYPE);
             switch (notification)
                 {
                 case ERRORS:
