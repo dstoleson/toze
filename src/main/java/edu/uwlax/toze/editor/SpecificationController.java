@@ -1383,13 +1383,13 @@ import edu.uwlax.toze.domain.*;
                      {
                      List<SpecObject> newList = insertAfterObject(specification.getSpecObjectList(), targetObject, pastedObject);
                      specification.setSpecObjectList(newList);
-
-                     specificationChanged(NotificationType.CLASS_ADDED, (ClassDef)pastedObject, specification.getClassDefList().indexOf(pastedObject), specificationDocument);
                      }
                  else
                      {
                      specification.addSpecObject(pastedObject);
                      }
+
+                 specificationChanged(NotificationType.CLASS_ADDED, (ClassDef)pastedObject, specification.getClassDefList().indexOf(pastedObject), specificationDocument);
                  }
              else if (pastedObject instanceof InheritedClass)
                  {

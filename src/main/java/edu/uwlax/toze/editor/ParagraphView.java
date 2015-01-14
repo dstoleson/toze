@@ -202,15 +202,15 @@ public abstract class ParagraphView extends JPanel implements Placement
         if (textArea != null)
             {
             textArea.clearErrors();
-            }
 
-        if (specObject != null)
-            {
-            List<TozeToken> errors = specObject.getErrorsForProperty(property);
-
-            if (errors != null)
+            if (specObject != null)
                 {
-                textArea.addErrors(errors);
+                List<TozeToken> errors = specObject.getErrorsForProperty(property);
+
+                if (errors != null)
+                    {
+                    textArea.addErrors(errors);
+                    }
                 }
             }
     }

@@ -86,7 +86,7 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
         final int specificationIndex = specificationDocuments.indexOf(specificationDocument);
         final SpecificationNode specificationNode = (SpecificationNode)((DefaultMutableTreeNode)getRoot()).getChildAt(specificationIndex);
 
-        final ClassDef classDef = (ClassDef)params.get(KEY_CLASSDEF);
+        ClassDef classDef = (ClassDef)params.get(KEY_CLASSDEF);
 
         final Operation operation;
 
@@ -117,6 +117,17 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
                 break;
             case OPERATION_ADDED:
                 operation = (Operation)params.get(KEY_OPERATION);
+
+                // if classDef not specified, need to assume that
+                // the operation has a parent classDef
+                if (classDef == null)
+                    {
+                    classDef = operation.getClassDef();
+                    }
+                if (classDef == null)
+                    {
+                    break;
+                    }
                 operationClassIndex = specificationDocument.getSpecification().getClassDefList().indexOf(classDef);
                 classNode = (ClassNode)specificationNode.getChildAt(operationClassIndex);
                 operationIndex = (Integer)params.get(KEY_OBJECT_INDEX);
