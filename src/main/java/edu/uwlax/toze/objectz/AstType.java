@@ -177,11 +177,11 @@ public class AstType
             {
             return false;
             }
-        if (m_setType.getType() != TYPE_TUPLE)
+        if ((m_setType != null) && (m_setType.getType() != TYPE_TUPLE))
             {
             return false;
             }
-        if (m_setType.m_tupleTypes.size() != 2)
+        if ((m_setType != null) && (m_setType.m_tupleTypes.size() != 2))
             {
             return false;
             }
