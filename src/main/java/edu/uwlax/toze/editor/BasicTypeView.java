@@ -57,7 +57,7 @@ public class BasicTypeView extends ParagraphView
         int y = insets.top + VMargin;
         d = nameText.getPreferredSize();
 
-        nameText.setBounds(x + fm.stringWidth(BasicTypePre), y, d.width, d.height);
+        nameText.setBounds(x, y, d.width, d.height);
     }
 
     @Override
