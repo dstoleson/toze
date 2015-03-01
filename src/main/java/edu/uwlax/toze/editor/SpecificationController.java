@@ -918,9 +918,14 @@ import edu.uwlax.toze.domain.*;
          specificationView.repaint();
      }
 
-     public void parseSpecification()
+     private void parseSpecification()
      {
-         specificationDocument.setEdited(true);
+         parseSpecification(true);
+     }
+
+     public void parseSpecification(boolean edited)
+     {
+         specificationDocument.setEdited(edited);
          resetErrors();
 
          TozeSpecificationChecker parser = new TozeSpecificationChecker();

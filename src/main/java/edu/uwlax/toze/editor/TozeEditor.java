@@ -14,10 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -271,7 +268,7 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         {
             public void actionPerformed(ActionEvent event)
             {
-                closeSpecification();
+                closeSelectedSpecifications();
             }
         }
         );
@@ -532,14 +529,52 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         );
 
         pack();
+
+        // set up application closing behavior
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter()
+                          {
+                              @Override
+                              public void windowClosing(WindowEvent e)
+                              {
+                                  TozeEditor.this.quit();
+                              }
+                          });
     }
 
     private void quit()
     {
-        // for now
-        System.exit(0);
+        List<SpecificationDocument> allSpecifications = allSpecifications();
+        boolean hasEditedDocuments = hasEditedDocuments(allSpecifications);
+        String applicationQuitTextKey = hasEditedDocuments ? "application.quit.edited.message" : "application.quit.message";
+        int dialogOption = hasEditedDocuments ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
 
-        // TODO: need to check for edited specifications, prompt to save, etc.
+        int result = JOptionPane.showConfirmDialog(this,
+                                                   uiBundle.getString(applicationQuitTextKey),
+                                                   uiBundle.getString("application.quit.title"),
+                                                   dialogOption);
+
+        // if there are no edited documents and the user wants to quite, don't check, close
+        // if there are no edited documents and the user doesn't want to quit, don't check, don't close
+        // if there are edited documents and the user doesn't want to quit, don't check, don't close
+        // if there are edited documents and the user wants to quit without saving, don't check, close
+        // if there are edited documents and the user wants to quit with saving, check, close
+        boolean shouldCheck = (hasEditedDocuments && (result == JOptionPane.YES_OPTION));
+        boolean shouldClose = ((result == JOptionPane.YES_OPTION)
+                                      || (hasEditedDocuments && (result == JOptionPane.NO_OPTION)));
+
+        // close the application, checking unsaved specifications if needed
+        // if the number of closed specifications does not match the number of
+        // actually closed specifications, don't quit because the user cancelled
+        if (shouldClose)
+            {
+            int closedSpecifications = closeSpecifications(allSpecifications, shouldCheck);
+            if (closedSpecifications == allSpecifications.size())
+                {
+                System.exit(0);
+                }
+            }
+
     }
 
     private void cut()
@@ -664,43 +699,62 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         controller.addObserver(this);
         controller.addObserver(treeModel);
-        controller.parseSpecification();
+        controller.parseSpecification(false);
     }
 
-    private void saveSpecification()
+    private boolean saveSpecification(SpecificationDocument specificationDocument)
     {
-        SpecificationController specController = currentSpecificationController();
-        Specification specification = specController.getSpecificationDocument().getSpecification();
-        File specificationFile = specController.getSpecificationDocument().getFile();
+        Specification specification = specificationDocument.getSpecification();
+        File specificationFile = specificationDocument.getFile();
+        boolean savedSpecification = false;
 
+        // if this is a new file, get the file name
         if (specificationFile.getName().startsWith(uiBundle.getString("file.untitled")))
             {
-            saveAsSpecification();
+            specificationFile = saveAsSpecification();
             }
-        else
+
+        // if a file was selected, or already existed
+        if (specificationFile != null)
             {
-            writeSpecificationToFile(specification, specificationFile);
+            savedSpecification = writeSpecificationToFile(specification, specificationFile);
             }
-    }
 
-    private void saveAsSpecification()
-    {
-        FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.saveSpecification.title"), FileDialog.SAVE);
-        fileDialog.show();
-
-        if (fileDialog.getFile() != null)
+        // the file was written successfully, update the UI
+        if (savedSpecification)
             {
-            File specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
+            specificationDocument.setEdited(false);
             SpecificationController specController = currentSpecificationController();
             specController.getSpecificationDocument().setFile(specificationFile);
-            Specification specification = specController.getSpecificationDocument().getSpecification();
-
-            writeSpecificationToFile(specification, specificationFile);
 
             // make the tab title the new file name
             int selectedTabIndex = specificationTabPanel.getSelectedIndex();
             specificationTabPanel.setTitleAt(selectedTabIndex, specificationFile.getName());
             }
+
+        return savedSpecification;
+    }
+
+    private void saveSpecification()
+    {
+        SpecificationController specController = currentSpecificationController();
+        SpecificationDocument specificationDocument = specController.getSpecificationDocument();
+
+        saveSpecification(specificationDocument);
+    }
+
+    private File saveAsSpecification()
+    {
+        FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.saveSpecification.title"), FileDialog.SAVE);
+        fileDialog.show();
+        boolean savedSpecification = false;
+        File specificationFile = null;
+
+        if (fileDialog.getFile() != null)
+            {
+            specificationFile = new File(fileDialog.getDirectory() + fileDialog.getFile());
+            }
+        return specificationFile;
     }
 
     private void exportSpecificationAsLatex()
@@ -859,14 +913,17 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         return pageBreaks;
     }
 
-    private void writeSpecificationToFile(Specification specification, File specificationFile)
+    private boolean writeSpecificationToFile(Specification specification, File specificationFile)
     {
+        boolean wroteFile = false;
+
         try
             {
             OutputStream outputStream = new FileOutputStream(specificationFile);
             SpecificationWriter specWriter = new SpecificationWriter(outputStream);
             specWriter.write(specification);
             outputStream.close();
+            wroteFile = true;
             }
         catch (Exception e)
             {
@@ -877,67 +934,160 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                                           JOptionPane.WARNING_MESSAGE
             );
             }
-
+        return wroteFile;
     }
 
-    private void closeSpecification()
+    private List<SpecificationDocument> allSpecifications()
     {
-        // get selected specifications
-        // remove them from the treemodel
-        // @TODO: check if the specification has been edited and warn
-        // @TODO: did you realy want to . . . ?
-        TreePath[] selectedPaths = specificationTree.getSelectionPaths();
+        List<SpecificationDocument> allSpecifications = new ArrayList<SpecificationDocument>();
 
-        if (selectedPaths != null && selectedPaths.length > 0)
+        for (SpecificationController specificationController : tabControllers.values())
+            {
+            allSpecifications.add(specificationController.getSpecificationDocument());
+            }
+
+        return allSpecifications;
+    }
+
+    private List<SpecificationDocument> selectedSpecifications()
+    {
+        TreePath[] selectedPaths = specificationTree.getSelectionPaths();
+        List<SpecificationDocument> selectedSpecifications = new ArrayList<SpecificationDocument>();
+
+        if (selectedPaths != null)
             {
             List<TreePath> treePathList = Arrays.asList(selectedPaths);
 
-            // @TODO List the specifications being closed
-            int confirmState = JOptionPane.showConfirmDialog(this,
-                                                      uiBundle.getString("fileWarning.closeSpecification.message"),
-                                                      uiBundle.getString("fileWarning.closeSpecification.confirm"),
-                                                      JOptionPane.YES_NO_OPTION
-            );
-
-            if (confirmState == JOptionPane.YES_OPTION)
+            for (TreePath treePath : treePathList)
                 {
-                for (TreePath treePath : treePathList)
+                if (treePath.getPathCount() == 2) // the number of path items in selected domain node
                     {
-                    if (treePath.getPathCount() == 2) // the number of path items in selected domain node
-                        {
-                        SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
-                        SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
-
-                        // assume it should be closed
-                        boolean closeSpecification = true;
-
-                        if (specificationDocument.isEdited())
-                            {
-                            // see what the user wants to do if the file has been edited
-                            String editedMessage = MessageFormat.format(uiBundle.getString("fileWarning.closedEditedSpecification.message"),
-                                                                        specificationDocument.getFile().getName());
-                            int closeState = JOptionPane.showConfirmDialog(this,
-                                                                           editedMessage,
-                                                                           uiBundle.getString("fileWarning.closedEditedSpecification.confirm"),
-                                                                           JOptionPane.YES_NO_OPTION);
-                            closeSpecification = (closeState == JOptionPane.YES_OPTION);
-                            }
-
-                        if (closeSpecification)
-                            {
-                            treeModel.removeSpecification(specificationDocument);
-                            int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
-                            Component tab = specificationTabPanel.getComponentAt(tabIndex);
-                            specificationTabPanel.removeTabAt(tabIndex);
-                            tabControllers.remove(tab);
-                            updateErrors(null);
-                            }
-                        }
+                    SpecificationNode specificationNode = (SpecificationNode) treePath.getLastPathComponent();
+                    SpecificationDocument specificationDocument = specificationNode.getSpecificationDocument();
+                    selectedSpecifications.add(specificationDocument);
                     }
                 }
             }
+        return selectedSpecifications;
     }
 
+    private boolean hasEditedDocuments(List<SpecificationDocument> specificationDocuments)
+    {
+        boolean hasEditedDocuments = false;
+
+        for (SpecificationDocument specificationDocument : specificationDocuments)
+            {
+            if (specificationDocument.isEdited())
+                {
+                hasEditedDocuments = true;
+                break;
+                }
+            }
+        return hasEditedDocuments;
+    }
+
+    private void closeSelectedSpecifications()
+    {
+        List<SpecificationDocument> selectedSpecifications = selectedSpecifications();
+
+        if (selectedSpecifications.isEmpty())
+            {
+            return;
+            }
+
+        boolean hasEditedDocuments = hasEditedDocuments(selectedSpecifications);
+
+        String applicationQuitTextKey = hasEditedDocuments ? "fileWarning.closeSpecification.edited.message" : "fileWarning.closeSpecification.message";
+        int dialogOption = hasEditedDocuments ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
+
+        int result = JOptionPane.showConfirmDialog(this,
+                                                   uiBundle.getString(applicationQuitTextKey),
+                                                   uiBundle.getString("fileWarning.closeSpecification.confirm"),
+                                                   dialogOption);
+
+        // if there are no edited documents and the user wants to quit, don't check, close
+        // if there are no edited documents and the user doesn't want to quit, don't check, don't close
+        // if there are edited documents and the user doesn't want to quit, don't check, don't close
+        // if there are edited documents and the user wants to quit without saving, don't check, close
+        // if there are edited documents and the user wants to quit with saving, check, close
+        boolean shouldCheck = (hasEditedDocuments && (result == JOptionPane.YES_OPTION));
+        boolean shouldClose = ((result == JOptionPane.YES_OPTION)
+                || (hasEditedDocuments && (result == JOptionPane.NO_OPTION)));
+
+        if (shouldClose)
+            {
+            closeSpecifications(selectedSpecifications, shouldCheck);
+            }
+    }
+
+    private int closeSpecifications(List<SpecificationDocument> specificationDocuments, boolean checkForEdited)
+    {
+        int closedSpecifications = 0;
+
+        boolean canceled = false;
+        Iterator<SpecificationDocument> iterator = specificationDocuments.iterator();
+
+        while (!canceled && iterator.hasNext())
+            {
+            SpecificationDocument specificationDocument = iterator.next();
+
+            if (checkForEdited && specificationDocument.isEdited())
+                {
+                // if checkForEdited and document is edited, ask to save it and then close
+                // if not saved, cancel the whole operation
+                // if use doesn't want to save it, close anyway
+                String editedMessage = MessageFormat.format(uiBundle.getString("fileWarning.closedEditedSpecification.message"),
+                                                            specificationDocument.getFile().getName());
+                int closeState = JOptionPane.showConfirmDialog(this,
+                                                               editedMessage,
+                                                               uiBundle.getString("fileWarning.closedEditedSpecification.confirm"),
+                                                               JOptionPane.YES_NO_CANCEL_OPTION);
+                switch (closeState)
+                    {
+                    case JOptionPane.YES_OPTION:
+                        boolean saved = saveSpecification(specificationDocument);
+
+                        if (saved)
+                            {
+                            closeSpecification(specificationDocument);
+                            closedSpecifications++;
+                            }
+
+                        // if the file couldn't be save, fail and ignore
+                        // the remaining specifications to be close
+                        canceled = !saved;
+
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        closeSpecification(specificationDocument);
+                        closedSpecifications++;
+                        break;
+                    case JOptionPane.CANCEL_OPTION:
+                        canceled = true;
+                    }
+                }
+            else
+                {
+                // blindly close the document because the user didn't want to save anything
+                closeSpecification(specificationDocument);
+                closedSpecifications++;
+                }
+            }
+
+        return closedSpecifications;
+    }
+
+    private void closeSpecification(SpecificationDocument specificationDocument)
+    {
+        treeModel.removeSpecification(specificationDocument);
+        int tabIndex = specificationTabPanel.indexOfTab(
+                specificationDocument.getFile().getName()
+        );
+        Component tab = specificationTabPanel.getComponentAt(tabIndex);
+        specificationTabPanel.removeTabAt(tabIndex);
+        tabControllers.remove(tab);
+        updateErrors(null);
+    }
 
     public void insertSymbol(String symbol)
     {
@@ -982,12 +1132,12 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
          * Create and display the form
          */
         java.awt.EventQueue.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                new TozeEditor().setVisible(true);
-            }
-        }
+                                        {
+                                            public void run()
+                                            {
+                                                new TozeEditor().setVisible(true);
+                                            }
+                                        }
         );
     }
 
