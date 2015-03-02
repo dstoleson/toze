@@ -902,25 +902,8 @@ import java.util.*;
          return newList;
      }
 
-     private void resetErrors()
+     private void updateErrors()
      {
-         specification.clearErrors();
-         specificationView.revalidate();
-         specificationView.repaint();
-     }
-
-     private void parseSpecification()
-     {
-         parseSpecification(true);
-     }
-
-     public void parseSpecification(boolean edited)
-     {
-         specificationDocument.setEdited(edited);
-         resetErrors();
-
-         TozeSpecificationChecker parser = new TozeSpecificationChecker();
-         parser.check(specification);
          List errors = specification.getErrors();
 
          HashMap notification = new HashMap();
@@ -931,6 +914,32 @@ import java.util.*;
 
          specificationView.revalidate();
          specificationView.repaint();
+
+     }
+     public void clearErrors()
+     {
+         specification.clearErrors();
+         updateErrors();
+     }
+
+     private void manualParseSpecification()
+     {
+        parseSpecification(false);
+     }
+
+     private void parseSpecification()
+     {
+         parseSpecification(true);
+     }
+
+     public void parseSpecification(boolean edited)
+     {
+         specificationDocument.setEdited(edited);
+         specification.clearErrors();
+
+         TozeSpecificationChecker parser = new TozeSpecificationChecker();
+         parser.check(specification);
+         updateErrors();
      }
 
      public void insertSymbol(String symbol)

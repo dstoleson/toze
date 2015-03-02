@@ -369,6 +369,32 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         JMenu specificationMenu = new JMenu(uiBundle.getString("specificationMenu.title"));
 
         menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.checkSyntax.title"));
+        menuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                currentSpecificationController().parseSpecification(false);
+            }
+        }
+        );
+        specificationMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText(uiBundle.getString("specificationMenu.clearErrors.title"));
+        menuItem.addActionListener(new ActionListener()
+                                   {
+                                       @Override
+                                       public void actionPerformed(ActionEvent e)
+                                       {
+                                           currentSpecificationController().clearErrors();
+                                       }
+                                   }
+        );
+        specificationMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
         menuItem.setText(uiBundle.getString("specificationMenu.addAbbreviationDef.title"));
         menuItem.addActionListener(new ActionListener()
         {
