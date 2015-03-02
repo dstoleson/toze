@@ -24,7 +24,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
-import static edu.uwlax.toze.editor.SpecificationController.NotificationKey.*;
+import static edu.uwlax.toze.editor.TozeNotificationKey.*;
 
 /**
  * Main UI class for the TOZE Editor. Displays a file/specification tree
@@ -699,14 +699,14 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         controller.addObserver(this);
         controller.addObserver(treeModel);
+        specificationDocument.addObserver(treeModel);
         controller.parseSpecification(false);
     }
 
     private void saveSpecification()
     {
-        SpecificationController specController = currentSpecificationController();
-        SpecificationDocument specificationDocument = specController.getSpecificationDocument();
-
+        SpecificationController specificationController = currentSpecificationController();
+        SpecificationDocument specificationDocument = specificationController.getSpecificationDocument();
         saveSpecification(specificationDocument);
     }
 
@@ -737,24 +737,27 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         if (savedSpecification)
             {
             specificationDocument.setEdited(false);
-            SpecificationController specController = currentSpecificationController();
-            specController.getSpecificationDocument().setFile(specificationFile);
+            specificationDocument.setFile(specificationFile);
 
             // make the tab title the new file name
             int selectedTabIndex = specificationTabPanel.getSelectedIndex();
             specificationTabPanel.setTitleAt(selectedTabIndex, specificationFile.getName());
             }
 
+
         return savedSpecification;
     }
 
     private boolean saveAsSpecification()
     {
-        SpecificationController specController = currentSpecificationController();
-        SpecificationDocument specificationDocument = specController.getSpecificationDocument();
+        SpecificationController specificationController = currentSpecificationController();
+        SpecificationDocument specificationDocument = specificationController.getSpecificationDocument();
 
-        return saveSpecification(specificationDocument, true);
+        boolean specificationSaved = saveSpecification(specificationDocument, true);
+
+        return specificationSaved;
     }
+
 
     private File fileForSaving()
     {
@@ -1192,8 +1195,8 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         if (o instanceof SpecificationController)
             {
-            SpecificationController.NotificationType notification =
-                    (SpecificationController.NotificationType)((HashMap) arg).get(KEY_NOTIFICATION_TYPE);
+            TozeNotificationType notification =
+                    (TozeNotificationType)((HashMap) arg).get(KEY_NOTIFICATION_TYPE);
             switch (notification)
                 {
                 case ERRORS:

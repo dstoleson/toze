@@ -3,8 +3,10 @@ package edu.uwlax.toze.editor;
 import edu.uwlax.toze.domain.Specification;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Observable;
 
-public class SpecificationDocument
+public class SpecificationDocument extends Observable
 {
     private File file;
     private final Specification specification;
@@ -12,9 +14,10 @@ public class SpecificationDocument
 
     public SpecificationDocument(File file, Specification specification)
     {
-        this.file = file;
+        setFile(file);
         this.specification = specification;
         edited = false;
+
     }
 
     public File getFile()
@@ -25,6 +28,12 @@ public class SpecificationDocument
     public void setFile(File file)
     {
         this.file = file;
+        HashMap notification = new HashMap();
+        notification.put(TozeNotificationKey.KEY_NOTIFICATION_TYPE,
+                         TozeNotificationType.SPECIFICATION_RENAMED);
+        notification.put(TozeNotificationKey.KEY_SPECIFICATION_DOCUMENT, this);
+        setChanged();
+        notifyObservers(notification);
     }
 
     public Specification getSpecification()

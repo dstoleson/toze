@@ -10,7 +10,8 @@ import edu.uwlax.toze.domain.*;
  import java.awt.event.FocusListener;
  import java.awt.event.MouseAdapter;
  import java.awt.event.MouseEvent;
- import java.util.*;
+import java.io.File;
+import java.util.*;
  import java.util.List;
 
 /**
@@ -18,28 +19,8 @@ import edu.uwlax.toze.domain.*;
    */
  public class SpecificationController extends Observable implements FocusListener, Observer
  {
-     public enum NotificationType
-     {
-         CLASS_ADDED,
-         CLASS_REMOVED,
-         CLASS_RENAMED,
-         OPERATION_ADDED,
-         OPERATION_REMOVED,
-         OPERATION_RENAMED,
-         ERRORS
-     }
 
-     public enum NotificationKey
-     {
-         KEY_NOTIFICATION_TYPE,
-         KEY_CLASSDEF,
-         KEY_OPERATION,
-         KEY_SPECIFICATION_DOCUMENT,
-         KEY_OBJECT_INDEX,
-         KEY_ERRORS
-     }
-
-//     static final public String KEY_NOTIFICATION_TYPE = "name";
+     //     static final public String KEY_NOTIFICATION_TYPE = "name";
 //     static final public String KEY_CLASSDEF = "classDef";
 //     static final public String KEY_OPERATION = "operation";
 //     static final public String KEY_SPECIFICATION_DOCUMENT = "specificationDocument";
@@ -366,7 +347,7 @@ import edu.uwlax.toze.domain.*;
          selectParagraph(classDef);
          parseSpecification();
 
-         specificationChanged(NotificationType.CLASS_ADDED, classDef, specification.getClassDefList().indexOf(classDef), specificationDocument);
+         specificationChanged(TozeNotificationType.CLASS_ADDED, classDef, specification.getClassDefList().indexOf(classDef), specificationDocument);
      }
 
      public void removeClass(ClassDef classDef)
@@ -378,7 +359,7 @@ import edu.uwlax.toze.domain.*;
          specificationView.requestRebuild();
          parseSpecification();
 
-         specificationChanged(NotificationType.CLASS_REMOVED, classDef, classIndex, specificationDocument);
+         specificationChanged(TozeNotificationType.CLASS_REMOVED, classDef, classIndex, specificationDocument);
      }
 
      /**
@@ -844,7 +825,9 @@ import edu.uwlax.toze.domain.*;
          selectParagraph(operation);
          parseSpecification();
 
-         classChanged(NotificationType.OPERATION_ADDED, operation, classDef.getOperationList().indexOf(operation), classDef, specificationDocument);
+         classChanged(TozeNotificationType.OPERATION_ADDED, operation, classDef.getOperationList().indexOf(operation),
+                      classDef, specificationDocument
+         );
      }
 
      /**
@@ -862,35 +845,43 @@ import edu.uwlax.toze.domain.*;
          specificationView.requestRebuild();
          parseSpecification();
 
-         classChanged(NotificationType.OPERATION_REMOVED, operation, operationIndex, classDef, specificationDocument);
+         classChanged(TozeNotificationType.OPERATION_REMOVED, operation, operationIndex, classDef,
+                      specificationDocument
+         );
      }
 
-     private void classChanged(NotificationType notificationType, Operation operation, int operationIndex, ClassDef classDef,
+     private void classChanged(TozeNotificationType notificationType, Operation operation, int operationIndex, ClassDef classDef,
                                SpecificationDocument specificationDocument)
      {
          HashMap notification = new HashMap();
-         notification.put(NotificationKey.KEY_NOTIFICATION_TYPE, notificationType);
-         notification.put(NotificationKey.KEY_OPERATION, operation);
-         notification.put(NotificationKey.KEY_OBJECT_INDEX, operationIndex);
-         notification.put(NotificationKey.KEY_CLASSDEF, classDef);
-         notification.put(NotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+         notification.put(TozeNotificationKey.KEY_NOTIFICATION_TYPE, notificationType);
+         notification.put(TozeNotificationKey.KEY_OPERATION, operation);
+         notification.put(TozeNotificationKey.KEY_OBJECT_INDEX, operationIndex);
+         notification.put(TozeNotificationKey.KEY_CLASSDEF, classDef);
+         notification.put(TozeNotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
 
          setChanged();
          notifyObservers(notification);
      }
 
-     private void specificationChanged(NotificationType notificationType, ClassDef classDef, int classIndex,
+     private void specificationChanged(TozeNotificationType notificationType, ClassDef classDef, int classIndex,
                                        SpecificationDocument specificationDocument)
      {
          HashMap notification = new HashMap();
-         notification.put(NotificationKey.KEY_NOTIFICATION_TYPE, notificationType);
-         notification.put(NotificationKey.KEY_CLASSDEF, classDef);
-         notification.put(NotificationKey.KEY_OBJECT_INDEX, classIndex);
-         notification.put(NotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+         notification.put(TozeNotificationKey.KEY_NOTIFICATION_TYPE, notificationType);
+         notification.put(TozeNotificationKey.KEY_CLASSDEF, classDef);
+         notification.put(TozeNotificationKey.KEY_OBJECT_INDEX, classIndex);
+         notification.put(TozeNotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
 
          setChanged();
          notifyObservers(notification);
 
+     }
+
+     public void setFile(File specificationFile)
+     {
+         getSpecificationDocument().setFile(specificationFile);
+         HashMap notification = new HashMap();
      }
 
      /**
@@ -933,8 +924,8 @@ import edu.uwlax.toze.domain.*;
          List errors = specification.getErrors();
 
          HashMap notification = new HashMap();
-         notification.put(NotificationKey.KEY_NOTIFICATION_TYPE, NotificationType.ERRORS);
-         notification.put(NotificationKey.KEY_ERRORS, errors);
+         notification.put(TozeNotificationKey.KEY_NOTIFICATION_TYPE, TozeNotificationType.ERRORS);
+         notification.put(TozeNotificationKey.KEY_ERRORS, errors);
          setChanged();
          notifyObservers(notification);
 
@@ -1043,8 +1034,8 @@ import edu.uwlax.toze.domain.*;
                  if (object instanceof  ClassDef)
                      {
                      int classIndex = specification.getClassDefList().indexOf(object);
-                     specificationChanged(NotificationType.CLASS_REMOVED, (ClassDef)object, classIndex, specificationDocument);
-                     specificationChanged(NotificationType.CLASS_ADDED, (ClassDef)object, classIndex - 1, specificationDocument);
+                     specificationChanged(TozeNotificationType.CLASS_REMOVED, (ClassDef)object, classIndex, specificationDocument);
+                     specificationChanged(TozeNotificationType.CLASS_ADDED, (ClassDef)object, classIndex - 1, specificationDocument);
                      }
                  Utils.listMove(specObjectList, object, index - 1);
                  }
@@ -1081,8 +1072,8 @@ import edu.uwlax.toze.domain.*;
              // Only move up if it isn't already at the top
              if (index > 0)
                  {
-                 classChanged(NotificationType.OPERATION_REMOVED, operation, index, operation.getClassDef(), specificationDocument);
-                 classChanged(NotificationType.OPERATION_ADDED, operation, index - 1, operation.getClassDef(), specificationDocument);
+                 classChanged(TozeNotificationType.OPERATION_REMOVED, operation, index, operation.getClassDef(), specificationDocument);
+                 classChanged(TozeNotificationType.OPERATION_ADDED, operation, index - 1, operation.getClassDef(), specificationDocument);
                  Utils.listMove(operationList, operation, index - 1);
                  operation.getClassDef().setOperationList(operationList);
                  }
@@ -1131,8 +1122,8 @@ import edu.uwlax.toze.domain.*;
                  if (object instanceof  ClassDef)
                      {
                      int classIndex = specification.getClassDefList().indexOf(object);
-                     specificationChanged(NotificationType.CLASS_REMOVED, (ClassDef)object, classIndex, specificationDocument);
-                     specificationChanged(NotificationType.CLASS_ADDED, (ClassDef)object, classIndex + 1, specificationDocument);
+                     specificationChanged(TozeNotificationType.CLASS_REMOVED, (ClassDef)object, classIndex, specificationDocument);
+                     specificationChanged(TozeNotificationType.CLASS_ADDED, (ClassDef)object, classIndex + 1, specificationDocument);
                      }
                  Utils.listMove(specObjectList, object, index + 1);
                  }
@@ -1172,8 +1163,8 @@ import edu.uwlax.toze.domain.*;
              // only move down if not already at bottom
              if (index < last)
                  {
-                 classChanged(NotificationType.OPERATION_REMOVED, operation, index, operation.getClassDef(), specificationDocument);
-                 classChanged(NotificationType.OPERATION_ADDED, operation, index + 1, operation.getClassDef(), specificationDocument);
+                 classChanged(TozeNotificationType.OPERATION_REMOVED, operation, index, operation.getClassDef(), specificationDocument);
+                 classChanged(TozeNotificationType.OPERATION_ADDED, operation, index + 1, operation.getClassDef(), specificationDocument);
                  Utils.listMove(operationList, operation, index + 1);
                  operation.getClassDef().setOperationList(operationList);
                  }
@@ -1394,7 +1385,7 @@ import edu.uwlax.toze.domain.*;
                      specification.addSpecObject(pastedObject);
                      }
 
-                 specificationChanged(NotificationType.CLASS_ADDED, (ClassDef)pastedObject, specification.getClassDefList().indexOf(pastedObject), specificationDocument);
+                 specificationChanged(TozeNotificationType.CLASS_ADDED, (ClassDef)pastedObject, specification.getClassDefList().indexOf(pastedObject), specificationDocument);
                  }
              else if (pastedObject instanceof InheritedClass)
                  {
@@ -1430,7 +1421,7 @@ import edu.uwlax.toze.domain.*;
                      operation.setClassDef(classDef);
                      classDef.addOperation(operation);
 
-                     classChanged(NotificationType.OPERATION_ADDED, operation, classDef.getOperationList().indexOf(operation), classDef, specificationDocument);
+                     classChanged(TozeNotificationType.OPERATION_ADDED, operation, classDef.getOperationList().indexOf(operation), classDef, specificationDocument);
                      }
                  else
                      {
@@ -1551,7 +1542,7 @@ import edu.uwlax.toze.domain.*;
          // adding the specific specification document
          if (arg != null)
              {
-             ((HashMap)arg).put(NotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
+             ((HashMap)arg).put(TozeNotificationKey.KEY_SPECIFICATION_DOCUMENT, specificationDocument);
              setChanged();
              notifyObservers(arg);
              }

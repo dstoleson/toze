@@ -14,9 +14,8 @@ import javax.swing.text.BadLocationException;
 import java.util.HashMap;
 import java.util.Observable;
 
-import static edu.uwlax.toze.editor.SpecificationController.*;
-import static edu.uwlax.toze.editor.SpecificationController.NotificationType.*;
-import static edu.uwlax.toze.editor.SpecificationController.NotificationKey.*;
+import static edu.uwlax.toze.editor.TozeNotificationType.*;
+import static edu.uwlax.toze.editor.TozeNotificationKey.*;
 
 /**
  * @author dhs
@@ -43,8 +42,8 @@ public class SpecDocumentListener extends Observable implements DocumentListener
                 final Object source = binding.getSource();
                 final String property = binding.getProperty();
 
-                NotificationType notificationType = null;
-                NotificationKey objectKey = null;
+                TozeNotificationType notificationType = null;
+                TozeNotificationKey objectKey = null;
 
                 if (source != null && property != null)
                     {

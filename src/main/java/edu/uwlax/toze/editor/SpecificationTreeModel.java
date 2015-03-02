@@ -9,8 +9,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import java.util.*;
 
-import static edu.uwlax.toze.editor.SpecificationController.NotificationType.*;
-import static edu.uwlax.toze.editor.SpecificationController.NotificationKey.*;
+import static edu.uwlax.toze.editor.TozeNotificationType.*;
+import static edu.uwlax.toze.editor.TozeNotificationKey.*;
 
 /**
  * SpecificationTreeModel implements a model for a JTree that
@@ -66,8 +66,8 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
     {
         final HashMap params = (HashMap)arg;
 
-        final SpecificationController.NotificationType notification =
-                (SpecificationController.NotificationType)params.get(KEY_NOTIFICATION_TYPE);
+        final TozeNotificationType notification =
+                (TozeNotificationType)params.get(KEY_NOTIFICATION_TYPE);
 
         // only process the four add/removed types this method cares about
         // this prevents addition of other enum types breaking
@@ -77,7 +77,8 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
                 || notification == OPERATION_ADDED
                 || notification == OPERATION_REMOVED
                 || notification == CLASS_RENAMED
-                || notification == OPERATION_RENAMED))
+                || notification == OPERATION_RENAMED
+                || notification == SPECIFICATION_RENAMED))
             {
             return;
             }
@@ -100,6 +101,10 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
 
         switch (notification)
             {
+            case SPECIFICATION_RENAMED:
+                specificationNode.setUserObject(specificationDocument.getFile().getName());
+                nodeChanged(specificationNode);
+                break;
             case CLASS_ADDED:
                 classIndex = (Integer)params.get(KEY_OBJECT_INDEX);
                 buildClassDefNode(specificationNode, classDef, classIndex);
