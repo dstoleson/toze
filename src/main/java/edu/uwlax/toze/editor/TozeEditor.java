@@ -702,16 +702,29 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         controller.parseSpecification(false);
     }
 
+    private void saveSpecification()
+    {
+        SpecificationController specController = currentSpecificationController();
+        SpecificationDocument specificationDocument = specController.getSpecificationDocument();
+
+        saveSpecification(specificationDocument);
+    }
+
     private boolean saveSpecification(SpecificationDocument specificationDocument)
+    {
+       return saveSpecification(specificationDocument, false);
+    }
+
+    private boolean saveSpecification(SpecificationDocument specificationDocument, boolean rename)
     {
         Specification specification = specificationDocument.getSpecification();
         File specificationFile = specificationDocument.getFile();
         boolean savedSpecification = false;
 
-        // if this is a new file, get the file name
-        if (specificationFile.getName().startsWith(uiBundle.getString("file.untitled")))
+        // if this is a new file, or the file is being renamed (save as...)
+        if (rename || specificationFile.getName().startsWith(uiBundle.getString("file.untitled")))
             {
-            specificationFile = saveAsSpecification();
+            specificationFile = fileForSaving();
             }
 
         // if a file was selected, or already existed
@@ -735,19 +748,18 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
         return savedSpecification;
     }
 
-    private void saveSpecification()
+    private boolean saveAsSpecification()
     {
         SpecificationController specController = currentSpecificationController();
         SpecificationDocument specificationDocument = specController.getSpecificationDocument();
 
-        saveSpecification(specificationDocument);
+        return saveSpecification(specificationDocument, true);
     }
 
-    private File saveAsSpecification()
+    private File fileForSaving()
     {
         FileDialog fileDialog = new FileDialog(this, uiBundle.getString("fileDialog.saveSpecification.title"), FileDialog.SAVE);
         fileDialog.show();
-        boolean savedSpecification = false;
         File specificationFile = null;
 
         if (fileDialog.getFile() != null)
