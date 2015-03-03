@@ -1,1 +1,2 @@
 Main-Class: edu.uwlax.toze.editor.TozeEditor
+Application-Name: TozeEditor
