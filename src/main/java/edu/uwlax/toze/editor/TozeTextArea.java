@@ -54,7 +54,14 @@ public class TozeTextArea extends JTextArea
          * would be invisible on the screen when there was
          * no data in the control.
          */
-        d.width += 1;
+        if (this.getText().isEmpty())
+            {
+            d.width += 20;
+            }
+        else
+            {
+            d.width += 1;
+            }
         d.height += 5;
 
         return d;
@@ -152,16 +159,27 @@ public class TozeTextArea extends JTextArea
     public void paint(Graphics g)
     {
         Component parent = this.getParent();
+        Color backgroundColor = Color.WHITE;
 
-        if (this.getParent() == null)
+        if (this.getParent() != null)
             {
-            setBackground(Color.WHITE);
+            backgroundColor = parent.getBackground();
+            }
+
+        /*
+         * if a text field is empty create a light border
+         * so it is easily visible by the user
+         */
+        if (this.getText().isEmpty())
+            {
+            this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
             }
         else
             {
-            setBackground(parent.getBackground());
+            this.setBorder(null);
             }
 
+        setBackground(backgroundColor);
         g.setFont(TozeFontMap.getFont());
         setFont(TozeFontMap.getFont());
 
@@ -270,14 +288,6 @@ public class TozeTextArea extends JTextArea
             catch (Exception e)
                 {
                 }
-        }
-
-        /**
-         * @return
-         */
-        public boolean hasMoreLines()
-        {
-            return m_ret != null;
         }
 
         /**
