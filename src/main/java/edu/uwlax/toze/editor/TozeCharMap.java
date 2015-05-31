@@ -58,7 +58,7 @@ public class TozeCharMap
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_DRES), "%dres%", "DRES"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_RRES), "%rres%", "RRES"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NDRES), "%dsub%", "DSUB"));
-        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NDRES), "%rsub%", "RSUB"));
+        allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_NRRES), "%rsub%", "RSUB"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_INV), "%inv%", "INV"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_PLUS_POST), "%tcl%", "TCL"));
         allChars.add(new TozeCharMap(Character.toString(TozeFontMap.CHAR_TIMES_POST), "%rtcl%", "RTCL"));
