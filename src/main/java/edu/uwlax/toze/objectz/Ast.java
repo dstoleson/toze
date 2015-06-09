@@ -1244,7 +1244,14 @@ public class Ast
 
         public void checkType()
         {
-            AstType type = m_stable.getTypeDef(m_className.getName());
+
+            AstType type = null;
+
+            if (m_className != null)
+                {
+                type = m_stable.getTypeDef(m_className.getName());
+                }
+
             if (type == null)
                 {
                 this.reportTypeError(m_className.getName() + " is not defined as a class.",

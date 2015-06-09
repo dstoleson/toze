@@ -41,7 +41,9 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 {
     // keep track of untitled documents
     // make each one unique
-    private static int untitledCount = 1;
+    private int untitledCount = 1;
+
+    private boolean isClosingDocument = false;
 
     private final ResourceBundle uiBundle;
 
@@ -71,8 +73,12 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
              * use the apple menu bar at the top of the screen
              * instead of putting the menu on the window frame
              */
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "TozeEditor");
+
+            // @TODO - can't do this until CMD-Q can be intercepted
+            // and handled like quit() instead of just quitting
+            // the app automatically
+            // System.setProperty("apple.laf.useScreenMenuBar", "true");
+            // System.setProperty("com.apple.mrj.application.apple.menu.about.name", "TozeEditor");
             }
 
         initComponents();
@@ -1044,19 +1050,19 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
 
         boolean hasEditedDocuments = hasEditedDocuments(selectedSpecifications);
 
-        String applicationQuitTextKey = hasEditedDocuments ? "fileWarning.closeSpecification.edited.message" : "fileWarning.closeSpecification.message";
+        String closeSelectedTextKey = hasEditedDocuments ? "fileWarning.closeSpecification.edited.message" : "fileWarning.closeSpecification.message";
         int dialogOption = hasEditedDocuments ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
 
         int result = JOptionPane.showConfirmDialog(this,
-                                                   uiBundle.getString(applicationQuitTextKey),
+                                                   uiBundle.getString(closeSelectedTextKey),
                                                    uiBundle.getString("fileWarning.closeSpecification.confirm"),
                                                    dialogOption);
 
-        // if there are no edited documents and the user wants to quit, don't check, close
-        // if there are no edited documents and the user doesn't want to quit, don't check, don't close
-        // if there are edited documents and the user doesn't want to quit, don't check, don't close
-        // if there are edited documents and the user wants to quit without saving, don't check, close
-        // if there are edited documents and the user wants to quit with saving, check, close
+        // if there are no edited documents and the user wants to close them, don't check, close
+        // if there are no edited documents and the user doesn't want to close them, don't check, don't close
+        // if there are edited documents and the user doesn't want to close, don't check, don't close
+        // if there are edited documents and the user wants to close without saving, don't check, close
+        // if there are edited documents and the user wants to close with saving, check, close
         boolean shouldCheck = (hasEditedDocuments && (result == JOptionPane.YES_OPTION));
         boolean shouldClose = ((result == JOptionPane.YES_OPTION)
                 || (hasEditedDocuments && (result == JOptionPane.NO_OPTION)));
@@ -1071,7 +1077,10 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
     {
         int closedSpecifications = 0;
 
+        isClosingDocument = true;
+
         boolean canceled = false;
+
         Iterator<SpecificationDocument> iterator = specificationDocuments.iterator();
 
         while (!canceled && iterator.hasNext())
@@ -1121,18 +1130,22 @@ public class TozeEditor extends javax.swing.JFrame implements Observer
                 }
             }
 
+        isClosingDocument = false;
+        
         return closedSpecifications;
     }
 
     private void closeSpecification(SpecificationDocument specificationDocument)
     {
         treeModel.removeSpecification(specificationDocument);
-        int tabIndex = specificationTabPanel.indexOfTab(
-                specificationDocument.getFile().getName()
-        );
-        Component tab = specificationTabPanel.getComponentAt(tabIndex);
-        specificationTabPanel.removeTabAt(tabIndex);
-        tabControllers.remove(tab);
+        int tabIndex = specificationTabPanel.indexOfTab(specificationDocument.getFile().getName());
+
+        if (tabIndex >= 0)
+            {
+            Component tab = specificationTabPanel.getComponentAt(tabIndex);
+            specificationTabPanel.removeTabAt(tabIndex);
+            tabControllers.remove(tab);
+            }
         updateErrors(null);
     }
 

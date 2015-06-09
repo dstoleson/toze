@@ -213,9 +213,13 @@ public class SpecificationTreeModel extends DefaultTreeModel implements Observer
     public void removeSpecification(SpecificationDocument specificationDocument)
     {
         int specIndex = specificationDocuments.indexOf(specificationDocument);
-        specificationDocuments.remove(specificationDocument);
-        SpecificationNode specNode = (SpecificationNode)root.getChildAt(specIndex);
-        removeNodeFromParent(specNode);
+
+        if (specIndex >= 0)
+            {
+            specificationDocuments.remove(specificationDocument);
+            SpecificationNode specNode = (SpecificationNode) root.getChildAt(specIndex);
+            removeNodeFromParent(specNode);
+            }
     }
 
     public interface SpecObjectNode

@@ -237,6 +237,8 @@ public class TozeParser extends TozeParserBase
             return null;
             }
 
+        int tat = 0;
+
         Ast.AstVector node = m_ast.new AstVector();
         Ast.AstInheritedClass inode = parse_InheritedClass(inheritedClass, property);
         if (ok())
@@ -244,7 +246,7 @@ public class TozeParser extends TozeParserBase
             while (true)
                 {
                 node.m_list.add(inode);
-                int tat = m_current;
+                tat = m_current;
                 inode = parse_InheritedClass(inheritedClass, property);
                 if (!ok())
                     {
